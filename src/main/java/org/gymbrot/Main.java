@@ -1,9 +1,10 @@
 package org.gymbrot;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
+import java.sql.Connection;
 
+public static void main(String[] args) {
+    Connection conn = util.DatabaseConnection.getInstance();
+    if (conn != null) {
+        System.out.println("¡Conexión OK!");
     }
 }
