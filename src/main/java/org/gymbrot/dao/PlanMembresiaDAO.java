@@ -92,4 +92,16 @@ public class PlanMembresiaDAO {
         }
         return lista;
     }
+    // ── MAPEAR ResultSet → PlanMembresia ──────────────────────────────────
+    private PlanMembresia mapear(ResultSet rs) throws SQLException {
+        PlanMembresia p = new PlanMembresia();
+        p.setIdPlan(rs.getInt("id_plan"));
+        p.setNombre(rs.getString("nombre"));
+        p.setDescripcion(rs.getString("descripcion"));
+        p.setPrecioMensual(rs.getDouble("precio_mensual"));
+        p.setPrecioSemestral(rs.getDouble("precio_semestral"));
+        p.setPrecioAnual(rs.getDouble("precio_anual"));
+        p.setBeneficios(rs.getString("beneficios"));
+        return p;
+    }
 }
