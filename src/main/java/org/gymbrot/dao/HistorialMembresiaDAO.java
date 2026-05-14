@@ -66,4 +66,19 @@ public class HistorialMembresiaDAO {
         }
         return null;
     }
+    // ── DESACTIVAR ────────────────────────────────────────────────────────
+    public boolean desactivar(int idHistorial) {
+        String sql = """
+                UPDATE HISTORIAL_MEMBRESIAS
+                SET activa = 0, fecha_fin = SYSDATE
+                WHERE id_historial = ?
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idHistorial);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar historial: " + e.getMessage());
+            return false;
+        }
+    }
 }
