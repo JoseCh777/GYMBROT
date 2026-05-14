@@ -113,4 +113,42 @@ public class UsuarioDAO {
         }
         return null;
     }
+
+    public List<Usuario> listarTodos() {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM USUARIOS ORDER BY fecha_registro DESC";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                usuarios.add(mapearUsuario(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error listar: " + e.getMessage());
+        }
+        return usuarios;
+    }
+
+    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario();
+        usuario.setNumeroIdentificacion(rs.getString("numero_identificacion"));
+        usuario.setTipoIdentificacion(rs.getString("tipo_identificacion"));
+        usuario.setNombre(rs.getString("nombre"));
+        usuario.setApellidos(rs.getString("apellidos"));
+        usuario.setTelefono(rs.getString("telefono"));
+        usuario.setCorreo(rs.getString("correo"));
+        usuario.setContrasenaHash(rs.getString("contrasena_hash"));
+        usuario.setFotoUrl(rs.getString("foto_url"));
+        usuario.setEstado(rs.getString("estado"));
+
+        Date fecha = rs.getDate("fecha_registro");
+        if (fecha != null) {
+            usuario.setFechaRegistro(fecha.toLocalDate());
+        }
+
+        usuario.setTipoUsuario(rs.getString("tipo_usuario"));
+        return usuario;
+    }
 }
