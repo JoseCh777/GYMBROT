@@ -9,7 +9,6 @@ import java.util.List;
 
 public class EjercicioDAO {
 
-
     private Connection getConexion() throws SQLException {
         return DatabaseConnection.getInstance();
     }
@@ -86,3 +85,83 @@ public class EjercicioDAO {
             return false;
         }
     }
+
+    // ── LISTAR TODOS ──────────────────────────────────────────────────────
+    public List<Ejercicio> listarTodos() {
+        List<Ejercicio> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
+                   series, repeticiones, duracion_minutos, nivel, recurso_url
+            FROM EJERCICIOS ORDER BY nombre
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) lista.add(mapearEjercicio(rs));
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar ejercicios: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── BUSCAR POR GRUPO MUSCULAR ─────────────────────────────────────────
+    public List<Ejercicio> buscarPorGrupoMuscular(String grupo) {
+        List<Ejercicio> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
+                   series, repeticiones, duracion_minutos, nivel, recurso_url
+            FROM EJERCICIOS WHERE grupo_muscular = ? ORDER BY nombre
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, grupo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearEjercicio(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar por grupo muscular: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── BUSCAR POR NIVEL ──────────────────────────────────────────────────
+    public List<Ejercicio> buscarPorNivel(String nivel) {
+        List<Ejercicio> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
+                   series, repeticiones, duracion_minutos, nivel, recurso_url
+            FROM EJERCICIOS WHERE nivel = ? ORDER BY nombre
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nivel);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearEjercicio(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar por nivel: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── MAPEO ─────────────────────────────────────────────────────────────
+    private Ejercicio mapearEjercicio(ResultSet rs) throws SQLException {
+        return new Ejercicio(
+                rs.getInt   ("id_ejercicio"),
+                rs.getString("nombre"),
+                rs.getString("descripcion"),
+                rs.getString("grupo_muscular"),
+                rs.getInt   ("series"),
+                rs.getInt   ("repeticiones"),
+                rs.getInt   ("duracion_minutos"),
+                rs.getString("nivel"),
+                rs.getString("recurso_url")
+        );
+    }
+}
