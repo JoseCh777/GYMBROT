@@ -1,13 +1,9 @@
 package org.gymbrot.dao;
 
-public class ClienteDAO {
-}
-package org.gymbrot.dao;
-
 import org.gymbrot.model.Cliente;
 import org.gymbrot.util.DatabaseConnection;
 import java.sql.*;
-        import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAO {
