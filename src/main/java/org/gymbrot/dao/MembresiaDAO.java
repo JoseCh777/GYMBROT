@@ -58,4 +58,17 @@ public class MembresiaDAO {
             return false;
         }
     }
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public Membresia buscarPorId(int id) {
+        String sql = "SELECT * FROM MEMBRESIAS WHERE id_membresia = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar membresía: " + e.getMessage());
+        }
+        return null;
+    }
 }
