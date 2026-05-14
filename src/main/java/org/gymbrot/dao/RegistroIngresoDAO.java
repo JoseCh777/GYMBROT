@@ -48,5 +48,41 @@ public class RegistroIngresoDAO {
             return false;
         }
     }
+    // ── LISTAR POR CLIENTE ────────────────────────────────────────────────
+    public List<RegistroIngreso> listarPorCliente(String idCliente) {
+        List<RegistroIngreso> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM REGISTROS_INGRESOS
+                WHERE id_cliente = ?
+                ORDER BY fecha DESC, hora_entrada DESC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar ingresos por cliente: " + e.getMessage());
+        }
+        return lista;
+    }
 
+    // ── LISTAR POR FECHA ──────────────────────────────────────────────────
+    public List<RegistroIngreso> listarPorFecha(java.time.LocalDate fecha) {
+        List<RegistroIngreso> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM REGISTROS_INGRESOS
+                WHERE fecha = ?
+                ORDER BY hora_entrada DESC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(fecha));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar ingresos por fecha: " + e.getMessage());
+        }
+        return lista;
+    }
 }
