@@ -87,4 +87,18 @@ public class PagoDAO {
         }
         return lista;
     }
+    // ── MAPEAR ResultSet → Pago ───────────────────────────────────────────
+    private Pago mapear(ResultSet rs) throws SQLException {
+        Pago p = new Pago();
+        p.setIdPago(rs.getInt("id_pago"));
+        p.setIdMembresia(rs.getInt("id_membresia"));
+        p.setIdCliente(rs.getString("id_cliente"));
+        p.setFechaPago(rs.getDate("fecha_pago").toLocalDate());
+        p.setValor(rs.getDouble("valor"));
+        p.setMetodoPago(rs.getString("metodo_pago"));
+        p.setEstadoPago(rs.getString("estado_pago"));
+        p.setReferenciaTransaccion(rs.getString("referencia_transaccion"));
+        p.setObservaciones(rs.getString("observaciones"));
+        return p;
+    }
 }
