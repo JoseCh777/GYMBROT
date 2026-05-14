@@ -50,4 +50,20 @@ public class HistorialMembresiaDAO {
         }
         return lista;
     }
+    // ── BUSCAR ACTIVA POR CLIENTE ─────────────────────────────────────────
+    public HistorialMembresia buscarActiva(String idCliente) {
+        String sql = """
+                SELECT * FROM HISTORIAL_MEMBRESIAS
+                WHERE id_cliente = ? AND activa = 1
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar historial activa: " + e.getMessage());
+        }
+        return null;
+    }
 }
