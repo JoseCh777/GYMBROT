@@ -81,4 +81,15 @@ public class HistorialMembresiaDAO {
             return false;
         }
     }
+    // ── MAPEAR ResultSet → HistorialMembresia ─────────────────────────────
+    private HistorialMembresia mapear(ResultSet rs) throws SQLException {
+        HistorialMembresia h = new HistorialMembresia();
+        h.setIdHistorial(rs.getInt("id_historial"));
+        h.setIdCliente(rs.getString("id_cliente"));
+        h.setIdMembresia(rs.getInt("id_membresia"));
+        h.setFechaAsignacion(rs.getDate("fecha_asignacion").toLocalDate());
+        h.setFechaFin(rs.getDate("fecha_fin") != null ? rs.getDate("fecha_fin").toLocalDate() : null);
+        h.setActiva(rs.getInt("activa"));
+        return h;
+    }
 }
