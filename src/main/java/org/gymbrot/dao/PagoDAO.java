@@ -36,4 +36,17 @@ public class PagoDAO {
             return false;
         }
     }
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public Pago buscarPorId(int id) {
+        String sql = "SELECT * FROM PAGOS WHERE id_pago = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar pago: " + e.getMessage());
+        }
+        return null;
+    }
 }
