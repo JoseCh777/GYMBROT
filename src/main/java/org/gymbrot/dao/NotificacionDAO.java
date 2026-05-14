@@ -55,4 +55,50 @@ public class NotificacionDAO {
         }
         return lista;
     }
+    // ── MARCAR ENVIADA ────────────────────────────────────────────────────
+    public boolean marcarEnviada(int idNotificacion) {
+        String sql = """
+                UPDATE NOTIFICACIONES
+                SET estado_envio = 'ENVIADO', fecha_envio = CURRENT_TIMESTAMP
+                WHERE id_notificacion = ?
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idNotificacion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al marcar notificación enviada: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ── LISTAR PENDIENTES ─────────────────────────────────────────────────
+    public List<Notificacion> listarPendientes() {
+        List<Notificacion> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM NOTIFICACIONES
+                WHERE estado_envio = 'PENDIENTE'
+                ORDER BY fecha_envio ASC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            System.err.println("Error al listar notificaciones pendientes: " + e.getMessage());
+        }
+        return lista;
+    }
+    // ── MAPEAR ResultSet → Notificacion ───────────────────────────────────
+    private Notificacion mapear(ResultSet rs) throws SQLException {
+        Notificacion n = new Notificacion();
+        n.setIdNotificacion(rs.getInt("id_notificacion"));
+        n.setIdCliente(rs.getString("id_cliente"));
+        n.setIdPlantilla(rs.getInt("id_plantilla"));
+        n.setTipo(rs.getString("tipo"));
+        n.setAsunto(rs.getString("asunto"));
+        n.setContenido(rs.getString("contenido"));
+        n.setEstadoEnvio(rs.getString("estado_envio"));
+        n.setFechaEnvio(rs.getTimestamp("fecha_envio") != null ? rs.getTimestamp("fecha_envio").toLocalDateTime() : null);
+        n.setOrigen(rs.getString("origen"));
+        return n;
+    }
 }
