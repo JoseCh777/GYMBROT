@@ -120,4 +120,50 @@ public class InstructorDAO {
 
         return instructor;
     }
+    public List<Instructor> listarTodos() {
+        List<Instructor> instructores = new ArrayList<>();
+        String sql = "SELECT i.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario, e.nombre as nombre_especialidad " +
+                "FROM INSTRUCTORES i " +
+                "INNER JOIN USUARIOS u ON i.numero_identificacion = u.numero_identificacion " +
+                "LEFT JOIN ESPECIALIDADES e ON i.id_especialidad = e.id_especialidad " +
+                "ORDER BY u.fecha_registro DESC";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                instructores.add(mapearInstructor(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error listar instructores: " + e.getMessage());
+        }
+        return instructores;
+    }
+
+    public List<Instructor> listarDisponibles() {
+        List<Instructor> instructores = new ArrayList<>();
+        String sql = "SELECT i.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario, e.nombre as nombre_especialidad " +
+                "FROM INSTRUCTORES i " +
+                "INNER JOIN USUARIOS u ON i.numero_identificacion = u.numero_identificacion " +
+                "LEFT JOIN ESPECIALIDADES e ON i.id_especialidad = e.id_especialidad " +
+                "WHERE u.estado = 'activo' " +
+                "ORDER BY u.nombre";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                instructores.add(mapearInstructor(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error listar disponibles: " + e.getMessage());
+        }
+        return instructores;
+    }
 }
