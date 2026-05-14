@@ -69,4 +69,22 @@ public class PagoDAO {
         }
         return lista;
     }
+    // ── LISTAR POR MEMBRESIA ──────────────────────────────────────────────
+    public List<Pago> listarPorMembresia(int idMembresia) {
+        List<Pago> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM PAGOS
+                WHERE id_membresia = ?
+                ORDER BY fecha_pago DESC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idMembresia);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar pagos por membresía: " + e.getMessage());
+        }
+        return lista;
+    }
 }
