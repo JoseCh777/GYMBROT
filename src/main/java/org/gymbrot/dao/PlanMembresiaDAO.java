@@ -80,4 +80,16 @@ public class PlanMembresiaDAO {
         }
         return null;
     }
+    // ── LISTAR TODOS ──────────────────────────────────────────────────────
+    public List<PlanMembresia> listarTodos() {
+        List<PlanMembresia> lista = new ArrayList<>();
+        String sql = "SELECT * FROM PLANES_MEMBRESIAS ORDER BY nombre";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            System.err.println("Error al listar planes: " + e.getMessage());
+        }
+        return lista;
+    }
 }
