@@ -107,5 +107,85 @@ public class CitaDAO {
         return null;
     }
 
+    // ── LISTAR POR CLIENTE ────────────────────────────────────────────────
+    public List<Cita> listarPorCliente(String idCliente) {
+        List<Cita> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
+                   tipo_cita, estado, notas
+            FROM CITAS WHERE id_cliente = ? ORDER BY fecha, hora
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearCita(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar citas por cliente: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── LISTAR POR FECHA ──────────────────────────────────────────────────
+    public List<Cita> listarPorFecha(LocalDate fecha) {
+        List<Cita> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
+                   tipo_cita, estado, notas
+            FROM CITAS WHERE fecha = ? ORDER BY hora
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setDate(1, Date.valueOf(fecha));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearCita(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar citas por fecha: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── LISTAR POR INSTRUCTOR ─────────────────────────────────────────────
+    public List<Cita> listarPorInstructor(String idInstructor) {
+        List<Cita> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
+                   tipo_cita, estado, notas
+            FROM CITAS WHERE id_instructor = ? ORDER BY fecha, hora
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, idInstructor);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearCita(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar citas por instructor: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── MAPEO ─────────────────────────────────────────────────────────────
+    private Cita mapearCita(ResultSet rs) throws SQLException {
+        return new Cita(
+                rs.getInt   ("id_cita"),
+                rs.getString("id_instructor"),
+                rs.getString("id_cliente"),
+                rs.getDate  ("fecha").toLocalDate(),
+                rs.getTime  ("hora").toLocalTime(),
+                rs.getString("tipo_cita"),
+                rs.getString("estado"),
+                rs.getString("notas")
+        );
+    }
+
 
 }
