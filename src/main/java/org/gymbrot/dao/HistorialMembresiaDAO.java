@@ -32,4 +32,22 @@ public class HistorialMembresiaDAO {
             return false;
         }
     }
+    // ── LISTAR POR CLIENTE ────────────────────────────────────────────────
+    public List<HistorialMembresia> listarPorCliente(String idCliente) {
+        List<HistorialMembresia> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM HISTORIAL_MEMBRESIAS
+                WHERE id_cliente = ?
+                ORDER BY fecha_asignacion DESC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar historial por cliente: " + e.getMessage());
+        }
+        return lista;
+    }
 }
