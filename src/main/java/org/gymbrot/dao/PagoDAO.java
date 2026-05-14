@@ -36,6 +36,7 @@ public class PagoDAO {
             return false;
         }
     }
+
     // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     public Pago buscarPorId(int id) {
         String sql = "SELECT * FROM PAGOS WHERE id_pago = ?";
@@ -48,5 +49,24 @@ public class PagoDAO {
             System.err.println("Error al buscar pago: " + e.getMessage());
         }
         return null;
+    }
+
+    // ── LISTAR POR CLIENTE ────────────────────────────────────────────────
+    public List<Pago> listarPorCliente(String idCliente) {
+        List<Pago> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM PAGOS
+                WHERE id_cliente = ?
+                ORDER BY fecha_pago DESC
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar pagos por cliente: " + e.getMessage());
+        }
+        return lista;
     }
 }
