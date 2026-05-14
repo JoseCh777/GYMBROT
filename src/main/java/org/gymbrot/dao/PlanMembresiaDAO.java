@@ -56,4 +56,15 @@ public class PlanMembresiaDAO {
             return false;
         }
     }
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
+    public boolean eliminar(int idPlan) {
+        String sql = "DELETE FROM PLANES_MEMBRESIAS WHERE id_plan = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idPlan);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar plan: " + e.getMessage());
+            return false;
+        }
+    }
 }
