@@ -46,4 +46,31 @@ public class PlantillaMensajeDAO {
         }
         return null;
     }
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public PlantillaMensaje buscarPorId(int idPlantilla) {
+        String sql = "SELECT * FROM PLANTILLAS_MENSAJE WHERE id_plantilla = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idPlantilla);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar plantilla por id: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // ── MAPEAR ResultSet → PlantillaMensaje ───────────────────────────────
+    private PlantillaMensaje mapear(ResultSet rs) throws SQLException {
+        PlantillaMensaje p = new PlantillaMensaje();
+        p.setIdPlantilla(rs.getInt("id_plantilla"));
+        p.setNombre(rs.getString("nombre"));
+        p.setTipo(rs.getString("tipo"));
+        p.setAsunto(rs.getString("asunto"));
+        p.setCuerpoHtml(rs.getString("cuerpo_html"));
+        p.setCuerpoTexto(rs.getString("cuerpo_texto"));
+        p.setVariablesDisponibles(rs.getString("variables_disponibles"));
+        p.setActiva(rs.getInt("activa") == 1);
+        return p;
+    }
 }
