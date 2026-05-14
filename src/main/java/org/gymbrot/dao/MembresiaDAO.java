@@ -71,4 +71,20 @@ public class MembresiaDAO {
         }
         return null;
     }
+    // ── LISTAR VENCIDAS ───────────────────────────────────────────────────
+    public List<Membresia> listarVencidas() {
+        List<Membresia> lista = new ArrayList<>();
+        String sql = """
+                SELECT * FROM MEMBRESIAS
+                WHERE fecha_vencimiento < SYSDATE AND estado != 'vencida'
+                ORDER BY fecha_vencimiento
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            System.err.println("Error al listar vencidas: " + e.getMessage());
+        }
+        return lista;
+    }
 }
