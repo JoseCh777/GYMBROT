@@ -67,4 +67,17 @@ public class PlanMembresiaDAO {
             return false;
         }
     }
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public PlanMembresia buscarPorId(int idPlan) {
+        String sql = "SELECT * FROM PLANES_MEMBRESIAS WHERE id_plan = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idPlan);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar plan: " + e.getMessage());
+        }
+        return null;
+    }
 }
