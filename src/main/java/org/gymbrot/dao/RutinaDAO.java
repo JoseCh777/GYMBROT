@@ -83,3 +83,66 @@ public class RutinaDAO {
             return false;
         }
     }
+
+    // ── BUSCAR POR CLIENTE ────────────────────────────────────────────────
+    public List<Rutina> buscarPorCliente(String idCliente) {
+        List<Rutina> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
+                   fecha_creacion, fecha_fin, dias_semana, objetivo
+            FROM RUTINAS WHERE id_cliente = ? ORDER BY fecha_creacion DESC
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearRutina(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar rutinas por cliente: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── BUSCAR POR INSTRUCTOR ─────────────────────────────────────────────
+    public List<Rutina> buscarPorInstructor(String idInstructor) {
+        List<Rutina> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
+                   fecha_creacion, fecha_fin, dias_semana, objetivo
+            FROM RUTINAS WHERE id_instructor = ? ORDER BY fecha_creacion DESC
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, idInstructor);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapearRutina(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar rutinas por instructor: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // ── MAPEO ─────────────────────────────────────────────────────────────
+    private Rutina mapearRutina(ResultSet rs) throws SQLException {
+        Date fechaFin = rs.getDate("fecha_fin");
+        return new Rutina(
+                rs.getInt   ("id_rutina"),
+                rs.getString("id_instructor"),
+                rs.getString("id_cliente"),
+                rs.getString("nombre"),
+                rs.getString("descripcion"),
+                rs.getDate  ("fecha_creacion").toLocalDate(),
+                fechaFin != null ? fechaFin.toLocalDate() : null,
+                rs.getString("dias_semana"),
+                rs.getString("objetivo")
+        );
+    }
+
+
+}
