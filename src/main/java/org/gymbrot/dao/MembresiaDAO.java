@@ -87,4 +87,18 @@ public class MembresiaDAO {
         }
         return lista;
     }
+    // ── LISTAR POR ESTADO ─────────────────────────────────────────────────
+    public List<Membresia> listarPorEstado(String estado) {
+        List<Membresia> lista = new ArrayList<>();
+        String sql = "SELECT * FROM MEMBRESIAS WHERE estado = ? ORDER BY fecha_vencimiento";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, estado);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar por estado: " + e.getMessage());
+        }
+        return lista;
+    }
 }
