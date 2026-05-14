@@ -1,7 +1,7 @@
 package dao;
 
 import model.Progreso;
-import util.DatabaseConnection;
+import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -101,6 +101,4 @@ public class ProgresoDAO {
                 rs.getString("observaciones")
         );
     }
-```
-
 }

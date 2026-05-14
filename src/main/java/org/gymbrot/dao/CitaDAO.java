@@ -1,7 +1,7 @@
-package dao;
+package org.gymbrot.dao;
 
-import model.Cita;
-import util.DatabaseConnection;
+import org.gymbrot.model.Cita;
+import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;
 import java.time.LocalDate;

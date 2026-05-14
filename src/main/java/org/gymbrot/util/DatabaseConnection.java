@@ -1,4 +1,4 @@
-package util;
+package org.gymbrot.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ public class DatabaseConnection {
 
     private DatabaseConnection() {}
 
-    public static Connection getInstance() {
+    public static Connection getInstance() throws SQLException {
         try {
             if (instance == null || instance.isClosed()) {
                 Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -22,9 +22,7 @@ public class DatabaseConnection {
                 System.out.println("Conexión exitosa a GYMBROT DB");
             }
         } catch (ClassNotFoundException e) {
-            System.err.println("Driver Oracle no encontrado: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Error de conexión: " + e.getMessage());
+            throw new SQLException("Driver Oracle no encontrado: " + e.getMessage(), e);
         }
         return instance;
     }

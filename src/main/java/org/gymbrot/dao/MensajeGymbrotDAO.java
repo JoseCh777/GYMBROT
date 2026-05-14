@@ -1,7 +1,7 @@
 package dao;
 
 import model.MensajeGymbrot;
-import util.DatabaseConnection;
+import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
