@@ -85,4 +85,32 @@ public class RegistroIngresoDAO {
         }
         return lista;
     }
+    // ── CONTAR INGRESOS MES ───────────────────────────────────────────────
+    public int contarIngresosMes() {
+        String sql = """
+                SELECT COUNT(*) FROM REGISTROS_INGRESOS
+                WHERE EXTRACT(MONTH FROM fecha) = EXTRACT(MONTH FROM SYSDATE)
+                AND EXTRACT(YEAR FROM fecha) = EXTRACT(YEAR FROM SYSDATE)
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("Error al contar ingresos del mes: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    // ── MAPEAR ResultSet → RegistroIngreso ────────────────────────────────
+    private RegistroIngreso mapear(ResultSet rs) throws SQLException {
+        RegistroIngreso r = new RegistroIngreso();
+        r.setIdIngreso(rs.getInt("id_ingreso"));
+        r.setIdCliente(rs.getString("id_cliente"));
+        r.setFecha(rs.getDate("fecha").toLocalDate());
+        r.setHoraEntrada(rs.getTimestamp("hora_entrada").toLocalDateTime());
+        r.setHoraSalida(rs.getTimestamp("hora_salida") != null ? rs.getTimestamp("hora_salida").toLocalDateTime() : null);
+        r.setMetodoVerificacion(rs.getString("metodo_verificacion"));
+        r.setEstadoVerificacion(rs.getString("estado_verificacion"));
+        return r;
+    }
 }
