@@ -34,4 +34,26 @@ public class PlanMembresiaDAO {
             return false;
         }
     }
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
+    public boolean actualizar(PlanMembresia p) {
+        String sql = """
+                UPDATE PLANES_MEMBRESIAS
+                SET nombre = ?, descripcion = ?, precio_mensual = ?,
+                    precio_semestral = ?, precio_anual = ?, beneficios = ?
+                WHERE id_plan = ?
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, p.getNombre());
+            ps.setString(2, p.getDescripcion());
+            ps.setDouble(3, p.getPrecioMensual());
+            ps.setDouble(4, p.getPrecioSemestral());
+            ps.setDouble(5, p.getPrecioAnual());
+            ps.setString(6, p.getBeneficios());
+            ps.setInt(7, p.getIdPlan());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar plan: " + e.getMessage());
+            return false;
+        }
+    }
 }
