@@ -134,5 +134,49 @@ public class ClienteDAO {
 
         return cliente;
     }
+    public List<Cliente> listarTodos() {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario " +
+                "FROM CLIENTES c " +
+                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+                "ORDER BY u.fecha_registro DESC";
 
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                clientes.add(mapearCliente(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error listar clientes: " + e.getMessage());
+        }
+        return clientes;
+    }
+
+    public List<Cliente> buscarPorEstado(String estado) {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario " +
+                "FROM CLIENTES c " +
+                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+                "WHERE u.estado = ? " +
+                "ORDER BY u.fecha_registro DESC";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, estado);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                clientes.add(mapearCliente(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error buscar por estado: " + e.getMessage());
+        }
+        return clientes;
+    }
 }
