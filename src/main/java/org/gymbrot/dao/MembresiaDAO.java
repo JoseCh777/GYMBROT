@@ -101,4 +101,17 @@ public class MembresiaDAO {
         }
         return lista;
     }
+    // ── MAPEAR ResultSet → Membresia ──────────────────────────────────────
+    private Membresia mapear(ResultSet rs) throws SQLException {
+        Membresia m = new Membresia();
+        m.setIdMembresia(rs.getInt("id_membresia"));
+        m.setIdPlan(rs.getInt("id_plan"));
+        m.setTipoMembresia(rs.getString("tipo_membresia"));
+        m.setModalidadPago(rs.getString("modalidad_pago"));
+        m.setValor(rs.getDouble("valor"));
+        m.setFechaInicio(rs.getDate("fecha_inicio").toLocalDate());
+        m.setFechaVencimiento(rs.getDate("fecha_vencimiento").toLocalDate());
+        m.setEstado(rs.getString("estado"));
+        return m;
+    }
 }
