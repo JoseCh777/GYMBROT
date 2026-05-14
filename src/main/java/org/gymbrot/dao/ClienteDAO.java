@@ -65,4 +65,74 @@ public class ClienteDAO {
             return false;
         }
     }
+    public boolean eliminar(String numeroIdentificacion) {
+        String sql = "DELETE FROM CLIENTES WHERE numero_identificacion = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, numeroIdentificacion);
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error eliminar cliente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Cliente buscarPorId(String numeroIdentificacion) {
+        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario " +
+                "FROM CLIENTES c " +
+                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+                "WHERE c.numero_identificacion = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, numeroIdentificacion);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearCliente(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error buscar cliente: " + e.getMessage());
+        }
+        return null;
+    }
+
+    private Cliente mapearCliente(ResultSet rs) throws SQLException {
+        Cliente cliente = new Cliente();
+
+        // Datos de Usuario (herencia)
+        cliente.setNumeroIdentificacion(rs.getString("numero_identificacion"));
+        cliente.setTipoIdentificacion(rs.getString("tipo_identificacion"));
+        cliente.setNombre(rs.getString("nombre"));
+        cliente.setApellidos(rs.getString("apellidos"));
+        cliente.setTelefono(rs.getString("telefono"));
+        cliente.setCorreo(rs.getString("correo"));
+        cliente.setContrasenaHash(rs.getString("contrasena_hash"));
+        cliente.setFotoUrl(rs.getString("foto_url"));
+        cliente.setEstado(rs.getString("estado"));
+
+        Date fechaReg = rs.getDate("fecha_registro");
+        if (fechaReg != null) {
+            cliente.setFechaRegistro(fechaReg.toLocalDate());
+        }
+
+        cliente.setTipoUsuario(rs.getString("tipo_usuario"));
+
+        // Datos específicos de Cliente
+        cliente.setDireccion(rs.getString("direccion"));
+
+        Date fechaNac = rs.getDate("fecha_nacimiento");
+        if (fechaNac != null) {
+            cliente.setFechaNacimiento(fechaNac.toLocalDate());
+        }
+
+        // Huella dactilar (BLOB)
+        byte[] huella = rs.getBytes("huella_dactilar");
+        cliente.setHuellaDactilar(huella);
+
+        return cliente;
+    }
+
 }
