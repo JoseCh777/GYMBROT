@@ -68,4 +68,49 @@ public class UsuarioDAO {
             return false;
         }
     }
+
+    public boolean eliminar(String numeroIdentificacion) {
+        String sql = "DELETE FROM USUARIOS WHERE numero_identificacion = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, numeroIdentificacion);
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error eliminar: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Usuario buscarPorId(String numeroIdentificacion) {
+        String sql = "SELECT * FROM USUARIOS WHERE numero_identificacion = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, numeroIdentificacion);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearUsuario(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error buscar por ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Usuario buscarPorCorreo(String correo) {
+        String sql = "SELECT * FROM USUARIOS WHERE correo = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, correo);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearUsuario(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error buscar por correo: " + e.getMessage());
+        }
+        return null;
+    }
 }
