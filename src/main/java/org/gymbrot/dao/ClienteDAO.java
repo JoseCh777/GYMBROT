@@ -179,4 +179,26 @@ public class ClienteDAO {
         }
         return clientes;
     }
+    public List<Cliente> obtenerTemplatesHuella() {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
+                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
+                "u.fecha_registro, u.tipo_usuario " +
+                "FROM CLIENTES c " +
+                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+                "WHERE c.huella_dactilar IS NOT NULL " +
+                "AND u.estado = 'activo'";
+
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                clientes.add(mapearCliente(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error obtener templates: " + e.getMessage());
+        }
+        return clientes;
+    }
 }
