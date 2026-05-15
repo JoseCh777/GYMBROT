@@ -1,476 +1,300 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 
-<BorderPane
-        xmlns="http://javafx.com/javafx/21"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.gymbrot.controller."
-        prefWidth="1440"
-        prefHeight="900"
-        style="-fx-background-color: #111316;">
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.DashboardController">
 
+    <!-- LEFT: SideNav -->
     <left>
-        <VBox
-                fx:id="sideNav"
-                prefWidth="256"
-                minWidth="256"
-                style="-fx-background-color: #121417;
-                   -fx-border-color: #1f2125;
-                   -fx-border-width: 0 1 0 0;">
-            <padding>
-                <Insets top="16" right="16" bottom="16" left="16"/>
-            </padding>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
 
             <VBox spacing="2">
-                <VBox.margin>
-                    <Insets bottom="32" left="16"/>
-                </VBox.margin>
-                <Label text="TITAN"
-                       style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;
-                           -fx-font-style: italic; -fx-text-fill: #D4FF00;"/>
-                <Label text="RENDIMIENTO DE ÉLITE"
-                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;
-                           -fx-text-fill: #6b7280;"/>
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;                               -fx-text-fill: #6b7280;" />
             </VBox>
 
             <VBox spacing="8" VBox.vgrow="ALWAYS">
-                <Button fx:id="navDashboard" text="   Dashboard" maxWidth="Infinity" prefHeight="44"
-                        onAction="#handleNavDashboard"
-                        style="-fx-background-color: #D4FF00; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;
-                           -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
-                <Button fx:id="navClientes" text="   Clientes" maxWidth="Infinity" prefHeight="44"
-                        onAction="#handleNavClientes"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
-                <Button fx:id="navInstructores" text="   Instructores" maxWidth="Infinity" prefHeight="44"
-                        onAction="#handleNavInstructores"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
-                <Button fx:id="navMembresias" text="   Membresias" maxWidth="Infinity" prefHeight="44"
-                        onAction="#handleNavMembresias"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
-                <Button fx:id="navAI" text="   Gymbrot AI" maxWidth="Infinity" prefHeight="44"
-                        onAction="#handleNavAI"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard" />
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes" />
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores" />
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias" />
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI" />
             </VBox>
 
             <Separator opacity="0.1">
-                <VBox.margin><Insets top="16" bottom="8"/></VBox.margin>
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
             </Separator>
 
             <VBox spacing="8">
-                <Button text="   Configuracion" maxWidth="Infinity" prefHeight="44" onAction="#handleNavConfig"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
-                <Button text="   Cerrar Sesion" maxWidth="Infinity" prefHeight="44" onAction="#handleLogout"
-                        style="-fx-background-color: transparent; -fx-background-radius: 8;
-                           -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;
-                           -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"/>
+                <Button maxWidth="Infinity" onAction="#handleNavConfig" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Configuracion" />
+                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
             </VBox>
         </VBox>
     </left>
 
+    <!-- TOP: TopBar -->
     <top>
-        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64"
-              style="-fx-background-color: #1a1d21;
-                   -fx-border-color: #1f2125;
-                   -fx-border-width: 0 0 1 0;">
-            <padding><Insets left="32" right="32"/></padding>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
 
-            <Label text="Titan Command"
-                   style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: white;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-
-            <TextField fx:id="searchField" promptText="Buscar sistemas..."
-                       prefWidth="256" prefHeight="36"
-                       style="-fx-background-color: #0c0e11; -fx-background-radius: 18;
-                       -fx-font-family: 'Inter'; -fx-font-size: 13px;
-                       -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #6b7280;
-                       -fx-padding: 8 16 8 16; -fx-border-width: 0;">
-                <HBox.margin><Insets right="24"/></HBox.margin>
-            </TextField>
+            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700;                           -fx-text-fill: white;" />
+            <Region HBox.hgrow="ALWAYS" />
 
             <HBox alignment="CENTER" spacing="16">
-                <HBox.margin><Insets right="24"/></HBox.margin>
-                <Label text="Notif." style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;"/>
-                <Label text="Historial" style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;"/>
-                <Label text="Chat" style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;"/>
+                <HBox.margin><Insets right="24" /></HBox.margin>
+                <Label style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;" text="Notif." />
+                <Label style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;" text="Historial" />
+                <Label style="-fx-font-size: 13px; -fx-text-fill: #D4FF00; -fx-cursor: hand;" text="Chat" />
             </HBox>
-
-            <StackPane prefWidth="36" prefHeight="36"
-                       style="-fx-background-color: #333538; -fx-background-radius: 18;
-                       -fx-border-color: #3a3d41; -fx-border-width: 1; -fx-border-radius: 18;">
-                <ImageView fx:id="avatarImage" fitWidth="36" fitHeight="36">
-                    <image>
-                        <Image url="https://lh3.googleusercontent.com/aida-public/AB6AXuAxFIHnAQpYy4z_G-zAJK9hqlDIUtW4xvS5C4lc3Mw-zi9-wH1T9NQPHhzQExSUsPanDBvm3HTxqiCzlUnbzcVjaoG1szAQcjmd2yzUtYyU9josNDAe2jotaqp60l2DN-Wy8JqLNqK7AGr8Z5L9hF10anYb0S3iDNzRNGuv8QUaDjGZE9DIdNUesoM4eoGj6RbX-xMGr2LviJP20i5HpY2GYu0MaDvuMEWN59uzJFkpsPyrTjtwTLFQvOTSdtiMvdRX_pXS8_yBG-4"/>
-                    </image>
-                </ImageView>
-            </StackPane>
         </HBox>
     </top>
 
+    <!-- CENTER: Contenido -->
     <center>
-        <ScrollPane fitToWidth="true"
-                    style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
-
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
             <VBox spacing="32">
-                <padding>
-                    <Insets top="32" right="32" bottom="80" left="32"/>
-                </padding>
+                <padding><Insets bottom="80" left="32" right="32" top="32" /></padding>
 
-                <!-- SECCIÓN 1: Métricas -->
+                <!-- SECCION 1: Metricas -->
                 <HBox spacing="20">
 
                     <!-- Card: Total Miembros -->
-                    <VBox spacing="8" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
-                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                        <Label text="TOTAL DE MIEMBROS"
-                               style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                   -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                    <VBox spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL DE MIEMBROS" />
                         <HBox alignment="BOTTOM_LEFT">
-                            <Label text="2,842" HBox.hgrow="ALWAYS"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;
-                                       -fx-font-weight: 800; -fx-text-fill: #D4FF00;"/>
-                            <Label text="12%"
-                                   style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;
-                                       -fx-font-weight: 700; -fx-text-fill: #bdf4ff;"/>
+                            <Label fx:id="lblTotalMiembros" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: #D4FF00;" text="0" HBox.hgrow="ALWAYS" />
+                            <!-- CORREGIDO: "+0%" → "0%" — el + fuera de style rompe FXML -->
+                            <Label fx:id="lblMiembrosTrend" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="0%" />
                         </HBox>
-                        <ProgressBar progress="0.80" maxWidth="Infinity" prefHeight="4"
-                                     style="-fx-accent: #D4FF00; -fx-background-color: #2a2d30;
-                                   -fx-background-radius: 4; -fx-border-width: 0;"/>
+                        <ProgressBar fx:id="pbMiembros" maxWidth="Infinity" prefHeight="4" progress="0" style="-fx-accent: #D4FF00; -fx-background-color: #2a2d30;                                             -fx-background-radius: 4; -fx-border-width: 0;" />
                     </VBox>
 
                     <!-- Card: Activos Ahora -->
-                    <VBox spacing="8" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;">
-                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                        <Label text="ACTIVOS AHORA"
-                               style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                   -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                    <VBox spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACTIVOS AHORA" />
                         <HBox alignment="BOTTOM_LEFT">
-                            <Label text="184" HBox.hgrow="ALWAYS"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;
-                                       -fx-font-weight: 800; -fx-text-fill: white;"/>
+                            <Label fx:id="lblActivosAhora" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
                             <HBox alignment="CENTER" spacing="6">
-                                <Circle radius="5" style="-fx-fill: #bdf4ff;"/>
-                                <Label text="EN VIVO"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: #bdf4ff;"/>
+                                <Rectangle fx:id="dotActivos" arcHeight="10" arcWidth="10" height="10" style="-fx-fill: #bdf4ff;" width="10" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="EN VIVO" />
                             </HBox>
                         </HBox>
                         <HBox spacing="3">
-                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #bdf4ff; -fx-background-radius: 2;"/>
-                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #bdf4ff; -fx-background-radius: 2;"/>
-                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #3a5a60; -fx-background-radius: 2;"/>
-                            <Region prefHeight="4" HBox.hgrow="ALWAYS" style="-fx-background-color: #2a2d30; -fx-background-radius: 2;"/>
+                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #bdf4ff; -fx-background-radius: 2;" />
+                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #bdf4ff; -fx-background-radius: 2;" />
+                            <Region prefHeight="4" prefWidth="50" style="-fx-background-color: #3a5a60; -fx-background-radius: 2;" />
+                            <Region prefHeight="4" style="-fx-background-color: #2a2d30; -fx-background-radius: 2;" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </VBox>
 
                     <!-- Card: Ingresos -->
-                    <VBox spacing="8" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
-                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                        <Label text="INGRESOS ESTE MES"
-                               style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                   -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                    <VBox spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INGRESOS ESTE MES" />
                         <HBox alignment="BOTTOM_LEFT">
-                            <Label text="$42.8k" HBox.hgrow="ALWAYS"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;
-                                       -fx-font-weight: 800; -fx-text-fill: white;"/>
-                            <Label text="Meta Alcanzada"
-                                   style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;
-                                       -fx-font-weight: 700; -fx-text-fill: #D4FF00;"/>
+                            <Label fx:id="lblIngresos" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblIngresosStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="Cargando..." />
                         </HBox>
                         <HBox>
-                            <Label text="PROGRESO HACIA EL OBJETIVO" HBox.hgrow="ALWAYS"
-                                   style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;
-                                       -fx-text-fill: #6b7280;"/>
-                            <Label text="94%"
-                                   style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;
-                                       -fx-font-weight: 700; -fx-text-fill: #D4FF00;"/>
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                           -fx-text-fill: #6b7280;" text="PROGRESO HACIA EL OBJETIVO" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblIngresosProgreso" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0%" />
                         </HBox>
                     </VBox>
 
                 </HBox>
 
-                <!-- SECCIÓN 2: Graficas -->
-                <HBox spacing="20" alignment="TOP_LEFT">
+                <!-- SECCION 2: Graficas -->
+                <HBox alignment="TOP_LEFT" spacing="20">
 
                     <!-- Asistencia Semanal -->
-                    <VBox spacing="20" HBox.hgrow="ALWAYS" prefWidth="580" minHeight="400"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
-                        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                    <VBox minHeight="400" prefWidth="580" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
                         <HBox alignment="CENTER_LEFT">
                             <VBox HBox.hgrow="ALWAYS">
-                                <Label text="Asistencia Semanal"
-                                       style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;
-                                           -fx-font-weight: 600; -fx-text-fill: white;"/>
-                                <Label text="Ingresos de miembros vs ultimos 7 dias"
-                                       style="-fx-font-family: 'Inter'; -fx-font-size: 13px;
-                                           -fx-text-fill: #6b7280;"/>
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Asistencia Semanal" />
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                               -fx-text-fill: #6b7280;" text="Ingresos de miembros - ultimos 7 dias" />
                             </VBox>
                             <HBox spacing="8">
-                                <Button text="Diario" prefHeight="30"
-                                        style="-fx-background-color: #282a2d; -fx-background-radius: 8;
-                                           -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: white;
-                                           -fx-border-color: #333538; -fx-border-width: 1;
-                                           -fx-border-radius: 8; -fx-cursor: hand;"/>
-                                <Button text="Semanal" prefHeight="30"
-                                        style="-fx-background-color: #D4FF00; -fx-background-radius: 8;
-                                           -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;"/>
+                                <Button fx:id="btnDiario" onAction="#handleViewDiario" prefHeight="30" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: white;                                                -fx-border-color: #333538; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="Diario" />
+                                <Button fx:id="btnSemanal" onAction="#handleViewSemanal" prefHeight="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="Semanal" />
                             </HBox>
                         </HBox>
 
-                        <!-- Barras del chart -->
-                        <HBox spacing="8" alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS" prefHeight="200"
-                              style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+                        <HBox fx:id="chartAsistencia" alignment="BOTTOM_CENTER" prefHeight="200" spacing="8" style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS">
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="40" maxHeight="40" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="LUN" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barLun" maxWidth="8" prefHeight="40" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="LUN" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="90" maxHeight="90" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="MAR" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barMar" maxWidth="8" prefHeight="90" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MAR" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="150" maxHeight="150" maxWidth="4"
-                                        style="-fx-background-color: #D4FF00; -fx-background-radius: 2;"/>
-                                <Label text="MIE" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;"/>
+                                <Region fx:id="barMie" maxWidth="8" prefHeight="150" style="-fx-background-color: #D4FF00; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="MIE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="110" maxHeight="110" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="JUE" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barJue" maxWidth="8" prefHeight="110" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="JUE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="70" maxHeight="70" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="VIE" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barVie" maxWidth="8" prefHeight="70" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="VIE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="180" maxHeight="180" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="SAB" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barSab" maxWidth="8" prefHeight="180" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SAB" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
-                                <Region prefHeight="130" maxHeight="130" maxWidth="4"
-                                        style="-fx-background-color: #2a4a50; -fx-background-radius: 2;"/>
-                                <Label text="DOM" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                                <Region fx:id="barDom" maxWidth="8" prefHeight="130" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DOM" />
                             </VBox>
                         </HBox>
                     </VBox>
 
                     <!-- Demografia en Vivo -->
-                    <VBox spacing="20" prefWidth="280" minWidth="260"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
-                        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                    <VBox minWidth="260" prefWidth="280" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
-                        <Label text="Demografia en Vivo"
-                               style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;
-                                   -fx-font-weight: 600; -fx-text-fill: white;"/>
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;" text="Demografia en Vivo" />
 
                         <!-- Adulto -->
                         <HBox alignment="CENTER_LEFT" spacing="16" VBox.vgrow="ALWAYS">
-                            <VBox alignment="CENTER" prefWidth="56" prefHeight="56"
-                                  style="-fx-background-color: #1e2a00; -fx-background-radius: 28;
-                                       -fx-border-color: #D4FF00; -fx-border-width: 3; -fx-border-radius: 28;">
-                                <Label text="65%"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;"/>
+                            <VBox alignment="CENTER" prefHeight="56" prefWidth="56" style="-fx-background-color: #1e2a00; -fx-background-radius: 28;                                          -fx-border-color: #D4FF00; -fx-border-width: 3; -fx-border-radius: 28;">
+                                <Label fx:id="lblPctAdulto" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0%" />
                             </VBox>
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
-                                    <Label text="Adulto" HBox.hgrow="ALWAYS"
-                                           style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;
-                                               -fx-font-weight: 700; -fx-text-fill: white;"/>
-                                    <Label text="120 presentes"
-                                           style="-fx-font-family: 'Inter'; -fx-font-size: 11px;
-                                               -fx-text-fill: #6b7280;"/>
+                                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Adulto" HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblCntAdulto" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
                                 </HBox>
-                                <Label text="18-55 anos"
-                                       style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="18-55 anos" />
                             </VBox>
                         </HBox>
 
                         <!-- Menor de Edad -->
                         <HBox alignment="CENTER_LEFT" spacing="16">
-                            <VBox alignment="CENTER" prefWidth="56" prefHeight="56"
-                                  style="-fx-background-color: #002a30; -fx-background-radius: 28;
-                                       -fx-border-color: #bdf4ff; -fx-border-width: 3; -fx-border-radius: 28;">
-                                <Label text="18%"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: #bdf4ff;"/>
+                            <VBox alignment="CENTER" prefHeight="56" prefWidth="56" style="-fx-background-color: #002a30; -fx-background-radius: 28;                                          -fx-border-color: #bdf4ff; -fx-border-width: 3; -fx-border-radius: 28;">
+                                <Label fx:id="lblPctMenor" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="0%" />
                             </VBox>
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
-                                    <Label text="Menor de Edad" HBox.hgrow="ALWAYS"
-                                           style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;
-                                               -fx-font-weight: 700; -fx-text-fill: white;"/>
-                                    <Label text="33 presentes"
-                                           style="-fx-font-family: 'Inter'; -fx-font-size: 11px;
-                                               -fx-text-fill: #6b7280;"/>
+                                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Menor de Edad" HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblCntMenor" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
                                 </HBox>
-                                <Label text="Bajo 18 anos"
-                                       style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="Bajo 18 anos" />
                             </VBox>
                         </HBox>
 
                         <!-- Senior -->
+                        <!-- CORREGIDO: "55+ anos" → "55 anos y mas" — el + en text= rompe FXML -->
                         <HBox alignment="CENTER_LEFT" spacing="16">
-                            <VBox alignment="CENTER" prefWidth="56" prefHeight="56"
-                                  style="-fx-background-color: #252729; -fx-background-radius: 28;
-                                       -fx-border-color: #aaaaaa; -fx-border-width: 3; -fx-border-radius: 28;">
-                                <Label text="17%"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;
-                                           -fx-font-weight: 700; -fx-text-fill: white;"/>
+                            <VBox alignment="CENTER" prefHeight="56" prefWidth="56" style="-fx-background-color: #252729; -fx-background-radius: 28;                                          -fx-border-color: #aaaaaa; -fx-border-width: 3; -fx-border-radius: 28;">
+                                <Label fx:id="lblPctSenior" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="0%" />
                             </VBox>
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
-                                    <Label text="Senior" HBox.hgrow="ALWAYS"
-                                           style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;
-                                               -fx-font-weight: 700; -fx-text-fill: white;"/>
-                                    <Label text="31 presentes"
-                                           style="-fx-font-family: 'Inter'; -fx-font-size: 11px;
-                                               -fx-text-fill: #6b7280;"/>
+                                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Senior" HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblCntSenior" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
                                 </HBox>
-                                <Label text="55+ anos"
-                                       style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="55 anos y mas" />
                             </VBox>
                         </HBox>
 
-                        <Region VBox.vgrow="ALWAYS"/>
+                        <Region VBox.vgrow="ALWAYS" />
 
-                        <Button text="Ver Registro Detallado" maxWidth="Infinity" prefHeight="44"
-                                onAction="handleVerRegistro"
-                                style="-fx-background-color: #282a2d; -fx-background-radius: 8;
-                                   -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;
-                                   -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;
-                                   -fx-border-radius: 8; -fx-cursor: hand;"/>
+                        <Button maxWidth="Infinity" onAction="#handleVerRegistro" prefHeight="44" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                        -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="Ver Registro Detallado" />
                     </VBox>
 
                 </HBox>
 
-                <!-- SECCIÓN 3: Horas Pico -->
-                <VBox spacing="20"
-                      style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                           -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
-                    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                <!-- SECCION 3: Horas Pico -->
+                <VBox spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                              -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                    <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
                     <HBox alignment="BOTTOM_LEFT">
                         <VBox HBox.hgrow="ALWAYS">
-                            <Label text="HORAS PICO DE OPERACION"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;
-                                       -fx-font-weight: 700; -fx-text-fill: white;"/>
-                            <Label text="Ocupacion diaria promedio por hora"
-                                   style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="HORAS PICO DE OPERACION" />
+                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                           -fx-text-fill: #6b7280;" text="Ocupacion diaria promedio por hora" />
                         </VBox>
-                        <HBox spacing="16" alignment="CENTER">
-                            <HBox spacing="6" alignment="CENTER">
-                                <Circle radius="4" style="-fx-fill: #D4FF00;"/>
-                                <Label text="TRAFICO ALTO"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;
-                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                        <HBox alignment="CENTER" spacing="16">
+                            <HBox alignment="CENTER" spacing="6">
+                                <Rectangle arcHeight="8" arcWidth="8" height="8" style="-fx-fill: #D4FF00;" width="8" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TRAFICO ALTO" />
                             </HBox>
-                            <HBox spacing="6" alignment="CENTER">
-                                <Circle radius="4" style="-fx-fill: #3a5a60;"/>
-                                <Label text="MODERADO"
-                                       style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;
-                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                            <HBox alignment="CENTER" spacing="6">
+                                <Rectangle arcHeight="8" arcWidth="8" height="8" style="-fx-fill: #3a5a60;" width="8" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MODERADO" />
                             </HBox>
                         </HBox>
                     </HBox>
 
-                    <HBox spacing="4" alignment="BOTTOM_LEFT" prefHeight="192"
-                          style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
-                        <Region HBox.hgrow="ALWAYS" prefHeight="38"  maxHeight="38"  style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="67"  maxHeight="67"  style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="96"  maxHeight="96"  style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="125" maxHeight="125" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="182" maxHeight="182" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="154" maxHeight="154" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="115" maxHeight="115" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="86"  maxHeight="86"  style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="77"  maxHeight="77"  style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="80"  maxHeight="80"  style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="106" maxHeight="106" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="163" maxHeight="163" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="173" maxHeight="173" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="115" maxHeight="115" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="58"  maxHeight="58"  style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;"/>
-                        <Region HBox.hgrow="ALWAYS" prefHeight="29"  maxHeight="29"  style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;"/>
+                    <HBox fx:id="chartHorasPico" alignment="BOTTOM_LEFT" prefHeight="192" spacing="4" style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+                        <Region fx:id="h06" maxHeight="38" prefHeight="38" style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h07" maxHeight="67" prefHeight="67" style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h08" maxHeight="96" prefHeight="96" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h09" maxHeight="125" prefHeight="125" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h10" maxHeight="182" prefHeight="182" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h11" maxHeight="154" prefHeight="154" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h12" maxHeight="115" prefHeight="115" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h13" maxHeight="86" prefHeight="86" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h14" maxHeight="77" prefHeight="77" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h15" maxHeight="80" prefHeight="80" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h16" maxHeight="106" prefHeight="106" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h17" maxHeight="163" prefHeight="163" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h18" maxHeight="173" prefHeight="173" style="-fx-background-color: #D4FF00; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h19" maxHeight="115" prefHeight="115" style="-fx-background-color: #3a5a60; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h20" maxHeight="58" prefHeight="58" style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
+                        <Region fx:id="h21" maxHeight="29" prefHeight="29" style="-fx-background-color: #2a2d30; -fx-background-radius: 3 3 0 0;" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <HBox>
-                        <Label text="06:00 AM" HBox.hgrow="ALWAYS" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
-                        <Label text="10:00 AM" HBox.hgrow="ALWAYS" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
-                        <Label text="02:00 PM" HBox.hgrow="ALWAYS" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
-                        <Label text="06:00 PM" HBox.hgrow="ALWAYS" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
-                        <Label text="10:00 PM" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;"/>
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="06:00 AM" HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="10:00 AM" HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="02:00 PM" HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="06:00 PM" HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="10:00 PM" />
                     </HBox>
                 </VBox>
 
-                <!-- SECCIÓN 4: Acciones -->
+                <!-- SECCION 4: Acciones rapidas -->
                 <HBox spacing="20">
 
-                    <HBox spacing="16" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-cursor: hand;">
-                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                        <StackPane prefWidth="48" prefHeight="48"
-                                   style="-fx-background-color: #D4FF00; -fx-background-radius: 24;">
-                            <Label text="+"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 28px;
-                                       -fx-font-weight: 900; -fx-text-fill: black;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                        <StackPane prefHeight="48" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 24;">
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                           -fx-font-weight: 900; -fx-text-fill: black;" text="Nuevo" />
                         </StackPane>
                         <VBox>
-                            <Label text="Agregar Nuevo Miembro"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;
-                                       -fx-font-weight: 700; -fx-text-fill: white;"/>
-                            <Label text="Registro rapido de un nuevo atleta en el sistema"
-                                   style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="Agregar Nuevo Miembro" />
+                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                           -fx-text-fill: #6b7280;" text="Registro rapido de un nuevo atleta en el sistema" />
                         </VBox>
                     </HBox>
 
-                    <HBox spacing="16" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #1a1d21; -fx-background-radius: 12;
-                               -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-cursor: hand;">
-                        <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                        <StackPane prefWidth="48" prefHeight="48"
-                                   style="-fx-background-color: #bdf4ff; -fx-background-radius: 24;">
-                            <Label text="^"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;
-                                       -fx-font-weight: 900; -fx-text-fill: #00363d;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                        <StackPane prefHeight="48" prefWidth="48" style="-fx-background-color: #bdf4ff; -fx-background-radius: 24;">
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 13px;                                           -fx-font-weight: 900; -fx-text-fill: #00363d;" text="PDF" />
                         </StackPane>
                         <VBox>
-                            <Label text="Exportar Informe de Rendimiento"
-                                   style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;
-                                       -fx-font-weight: 700; -fx-text-fill: white;"/>
-                            <Label text="Generar PDF para resumen mensual del negocio"
-                                   style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="Exportar Informe de Rendimiento" />
+                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                           -fx-text-fill: #6b7280;" text="Generar PDF para resumen mensual del negocio" />
                         </VBox>
                     </HBox>
 
