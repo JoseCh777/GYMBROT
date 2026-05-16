@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -27,7 +29,14 @@
             </VBox>
 
             <VBox spacing="8" VBox.vgrow="ALWAYS">
-                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard" />
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/dashboard.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
                 <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes" />
                 <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores" />
                 <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias" />
@@ -125,13 +134,13 @@
                         <HBox alignment="CENTER_LEFT">
                             <VBox HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Asistencia Semanal" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                               -fx-text-fill: #6b7280;" text="Ingresos de miembros - ultimos 7 dias" />
                             </VBox>
                             <HBox spacing="8">
                                 <Button fx:id="btnDiario" onAction="#handleViewDiario" prefHeight="30" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: white;                                                -fx-border-color: #333538; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="Diario" />
                                 <Button fx:id="btnSemanal" onAction="#handleViewSemanal" prefHeight="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="Semanal" />
                             </HBox>
                         </HBox>
+                          <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                               -fx-text-fill: #6b7280;" text="Ingresos de miembros - ultimos 7 dias" />
 
                         <HBox fx:id="chartAsistencia" alignment="BOTTOM_CENTER" prefHeight="200" spacing="8" style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS">
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">

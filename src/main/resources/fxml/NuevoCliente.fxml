@@ -20,7 +20,7 @@
 
 <BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.NuevoClienteController">
 
-    <!-- ═══ LEFT: SideNav (identico al Dashboard) ═══ -->
+    <!-- ═══ LEFT: SideNav  ═══ -->
     <left>
         <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
             <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
