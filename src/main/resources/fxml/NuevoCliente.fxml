@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.NuevoClienteController">
+
+    <!-- ═══ LEFT: SideNav (identico al Dashboard) ═══ -->
+    <left>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+
+            <VBox spacing="2">
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard" />
+                <!-- ACTIVO: Clientes -->
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes" />
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores" />
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias" />
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI" />
+            </VBox>
+
+            <Separator opacity="0.1">
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
+            </Separator>
+
+            <VBox spacing="8">
+                <Button maxWidth="Infinity" onAction="#handleNavConfig" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Configuracion" />
+                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ═══ TOP: TopBar ═══ -->
+    <top>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
+
+            <!-- Breadcrumb -->
+            <HBox alignment="CENTER_LEFT" spacing="6" HBox.hgrow="ALWAYS" />
+
+            <!-- Botones de accion del header -->
+            <HBox alignment="CENTER" spacing="12">
+                <Button fx:id="btnCancelar" onAction="#handleCancelar" prefHeight="36" style="-fx-background-color: #1e2023; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="CANCELAR" />
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="GUARDAR NUEVO CLIENTE" />
+            </HBox>
+
+            <HBox.margin>
+                <Insets right="0" />
+            </HBox.margin>
+        </HBox>
+    </top>
+
+    <!-- ═══ CENTER: Contenido ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
+            <VBox spacing="0">
+                <padding><Insets bottom="80" left="40" right="40" top="40" /></padding>
+
+                <!-- Header de la pagina -->
+                <VBox spacing="4">
+                    <VBox.margin><Insets bottom="32" /></VBox.margin>
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO CLIENTE" />
+                </VBox>
+
+                <!-- Grid principal: columna izquierda (formulario) + derecha (foto y biometria) -->
+                <HBox alignment="TOP_LEFT" spacing="20">
+
+                    <!-- ── COLUMNA IZQUIERDA: Formularios ── -->
+                    <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                        <!-- Seccion: Informacion del Usuario -->
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <!-- Titulo seccion -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="24" /></VBox.margin>
+                                <Rectangle height="2" style="-fx-fill: #b0d500;" width="40" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="INFORMACION DEL USUARIO" />
+                            </HBox>
+
+                            <!-- Fila 1: Numero y Tipo de documento -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NUMERO DE DOCUMENTO" />
+                                    <TextField fx:id="txtNumeroDoc" prefHeight="44" promptText="10.XXX.XXX-X" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="TIPO DE DOCUMENTO" />
+                                    <ComboBox fx:id="cmbTipoDoc" maxWidth="Infinity" prefHeight="44" promptText="Seleccionar..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                      -fx-border-color: #1f2125; -fx-border-width: 1;                                                      -fx-border-radius: 8; -fx-font-family: 'Inter';                                                      -fx-font-size: 14px; -fx-text-fill: white;" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Fila 2: Nombres y Apellidos -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NOMBRES" />
+                                    <TextField fx:id="txtNombres" prefHeight="44" promptText="Nombres completos" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="APELLIDOS" />
+                                    <TextField fx:id="txtApellidos" prefHeight="44" promptText="Apellidos completos" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Fila 3: Email y Telefono -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="CORREO ELECTRONICO" />
+                                    <TextField fx:id="txtCorreo" prefHeight="44" promptText="xxxx@xxxx.com" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NUMERO DE TELEFONO" />
+                                    <TextField fx:id="txtTelefono" prefHeight="44" promptText="300 000 0000" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Fila 4: Contrasena (ancho completo) -->
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="CONTRASENA" />
+                                <PasswordField fx:id="txtContrasena" maxWidth="Infinity" prefHeight="44" promptText="Minimo 8 caracteres" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                            </VBox>
+
+                        </VBox>
+
+                        <!-- Seccion: Informacion de Cliente -->
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <!-- Titulo seccion -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="24" /></VBox.margin>
+                                <Rectangle height="2" style="-fx-fill: #b0d500;" width="40" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="INFORMACION DE CLIENTE" />
+                            </HBox>
+
+                            <!-- Direccion (ancho completo) -->
+                            <VBox spacing="6">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="DIRECCION" />
+                                <TextField fx:id="txtDireccion" maxWidth="Infinity" prefHeight="44" promptText="Colocar direccion completa" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                   -fx-border-color: #1f2125; -fx-border-width: 1;                                                   -fx-border-radius: 8; -fx-font-family: 'Inter';                                                   -fx-font-size: 14px; -fx-text-fill: white;                                                   -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                            </VBox>
+
+                            <!-- Fecha de nacimiento -->
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="FECHA DE NACIMIENTO" />
+                                <DatePicker fx:id="dateFechaNacimiento" maxWidth="Infinity" prefHeight="44" promptText="dd/mm/aaaa" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 8; -fx-font-family: 'Inter';                                                    -fx-font-size: 14px; -fx-text-fill: white;" />
+                            </VBox>
+
+                        </VBox>
+
+                        <!-- Aviso de onboarding automatico -->
+                        <HBox alignment="TOP_LEFT" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #00daf3; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;">
+                            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px; -fx-font-weight: 700;                                           -fx-text-fill: #00daf3;" text="i" />
+                            <VBox spacing="4">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="ONBOARDING AUTOMATICO" />
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="Al guardar el perfil se generara automaticamente un correo de bienvenida con la tarjeta digital de membresia." wrapText="true" />
+                            </VBox>
+                        </HBox>
+
+                    </VBox>
+
+                    <!-- ── COLUMNA DERECHA: Foto y Biometria ── -->
+                    <VBox minWidth="300" prefWidth="320" spacing="20">
+
+                        <!-- Foto de perfil -->
+                        <VBox alignment="CENTER" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FOTO DE PERFIL">
+                                <VBox.margin><Insets bottom="20" /></VBox.margin>
+                            </Label>
+
+                            <!-- Circulo con foto -->
+                            <StackPane maxWidth="160" prefHeight="160" prefWidth="160">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <!-- Borde circular -->
+                                <StackPane prefHeight="160" prefWidth="160" style="-fx-background-color: #282a2d; -fx-background-radius: 80;                                                   -fx-border-color: #b0d500; -fx-border-width: 2;                                                   -fx-border-radius: 80;">
+                                    <ImageView fx:id="imgFotoPerfil" fitHeight="152" fitWidth="152" preserveRatio="false">
+                                        <StackPane.margin><Insets bottom="4" left="4" right="4" top="4" /></StackPane.margin>
+                                    </ImageView>
+
+                                    <!-- Icono placeholder cuando no hay foto -->
+                                    <Label fx:id="lblFotoPlaceholder" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                                   -fx-font-weight: 700; -fx-text-fill: #333538;" text="?" />
+                                </StackPane>
+                            </StackPane>
+
+                            <Button fx:id="btnCargarFoto" onAction="#handleCargarFoto" style="-fx-background-color: transparent; -fx-border-width: 0;                                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                            -fx-font-weight: 700; -fx-text-fill: #b0d500; -fx-cursor: hand;" text="CARGAR IMAGEN">
+                                <VBox.margin><Insets bottom="4" /></VBox.margin>
+                            </Button>
+
+                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="JPG o PNG. Maximo 2MB." />
+                        </VBox>
+
+                        <!-- Seccion: Biometria / Huella -->
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <!-- Titulo biometria -->
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <VBox.margin><Insets bottom="20" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="HUELLA" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="BIOMETRIC ENROLLMENT" />
+                            </HBox>
+
+                            <!-- Area del scanner -->
+                            <VBox alignment="CENTER" spacing="12" style="-fx-background-color: #121417; -fx-background-radius: 10;                                          -fx-border-color: #1e2a00; -fx-border-width: 1; -fx-border-radius: 10;">
+                                <padding><Insets bottom="32" left="24" right="24" top="32" /></padding>
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <!-- Icono de huella -->
+                                <StackPane prefHeight="80" prefWidth="80">
+                                    <StackPane prefHeight="80" prefWidth="80" style="-fx-background-color: #1e2a00; -fx-background-radius: 40;                                                       -fx-border-color: #D4FF00; -fx-border-width: 1;                                                       -fx-border-radius: 40;">
+                                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 32px;                                                       -fx-font-weight: 900; -fx-text-fill: #D4FF00;" text="~" />
+                                    </StackPane>
+                                </StackPane>
+
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Escaneando Huella..." />
+
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="Coloque el dedo del cliente en el bio-scanner para inicializar el acceso seguro." textAlignment="CENTER" wrapText="true" />
+
+                                <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESANDO HUELLA..." />
+                            </VBox>
+
+                            <!-- Estado del scanner -->
+                            <HBox alignment="CENTER_LEFT">
+                                <VBox.margin><Insets bottom="8" top="12" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="Scanner Status:" HBox.hgrow="ALWAYS" />
+                                <HBox alignment="CENTER" spacing="6">
+                                    <Rectangle arcHeight="6" arcWidth="6" height="6" style="-fx-fill: #D4FF00;" width="6" />
+                                    <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="CAPTURANDO DATOS..." />
+                                </HBox>
+                            </HBox>
+
+                            <!-- Barra de progreso biometrica -->
+                            <ProgressBar fx:id="pbHuella" maxWidth="Infinity" prefHeight="6" progress="0.65" style="-fx-accent: #D4FF00; -fx-background-color: #282a2d;                                                 -fx-background-radius: 4; -fx-border-width: 0;" />
+                            <HBox>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lblPorcentajeHuella" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="65%" />
+                            </HBox>
+
+                        </VBox>
+
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
