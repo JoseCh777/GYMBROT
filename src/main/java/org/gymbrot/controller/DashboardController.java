@@ -479,15 +479,12 @@ public class DashboardController implements Initializable {
     @FXML
     private void handleNavDashboard() {
         setNavActivo(navDashboard);
-        // Ya estamos en Dashboard, no navegar
     }
 
     @FXML
     private void handleNavClientes() {
         setNavActivo(navClientes);
-        // TODO: cuando tengas la vista lista:
-        // navegarA("/fxml/Clientes.fxml");
-        mostrarProximamente("Clientes");
+        navegarA("/fxml/GestionClientes.fxml");
     }
 
     @FXML
@@ -582,15 +579,17 @@ public class DashboardController implements Initializable {
      *
      * @param rutaFxml ruta relativa al resources, ej: "/fxml/Clientes.fxml"
      */
-    /*
+
     private void navegarA(String rutaFxml) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource(rutaFxml));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) sideNav.getScene().getWindow();
             stage.getScene().setRoot(root);
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
+            mostrarProximamente("Error al cargar: " + rutaFxml);
         }
     }
-    */
 }
