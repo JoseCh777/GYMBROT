@@ -37,6 +37,10 @@ public class Main extends Application {
         );
 
         Scene scene = new Scene(root, 1040, 700);
+        scene.getStylesheets().add(
+                getClass().getResource("/css/gymbrot.css").toExternalForm()
+        );
+        stage.setScene(scene);
 
         // Debug: verificar que se cargaron
         javafx.scene.text.Font f = javafx.scene.text.Font.loadFont(
