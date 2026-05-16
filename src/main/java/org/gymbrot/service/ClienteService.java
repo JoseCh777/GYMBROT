@@ -22,8 +22,8 @@ public class ClienteService {
     }
 
     /**
-     * Registra un nuevo cliente con sus datos de usuario y huella dactilar.
-     *
+     //Registra un nuevo cliente con sus datos de usuario y huella dactilar.
+
      * @param usuario Datos del usuario (herencia)
      * @param cliente Datos específicos del cliente
      * @param template Template de huella dactilar (puede ser null)
@@ -159,4 +159,47 @@ public class ClienteService {
             return List.of(); // Lista vacía
         }
     }
+    /**
+     * Cambia el estado de un cliente (activo, inactivo, suspendido).
+     *
+     * @param numeroIdentificacion ID del cliente
+     * @param nuevoEstado Estado a establecer
+     * @return true si se cambió correctamente
+     */
+    public boolean cambiarEstado(String numeroIdentificacion, String nuevoEstado) {
+        try {
+            // 1. Buscar el usuario actual
+            Usuario usuario = usuarioDAO.buscarPorId(numeroIdentificacion);
+
+            if (usuario == null) {
+                System.err.println("Usuario no encontrado");
+                return false;
+            }
+
+            // 2. Validar estado
+            if (!nuevoEstado.equals("activo") &&
+                    !nuevoEstado.equals("inactivo") &&
+                    !nuevoEstado.equals("suspendido")) {
+                System.err.println("Estado no válido: " + nuevoEstado);
+                return false;
+            }
+
+            // 3. Cambiar estado
+            usuario.setEstado(nuevoEstado);
+
+            // 4. Actualizar en BD
+            if (!usuarioDAO.actualizar(usuario)) {
+                System.err.println("Error al cambiar estado");
+                return false;
+            }
+
+            System.out.println("✓ Estado cambiado a: " + nuevoEstado);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en cambiarEstado: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
