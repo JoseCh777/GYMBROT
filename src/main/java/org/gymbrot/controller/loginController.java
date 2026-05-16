@@ -1,4 +1,4 @@
 package org.gymbrot.controller;
 
-public class LoginController {
+public class loginController {
 }

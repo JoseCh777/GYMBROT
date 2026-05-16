@@ -42,11 +42,6 @@ public class Main extends Application {
         );
         stage.setScene(scene);
 
-        // Debug: verificar que se cargaron
-        javafx.scene.text.Font f = javafx.scene.text.Font.loadFont(
-                getClass().getResourceAsStream("/fonts/Lexend-Bold.ttf"), 14);
-        System.out.println("Fuente cargada: " + (f != null ? f.getName() : "NULL - archivo no encontrado"));
-
         // Configurar la ventana
         stage.setTitle("GYMBROT");
         stage.setScene(scene);
