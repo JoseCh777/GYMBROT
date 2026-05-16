@@ -87,5 +87,61 @@ public class InstructorService {
             return false;
         }
     }
+    /**
+     * Elimina un instructor del sistema.
+     *
+     * @param numeroIdentificacion ID del instructor
+     * @return true si se eliminó correctamente
+     */
+    public boolean eliminarInstructor(String numeroIdentificacion) {
+        try {
+            // 1. Eliminar de tabla INSTRUCTORES
+            if (!instructorDAO.eliminar(numeroIdentificacion)) {
+                System.err.println("Error al eliminar instructor");
+                return false;
+            }
+
+            // 2. Eliminar de tabla USUARIOS
+            if (!usuarioDAO.eliminar(numeroIdentificacion)) {
+                System.err.println("Error al eliminar usuario");
+                return false;
+            }
+
+            System.out.println("✓ Instructor eliminado exitosamente");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en eliminarInstructor: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Lista todos los instructores del gimnasio.
+     *
+     * @return Lista de instructores
+     */
+    public List<Instructor> listarInstructores() {
+        try {
+            return instructorDAO.listarTodos();
+        } catch (Exception e) {
+            System.err.println("Error en listarInstructores: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    /**
+     * Lista solo los instructores disponibles (estado activo).
+     *
+     * @return Lista de instructores disponibles
+     */
+    public List<Instructor> listarDisponibles() {
+        try {
+            return instructorDAO.listarDisponibles();
+        } catch (Exception e) {
+            System.err.println("Error en listarDisponibles: " + e.getMessage());
+            return List.of();
+        }
+    }
 
 }
