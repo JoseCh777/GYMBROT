@@ -45,4 +45,20 @@ public class NotificacionService {
     public List<Notificacion> listarPendientes() {
         return notifDAO.listarPendientes();
     }
+    // ── PROCESAR COLA ─────────────────────────────────────────────────────
+    public void procesarCola() {
+        List<Notificacion> pendientes = notifDAO.listarPendientes();
+        for (Notificacion n : pendientes) {
+            boolean enviado = false;
+            if (n.getTipo().equals("email")) {
+                enviado = emailService.enviarCorreo(
+                        n.getIdCliente(), n.getAsunto(), n.getContenido());
+            } else if (n.getTipo().equals("SMS")) {
+                enviado = smsService.enviarSms(n.getIdCliente(), n.getContenido());
+            }
+            if (enviado) {
+                notifDAO.marcarEnviada(n.getIdNotificacion());
+            }
+        }
+    }
 }
