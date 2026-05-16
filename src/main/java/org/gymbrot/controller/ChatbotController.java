@@ -24,4 +24,18 @@ public class ChatbotController {
         }
         return chatbotService.procesarMensaje(sesionActual.getIdSesion(), texto);
     }
+    // ── CARGAR HISTORIAL ──────────────────────────────────────────────────
+    public List<MensajeGymbrot> cargarHistorial() {
+        if (sesionActual == null) return null;
+        return chatbotService.obtenerHistorial(sesionActual.getIdSesion());
+    }
+
+    // ── NUEVA SESION ──────────────────────────────────────────────────────
+    public void onNuevaSesion(String idCliente) {
+        if (sesionActual != null) {
+            chatbotService.cerrarSesion(sesionActual.getIdSesion());
+        }
+        sesionActual = chatbotService.iniciarSesion(idCliente);
+        System.out.println("Nueva sesión iniciada: " + sesionActual.getIdSesion());
+    }
 }
