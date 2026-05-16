@@ -1,0 +1,314 @@
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║              GYMBROT — Stylesheet Global                        ║
+   ║                                                                  ║
+   ║  Cómo usarlo:                                                    ║
+   ║  En tu App.java (o donde creas el Stage), agrega UNA sola vez:  ║
+   ║                                                                  ║
+   ║    scene.getStylesheets().add(                                   ║
+   ║        getClass().getResource("/css/gymbrot.css")               ║
+   ║                 .toExternalForm()                                ║
+   ║    );                                                            ║
+   ║                                                                  ║
+   ║  Coloca el archivo en:                                           ║
+   ║    src/main/resources/css/gymbrot.css                           ║
+   ║                                                                  ║
+   ║  NO necesitas el bloque <stylesheets> en ningún FXML             ║
+   ║  si lo cargas desde el Stage.                                    ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TOKENS — Paleta de colores GYMBROT
+   ══════════════════════════════════════════════════════════════════ */
+/*
+    --primary:        #D4FF00   (amarillo neón — acción principal)
+    --primary-dark:   #1e2a00   (fondo de badge primario)
+    --surface:        #111316   (fondo raíz)
+    --surface-1:      #121417   (sidenav)
+    --surface-2:      #1a1d21   (cards / topbar)
+    --surface-3:      #1e2023   (log rows)
+    --surface-4:      #282a2d   (header tabla / pagination footer)
+    --border:         #1f2125   (separadores principales)
+    --border-soft:    #333538   (bordes de botones secundarios)
+    --hover:          #1f2226   (hover de filas y nav inactivo)
+    --text-main:      #e2e2e6
+    --text-muted:     #6b7280
+    --text-nav:       #9ca3af
+    --accent-cyan:    #bdf4ff
+    --accent-cyan-bg: #002a30
+    --error:          #ffb4ab
+*/
+
+
+/* ══════════════════════════════════════════════════════════════════
+   BASE — Raíz de la aplicación
+   ══════════════════════════════════════════════════════════════════ */
+
+.root {
+    -fx-background-color: #111316;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   SCROLL PANE — Fondo oscuro en toda la app
+   ══════════════════════════════════════════════════════════════════ */
+
+.scroll-pane {
+    -fx-background: #111316;
+    -fx-background-color: #111316;
+    -fx-border-width: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #111316;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.scroll-bar:vertical .track,
+.scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-height: 6px;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+/* Flechas de scroll invisibles */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TABLE VIEW — Header oscuro + filas dark
+   (Soluciona el bug del header blanco de JavaFX)
+   ══════════════════════════════════════════════════════════════════ */
+
+.table-view {
+    -fx-background-color: #1a1d21;
+    -fx-border-width: 0;
+    -fx-table-cell-border-color: #1f2125;
+}
+
+/* Fondo del área completa del header */
+.table-view .column-header-background {
+    -fx-background-color: #282a2d;
+}
+
+/* Cada columna del header */
+.table-view .column-header {
+    -fx-background-color: #282a2d;
+    -fx-border-color: transparent #1f2125 #1f2125 transparent;
+    -fx-border-width: 0 1 1 0;
+    -fx-size: 44px;
+}
+
+/* Espacio sobrante a la derecha del header */
+.table-view .filler {
+    -fx-background-color: #282a2d;
+    -fx-border-color: transparent transparent #1f2125 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Texto de los encabezados de columna */
+.table-view .column-header .label {
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b7280;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Filas */
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #1f2125 transparent;
+    -fx-border-width: 1;
+    -fx-table-cell-border-color: #1f2125;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #1f2226;
+}
+
+/* Eliminar el azul por defecto de JavaFX en selección */
+.table-view .table-row-cell:selected,
+.table-view:focused .table-row-cell:selected {
+    -fx-background-color: #1f2226;
+    -fx-border-color: transparent transparent #D4FF00 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Celdas individuales */
+.table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-border-color: transparent;
+    -fx-padding: 8 12 8 12;
+}
+
+/* Placeholder cuando no hay datos */
+.table-view .placeholder .label {
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   PROGRESS BAR — Accent amarillo
+   ══════════════════════════════════════════════════════════════════ */
+
+.progress-bar {
+    -fx-background-color: #2a2d30;
+    -fx-background-radius: 4;
+    -fx-border-width: 0;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #D4FF00;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+.progress-bar .track {
+    -fx-background-color: #2a2d30;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TEXT FIELD — Campo de búsqueda
+   ══════════════════════════════════════════════════════════════════ */
+
+.text-field {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 8;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-text-fill: #e2e2e6;
+    -fx-prompt-text-fill: #6b7280;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 14 10 14;
+}
+
+.text-field:focused {
+    -fx-border-color: #D4FF00;
+    -fx-background-color: #282a2d;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   SEPARATOR
+   ══════════════════════════════════════════════════════════════════ */
+
+.separator .line {
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1 0 0 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   ALERT / DIALOG — Tema oscuro en los diálogos del sistema
+   ══════════════════════════════════════════════════════════════════ */
+
+.dialog-pane {
+    -fx-background-color: #1a1d21;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+}
+
+.dialog-pane .content {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #e2e2e6;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #282a2d;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 8;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 8 20 8 20;
+}
+
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: #D4FF00;
+    -fx-text-fill: black;
+    -fx-border-color: transparent;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #333538;
+}
+
+.dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: #c8f000;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ══════════════════════════════════════════════════════════════════ */
+
+.tooltip {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 6;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-text-fill: #e2e2e6;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-padding: 6 10 6 10;
+}
