@@ -46,4 +46,13 @@ public class ChatbotService {
 
         return respuesta;
     }
+    // ── CERRAR SESION ─────────────────────────────────────────────────────
+    public void cerrarSesion(int idSesion) {
+        sesionDAO.cerrarSesion(idSesion);
+    }
+
+    // ── OBTENER HISTORIAL ─────────────────────────────────────────────────
+    public List<MensajeGymbrot> obtenerHistorial(int idSesion) {
+        return mensajeDAO.listarPorSesion(idSesion);
+    }
 }
