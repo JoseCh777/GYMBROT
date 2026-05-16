@@ -1,0 +1,48 @@
+package org.gymbrot.service;
+
+import org.gymbrot.dao.NotificacionDAO;
+import org.gymbrot.dao.PlantillaMensajeDAO;
+import org.gymbrot.model.Notificacion;
+import org.gymbrot.model.PlantillaMensaje;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class NotificacionService {
+
+    private final NotificacionDAO notifDAO = new NotificacionDAO();
+    private final PlantillaMensajeDAO plantillaDAO = new PlantillaMensajeDAO();
+    private final EmailService emailService = new EmailService();
+    private final SmsService smsService = new SmsService();
+
+    // ── ENVIAR POR PLANTILLA ──────────────────────────────────────────────
+    public boolean enviarPorPlantilla(String idCliente, int idPlantilla, String correo, String telefono) {
+        PlantillaMensaje plantilla = plantillaDAO.buscarPorId(idPlantilla);
+        if (plantilla == null) return false;
+
+        Notificacion notif = new Notificacion();
+        notif.setIdCliente(idCliente);
+        notif.setIdPlantilla(idPlantilla);
+        notif.setTipo(plantilla.getTipo());
+        notif.setAsunto(plantilla.getAsunto());
+        notif.setContenido(plantilla.getCuerpoHtml());
+        notif.setEstadoEnvio("PENDIENTE");
+        notif.setFechaEnvio(LocalDateTime.now());
+        notif.setOrigen("sistema");
+        notifDAO.insertar(notif);
+
+        boolean enviado = false;
+        if (correo != null && !correo.isEmpty()) {
+            enviado = emailService.enviarCorreo(correo, plantilla.getAsunto(), plantilla.getCuerpoHtml());
+        }
+        if (telefono != null && !telefono.isEmpty()) {
+            enviado = smsService.enviarSms(telefono, plantilla.getCuerpoTexto());
+        }
+        return enviado;
+    }
+
+    // ── LISTAR PENDIENTES ─────────────────────────────────────────────────
+    public List<Notificacion> listarPendientes() {
+        return notifDAO.listarPendientes();
+    }
+}
