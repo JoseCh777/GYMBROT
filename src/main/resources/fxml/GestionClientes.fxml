@@ -16,6 +16,7 @@
 
 <BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionClientesController">
 
+
     <!-- ═══ LEFT: SideNav ═══ -->
     <left>
         <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
@@ -23,8 +24,7 @@
 
             <VBox spacing="2">
                 <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
-                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="TITAN" />
-                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;                               -fx-text-fill: #6b7280;" text="RENDIMIENTO DE ELITE" />
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
             </VBox>
 
             <VBox spacing="8" VBox.vgrow="ALWAYS">
@@ -156,7 +156,7 @@
 
                     <!-- TableView -->
                     <!-- NOTA: Las columnas se configuran desde el controller con setCellValueFactory -->
-                    <TableView fx:id="tablaClientes" prefHeight="400" style="-fx-background-color: transparent; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tablaClientes" prefHeight="400" style="-fx-background-color: #1a1d21; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
 
                         <columns>
                             <!-- Columna: Identidad (foto + nombre + ID) -->
