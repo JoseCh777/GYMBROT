@@ -73,7 +73,7 @@
                         <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL DE MIEMBROS" />
                         <HBox alignment="BOTTOM_LEFT">
-                            <Label fx:id="lblTotalMiembros" prefHeight="70.0" prefWidth="110.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: #D4FF00;" text="0" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblTotalMiembros" prefHeight="70.0" prefWidth="229.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: #D4FF00;" text="0" HBox.hgrow="ALWAYS" />
                             <!-- CORREGIDO: "+0%" → "0%" — el + fuera de style rompe FXML -->
                             <Label fx:id="lblMiembrosTrend" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="0%" />
                         </HBox>
@@ -81,11 +81,11 @@
                     </VBox>
 
                     <!-- Card: Activos Ahora -->
-                    <VBox prefHeight="155.0" prefWidth="242.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                    <VBox prefHeight="155.0" prefWidth="130.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACTIVOS AHORA" />
                         <HBox alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="75.0">
-                            <Label fx:id="lblActivosAhora" prefHeight="70.0" prefWidth="165.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblActivosAhora" prefHeight="70.0" prefWidth="250.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
                             <HBox alignment="CENTER" spacing="6">
                                 <Rectangle fx:id="dotActivos" arcHeight="10" arcWidth="10" height="10" style="-fx-fill: #bdf4ff;" width="10" />
                                 <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="EN VIVO" />
@@ -104,8 +104,8 @@
                         <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INGRESOS ESTE MES" />
                         <HBox alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="70.0">
-                            <Label fx:id="lblIngresos" prefHeight="70.0" prefWidth="160.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
-                            <Label fx:id="lblIngresosStatus" prefHeight="40.0" prefWidth="65.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="Cargando..." />
+                            <Label fx:id="lblIngresos" prefHeight="70.0" prefWidth="211.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblIngresosStatus" prefHeight="68.0" prefWidth="87.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="Cargando..." />
                         </HBox>
                         <HBox prefHeight="18.0" prefWidth="100.0">
                             <Label prefHeight="15.0" prefWidth="218.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                           -fx-text-fill: #6b7280;" text="PROGRESO HACIA EL OBJETIVO" HBox.hgrow="ALWAYS" />
@@ -166,7 +166,7 @@
                     </VBox>
 
                     <!-- Demografia en Vivo -->
-                    <VBox minWidth="260" prefHeight="400.0" prefWidth="342.0" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                    <VBox minWidth="260" prefHeight="400.0" prefWidth="331.0" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
                         <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;" text="Demografia en Vivo" />
