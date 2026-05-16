@@ -102,4 +102,61 @@ public class ClienteService {
             return false;
         }
     }
+    /**
+     * Elimina un cliente del sistema (elimina de CLIENTES y USUARIOS).
+     *
+     * @param numeroIdentificacion ID del cliente
+     * @return true si se eliminó correctamente
+     */
+    public boolean eliminarCliente(String numeroIdentificacion) {
+        try {
+            // 1. Eliminar de tabla CLIENTES
+            if (!clienteDAO.eliminar(numeroIdentificacion)) {
+                System.err.println("Error al eliminar cliente");
+                return false;
+            }
+
+            // 2. Eliminar de tabla USUARIOS
+            if (!usuarioDAO.eliminar(numeroIdentificacion)) {
+                System.err.println("Error al eliminar usuario");
+                return false;
+            }
+
+            System.out.println("✓ Cliente eliminado exitosamente");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en eliminarCliente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Busca un cliente por su número de identificación.
+     *
+     * @param numeroIdentificacion ID del cliente
+     * @return Cliente encontrado o null
+     */
+    public Cliente buscarCliente(String numeroIdentificacion) {
+        try {
+            return clienteDAO.buscarPorId(numeroIdentificacion);
+        } catch (Exception e) {
+            System.err.println("Error en buscarCliente: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Lista todos los clientes registrados en el sistema.
+     *
+     * @return Lista de clientes
+     */
+    public List<Cliente> listarClientes() {
+        try {
+            return clienteDAO.listarTodos();
+        } catch (Exception e) {
+            System.err.println("Error en listarClientes: " + e.getMessage());
+            return List.of(); // Lista vacía
+        }
+    }
 }
