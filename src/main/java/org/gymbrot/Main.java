@@ -31,7 +31,7 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream("/fonts/SpaceGrotesk-Medium.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("/fonts/SpaceGrotesk-Bold.ttf"), 14);
 
-        // Cargar FXML después
+        // Cargar FXML
         Parent root = FXMLLoader.load(
                 getClass().getResource("/fxml/Dashboard.fxml")
         );
@@ -49,13 +49,13 @@ public class Main extends Application {
         stage.setMinWidth(1024);
         stage.setMinHeight(700);
 
-        // Ícono de la app (pon un archivo icon.png en src/main/resources/)
+        // Ícono de la app
         try {
-            stage.getIcons().add(
-                    new Image(getClass().getResourceAsStream("/icon.png"))
+            stage.getIcons().addAll(
+                    new Image(getClass().getResourceAsStream("/images/logo.png"), 1024, 1024, true, true)
             );
         } catch (Exception e) {
-            // Sin ícono si no existe el archivo, no rompe la app
+            System.out.println("Error cargando icono: " + e.getMessage());
         }
 
         stage.show();
