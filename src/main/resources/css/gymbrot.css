@@ -1,19 +1,5 @@
 /* ╔══════════════════════════════════════════════════════════════════╗
    ║              GYMBROT — Stylesheet Global                        ║
-   ║                                                                  ║
-   ║  Cómo usarlo:                                                    ║
-   ║  En tu App.java (o donde creas el Stage), agrega UNA sola vez:  ║
-   ║                                                                  ║
-   ║    scene.getStylesheets().add(                                   ║
-   ║        getClass().getResource("/css/gymbrot.css")               ║
-   ║                 .toExternalForm()                                ║
-   ║    );                                                            ║
-   ║                                                                  ║
-   ║  Coloca el archivo en:                                           ║
-   ║    src/main/resources/css/gymbrot.css                           ║
-   ║                                                                  ║
-   ║  NO necesitas el bloque <stylesheets> en ningún FXML             ║
-   ║  si lo cargas desde el Stage.                                    ║
    ╚══════════════════════════════════════════════════════════════════╝ */
 
 
@@ -311,4 +297,243 @@
     -fx-font-family: 'Inter';
     -fx-font-size: 12px;
     -fx-padding: 6 10 6 10;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   COMBO BOX — Dropdown dark theme
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Campo principal */
+.combo-box {
+    -fx-background-color: #1a1c1f;
+    -fx-background-radius: 8;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #D4FF00;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 6 12 6 12;
+}
+
+/* Flecha del combo */
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow-button .arrow {
+    -fx-background-color: #6b7280;
+}
+
+.combo-box:focused .arrow-button .arrow,
+.combo-box:hover .arrow-button .arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Popup / lista desplegable */
+.combo-box-popup .list-view {
+    -fx-background-color: #1e2023;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 16 10 16;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #282a2d;
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #1e2a00;
+    -fx-text-fill: #D4FF00;
+}
+
+.combo-box-popup .list-view .list-cell:selected:hover {
+    -fx-background-color: #2a3d00;
+    -fx-text-fill: #D4FF00;
+}
+
+/* Scrollbar dentro del popup */
+.combo-box-popup .list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.combo-box-popup .list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.combo-box-popup .list-view .scroll-bar:vertical .track,
+.combo-box-popup .list-view .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   DATE PICKER — Calendario dark theme
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Campo de texto del DatePicker */
+.date-picker {
+    -fx-background-color: #1a1c1f;
+    -fx-background-radius: 8;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.date-picker:focused {
+    -fx-border-color: #D4FF00;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #444749;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 14 10 14;
+}
+
+.date-picker .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+/* Botón del ícono del calendario */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #6b7280;
+}
+
+.date-picker:focused .arrow-button .arrow,
+.date-picker:hover .arrow-button .arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Popup del calendario */
+.date-picker-popup {
+    -fx-background-color: #1e2023;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+/* Barra de navegación superior (Mes / Año) */
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 8 12 8 12;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+/* Botones < > de navegación de mes */
+.date-picker-popup .month-year-pane .button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.date-picker-popup .month-year-pane .button .left-arrow,
+.date-picker-popup .month-year-pane .button .right-arrow {
+    -fx-background-color: #6b7280;
+}
+
+.date-picker-popup .month-year-pane .button:hover .left-arrow,
+.date-picker-popup .month-year-pane .button:hover .right-arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Encabezados de días (Dom, Lun, Mar…) */
+.date-picker-popup .calendar-grid .day-name-cell {
+    -fx-text-fill: #6b7280;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-alignment: CENTER;
+}
+
+/* Celdas de días */
+.date-picker-popup .calendar-grid .day-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+    -fx-background-radius: 6;
+}
+
+.date-picker-popup .calendar-grid .day-cell:hover {
+    -fx-background-color: #282a2d;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+/* Día de hoy */
+.date-picker-popup .calendar-grid .today {
+    -fx-background-color: transparent;
+    -fx-border-color: #D4FF00;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-text-fill: #D4FF00;
+    -fx-font-weight: 700;
+}
+
+/* Día seleccionado */
+.date-picker-popup .calendar-grid .selected {
+    -fx-background-color: #D4FF00;
+    -fx-text-fill: #111316;
+    -fx-font-weight: 700;
+    -fx-background-radius: 6;
+}
+
+.date-picker-popup .calendar-grid .selected:hover {
+    -fx-background-color: #c8f000;
+    -fx-text-fill: #111316;
+}
+
+/* Días de otros meses (grises) */
+.date-picker-popup .calendar-grid .previous-month,
+.date-picker-popup .calendar-grid .next-month {
+    -fx-text-fill: #3a3d42;
+}
+
+/* Fondo general de la grilla */
+.date-picker-popup > * {
+    -fx-background-color: #1e2023;
 }

@@ -117,6 +117,7 @@ public class NuevoClienteController implements Initializable {
         configurarValidacionEnVivo();
         configurarFocusFields();
         iniciarAnimacionHuella();
+        aplicarClipCircularFoto();
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -377,8 +378,11 @@ public class NuevoClienteController implements Initializable {
 
             archivoFotoSeleccionado = archivo;
             Image img = new Image(archivo.toURI().toString(),
-                    152, 152, true, true);
+                    152, 152, false, true);
             imgFotoPerfil.setImage(img);
+            imgFotoPerfil.setFitWidth(152);
+            imgFotoPerfil.setFitHeight(152);
+            imgFotoPerfil.setPreserveRatio(false);
 
             // Ocultar placeholder y mostrar imagen con fade
             lblFotoPlaceholder.setVisible(false);
@@ -651,6 +655,16 @@ public class NuevoClienteController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
     //  UTILIDADES
     // ═══════════════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  CLIP CIRCULAR — Recorta la imagen en círculo exacto
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private void aplicarClipCircularFoto() {
+        // Clip circular de radio 76 (diámetro 152px igual que el ImageView)
+        javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(76, 76, 76);
+        imgFotoPerfil.setClip(clip);
+    }
 
     private void navegarA(String rutaFxml) {
         if (timelineHuella != null) timelineHuella.stop();
