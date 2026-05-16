@@ -15,4 +15,13 @@ public class SessionManager {
     public static void setAdminActual(Administrador admin) {
         adminActual = admin;
     }
+    // ── CERRAR SESION ─────────────────────────────────────────────────────
+    public static void cerrarSesion() {
+        adminActual = null;
+    }
+
+    // ── ESTA AUTENTICADO ──────────────────────────────────────────────────
+    public static boolean estaAutenticado() {
+        return adminActual != null;
+    }
 }
