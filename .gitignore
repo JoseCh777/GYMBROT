@@ -37,3 +37,5 @@ build/
 
 ### Mac OS ###
 .DS_Storeconfig.properties
+
+config.properties
