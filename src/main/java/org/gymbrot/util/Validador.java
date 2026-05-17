@@ -13,4 +13,15 @@ public class Validador {
         if (telefono == null || telefono.trim().isEmpty()) return false;
         return telefono.matches("^[0-9]{7,15}$");
     }
+    // ── VALIDAR IDENTIFICACION ────────────────────────────────────────────
+    public static boolean validarIdentificacion(String identificacion) {
+        if (identificacion == null || identificacion.trim().isEmpty()) return false;
+        return identificacion.matches("^[0-9]{6,12}$");
+    }
+
+    // ── VALIDAR FECHA ─────────────────────────────────────────────────────
+    public static boolean validarFecha(String fecha) {
+        if (fecha == null || fecha.trim().isEmpty()) return false;
+        return fecha.matches("^\\d{4}-\\d{2}-\\d{2}$");
+    }
 }
