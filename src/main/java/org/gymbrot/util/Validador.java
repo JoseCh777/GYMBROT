@@ -24,4 +24,8 @@ public class Validador {
         if (fecha == null || fecha.trim().isEmpty()) return false;
         return fecha.matches("^\\d{4}-\\d{2}-\\d{2}$");
     }
+    // ── CAMPO VACIO ───────────────────────────────────────────────────────
+    public static boolean campoVacio(String campo) {
+        return campo == null || campo.trim().isEmpty();
+    }
 }
