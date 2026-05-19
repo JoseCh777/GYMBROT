@@ -491,26 +491,23 @@ public class DashboardController implements Initializable {
     private void handleNavInstructores() {
         setNavActivo(navInstructores);
         // TODO: navegarA("/fxml/Instructores.fxml");
-        mostrarProximamente("Instructores");
     }
 
     @FXML
     private void handleNavMembresias() {
         setNavActivo(navMembresias);
         // TODO: navegarA("/fxml/Membresias.fxml");
-        mostrarProximamente("Membresias");
     }
 
     @FXML
     private void handleNavAI() {
         setNavActivo(navAI);
         // TODO: navegarA("/fxml/GymbroAI.fxml");
-        mostrarProximamente("Gymbrot AI");
     }
 
     @FXML
     private void handleNavConfig() {
-        mostrarProximamente("Configuracion");
+
     }
 
     @FXML
@@ -540,21 +537,18 @@ public class DashboardController implements Initializable {
     private void handleVerRegistro() {
         // TODO: abrir modal o navegar a vista de registro detallado
         // Tabla: REGISTROS_INGRESOS JOIN USUARIOS
-        mostrarProximamente("Registro Detallado");
     }
 
     @FXML
     private void handleAgregarMiembro() {
         // TODO: abrir modal de registro rápido
         // INSERT INTO USUARIOS + CLIENTES + HISTORIAL_MEMBRESIAS
-        mostrarProximamente("Agregar Miembro");
     }
 
     @FXML
     private void handleExportarInforme() {
         // TODO: generar PDF con datos del mes
         // Datos de: PAGOS, REGISTROS_INGRESOS, HISTORIAL_MEMBRESIAS
-        mostrarProximamente("Exportar Informe PDF");
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -565,13 +559,7 @@ public class DashboardController implements Initializable {
      * Placeholder mientras no existen las otras vistas.
      * Eliminar cuando tengas las vistas implementadas.
      */
-    private void mostrarProximamente(String seccion) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Proximamente");
-        alert.setHeaderText(seccion);
-        alert.setContentText("Esta seccion estara disponible pronto.");
-        alert.showAndWait();
-    }
+
 
     /**
      * Navegar a otra vista manteniendo el mismo Stage.
@@ -589,7 +577,10 @@ public class DashboardController implements Initializable {
             stage.getScene().setRoot(root);
         } catch (java.io.IOException e) {
             e.printStackTrace();
-            mostrarProximamente("Error al cargar: " + rutaFxml);
+             Alert alert = new Alert(Alert.AlertType.ERROR,
+                    "Error al cargar la vista: " + e.getMessage(),
+                    ButtonType.OK);
+            alert.setTitle("Error de navegación");
         }
     }
 }
