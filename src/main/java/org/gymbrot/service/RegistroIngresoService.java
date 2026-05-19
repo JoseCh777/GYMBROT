@@ -78,4 +78,63 @@ public class IngresoService {
             return false;
         }
     }
+    /**
+     * Registra la salida de un cliente del gimnasio.
+     *
+     * @param idCliente ID del cliente
+     * @return true si se registró correctamente
+     */
+    public boolean registrarSalida(String idCliente) {
+        try {
+            // 1. Buscar el último ingreso del cliente sin salida registrada
+            List<RegistroIngreso> ingresos = ingresoDAO.listarPorCliente(idCliente);
+
+            if (ingresos.isEmpty()) {
+                System.err.println("No hay registros de ingreso para este cliente");
+                return false;
+            }
+
+            // 2. Obtener el más reciente sin hora de salida
+            RegistroIngreso ultimoIngreso = null;
+            for (RegistroIngreso ingreso : ingresos) {
+                if (ingreso.getHoraSalida() == null) {
+                    ultimoIngreso = ingreso;
+                    break;
+                }
+            }
+
+            if (ultimoIngreso == null) {
+                System.err.println("No hay ingreso pendiente de salida");
+                return false;
+            }
+
+            // 3. Registrar la salida
+            if (!ingresoDAO.registrarSalida(ultimoIngreso.getIdIngreso())) {
+                System.err.println("Error al registrar salida");
+                return false;
+            }
+
+            System.out.println("✓ Salida registrada - Hasta pronto!");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en registrarSalida: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Lista todos los ingresos de una fecha específica.
+     *
+     * @param fecha Fecha a consultar
+     * @return Lista de registros de ingreso
+     */
+    public List<RegistroIngreso> listarIngresosDia(LocalDate fecha) {
+        try {
+            return ingresoDAO.listarPorFecha(fecha);
+        } catch (Exception e) {
+            System.err.println("Error en listarIngresosDia: " + e.getMessage());
+            return List.of();
+        }
+    }
 }
