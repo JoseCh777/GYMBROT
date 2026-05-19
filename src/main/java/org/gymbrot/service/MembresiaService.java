@@ -201,5 +201,58 @@ public class MembresiaService {
             System.err.println("Error en verificarVencimientos: " + e.getMessage());
         }
     }
+    /**
+     * Lista todas las membresías vencidas.
+     *
+     * @return Lista de membresías vencidas
+     */
+    public List<Membresia> listarVencidas() {
+        try {
+            return membresiaDAO.listarVencidas();
+        } catch (Exception e) {
+            System.err.println("Error en listarVencidas: " + e.getMessage());
+            return List.of();
+        }
+    }
 
+    /**
+     * Calcula los días restantes hasta el vencimiento de una membresía.
+     *
+     * @param idMembresia ID de la membresía
+     * @return Días restantes (negativo si ya venció)
+     */
+    public int calcularDiasRestantes(int idMembresia) {
+        try {
+            Membresia membresia = membresiaDAO.buscarPorId(idMembresia);
+
+            if (membresia == null) {
+                System.err.println("Membresía no encontrada");
+                return -999; // Valor especial para indicar error
+            }
+
+            LocalDate hoy = LocalDate.now();
+            long dias = ChronoUnit.DAYS.between(hoy, membresia.getFechaVencimiento());
+
+            return (int) dias;
+
+        } catch (Exception e) {
+            System.err.println("Error en calcularDiasRestantes: " + e.getMessage());
+            return -999;
+        }
+    }
+
+    /**
+     * Obtiene la membresía activa de un cliente.
+     *
+     * @param idCliente ID del cliente
+     * @return HistorialMembresia activo o null si no tiene
+     */
+    public HistorialMembresia obtenerMembresiaActiva(String idCliente) {
+        try {
+            return historialDAO.buscarActiva(idCliente);
+        } catch (Exception e) {
+            System.err.println("Error en obtenerMembresiaActiva: " + e.getMessage());
+            return null;
+        }
+    }
 }
