@@ -91,4 +91,115 @@ public class MembresiaService {
                 return fechaInicio.plusMonths(1);
         }
     }
+    /**
+     * Renueva una membresía vencida o próxima a vencer.
+     *
+     * @param idMembresia ID de la membresía a renovar
+     * @param idCliente ID del cliente
+     * @param pago Datos del pago de renovación
+     * @return true si se renovó correctamente
+     */
+    public boolean renovarMembresia(int idMembresia, String idCliente, Pago pago) {
+        try {
+            // 1. Buscar la membresía actual
+            Membresia membresiaActual = membresiaDAO.buscarPorId(idMembresia);
+
+            if (membresiaActual == null) {
+                System.err.println("Membresía no encontrada");
+                return false;
+            }
+
+            // 2. Calcular nueva fecha de inicio y vencimiento
+            LocalDate nuevaFechaInicio = LocalDate.now();
+
+            // Si aún no ha vencido, partir desde la fecha de vencimiento actual
+            if (membresiaActual.getFechaVencimiento().isAfter(LocalDate.now())) {
+                nuevaFechaInicio = membresiaActual.getFechaVencimiento();
+            }
+
+            LocalDate nuevaFechaVencimiento = calcularFechaVencimiento(
+                    nuevaFechaInicio,
+                    membresiaActual.getModalidadPago()
+            );
+
+            // 3. Actualizar la membresía
+            membresiaActual.setFechaInicio(nuevaFechaInicio);
+            membresiaActual.setFechaVencimiento(nuevaFechaVencimiento);
+            membresiaActual.setEstado("activa");
+
+            if (!membresiaDAO.actualizar(membresiaActual)) {
+                System.err.println("Error al renovar membresía");
+                return false;
+            }
+
+            // 4. Registrar el pago
+            pago.setIdMembresia(idMembresia);
+            pago.setIdCliente(idCliente);
+            pago.setFechaPago(LocalDate.now());
+            pago.setEstadoPago("completado");
+
+            if (!pagoDAO.insertar(pago)) {
+                System.err.println("Advertencia: No se pudo registrar el pago");
+            }
+
+            // 5. Enviar notificación de renovación exitosa
+            notifService.enviarPorPlantilla(idCliente, 3); // Plantilla renovación
+
+            System.out.println("✓ Membresía renovada hasta: " + nuevaFechaVencimiento);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en renovarMembresia: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verifica membresías próximas a vencer y envía notificaciones.
+     * Debe ejecutarse periódicamente (ej: diariamente).
+     */
+    public void verificarVencimientos() {
+        try {
+            List<Membresia> membresias = membresiaDAO.listarPorEstado("activa");
+            LocalDate hoy = LocalDate.now();
+
+            for (Membresia membresia : membresias) {
+                long diasRestantes = ChronoUnit.DAYS.between(hoy, membresia.getFechaVencimiento());
+
+                // Buscar el cliente asociado a esta membresía
+                HistorialMembresia historial = historialDAO.buscarPorMembresia(membresia.getIdMembresia());
+
+                if (historial == null) continue;
+
+                String idCliente = historial.getIdCliente();
+
+                // Notificar 7 días antes
+                if (diasRestantes == 7) {
+                    notifService.enviarPorPlantilla(idCliente, 1); // Plantilla "próximo vencimiento"
+                    System.out.println("✓ Notificación enviada - Vence en 7 días");
+                }
+
+                // Notificar 1 día antes
+                else if (diasRestantes == 1) {
+                    notifService.enviarPorPlantilla(idCliente, 2); // Plantilla "vence mañana"
+                    System.out.println("✓ Notificación enviada - Vence mañana");
+                }
+
+                // Marcar como vencida
+                else if (diasRestantes < 0) {
+                    membresia.setEstado("vencida");
+                    membresiaDAO.actualizar(membresia);
+
+                    // Desactivar en historial
+                    historialDAO.desactivarActual(idCliente);
+
+                    System.out.println("✓ Membresía marcada como vencida");
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error en verificarVencimientos: " + e.getMessage());
+        }
+    }
+
 }
