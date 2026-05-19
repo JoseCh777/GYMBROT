@@ -640,11 +640,11 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
-    @FXML private void handleNavClientes()     { /* ya estamos aqui */ }
-    @FXML private void handleNavInstructores() { mostrarProximamente("Instructores"); }
-    @FXML private void handleNavMembresias()   { mostrarProximamente("Membresias"); }
-    @FXML private void handleNavAI()           { mostrarProximamente("Gymbrot AI"); }
-    @FXML private void handleNavConfig()       { mostrarProximamente("Configuracion"); }
+    @FXML private void handleNavClientes()     { }
+    @FXML private void handleNavInstructores() { }
+    @FXML private void handleNavMembresias()   { }
+    @FXML private void handleNavAI()           { }
+    @FXML private void handleNavConfig()       { }
 
     @FXML
     private void handleLogout() {
@@ -672,13 +672,6 @@ public class GestionClientesController implements Initializable {
         }
     }
 
-    private void mostrarProximamente(String seccion) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Proximamente");
-        alert.setHeaderText(seccion);
-        alert.setContentText("Esta seccion estara disponible pronto.");
-        alert.showAndWait();
-    }
 
     private void mostrarInfo(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
