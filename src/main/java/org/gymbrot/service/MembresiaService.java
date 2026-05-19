@@ -5,7 +5,6 @@ import org.gymbrot.dao.MembresiaDAO;
 import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
-import org.gymbrot.model.Pago;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -28,7 +27,7 @@ public class MembresiaService {
     /**
      * Crea una nueva membresía y la asigna al cliente.
      *
-     * @param membresia Datos de la membresía
+     * @param membresia Datos de la membresía (sin idMembresia, se genera auto)
      * @param idCliente ID del cliente
      * @return true si se creó correctamente
      */
@@ -45,8 +44,10 @@ public class MembresiaService {
             );
             membresia.setFechaVencimiento(fechaVencimiento);
 
-            // 3. Insertar membresía
-            if (!membresiaDAO.insertar(membresia)) {
+            // 3. Insertar membresía (idMembresia se genera automáticamente)
+            int idMembresiaGenerado = membresiaDAO.insertarYRetornarId(membresia);
+
+            if (idMembresiaGenerado == -1) {
                 System.err.println("Error al insertar membresía");
                 return false;
             }
@@ -57,7 +58,7 @@ public class MembresiaService {
             // 5. Crear registro en historial
             HistorialMembresia historial = new HistorialMembresia();
             historial.setIdCliente(idCliente);
-            historial.setIdMembresia(membresia.getIdMembresia());
+            historial.setIdMembresia(idMembresiaGenerado);
             historial.setFechaAsignacion(LocalDate.now());
             historial.setActiva(true);
 
@@ -66,7 +67,7 @@ public class MembresiaService {
                 return false;
             }
 
-            System.out.println("✓ Membresía creada exitosamente");
+            System.out.println("✓ Membresía creada exitosamente - ID: " + idMembresiaGenerado);
             return true;
 
         } catch (Exception e) {
@@ -78,16 +79,16 @@ public class MembresiaService {
     /**
      * Calcula la fecha de vencimiento según la modalidad de pago.
      */
-    private LocalDate calcularFechaVencimiento(LocalDate inicio, String modalidad) {
-        switch (modalidad.toLowerCase()) {
+    private LocalDate calcularFechaVencimiento(LocalDate fechaInicio, String modalidadPago) {
+        switch (modalidadPago.toLowerCase()) {
             case "mensual":
-                return inicio.plusMonths(1);
+                return fechaInicio.plusMonths(1);
             case "semestral":
-                return inicio.plusMonths(6);
+                return fechaInicio.plusMonths(6);
             case "anual":
-                return inicio.plusYears(1);
+                return fechaInicio.plusYears(1);
             default:
-                return inicio.plusMonths(1); // Por defecto mensual
+                return fechaInicio.plusMonths(1);
         }
     }
 }
