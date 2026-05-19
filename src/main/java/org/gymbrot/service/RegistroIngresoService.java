@@ -137,4 +137,84 @@ public class IngresoService {
             return List.of();
         }
     }
+    /**
+     * Cuenta el total de ingresos del mes actual.
+     *
+     * @return Cantidad de ingresos
+     */
+    public int contarIngresosMes() {
+        try {
+            return ingresoDAO.contarIngresosMes();
+        } catch (Exception e) {
+            System.err.println("Error en contarIngresosMes: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Registra una entrada manual (sin verificación biométrica).
+     * Usado cuando el lector de huellas falla o en casos especiales.
+     *
+     * @param idCliente ID del cliente
+     * @param motivoManual Motivo del registro manual
+     * @return true si se registró correctamente
+     */
+    public boolean registrarEntradaManual(String idCliente, String motivoManual) {
+        try {
+            // 1. Verificar que tenga membresía activa
+            HistorialMembresia membresiaActiva = membresiaService.obtenerMembresiaActiva(idCliente);
+
+            if (membresiaActiva == null) {
+                System.err.println("✗ Cliente sin membresía activa");
+                return false;
+            }
+
+            // 2. Verificar que la membresía no esté vencida
+            int diasRestantes = membresiaService.calcularDiasRestantes(membresiaActiva.getIdMembresia());
+
+            if (diasRestantes < 0) {
+                System.err.println("✗ Membresía vencida");
+                return false;
+            }
+
+            // 3. Crear registro de ingreso manual
+            RegistroIngreso ingreso = new RegistroIngreso();
+            ingreso.setIdCliente(idCliente);
+            ingreso.setFecha(LocalDate.now());
+            ingreso.setHoraEntrada(LocalDateTime.now());
+            ingreso.setMetodoVerificacion("manual");
+            ingreso.setEstadoVerificacion("manual - " + motivoManual);
+
+            // 4. Guardar en base de datos
+            if (!ingresoDAO.registrarEntrada(ingreso)) {
+                System.err.println("Error al registrar entrada manual");
+                return false;
+            }
+
+            System.out.println("✓ Entrada manual registrada");
+            System.out.println("  Motivo: " + motivoManual);
+            System.out.println("  Membresía válida por " + diasRestantes + " días más");
+
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en registrarEntradaManual: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene estadísticas de ingresos de un cliente específico.
+     *
+     * @param idCliente ID del cliente
+     * @return Lista de ingresos históricos del cliente
+     */
+    public List<RegistroIngreso> obtenerHistorialCliente(String idCliente) {
+        try {
+            return ingresoDAO.listarPorCliente(idCliente);
+        } catch (Exception e) {
+            System.err.println("Error en obtenerHistorialCliente: " + e.getMessage());
+            return List.of();
+        }
+    }
 }
