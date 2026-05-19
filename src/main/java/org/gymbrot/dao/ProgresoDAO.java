@@ -1,6 +1,6 @@
 package dao;
 
-import model.Progreso;
+import org.gymbrot.model.Progreso;
 import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;

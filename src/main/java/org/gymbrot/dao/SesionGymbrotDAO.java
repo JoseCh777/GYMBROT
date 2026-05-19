@@ -1,6 +1,6 @@
 package dao;
 
-import model.SesionGymbrot;
+import org.gymbrot.model.SesionGymbrot;
 import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;

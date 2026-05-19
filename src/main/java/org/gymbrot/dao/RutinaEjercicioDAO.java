@@ -1,6 +1,6 @@
 package dao;
 
-import model.RutinaEjercicio;
+import org.gymbrot.model.RutinaEjercicio;
 import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;
