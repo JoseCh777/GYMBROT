@@ -636,10 +636,10 @@ public class NuevoClienteController implements Initializable {
 
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
-    @FXML private void handleNavInstructores() { mostrarProximamente("Instructores"); }
-    @FXML private void handleNavMembresias()   { mostrarProximamente("Membresias"); }
-    @FXML private void handleNavAI()           { mostrarProximamente("Gymbrot AI"); }
-    @FXML private void handleNavConfig()       { mostrarProximamente("Configuracion"); }
+    @FXML private void handleNavInstructores() {  }
+    @FXML private void handleNavMembresias()   {  }
+    @FXML private void handleNavAI()           {  }
+    @FXML private void handleNavConfig()       {  }
 
     @FXML
     private void handleLogout() {
@@ -677,14 +677,6 @@ public class NuevoClienteController implements Initializable {
             e.printStackTrace();
             mostrarError("Error de navegación", "No se pudo cargar: " + rutaFxml);
         }
-    }
-
-    private void mostrarProximamente(String seccion) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Próximamente");
-        alert.setHeaderText(seccion);
-        alert.setContentText("Esta sección estará disponible pronto.");
-        alert.showAndWait();
     }
 
     private void mostrarError(String titulo, String mensaje) {
