@@ -13,6 +13,7 @@ public class ChatbotService {
     private final SesionGymbrotDAO sesionDAO = new SesionGymbrotDAO();
     private final MensajeGymbrotDAO mensajeDAO = new MensajeGymbrotDAO();
     private final GroqService groqService = new GroqService();
+    private final NotificacionService notificacionService = new NotificacionService();
 
     // ── INICIAR SESION ────────────────────────────────────────────────────
     public SesionGymbrot iniciarSesion(String idCliente) {
@@ -27,6 +28,7 @@ public class ChatbotService {
     }
 
     // ── PROCESAR MENSAJE ──────────────────────────────────────────────────
+   // ── PROCESAR MENSAJE ──────────────────────────────────────────────────
     public String procesarMensaje(int idSesion, String texto) {
         MensajeGymbrot msgUsuario = new MensajeGymbrot();
         msgUsuario.setIdSesion(idSesion);
@@ -36,6 +38,20 @@ public class ChatbotService {
         mensajeDAO.insertar(msgUsuario);
 
         String respuesta = groqService.enviarMensaje(texto);
+
+        // ── DETECTAR INTENCION ─────────────────────────────────────────
+        String textoLower = texto.toLowerCase();
+        if (textoLower.contains("agendar") || textoLower.contains("cita")
+                || textoLower.contains("reservar") || textoLower.contains("turno")) {
+            notificacionService.enviarSmsDirecto(
+                "GYMBROT: Tu solicitud de cita fue recibida. Pronto un instructor te contactará para confirmar."
+            );
+        } else if (textoLower.contains("membresía") || textoLower.contains("membresia")
+                || textoLower.contains("plan") || textoLower.contains("precio")) {
+            notificacionService.enviarSmsDirecto(
+                "GYMBROT: Te enviamos información sobre nuestros planes. Contáctanos al 3001234567."
+            );
+        }
 
         MensajeGymbrot msgBot = new MensajeGymbrot();
         msgBot.setIdSesion(idSesion);

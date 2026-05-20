@@ -1,19 +1,15 @@
 package org.gymbrot;
 
-import org.gymbrot.service.ChatbotService;
-import org.gymbrot.model.SesionGymbrot;
+import org.gymbrot.service.EmailService;
 
 public class PruebaChatbot {
     public static void main(String[] args) {
-        ChatbotService chatbot = new ChatbotService();
-        
-        SesionGymbrot sesion = chatbot.iniciarSesion("123456");
-        System.out.println("Sesión iniciada: " + sesion.getIdSesion());
-        
-        String respuesta = chatbot.procesarMensaje(sesion.getIdSesion(), "Hola, ¿cuáles son los horarios del gimnasio?");
-        System.out.println("GymBrot: " + respuesta);
-        
-        chatbot.cerrarSesion(sesion.getIdSesion());
-        System.out.println("Sesión cerrada.");
+        EmailService email = new EmailService();
+        boolean enviado = email.enviarCorreo(
+            "mariojose2416@gmail.com",
+            "Prueba GYMBROT",
+            "<h1>Hola desde GYMBROT!</h1><p>Este es un mensaje de prueba del sistema de notificaciones.</p>"
+        );
+        System.out.println("Correo enviado: " + enviado);
     }
 }

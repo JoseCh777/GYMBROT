@@ -40,6 +40,20 @@ public class NotificacionService {
         }
         return enviado;
     }
+    // ── ENVIAR SMS DIRECTO ────────────────────────────────────────────────
+    public void enviarSmsDirecto(String mensaje) {
+        try {
+            java.io.FileInputStream fis = new java.io.FileInputStream("config.properties");
+            java.util.Properties props = new java.util.Properties();
+            props.load(fis);
+            String telefono = props.getProperty("TWILIO_PHONE_TO");
+            if (telefono != null && !telefono.isEmpty()) {
+                smsService.enviarSms(telefono, mensaje);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al enviar SMS directo: " + e.getMessage());
+        }
+    }
 
     // ── LISTAR PENDIENTES ─────────────────────────────────────────────────
     public List<Notificacion> listarPendientes() {
