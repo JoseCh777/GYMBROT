@@ -624,7 +624,6 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavInstructores() { }
     @FXML private void handleNavMembresias()   { }
     @FXML private void handleNavAI()           { }
-    @FXML private void handleNavConfig()       { }
 
     @FXML
     private void handleLogout() {

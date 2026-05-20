@@ -348,10 +348,9 @@ public class NuevoInstructorController implements Initializable {
 
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
-    @FXML private void handleNavInstructores() { /* ya estamos aqui */ }
-    @FXML private void handleNavMembresias()   { mostrarProximamente("Membresias"); }
-    @FXML private void handleNavAI()           { mostrarProximamente("Gymbrot AI"); }
-    @FXML private void handleNavConfig()       { mostrarProximamente("Configuracion"); }
+    @FXML private void handleNavInstructores() {  }
+    @FXML private void handleNavMembresias()   {  }
+    @FXML private void handleNavAI()           {  }
 
     @FXML
     private void handleLogout() {
@@ -377,14 +376,6 @@ public class NuevoInstructorController implements Initializable {
             e.printStackTrace();
             mostrarError("Error de navegacion", "No se pudo cargar: " + rutaFxml);
         }
-    }
-
-    private void mostrarProximamente(String seccion) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Proximamente");
-        alert.setHeaderText(seccion);
-        alert.setContentText("Esta seccion estara disponible pronto.");
-        alert.showAndWait();
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
