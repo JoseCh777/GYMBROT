@@ -104,5 +104,38 @@ public class EspecialidadService {
         }
         return resultado;
     }
+    /**
+     * Elimina una especialidad por su ID.
+     * No permite eliminar si hay instructores asignados a ella.
+     * @param idEspecialidad ID de la especialidad a eliminar.
+     * @return true si se eliminó exitosamente.
+     */
+    public boolean eliminarEspecialidad(int idEspecialidad) {
+        // 1. Validar ID
+        if (idEspecialidad <= 0) {
+            System.err.println("✗ ID inválido.");
+            return false;
+        }
 
+        // 2. Verificar que exista
+        Especialidad especialidad = especialidadDAO.buscarPorId(idEspecialidad);
+        if (especialidad == null) {
+            System.err.println("✗ No se encontró la especialidad con ID: " + idEspecialidad);
+            return false;
+        }
+
+        // 3. Verificar que no tenga instructores asignados
+        if (instructorDAO.instructorEspecialidad(idEspecialidad)) {
+            System.err.println("✗ No se puede eliminar: hay instructores asignados a esta especialidad.");
+            return false;
+        }
+
+        // 4. Eliminar
+        boolean resultado = especialidadDAO.eliminar(idEspecialidad);
+        if (resultado) {
+            System.out.println("✓ Especialidad eliminada exitosamente.");
+        }
+        return resultado;
+    }
+}
 }
