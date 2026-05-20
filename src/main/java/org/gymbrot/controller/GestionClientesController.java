@@ -176,20 +176,11 @@ public class GestionClientesController implements Initializable {
     private void configurarTabla() {
         // Estilo de la tabla
         tablaClientes.setStyle(
-                "-fx-background-color: #1a1d21;" +
+                "-fx-background-color: transparent;" +
                         "-fx-border-width: 0;" +
                         "-fx-table-cell-border-color: #1f2125;"
         );
-        tablaClientes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        // Forzar color oscuro en header de columnas (JavaFX pone blanco por defecto con inline CSS)
-        tablaClientes.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (newSkin != null) {
-                tablaClientes.lookupAll(".column-header, .column-header-background, .filler").forEach(node ->
-                        node.setStyle("-fx-background-color: #282a2d; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;")
-                );
-            }
-        });
+        tablaClientes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         // ── Columna Identidad: nombre + ID ──
         colIdentidad.setCellValueFactory(data ->
@@ -537,19 +528,8 @@ public class GestionClientesController implements Initializable {
         ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btn);
         grow.setToX(1.03); grow.setToY(1.03);
         shrink.setToX(1.0); shrink.setToY(1.0);
-
-        btn.setOnMouseEntered(e -> {
-            grow.playFromStart();
-            btn.setStyle(btn.getStyle()
-                    .replace("-fx-background-color: transparent", "-fx-background-color: #1f2226")
-                    .replace("-fx-text-fill: #9ca3af", "-fx-text-fill: white"));
-        });
-        btn.setOnMouseExited(e -> {
-            shrink.playFromStart();
-            btn.setStyle(btn.getStyle()
-                    .replace("-fx-background-color: #1f2226", "-fx-background-color: transparent")
-                    .replace("-fx-text-fill: white", "-fx-text-fill: #9ca3af"));
-        });
+        btn.setOnMouseEntered(e -> grow.playFromStart());
+        btn.setOnMouseExited(e  -> shrink.playFromStart());
         btn.setOnMousePressed(e -> { ScaleTransition p = new ScaleTransition(Duration.millis(80), btn); p.setToX(0.97); p.setToY(0.97); p.play(); });
         btn.setOnMouseReleased(e -> { ScaleTransition r = new ScaleTransition(Duration.millis(80), btn); r.setToX(1.0); r.setToY(1.0); r.play(); });
     }
@@ -671,7 +651,6 @@ public class GestionClientesController implements Initializable {
             mostrarInfo("Error de navegacion", "No se pudo cargar: " + rutaFxml);
         }
     }
-
 
     private void mostrarInfo(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

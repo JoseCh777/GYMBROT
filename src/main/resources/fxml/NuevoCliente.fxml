@@ -20,7 +20,7 @@
 
 <BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.NuevoClienteController">
 
-    <!-- ═══ LEFT: SideNav  ═══ -->
+    <!-- ═══ LEFT: SideNav (identico al Dashboard) ═══ -->
     <left>
         <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
             <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
@@ -239,11 +239,22 @@
                                 <padding><Insets bottom="32" left="24" right="24" top="32" /></padding>
                                 <VBox.margin><Insets bottom="16" /></VBox.margin>
 
-                                <!-- Icono de huella -->
-                                <StackPane prefHeight="80" prefWidth="80">
-                                    <StackPane prefHeight="80" prefWidth="80" style="-fx-background-color: #1e2a00; -fx-background-radius: 40;                                                       -fx-border-color: #D4FF00; -fx-border-width: 1;                                                       -fx-border-radius: 40;">
-                                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 32px;                                                       -fx-font-weight: 900; -fx-text-fill: #D4FF00;" text="~" />
+                                <!-- Icono de huella con animacion de escaneo -->
+                                <StackPane fx:id="scannerPane" prefHeight="80" prefWidth="80">
+                                    <!-- Circulo base con borde amarillo -->
+                                    <StackPane fx:id="scannerCircle" prefHeight="80" prefWidth="80" style="-fx-background-color: #1e2a00; -fx-background-radius: 40;                                                       -fx-border-color: #D4FF00; -fx-border-width: 1;                                                       -fx-border-radius: 40;">
+                                        <!-- Lineas del patron de huella (SVG-like con Regions) -->
+                                        <VBox alignment="CENTER" spacing="5" prefWidth="50">
+                                            <Region prefHeight="2" prefWidth="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
+                                            <Region prefHeight="2" prefWidth="42" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
+                                            <Region prefHeight="2" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
+                                            <Region prefHeight="2" prefWidth="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
+                                            <Region prefHeight="2" prefWidth="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.7;" />
+                                            <Region prefHeight="2" prefWidth="24" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.6;" />
+                                        </VBox>
                                     </StackPane>
+                                    <!-- Linea de escaneo animada (se mueve de arriba a abajo) -->
+                                    <Region fx:id="lineaEscaneo" prefHeight="2" prefWidth="80" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);" StackPane.alignment="TOP_CENTER" />
                                 </StackPane>
 
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Escaneando Huella..." />

@@ -1,6 +1,8 @@
 package org.gymbrot.controller;
 
 import javafx.animation.FadeTransition;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.animation.KeyFrame;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
@@ -72,6 +74,8 @@ public class NuevoClienteController implements Initializable {
 
     // ─── Columna derecha: Biometría ────────────────────────────────────────
     @FXML private Button      btnEscanearHuella;
+    @FXML private StackPane   scannerCircle;  // círculo del scanner con glow
+    @FXML private Region      lineaEscaneo;    // línea animada de escaneo
     @FXML private Label       lblScannerStatus;
     @FXML private ProgressBar pbHuella;
     @FXML private Label       lblPorcentajeHuella;
@@ -80,6 +84,7 @@ public class NuevoClienteController implements Initializable {
     private File   archivoFotoSeleccionado = null;
     private boolean huellaCapturada        = false;
     private Timeline timelineHuella        = null;
+    private Timeline timelineLineaEscaneo  = null;
 
     // ─── Validación ────────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -117,6 +122,7 @@ public class NuevoClienteController implements Initializable {
         configurarValidacionEnVivo();
         configurarFocusFields();
         iniciarAnimacionHuella();
+        iniciarAnimacionLineaEscaneo();
         aplicarClipCircularFoto();
     }
 
@@ -353,6 +359,42 @@ public class NuevoClienteController implements Initializable {
         timelineHuella.play();
     }
 
+    private void iniciarAnimacionLineaEscaneo() {
+        // Línea que baja de arriba (0) a abajo (78px) y regresa — simula el scan
+        final double[] posY   = {0.0};
+        final boolean[] baja  = {true};
+        final double    MAX_Y = 78.0;
+        final double    STEP  = 1.8;
+
+        timelineLineaEscaneo = new Timeline(
+                new KeyFrame(Duration.millis(16), e -> {   // ~60fps
+                    if (huellaCapturada) return;
+                    if (baja[0]) {
+                        posY[0] += STEP;
+                        if (posY[0] >= MAX_Y) { posY[0] = MAX_Y; baja[0] = false; }
+                    } else {
+                        posY[0] -= STEP;
+                        if (posY[0] <= 0) { posY[0] = 0; baja[0] = true; }
+                    }
+                    // Mover la línea verticalmente dentro del StackPane
+                    lineaEscaneo.setTranslateY(posY[0]);
+
+                    // Pulso de opacidad: más brillante al bajar, más tenue al subir
+                    double opacity = baja[0] ? 0.9 : 0.6;
+                    lineaEscaneo.setOpacity(opacity);
+
+                    // Pulso de glow en el círculo del scanner
+                    double glow = 0.4 + 0.6 * (posY[0] / MAX_Y);
+                    scannerCircle.setStyle(scannerCircle.getStyle()
+                            .replaceAll("-fx-effect:.*?;", "")
+                            + String.format("-fx-effect: dropshadow(gaussian, #D4FF00, %.0f, 0.4, 0, 0);",
+                            8 + glow * 16));
+                })
+        );
+        timelineLineaEscaneo.setCycleCount(Timeline.INDEFINITE);
+        timelineLineaEscaneo.play();
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLER — Cargar Foto
     // ═══════════════════════════════════════════════════════════════════════
@@ -417,7 +459,11 @@ public class NuevoClienteController implements Initializable {
                             "-fx-border-color: #2a3d00; -fx-border-width: 1;" +
                             "-fx-border-radius: 8; -fx-cursor: hand;"
             );
+            // Reiniciar linea de escaneo
+            lineaEscaneo.setOpacity(1);
             iniciarAnimacionHuella();
+            lineaEscaneo.setStyle("-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);");
+            iniciarAnimacionLineaEscaneo();
             return;
         }
 
@@ -430,6 +476,7 @@ public class NuevoClienteController implements Initializable {
 
         // Simulación: llenar la barra hasta 100% y marcar como capturada
         if (timelineHuella != null) timelineHuella.stop();
+        if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
 
         Timeline captura = new Timeline(
                 new KeyFrame(Duration.millis(30), e -> {
@@ -444,8 +491,18 @@ public class NuevoClienteController implements Initializable {
         captura.setCycleCount(40);
         captura.setOnFinished(e -> {
             huellaCapturada = true;
+            if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
             pbHuella.setProgress(1.0);
             lblPorcentajeHuella.setText("100%");
+            // Línea fija en centro al completar
+            lineaEscaneo.setTranslateY(40);
+            lineaEscaneo.setOpacity(1.0);
+            lineaEscaneo.setStyle("-fx-background-color: #bdf4ff; -fx-effect: dropshadow(gaussian, #bdf4ff, 12, 0.9, 0, 0);");
+            scannerCircle.setStyle(scannerCircle.getStyle()
+                    .replaceAll("-fx-effect:.*?;", "")
+                    + "-fx-effect: dropshadow(gaussian, #bdf4ff, 20, 0.6, 0, 0);");
+
+
 
             lblScannerStatus.setText("HUELLA REGISTRADA");
             lblScannerStatus.setStyle(
@@ -654,7 +711,7 @@ public class NuevoClienteController implements Initializable {
 
     // ═══════════════════════════════════════════════════════════════════════
     //  UTILIDADES
-    // ═══════════════════════════════════════════════════════════════════════
+
 
     // ═══════════════════════════════════════════════════════════════════════
     //  CLIP CIRCULAR — Recorta la imagen en círculo exacto
@@ -668,6 +725,7 @@ public class NuevoClienteController implements Initializable {
 
     private void navegarA(String rutaFxml) {
         if (timelineHuella != null) timelineHuella.stop();
+        if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFxml));
             Parent root = loader.load();
