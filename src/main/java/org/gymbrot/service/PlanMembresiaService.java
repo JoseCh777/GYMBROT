@@ -112,5 +112,36 @@ public class PlanMembresiaService {
         }
         return resultado;
     }
+    /**
+     * Elimina un plan de membresía.
+     * No permite eliminar si tiene membresías activas asociadas.
+     * @param idPlan ID del plan a eliminar.
+     * @return true si se eliminó exitosamente.
+     */
+    public boolean eliminarPlan(int idPlan) {
+        // 1. Validar ID
+        if (idPlan <= 0) {
+            System.err.println("✗ ID de plan inválido.");
+            return false;
+        }
 
+        // 2. Verificar que exista
+        if (planDAO.buscarPorId(idPlan) == null) {
+            System.err.println("✗ No se encontró el plan con ID: " + idPlan);
+            return false;
+        }
+
+        // 3. Verificar que no tenga membresías activas
+        if (membresiaDAO.membresiaPlan(idPlan)) {
+            System.err.println("✗ No se puede eliminar: el plan tiene membresías activas asociadas.");
+            return false;
+        }
+
+        // 4. Eliminar
+        boolean resultado = planDAO.eliminar(idPlan);
+        if (resultado) {
+            System.out.println("✓ Plan eliminado exitosamente.");
+        }
+        return resultado;
+    }
 }
