@@ -235,5 +235,135 @@ public class HuellaService {
             return null;
         }
     }
+    /**
+     * Verifica una muestra de huella contra todos los templates en la BD.
+     *
+     * @param sample Muestra capturada por el lector
+     * @return ID del cliente identificado o null si no se reconoce
+     */
+    public String verificar(DPFPSample sample) {
+        try {
+            // Extraer características de la muestra
+            DPFPFeatureSet features = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
 
+            if (features == null) {
+                System.err.println("✗ Calidad de huella insuficiente");
+                return null;
+            }
+
+            // Obtener todos los clientes con huella registrada
+            List<Cliente> clientes = clienteDAO.obtenerTemplatesHuella();
+
+            if (clientes.isEmpty()) {
+                System.err.println("✗ No hay huellas registradas en el sistema");
+                return null;
+            }
+
+            System.out.println("Verificando contra " + clientes.size() + " huellas registradas...");
+
+            // Comparar contra cada template
+            for (Cliente cliente : clientes) {
+                try {
+                    // Deserializar template
+                    byte[] templateBytes = cliente.getHuellaDactilar();
+                    DPFPTemplate template = huellaUtil.deserializarTemplate(templateBytes);
+
+                    if (template == null) {
+                        continue;
+                    }
+
+                    // Verificar coincidencia
+                    DPFPVerificationResult result = verificador.verify(features, template);
+
+                    if (result.isVerified()) {
+                        System.out.println("✓ Huella verificada!");
+                        System.out.println("  Cliente: " + cliente.getNombre() + " " + cliente.getApellidos());
+                        System.out.println("  Confianza: " + result.getFalseAcceptRate());
+
+                        return cliente.getNumeroIdentificacion();
+                    }
+
+                } catch (Exception e) {
+                    // Continuar con el siguiente cliente
+                    continue;
+                }
+            }
+
+            System.err.println("✗ Huella no reconocida");
+            return null;
+
+        } catch (Exception e) {
+            System.err.println("Error en verificación: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Guarda el template de huella dactilar de un cliente en la BD.
+     *
+     * @param idCliente ID del cliente
+     * @param template Template de huella a guardar
+     * @return true si se guardó correctamente
+     */
+    public boolean guardarHuella(String idCliente, DPFPTemplate template) {
+        try {
+            // Serializar el template a bytes
+            byte[] templateBytes = huellaUtil.serializarTemplate(template);
+
+            if (templateBytes == null) {
+                System.err.println("✗ Error al serializar template");
+                return false;
+            }
+
+            // Buscar el cliente
+            Cliente cliente = clienteDAO.buscarPorId(idCliente);
+
+            if (cliente == null) {
+                System.err.println("✗ Cliente no encontrado");
+                return false;
+            }
+
+            // Establecer la huella
+            cliente.setHuellaDactilar(templateBytes);
+
+            // Actualizar en BD
+            if (!clienteDAO.actualizar(cliente)) {
+                System.err.println("✗ Error al guardar huella en BD");
+                return false;
+            }
+
+            System.out.println("✓ Huella guardada correctamente");
+            System.out.println("  Tamaño del template: " + templateBytes.length + " bytes");
+
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error al guardar huella: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verifica si el lector está activo.
+     */
+    public boolean lectorActivo() {
+        return lector != null;
+    }
+
+    /**
+     * Verifica si hay un proceso de enrolamiento en curso.
+     */
+    public boolean estaEnrolando() {
+        return enrolandoActivo;
+    }
+
+    /**
+     * Cancela el enrolamiento actual.
+     */
+    public void cancelarEnrolamiento() {
+        enrolandoActivo = false;
+        idClienteEnrolando = null;
+        enroller = null;
+        System.out.println("⚠ Enrolamiento cancelado");
+    }
 }
