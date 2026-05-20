@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/images/dashboard_white.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/dashboard_white.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/images/group_white.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/group_white.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,7 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="66" />
+    <option name="cachedIndexableFilesCount" value="72" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,6 +50,31 @@
     &quot;assignee&quot;: &quot;JoseCh777&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/frontend" />
+                    <option name="lastUsedInstant" value="1779197345" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/backend" />
+                    <option name="lastUsedInstant" value="1779197262" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/JoseCh777/GYMBROT.git&quot;,
@@ -80,6 +104,7 @@
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;feature/frontend&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
@@ -150,7 +175,38 @@
       <option name="presentableId" value="Default" />
       <updated>1778975175354</updated>
     </task>
+    <task id="LOCAL-00001" summary="&quot;feat: Quitar proximamentes&quot;">
+      <option name="closed" value="true" />
+      <created>1779198831541</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198831541</updated>
+    </task>
+    <task id="LOCAL-00002" summary="&quot;feat: Quitar proximamentes en GestionClientesController&quot;">
+      <option name="closed" value="true" />
+      <created>1779198895801</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198895801</updated>
+    </task>
+    <task id="LOCAL-00003" summary="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;">
+      <option name="closed" value="true" />
+      <created>1779198974650</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198974650</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;feat: Quitar proximamentes&quot;" />
+    <MESSAGE value="&quot;feat: Quitar proximamentes en GestionClientesController&quot;" />
+    <MESSAGE value="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
