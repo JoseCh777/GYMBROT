@@ -97,7 +97,7 @@
             <!-- Botones de accion del header -->
             <HBox alignment="CENTER" spacing="12">
                 <Button fx:id="btnCancelar" onAction="#handleCancelar" prefHeight="36" style="-fx-background-color: #1e2023; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="CANCELAR" />
-                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="GUARDAR NUEVO CLIENTE">
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="  GUARDAR NUEVO CLIENTE">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -148,7 +148,7 @@
 
                                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                                     <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NUMERO DE DOCUMENTO" />
-                                    <TextField fx:id="txtNumeroDoc" prefHeight="44" prefWidth="98.0" promptText="10.XXX.XXX-X" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                    <TextField fx:id="txtNumeroDoc" prefHeight="44" prefWidth="98.0" promptText="10XXX.XXXXX" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
                                 </VBox>
 
                                 <VBox prefHeight="66.0" prefWidth="142.0" spacing="6" HBox.hgrow="ALWAYS">
@@ -278,7 +278,7 @@
                             </HBox>
 
                             <!-- Area del scanner -->
-                            <VBox alignment="CENTER" prefHeight="275.0" prefWidth="270.0" spacing="12" style="-fx-background-color: #121417; -fx-background-radius: 10;                                          -fx-border-color: #1e2a00; -fx-border-width: 1; -fx-border-radius: 10;">
+                            <VBox alignment="CENTER" prefHeight="245.0" prefWidth="270.0" spacing="12" style="-fx-background-color: #121417; -fx-background-radius: 10;                                          -fx-border-color: #1e2a00; -fx-border-width: 1; -fx-border-radius: 10;">
                                 <padding><Insets bottom="32" left="24" right="24" top="32" /></padding>
                                 <VBox.margin><Insets bottom="16" /></VBox.margin>
 
@@ -308,7 +308,7 @@
                             <!-- Estado del scanner -->
                             <HBox alignment="CENTER_LEFT">
                                 <VBox.margin><Insets bottom="8" top="12" /></VBox.margin>
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="Scanner Status:" HBox.hgrow="ALWAYS" />
+                                <Label prefHeight="15.0" prefWidth="132.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="Scanner Status:" HBox.hgrow="ALWAYS" />
                                 <HBox alignment="CENTER" spacing="6">
                                     <Rectangle arcHeight="6" arcWidth="6" height="6" style="-fx-fill: #D4FF00;" width="6" />
                                     <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="CAPTURANDO DATOS..." />
