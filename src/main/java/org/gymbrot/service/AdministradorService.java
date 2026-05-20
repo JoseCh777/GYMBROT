@@ -61,4 +61,113 @@ public class AdministradorService {
             return false;
         }
     }
+    /**
+     * Cambia el rol de un administrador.
+     *
+     * @param numeroIdentificacion ID del administrador
+     * @param nuevoRol Rol a asignar (superadmin, operador, etc.)
+     * @return true si se cambió correctamente
+     */
+    public boolean cambiarRol(String numeroIdentificacion, String nuevoRol) {
+        try {
+            // 1. Validar rol
+            String[] rolesPermitidos = {"superadmin", "operador", "recepcionista"};
+            boolean rolValido = false;
+
+            for (String rol : rolesPermitidos) {
+                if (rol.equalsIgnoreCase(nuevoRol)) {
+                    rolValido = true;
+                    break;
+                }
+            }
+
+            if (!rolValido) {
+                System.err.println("Rol no válido: " + nuevoRol);
+                System.err.println("Roles permitidos: superadmin, operador, recepcionista");
+                return false;
+            }
+
+            // 2. Buscar el administrador
+            Administrador admin = administradorDAO.buscarPorId(numeroIdentificacion);
+
+            if (admin == null) {
+                System.err.println("Administrador no encontrado");
+                return false;
+            }
+
+            // 3. Cambiar rol
+            admin.setRol(nuevoRol);
+
+            // 4. Actualizar en BD
+            if (!administradorDAO.actualizar(admin)) {
+                System.err.println("Error al cambiar rol");
+                return false;
+            }
+
+            System.out.println("✓ Rol cambiado a: " + nuevoRol);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en cambiarRol: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Cambia la contraseña de un administrador.
+     *
+     * @param numeroIdentificacion ID del administrador
+     * @param nuevaContrasena Nueva contraseña en texto plano (se hasheará)
+     * @return true si se cambió correctamente
+     */
+    public boolean cambiarContrasena(String numeroIdentificacion, String nuevaContrasena) {
+        try {
+            // 1. Validar que la contraseña no esté vacía
+            if (nuevaContrasena == null || nuevaContrasena.trim().isEmpty()) {
+                System.err.println("La contraseña no puede estar vacía");
+                return false;
+            }
+
+            // 2. Validar longitud mínima
+            if (nuevaContrasena.length() < 6) {
+                System.err.println("La contraseña debe tener al menos 6 caracteres");
+                return false;
+            }
+
+            // 3. Buscar el usuario
+            Usuario usuario = usuarioDAO.buscarPorId(numeroIdentificacion);
+
+            if (usuario == null) {
+                System.err.println("Usuario no encontrado");
+                return false;
+            }
+
+            // 4. Hashear la nueva contraseña (simulado - se implementará en AuthService)
+            String contrasenaHash = hashearContrasena(nuevaContrasena);
+            usuario.setContrasenaHash(contrasenaHash);
+
+            // 5. Actualizar en BD
+            if (!usuarioDAO.actualizar(usuario)) {
+                System.err.println("Error al cambiar contraseña");
+                return false;
+            }
+
+            System.out.println("✓ Contraseña actualizada exitosamente");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error en cambiarContrasena: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Método auxiliar para hashear contraseñas.
+     * TODO: Mover a AuthService cuando se implemente.
+     */
+    private String hashearContrasena(String contrasena) {
+        // Por ahora retorna la contraseña simple
+        // Se implementará con BCrypt en AuthService
+        return "HASH_" + contrasena;
+    }
 }
