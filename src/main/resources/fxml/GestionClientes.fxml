@@ -8,6 +8,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -28,12 +30,47 @@
             </VBox>
 
             <VBox spacing="8" VBox.vgrow="ALWAYS">
-                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard" />
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/dashboard_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
                 <!-- ACTIVO: Clientes -->
-                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes" />
-                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores" />
-                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias" />
-                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI" />
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/group.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/instructor_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/membresias_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/bot_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             </VBox>
 
             <Separator opacity="0.1">
@@ -135,19 +172,40 @@
                     </Label>
 
                     <!-- Buscador -->
-                    <StackPane HBox.hgrow="ALWAYS">
-                        <TextField fx:id="searchField" prefHeight="44" promptText="Buscar por nombre, ID o email..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
-                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text="B">
+                    <StackPane prefHeight="44.0" prefWidth="410.0" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="searchField" prefHeight="44" prefWidth="439.0" promptText="Buscar por nombre, ID o email..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
                             <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
                             <StackPane.margin><Insets left="12" /></StackPane.margin>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/lupa.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                         </Label>
                     </StackPane>
 
                     <!-- Boton huella -->
-                    <Button fx:id="btnValidarHuella" onAction="#handleValidarHuella" prefHeight="44" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                    -fx-border-color: #bdf4ff; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Validar con Huella" />
+                    <Button fx:id="btnValidarHuella" onAction="#handleValidarHuella" prefHeight="44" prefWidth="179.0" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                    -fx-border-color: #bdf4ff; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="  Validar con Huella">
+                  <graphic>
+                     <ImageView fitHeight="20.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../images/huella-dactilar.png" />
+                        </image>
+                     </ImageView>
+                  </graphic></Button>
 
                     <!-- Boton agregar -->
-                    <Button fx:id="btnAgregarCliente" onAction="#handleAgregarCliente" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #121417;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Nuevo Cliente" />
+                    <Button fx:id="btnAgregarCliente" onAction="#handleAgregarCliente" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #121417;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Nuevo Cliente">
+                  <graphic>
+                     <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../images/add.png" />
+                        </image>
+                     </ImageView>
+                  </graphic></Button>
 
                 </HBox>
 
