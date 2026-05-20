@@ -101,4 +101,139 @@ public class HuellaService {
             System.err.println("Error al detener lector: " + e.getMessage());
         }
     }
+    /**
+     * Inicia el proceso de enrolamiento de huella para un cliente.
+     * Requiere capturar la misma huella 4 veces para garantizar calidad.
+     *
+     * @param idCliente ID del cliente a enrolar
+     * @return true si se inició correctamente
+     */
+    public boolean enrollar(String idCliente) {
+        try {
+            // Verificar que el lector esté activo
+            if (lector == null) {
+                System.err.println("✗ Debe iniciar el lector primero");
+                return false;
+            }
+
+            // Verificar que no haya otro enrolamiento en curso
+            if (enrolandoActivo) {
+                System.err.println("✗ Ya hay un enrolamiento en curso");
+                return false;
+            }
+
+            // Verificar que el cliente exista
+            Cliente cliente = clienteDAO.buscarPorId(idCliente);
+            if (cliente == null) {
+                System.err.println("✗ Cliente no encontrado");
+                return false;
+            }
+
+            // Iniciar proceso de enrolamiento
+            enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
+            enrolandoActivo = true;
+            idClienteEnrolando = idCliente;
+
+            System.out.println("✓ Enrolamiento iniciado para: " + cliente.getNombre());
+            System.out.println("  Coloque el dedo en el lector 4 veces");
+            System.out.println("  Muestras capturadas: 0/4");
+
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error al iniciar enrolamiento: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Procesa una muestra capturada durante el enrolamiento.
+     *
+     * @param sample Muestra capturada por el lector
+     * @return true si se procesó correctamente, false si hay que repetir
+     */
+    public boolean procesarMuestraEnrolamiento(DPFPSample sample) {
+        try {
+            if (!enrolandoActivo || enroller == null) {
+                System.err.println("✗ No hay enrolamiento activo");
+                return false;
+            }
+
+            // Extraer características de la muestra
+            DPFPFeatureSet features = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
+
+            if (features == null) {
+                System.err.println("✗ Calidad de huella insuficiente - Intente de nuevo");
+                return false;
+            }
+
+            // Agregar muestra al enrolamiento
+            enroller.addFeatures(features);
+
+            // Mostrar progreso
+            int muestrasCapturadas = enroller.getFeaturesNeeded();
+            int muestrasRestantes = enroller.getFeaturesNeeded();
+            System.out.println("  Muestras capturadas: " + muestrasCapturadas + "/4");
+
+            // Verificar si ya se completó el enrolamiento
+            if (enroller.getTemplateStatus() == DPFPEnrollment.TEMPLATE_STATUS_READY) {
+                return finalizarEnrolamiento();
+            }
+
+            return true;
+
+        } catch (DPFPImageQualityException e) {
+            System.err.println("✗ Calidad de imagen insuficiente");
+            return false;
+        } catch (Exception e) {
+            System.err.println("Error procesando muestra: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Finaliza el enrolamiento y guarda el template en la base de datos.
+     */
+    private boolean finalizarEnrolamiento() {
+        try {
+            // Crear el template final
+            DPFPTemplate template = enroller.getTemplate();
+
+            if (template == null) {
+                System.err.println("✗ No se pudo crear el template");
+                return false;
+            }
+
+            // Guardar en base de datos
+            boolean guardado = guardarHuella(idClienteEnrolando, template);
+
+            if (guardado) {
+                System.out.println("✓ Enrolamiento completado exitosamente!");
+                System.out.println("  Huella registrada para cliente: " + idClienteEnrolando);
+            }
+
+            // Limpiar estado
+            enrolandoActivo = false;
+            idClienteEnrolando = null;
+            enroller = null;
+
+            return guardado;
+
+        } catch (Exception e) {
+            System.err.println("Error finalizando enrolamiento: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Extrae características de una muestra de huella.
+     */
+    private DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, DPFPDataPurpose purpose) {
+        try {
+            return extractor.createFeatureSet(sample, purpose);
+        } catch (DPFPImageQualityException e) {
+            return null;
+        }
+    }
+
 }
