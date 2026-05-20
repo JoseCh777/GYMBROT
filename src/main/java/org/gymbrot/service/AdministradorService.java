@@ -170,4 +170,82 @@ public class AdministradorService {
         // Se implementará con BCrypt en AuthService
         return "HASH_" + contrasena;
     }
+    /**
+     * Busca un administrador por su correo electrónico.
+     * Usado principalmente para el proceso de login.
+     *
+     * @param correo Correo del administrador
+     * @return Administrador encontrado o null
+     */
+    public Administrador buscarPorCorreo(String correo) {
+        try {
+            return administradorDAO.buscarPorCorreo(correo);
+        } catch (Exception e) {
+            System.err.println("Error en buscarPorCorreo: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Valida las credenciales de un administrador.
+     * Verifica que el correo exista y la contraseña coincida.
+     *
+     * @param correo Correo del administrador
+     * @param contrasena Contraseña en texto plano
+     * @return Administrador si las credenciales son válidas, null si no
+     */
+    public Administrador validarCredenciales(String correo, String contrasena) {
+        try {
+            // 1. Buscar administrador por correo
+            Administrador admin = administradorDAO.buscarPorCorreo(correo);
+
+            if (admin == null) {
+                System.err.println("✗ Correo no registrado");
+                return null;
+            }
+
+            // 2. Verificar estado del usuario
+            if (!"activo".equals(admin.getEstado())) {
+                System.err.println("✗ Usuario inactivo o suspendido");
+                return null;
+            }
+
+            // 3. Verificar contraseña
+            String contrasenaHash = hashearContrasena(contrasena);
+
+            if (!contrasenaHash.equals(admin.getContrasenaHash())) {
+                System.err.println("✗ Contraseña incorrecta");
+                return null;
+            }
+
+            System.out.println("✓ Credenciales válidas");
+            return admin;
+
+        } catch (Exception e) {
+            System.err.println("Error en validarCredenciales: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Verifica si un administrador tiene permisos de superadmin.
+     *
+     * @param numeroIdentificacion ID del administrador
+     * @return true si es superadmin
+     */
+    public boolean esSuperadmin(String numeroIdentificacion) {
+        try {
+            Administrador admin = administradorDAO.buscarPorId(numeroIdentificacion);
+
+            if (admin == null) {
+                return false;
+            }
+
+            return "superadmin".equalsIgnoreCase(admin.getRol());
+
+        } catch (Exception e) {
+            System.err.println("Error en esSuperadmin: " + e.getMessage());
+            return false;
+        }
+    }
 }
