@@ -166,4 +166,15 @@ public class InstructorDAO {
         }
         return instructores;
     }
+    public boolean instructorEspecialidad(int idEspecialidad) {
+        String sql = "SELECT COUNT(*) FROM INSTRUCTORES WHERE id_especialidad = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idEspecialidad);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.err.println("Error verificar especialidad: " + e.getMessage());
+        }
+        return false;
+    }
 }
