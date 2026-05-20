@@ -11,7 +11,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringBuilder;
 
 public class GroqService {
 
@@ -20,6 +19,7 @@ public class GroqService {
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
     private final String apiKey;
+    private final ConsultaGymbrotService consultaService = new ConsultaGymbrotService();
 
     public GroqService() {
         this.apiKey = cargarApiKey();
@@ -45,9 +45,21 @@ public class GroqService {
     // ── ENVIAR MENSAJE CON HISTORIAL ──────────────────────────────────────
     public String enviarMensaje(String mensajeUsuario, List<MensajeGymbrot> historial) {
         try {
-            StringBuilder mensajes = new StringBuilder();
+            String contextoDB = consultaService.buscarInfoRelevante(mensajeUsuario);
 
-            mensajes.append("{\"role\": \"system\", \"content\": \"Eres GymBrot, el asistente virtual del gimnasio GYMBROT en Valledupar. Ayudas a los clientes con información sobre membresías, horarios, rutinas e instructores. Cuando el cliente te dé su correo, confirma que le enviaste la información. Cuando te dé su número de celular, confirma que le enviaste un SMS. Responde siempre en español de manera amable y profesional. Recuerda toda la conversación anterior.\"}");
+            String systemPrompt = "Eres GymBrot, asistente virtual del gimnasio GYMBROT en Valledupar. " +
+                "INFORMACION ACTUAL DE NUESTRA BASE DE DATOS: " +
+                (contextoDB.isEmpty() ? "No hay informacion especifica en este momento." : contextoDB) +
+                " INSTRUCCIONES: Responde SOLO con la informacion proporcionada arriba cuando sea relevante. " +
+                "Si el cliente da su correo confirma que le enviaste informacion. " +
+                "Si el cliente da su numero de celular confirma que le enviaste un SMS. " +
+                "Recuerda toda la conversacion anterior. " +
+                "Responde siempre en espanol de manera amable y profesional.";
+
+            StringBuilder mensajes = new StringBuilder();
+            mensajes.append("{\"role\": \"system\", \"content\": \"")
+                    .append(systemPrompt.replace("\"", "'").replace("\n", " "))
+                    .append("\"}");
 
             if (historial != null && !historial.isEmpty()) {
                 for (MensajeGymbrot msg : historial) {
