@@ -1,4 +1,4 @@
-package dao;
+package org.gymbrot.dao;
 
 import org.gymbrot.model.SesionGymbrot;
 import org.gymbrot.util.DatabaseConnection;
@@ -9,39 +9,37 @@ import java.util.List;
 
 public class SesionGymbrotDAO {
 
-    private Connection getConexion() throws SQLException {
-        return DatabaseConnection.getInstance();
+    private Connection getConexion() {
+        try {
+            return DatabaseConnection.getInstance();
+        } catch (Exception e) {
+            System.err.println("Error de conexión: " + e.getMessage());
+            return null;
+        }
     }
-
     // ── CREAR SESIÓN ──────────────────────────────────────────────────────
     public int crearSesion(SesionGymbrot s) {
-        String sql = """
-            INSERT INTO SESIONES_GYMBROT
-                (id_cliente, fecha, hora_inicio, hora_fin, contexto_activo)
-            VALUES (?, ?, ?, ?, ?)
-            """;
-        try (Connection conn = getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setString   (1, s.getIdCliente());
-            ps.setDate     (2, Date.valueOf(s.getFecha()));
-            ps.setTimestamp(3, s.getHoraInicio() != null
-                    ? Timestamp.valueOf(s.getHoraInicio()) : null);
-            ps.setTimestamp(4, s.getHoraFin() != null
-                    ? Timestamp.valueOf(s.getHoraFin()) : null);
-            ps.setString   (5, s.getContextoActivo());
-
-            ps.executeUpdate();
-
-            try (ResultSet generados = ps.getGeneratedKeys()) {
-                if (generados.next()) return generados.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al crear sesión Gymbrot: " + e.getMessage());
+    String sql = """
+        INSERT INTO SESIONES_GYMBROT
+            (id_cliente, fecha, hora_inicio, hora_fin, contexto_activo)
+        VALUES (?, ?, ?, ?, ?)
+        """;
+    String[] cols = {"ID_SESION"};
+    try (PreparedStatement ps = getConexion().prepareStatement(sql, cols)) {
+        ps.setString   (1, s.getIdCliente());
+        ps.setDate     (2, Date.valueOf(s.getFecha()));
+        ps.setTimestamp(3, s.getHoraInicio() != null ? Timestamp.valueOf(s.getHoraInicio()) : null);
+        ps.setTimestamp(4, s.getHoraFin() != null ? Timestamp.valueOf(s.getHoraFin()) : null);
+        ps.setString   (5, s.getContextoActivo());
+        ps.executeUpdate();
+        try (ResultSet generados = ps.getGeneratedKeys()) {
+            if (generados.next()) return generados.getInt(1);
         }
-        return -1;
+    } catch (SQLException e) {
+        System.err.println("Error al crear sesión Gymbrot: " + e.getMessage());
     }
+    return -1;
+}
 
     // ── CERRAR SESIÓN ─────────────────────────────────────────────────────
     public boolean cerrarSesion(int idSesion) {

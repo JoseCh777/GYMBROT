@@ -1,4 +1,4 @@
-package dao;
+package org.gymbrot.dao;
 
 import org.gymbrot.model.MensajeGymbrot;
 import org.gymbrot.util.DatabaseConnection;

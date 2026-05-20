@@ -30,7 +30,7 @@ public class ChatbotService {
     public String procesarMensaje(int idSesion, String texto) {
         MensajeGymbrot msgUsuario = new MensajeGymbrot();
         msgUsuario.setIdSesion(idSesion);
-        msgUsuario.setRemitente("cliente");
+        msgUsuario.setRemitente("CLIENTE");
         msgUsuario.setContenido(texto);
         msgUsuario.setTimestampMsg(LocalDateTime.now());
         mensajeDAO.insertar(msgUsuario);
@@ -39,7 +39,7 @@ public class ChatbotService {
 
         MensajeGymbrot msgBot = new MensajeGymbrot();
         msgBot.setIdSesion(idSesion);
-        msgBot.setRemitente("bot");
+        msgBot.setRemitente("BOT");
         msgBot.setContenido(respuesta);
         msgBot.setTimestampMsg(LocalDateTime.now());
         mensajeDAO.insertar(msgBot);

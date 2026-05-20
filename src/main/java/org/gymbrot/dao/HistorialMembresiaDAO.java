@@ -9,7 +9,7 @@ import java.util.List;
 
 public class HistorialMembresiaDAO {
 
-    private Connection getConexion() {
+    private Connection getConexion() throws SQLException {
         return DatabaseConnection.getInstance();
     }
 
@@ -25,7 +25,7 @@ public class HistorialMembresiaDAO {
             ps.setInt(2, h.getIdMembresia());
             ps.setDate(3, Date.valueOf(h.getFechaAsignacion()));
             ps.setDate(4, h.getFechaFin() != null ? Date.valueOf(h.getFechaFin()) : null);
-            ps.setInt(5, h.getActiva());
+            ps.setInt(5, h.isActiva() ? 1 : 0);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error al insertar historial: " + e.getMessage());
@@ -89,7 +89,7 @@ public class HistorialMembresiaDAO {
         h.setIdMembresia(rs.getInt("id_membresia"));
         h.setFechaAsignacion(rs.getDate("fecha_asignacion").toLocalDate());
         h.setFechaFin(rs.getDate("fecha_fin") != null ? rs.getDate("fecha_fin").toLocalDate() : null);
-        h.setActiva(rs.getInt("activa"));
+        h.setActiva(rs.getInt("activa") == 1);
         return h;
     }
 }
