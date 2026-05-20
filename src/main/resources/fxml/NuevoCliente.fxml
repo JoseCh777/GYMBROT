@@ -10,6 +10,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -31,12 +32,47 @@
             </VBox>
 
             <VBox spacing="8" VBox.vgrow="ALWAYS">
-                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard" />
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/dashboard_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
                 <!-- ACTIVO: Clientes -->
-                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes" />
-                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores" />
-                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias" />
-                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI" />
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/group.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/instructor_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/membresias_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/bot_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             </VBox>
 
             <Separator opacity="0.1">
@@ -61,7 +97,14 @@
             <!-- Botones de accion del header -->
             <HBox alignment="CENTER" spacing="12">
                 <Button fx:id="btnCancelar" onAction="#handleCancelar" prefHeight="36" style="-fx-background-color: #1e2023; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="CANCELAR" />
-                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="GUARDAR NUEVO CLIENTE" />
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="GUARDAR NUEVO CLIENTE">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/guardar.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             </HBox>
 
             <HBox.margin>
@@ -235,7 +278,7 @@
                             </HBox>
 
                             <!-- Area del scanner -->
-                            <VBox alignment="CENTER" spacing="12" style="-fx-background-color: #121417; -fx-background-radius: 10;                                          -fx-border-color: #1e2a00; -fx-border-width: 1; -fx-border-radius: 10;">
+                            <VBox alignment="CENTER" prefHeight="275.0" prefWidth="270.0" spacing="12" style="-fx-background-color: #121417; -fx-background-radius: 10;                                          -fx-border-color: #1e2a00; -fx-border-width: 1; -fx-border-radius: 10;">
                                 <padding><Insets bottom="32" left="24" right="24" top="32" /></padding>
                                 <VBox.margin><Insets bottom="16" /></VBox.margin>
 
@@ -244,7 +287,7 @@
                                     <!-- Circulo base con borde amarillo -->
                                     <StackPane fx:id="scannerCircle" prefHeight="80" prefWidth="80" style="-fx-background-color: #1e2a00; -fx-background-radius: 40;                                                       -fx-border-color: #D4FF00; -fx-border-width: 1;                                                       -fx-border-radius: 40;">
                                         <!-- Lineas del patron de huella (SVG-like con Regions) -->
-                                        <VBox alignment="CENTER" spacing="5" prefWidth="50">
+                                        <VBox alignment="CENTER" prefWidth="50" spacing="5">
                                             <Region prefHeight="2" prefWidth="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
                                             <Region prefHeight="2" prefWidth="42" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
                                             <Region prefHeight="2" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
@@ -254,12 +297,10 @@
                                         </VBox>
                                     </StackPane>
                                     <!-- Linea de escaneo animada (se mueve de arriba a abajo) -->
-                                    <Region fx:id="lineaEscaneo" prefHeight="2" prefWidth="80" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);" StackPane.alignment="TOP_CENTER" />
+                                    <Region fx:id="lineaEscaneo" prefHeight="2.0" prefWidth="221.0" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);" StackPane.alignment="TOP_CENTER" />
                                 </StackPane>
 
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Escaneando Huella..." />
-
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="Coloque el dedo del cliente en el bio-scanner para inicializar el acceso seguro." textAlignment="CENTER" wrapText="true" />
 
                                 <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESANDO HUELLA..." />
                             </VBox>

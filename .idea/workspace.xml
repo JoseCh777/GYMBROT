@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/NuevoCliente.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/NuevoCliente.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -199,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779198974650</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779237470056</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779237470056</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -217,7 +223,8 @@
     <MESSAGE value="&quot;feat: Quitar proximamentes&quot;" />
     <MESSAGE value="&quot;feat: Quitar proximamentes en GestionClientesController&quot;" />
     <MESSAGE value="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;" />
+    <MESSAGE value="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
