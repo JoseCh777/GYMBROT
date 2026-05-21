@@ -526,36 +526,66 @@ public class GestionClientesController implements Initializable {
     private void agregarHoverInactivo(Button btn) {
         ScaleTransition grow   = new ScaleTransition(Duration.millis(180), btn);
         ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btn);
-        grow.setToX(1.03); grow.setToY(1.03);
-        shrink.setToX(1.0); shrink.setToY(1.0);
-        btn.setOnMouseEntered(e -> grow.playFromStart());
-        btn.setOnMouseExited(e  -> shrink.playFromStart());
-        btn.setOnMousePressed(e -> { ScaleTransition p = new ScaleTransition(Duration.millis(80), btn); p.setToX(0.97); p.setToY(0.97); p.play(); });
-        btn.setOnMouseReleased(e -> { ScaleTransition r = new ScaleTransition(Duration.millis(80), btn); r.setToX(1.0); r.setToY(1.0); r.play(); });
+        grow.setToX(1.03);   grow.setToY(1.03);
+        shrink.setToX(1.0);  shrink.setToY(1.0);
+
+        btn.setOnMouseEntered(e -> {
+            grow.playFromStart();
+            btn.setStyle(btn.getStyle()
+                    .replace("-fx-background-color: transparent", "-fx-background-color: #1f2226")
+                    .replace("-fx-text-fill: #9ca3af", "-fx-text-fill: white"));
+        });
+        btn.setOnMouseExited(e -> {
+            shrink.playFromStart();
+            btn.setStyle(btn.getStyle()
+                    .replace("-fx-background-color: #1f2226", "-fx-background-color: transparent")
+                    .replace("-fx-text-fill: white", "-fx-text-fill: #9ca3af"));
+        });
+        btn.setOnMousePressed(e -> {
+            ScaleTransition p = new ScaleTransition(Duration.millis(80), btn);
+            p.setToX(0.96); p.setToY(0.96); p.play();
+        });
+        btn.setOnMouseReleased(e -> {
+            ScaleTransition r = new ScaleTransition(Duration.millis(80), btn);
+            r.setToX(1.0); r.setToY(1.0); r.play();
+        });
     }
 
     private void agregarHoverActivo(Button btn) {
         ScaleTransition grow   = new ScaleTransition(Duration.millis(180), btn);
         ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btn);
-        grow.setToX(1.03); grow.setToY(1.03);
+        grow.setToX(1.03);  grow.setToY(1.03);
         shrink.setToX(1.0); shrink.setToY(1.0);
+
         btn.setOnMouseEntered(e  -> grow.playFromStart());
         btn.setOnMouseExited(e   -> shrink.playFromStart());
-        btn.setOnMousePressed(e  -> { ScaleTransition p = new ScaleTransition(Duration.millis(80), btn); p.setToX(0.97); p.setToY(0.97); p.play(); });
-        btn.setOnMouseReleased(e -> { ScaleTransition r = new ScaleTransition(Duration.millis(80), btn); r.setToX(1.0); r.setToY(1.0); r.play(); });
+        btn.setOnMousePressed(e  -> {
+            ScaleTransition p = new ScaleTransition(Duration.millis(80), btn);
+            p.setToX(0.97); p.setToY(0.97); p.play();
+        });
+        btn.setOnMouseReleased(e -> {
+            ScaleTransition r = new ScaleTransition(Duration.millis(80), btn);
+            r.setToX(1.0); r.setToY(1.0); r.play();
+        });
     }
 
     private void setNavActivo(Button activo) {
         Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
-                btn.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
-                        "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;" +
-                        "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;");
+                btn.setStyle(
+                        "-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"
+                );
+                agregarHoverActivo(btn);
             } else {
-                btn.setStyle("-fx-background-color: transparent; -fx-background-radius: 8;" +
-                        "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;" +
-                        "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;");
+                btn.setStyle(
+                        "-fx-background-color: transparent; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;" +
+                                "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"
+                );
+                agregarHoverInactivo(btn);
             }
         }
     }

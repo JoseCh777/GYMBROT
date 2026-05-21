@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/NuevoInstructor.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/NuevoInstructor.fxml" afterDir="false" />
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -271,7 +270,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779322031377</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779322991868</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1779322991868</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -297,7 +304,8 @@
     <MESSAGE value="&quot;feat: Quitar boton de configuracion&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructor.fxml&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;" />
+    <MESSAGE value="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
