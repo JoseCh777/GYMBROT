@@ -45,10 +45,7 @@ public class GestionInstructoresController implements Initializable {
 
     // ─── Toolbar ───────────────────────────────────────────────────────────
     @FXML private TextField searchField;
-    @FXML private Button btnFiltroTodos;
-    @FXML private Button btnFiltroSuperior;
-    @FXML private Button btnFiltroInferior;
-    @FXML private Button btnFiltroCardio;
+    @FXML private ComboBox<String> cmbFiltroEspecialidad;
     @FXML private Button btnAgregarInstructor;
 
     // ─── Grid ──────────────────────────────────────────────────────────────
@@ -122,6 +119,7 @@ public class GestionInstructoresController implements Initializable {
         configurarBuscador();
         cargarAIInsight();
         iniciarAnimacionDotSesiones();
+        configurarFiltroEspecialidad();
         configurarAnimacionesBotones();
         aplicarFiltro();
     }
@@ -171,28 +169,30 @@ public class GestionInstructoresController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FILTROS
+    //  FILTRO POR ESPECIALIDAD
     // ═══════════════════════════════════════════════════════════════════════
 
-    @FXML private void handleFiltroTodos()    { filtroActual = "TODOS";    actualizarEstilosFiltros(btnFiltroTodos);    aplicarFiltro(); }
-    @FXML private void handleFiltroSuperior() { filtroActual = "SUPERIOR"; actualizarEstilosFiltros(btnFiltroSuperior); aplicarFiltro(); }
-    @FXML private void handleFiltroInferior() { filtroActual = "INFERIOR"; actualizarEstilosFiltros(btnFiltroInferior); aplicarFiltro(); }
-    @FXML private void handleFiltroCardio()   { filtroActual = "CARDIO";   actualizarEstilosFiltros(btnFiltroCardio);   aplicarFiltro(); }
+    private void configurarFiltroEspecialidad() {
+        cmbFiltroEspecialidad.getItems().addAll(
+                "TODAS",
+                "TREN SUPERIOR",
+                "TREN INFERIOR",
+                "CARDIO",
+                "NUTRICION"
+        );
+        cmbFiltroEspecialidad.getSelectionModel().selectFirst();
+        cmbFiltroEspecialidad.setStyle(
+                "-fx-background-color: #282a2d; -fx-background-radius: 8;" +
+                        "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;" +
+                        "-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;"
+        );
+    }
 
-    private void actualizarEstilosFiltros(Button activo) {
-        Button[] filtros = {btnFiltroTodos, btnFiltroSuperior, btnFiltroInferior, btnFiltroCardio};
-        for (Button btn : filtros) {
-            if (btn == activo) {
-                btn.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
-                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
-                        "-fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 16 8 16;");
-            } else {
-                btn.setStyle("-fx-background-color: #282a2d; -fx-background-radius: 8;" +
-                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
-                        "-fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 8 16 8 16;" +
-                        "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;");
-            }
-        }
+    @FXML
+    private void handleFiltroEspecialidad() {
+        String seleccion = cmbFiltroEspecialidad.getValue();
+        filtroActual = seleccion != null ? seleccion : "TODAS";
+        aplicarFiltro();
     }
 
     private void aplicarFiltro() {
@@ -206,7 +206,7 @@ public class GestionInstructoresController implements Initializable {
                 if (!coincideBusqueda) return false;
             }
 
-            if (filtroActual.equals("TODOS")) return true;
+            if (filtroActual.equals("TODAS")) return true;
             return instructor.getEspecialidad().contains(filtroActual);
         });
 
@@ -436,10 +436,6 @@ public class GestionInstructoresController implements Initializable {
     private void configurarAnimacionesBotones() {
         agregarHoverActivo(btnAgregarInstructor);
         agregarHoverInactivo(btnEmparejamiento);
-        agregarHoverInactivo(btnFiltroTodos);
-        agregarHoverInactivo(btnFiltroSuperior);
-        agregarHoverInactivo(btnFiltroInferior);
-        agregarHoverInactivo(btnFiltroCardio);
     }
 
     private void agregarHoverInactivo(Button btn) {

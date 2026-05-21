@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -146,11 +147,8 @@
                         </Label>
                     </StackPane>
 
-                    <!-- Chips filtro -->
-                    <Button fx:id="btnFiltroTodos" onAction="#handleFiltroTodos" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 16 8 16;" text="TODOS" />
-                    <Button fx:id="btnFiltroSuperior" onAction="#handleFiltroSuperior" prefHeight="44" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 8 16 8 16;                                    -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;" text="SUPERIOR" />
-                    <Button fx:id="btnFiltroInferior" onAction="#handleFiltroInferior" prefHeight="44" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 8 16 8 16;                                    -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;" text="INFERIOR" />
-                    <Button fx:id="btnFiltroCardio" onAction="#handleFiltroCardio" prefHeight="44" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 8 16 8 16;                                    -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;" text="CARDIO" />
+                    <!-- Filtro por especialidad -->
+                    <ComboBox fx:id="cmbFiltroEspecialidad" onAction="#handleFiltroEspecialidad" prefHeight="44" prefWidth="220" promptText="Filtrar por especialidad..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;" />
 
                     <Button fx:id="btnAgregarInstructor" onAction="#handleAgregarInstructor" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
                         <graphic>
