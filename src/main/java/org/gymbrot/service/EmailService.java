@@ -16,6 +16,10 @@ public class EmailService {
         this.password = config.getProperty("GMAIL_PASSWORD");
     }
 
+    private boolean configValida() {
+        return email != null && !email.isEmpty() && password != null && !password.isEmpty();
+    }
+
     // ── CARGAR CONFIG ─────────────────────────────────────────────────────
     private Properties cargarConfig() {
         Properties props = new Properties();
@@ -41,8 +45,11 @@ public class EmailService {
         });
     }
 
-    // ── ENVIAR CORREO ─────────────────────────────────────────────────────
     public boolean enviarCorreo(String destinatario, String asunto, String contenido) {
+        if (!configValida()) {
+            System.err.println("⚠ Email no configurado — revisa config.properties");
+            return false;
+        }
         try {
             Message message = new MimeMessage(getSession());
             message.setFrom(new InternetAddress(email));

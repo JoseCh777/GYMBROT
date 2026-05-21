@@ -78,8 +78,8 @@ public class ClienteService {
             return false;
         }
     }
-
-    public boolean eliminarCliente(String numeroIdentificacion) {
+    /**
+     * Elimina un cliente del sistema.
      *
      * @param numeroIdentificacion ID del cliente
      * @return true si se eliminó correctamente

@@ -11,6 +11,7 @@ public class DatabaseConnection {
     private static final String PASSWORD = "gymbrot123";
 
     private static Connection instance = null;
+    private static boolean conexionReportada = false;
 
     private DatabaseConnection() {}
 
@@ -19,7 +20,10 @@ public class DatabaseConnection {
             if (instance == null || instance.isClosed()) {
                 Class.forName("oracle.jdbc.OracleDriver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Conexión exitosa a GYMBROT DB");
+                if (!conexionReportada) {
+                    conexionReportada = true;
+                    System.out.println("Conexión exitosa a GYMBROT DB");
+                }
             }
         } catch (ClassNotFoundException e) {
             throw new SQLException("Driver Oracle no encontrado: " + e.getMessage(), e);

@@ -67,6 +67,36 @@
             <version>0.4</version>
         </dependency>
 
+        <!-- DigitalPersona SDK (huella dactilar) -->
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpotapi</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpotapi.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpotjni</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpotjni.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpfpenrollment</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpfpenrollment.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpfpverification</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpfpverification.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
