@@ -59,4 +59,50 @@ public class ProgresoService {
         }
         return progresoDAO.listarPorCliente(idCliente);
     }
+    /**
+     * Registra un nuevo progreso físico para un cliente.
+     * Calcula el IMC automáticamente a partir de peso y altura.
+     * @param progreso Progreso a registrar.
+     * @return true si se registró exitosamente.
+     */
+    public boolean registrarProgreso(Progreso progreso) {
+        // 1. Validar cliente
+        if (progreso.getIdCliente() == null || progreso.getIdCliente().trim().isEmpty()) {
+            System.err.println("✗ ID de cliente inválido.");
+            return false;
+        }
+
+        // 2. Verificar que el cliente exista
+        if (clienteDAO.buscarPorId(progreso.getIdCliente()) == null) {
+            System.err.println("✗ No se encontró el cliente.");
+            return false;
+        }
+
+        // 3. Validar peso
+        if (progreso.getPeso() <= 0) {
+            System.err.println("✗ El peso debe ser mayor a 0.");
+            return false;
+        }
+
+        // 4. Validar altura
+        if (progreso.getAltura() <= 0) {
+            System.err.println("✗ La altura debe ser mayor a 0.");
+            return false;
+        }
+
+        // 5. Calcular IMC automáticamente
+        double imc = calcularIMC(progreso.getPeso(), progreso.getAltura());
+        if (imc == -1) return false;
+        progreso.setImc(imc);
+
+        // 6. Establecer fecha de registro
+        progreso.setFechaRegistro(LocalDate.now());
+
+        // 7. Persistir
+        boolean resultado = progresoDAO.insertar(progreso);
+        if (resultado) {
+            System.out.println("✓ Progreso registrado exitosamente. IMC calculado: " + imc);
+        }
+        return resultado;
+    }
 }
