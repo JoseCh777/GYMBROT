@@ -1,0 +1,265 @@
+package org.gymbrot.controller;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GestionMembresiasController implements Initializable {
+
+    // ── SideNav ──────────────────────────────────────────────
+    @FXML private Button navDashboard;
+    @FXML private Button navClientes;
+    @FXML private Button navInstructores;
+    @FXML private Button navMembresias;
+    @FXML private Button navAI;
+
+    // ── Selector de duracion ─────────────────────────────────
+    @FXML private Button btnMensual;
+    @FXML private Button btnSemestral;
+    @FXML private Button btnAnual;
+
+    // ── Labels de precios ────────────────────────────────────
+    @FXML private Label lblPrecioBronce;
+    @FXML private Label lblPrecioPlata;
+    @FXML private Label lblPrecioOro;
+
+    @FXML private Label lblFacturacionBronce;
+    @FXML private Label lblFacturacionPlata;
+    @FXML private Label lblFacturacionOro;
+
+    // ── Botones de seleccion de plan ─────────────────────────
+    @FXML private Button btnSeleccionarBronce;
+    @FXML private Button btnSeleccionarPlata;
+    @FXML private Button btnSeleccionarOro;
+
+    // ── Tabla comparativa ────────────────────────────────────
+    @FXML private TableView<FilaComparativa> tablaComparativa;
+    @FXML private TableColumn<FilaComparativa, String> colBeneficio;
+    @FXML private TableColumn<FilaComparativa, String> colBronce;
+    @FXML private TableColumn<FilaComparativa, String> colPlata;
+    @FXML private TableColumn<FilaComparativa, String> colOro;
+
+    // ── Banner AI ────────────────────────────────────────────
+    @FXML private Button btnChatearAI;
+
+    // ── Estado interno ───────────────────────────────────────
+    private enum Duracion { MENSUAL, SEMESTRAL, ANUAL }
+    private Duracion duracionActual = Duracion.ANUAL;
+
+    // Precios base (mensual)
+    private static final int PRECIO_BRONCE   = 61;
+    private static final int PRECIO_PLATA    = 111;
+    private static final int PRECIO_ORO      = 161;
+
+    // Descuentos
+    private static final double DESC_SEMESTRAL = 0.10;
+    private static final double DESC_ANUAL     = 0.20;
+
+    // Estilos nav
+    private static final String STYLE_NAV_ACTIVO =
+            "-fx-background-color: #D4FF00; -fx-background-radius: 8; " +
+            "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; " +
+            "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
+    private static final String STYLE_NAV_INACTIVO =
+            "-fx-background-color: transparent; -fx-background-radius: 8; " +
+            "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; " +
+            "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
+
+    // Estilos selector duracion
+    private static final String STYLE_BTN_DURACION_ACTIVO =
+            "-fx-background-color: #D4FF00; -fx-background-radius: 8; " +
+            "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
+            "-fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
+    private static final String STYLE_BTN_DURACION_INACTIVO =
+            "-fx-background-color: transparent; -fx-background-radius: 8; " +
+            "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
+            "-fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
+
+    // ─────────────────────────────────────────────────────────
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        configurarTablaComparativa();
+        actualizarPrecios();
+        // navMembresias ya viene marcado como activo desde el FXML
+    }
+
+    // ══ Navegacion ═══════════════════════════════════════════
+
+    @FXML
+    private void handleNavDashboard(ActionEvent event) {
+        navegarA("/fxml/Dashboard.fxml", event);
+    }
+
+    @FXML
+    private void handleNavClientes(ActionEvent event) {
+        navegarA("/fxml/GestionClientes.fxml", event);
+    }
+
+    @FXML
+    private void handleNavInstructores(ActionEvent event) {
+        navegarA("/fxml/GestionInstructores.fxml", event);
+    }
+
+    @FXML
+    private void handleNavMembresias(ActionEvent event) {
+        // Ya estamos en esta vista, no hacer nada
+    }
+
+    @FXML
+    private void handleNavAI(ActionEvent event) {
+        navegarA("/fxml/GymbroAI.fxml", event);
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        navegarA("/fxml/Login.fxml", event);
+    }
+
+    // ══ Selector de duracion ══════════════════════════════════
+
+    @FXML
+    private void handleDuracionMensual(ActionEvent event) {
+        duracionActual = Duracion.MENSUAL;
+        btnMensual.setStyle(STYLE_BTN_DURACION_ACTIVO);
+        btnSemestral.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        btnAnual.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        actualizarPrecios();
+    }
+
+    @FXML
+    private void handleDuracionSemestral(ActionEvent event) {
+        duracionActual = Duracion.SEMESTRAL;
+        btnMensual.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        btnSemestral.setStyle(STYLE_BTN_DURACION_ACTIVO);
+        btnAnual.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        actualizarPrecios();
+    }
+
+    @FXML
+    private void handleDuracionAnual(ActionEvent event) {
+        duracionActual = Duracion.ANUAL;
+        btnMensual.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        btnSemestral.setStyle(STYLE_BTN_DURACION_INACTIVO);
+        btnAnual.setStyle(STYLE_BTN_DURACION_ACTIVO);
+        actualizarPrecios();
+    }
+
+    // ══ Seleccion de plan ═════════════════════════════════════
+
+    @FXML
+    private void handleSeleccionarBronce(ActionEvent event) {
+        System.out.println("Plan seleccionado: Bronce | Duracion: " + duracionActual);
+        // TODO: abrir formulario de inscripcion con plan = BRONCE
+    }
+
+    @FXML
+    private void handleSeleccionarPlata(ActionEvent event) {
+        System.out.println("Plan seleccionado: Plata | Duracion: " + duracionActual);
+        // TODO: abrir formulario de inscripcion con plan = PLATA
+    }
+
+    @FXML
+    private void handleSeleccionarOro(ActionEvent event) {
+        System.out.println("Plan seleccionado: Oro Elite | Duracion: " + duracionActual);
+        // TODO: abrir formulario de inscripcion con plan = ORO
+    }
+
+    // ══ Banner AI ════════════════════════════════════════════
+
+    @FXML
+    private void handleChatearAI(ActionEvent event) {
+        navegarA("/fxml/GymbroAI.fxml", event);
+    }
+
+    // ══ Logica de precios ════════════════════════════════════
+
+    private void actualizarPrecios() {
+        double factor = switch (duracionActual) {
+            case MENSUAL   -> 1.0;
+            case SEMESTRAL -> 1.0 - DESC_SEMESTRAL;
+            case ANUAL     -> 1.0 - DESC_ANUAL;
+        };
+
+        int precioBronce = (int) Math.round(PRECIO_BRONCE * factor);
+        int precioPlata  = (int) Math.round(PRECIO_PLATA  * factor);
+        int precioOro    = (int) Math.round(PRECIO_ORO    * factor);
+
+        lblPrecioBronce.setText(String.valueOf(precioBronce));
+        lblPrecioPlata.setText(String.valueOf(precioPlata));
+        lblPrecioOro.setText(String.valueOf(precioOro));
+
+        lblFacturacionBronce.setText(textoFacturacion(precioBronce, "Facturado"));
+        lblFacturacionPlata.setText(textoFacturacion(precioPlata, "Facturado"));
+        lblFacturacionOro.setText(textoFacturacion(precioOro, "Mejor Valor: Facturado"));
+    }
+
+    private String textoFacturacion(int precioMensual, String prefijo) {
+        return switch (duracionActual) {
+            case MENSUAL   -> prefijo + " mensualmente";
+            case SEMESTRAL -> prefijo + " semestralmente a USD " + (precioMensual * 6) + "/semestre";
+            case ANUAL     -> prefijo + " anualmente a USD " + (precioMensual * 12) + "/año";
+        };
+    }
+
+    // ══ Tabla comparativa ════════════════════════════════════
+
+    private void configurarTablaComparativa() {
+        colBeneficio.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().beneficio()));
+        colBronce.setCellValueFactory(data    -> new SimpleStringProperty(data.getValue().bronce()));
+        colPlata.setCellValueFactory(data     -> new SimpleStringProperty(data.getValue().plata()));
+        colOro.setCellValueFactory(data       -> new SimpleStringProperty(data.getValue().oro()));
+
+        ObservableList<FilaComparativa> filas = FXCollections.observableArrayList(
+            new FilaComparativa("Acceso al Gimnasio",              "Diurno",           "Extendido",         "24/7 Ultra"),
+            new FilaComparativa("Herramientas de IA",              "Basico",           "Avanzado",          "Tiempo Real"),
+            new FilaComparativa("Sesiones con Instructor",         "1 al mes",         "Digital + Grupal",  "1-a-1 Elite"),
+            new FilaComparativa("Suite de Recuperacion",           "No incluida",      "Hidromasaje/Sauna", "Crioterapia"),
+            new FilaComparativa("Locker Personal y Lavanderia",    "No incluida",      "No incluida",       "Incluida"),
+            new FilaComparativa("Pases de Invitado",               "No incluidos",     "No incluidos",      "Ilimitados"),
+            new FilaComparativa("Seguimiento Nutricional",         "No incluido",      "Incluido",          "Incluido")
+        );
+
+        tablaComparativa.setItems(filas);
+    }
+
+    // ══ Utilidades ═══════════════════════════════════════════
+
+    private void navegarA(String fxmlPath, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) navDashboard.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error al navegar a: " + fxmlPath);
+            e.printStackTrace();
+        }
+    }
+
+    // ══ Record interno para la tabla ═════════════════════════
+
+    public record FilaComparativa(
+        String beneficio,
+        String bronce,
+        String plata,
+        String oro
+    ) {}
+}
