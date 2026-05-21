@@ -237,4 +237,5 @@ public class RutinaService {
         }
         return resultado;
     }
+
 }
