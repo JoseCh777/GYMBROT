@@ -621,7 +621,7 @@ public class GestionClientesController implements Initializable {
 
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { }
-    @FXML private void handleNavInstructores() { }
+    @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml");}
     @FXML private void handleNavMembresias()   { }
     @FXML private void handleNavAI()           { }
 
