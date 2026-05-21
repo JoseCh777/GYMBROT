@@ -31,14 +31,14 @@
                     <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/dashboard_white.png" /></image></ImageView></graphic>
                 </Button>
                 <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
-                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/group.png" /></image></ImageView></graphic>
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/group_white.png" /></image></ImageView></graphic>
                 </Button>
                 <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
                     <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/instructor_white.png" /></image></ImageView></graphic>
                 </Button>
                 <!-- ACTIVO: Membresias -->
                 <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
-                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/membresias_white.png" /></image></ImageView></graphic>
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/membresias.png" /></image></ImageView></graphic>
                 </Button>
                 <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
                     <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/bot_white.png" /></image></ImageView></graphic>
@@ -50,7 +50,7 @@
             </Separator>
 
             <VBox spacing="8">
-                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+                <Button fx:id="btnLogout" maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
             </VBox>
         </VBox>
     </left>
@@ -233,7 +233,7 @@
                 <VBox spacing="16">
                     <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Comparativa de Beneficios" />
 
-                    <TableView fx:id="tablaComparativa" prefHeight="260" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;">
+                    <TableView fx:id="tablaComparativa" prefHeight="260" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
                         <columns>
                             <TableColumn fx:id="colBeneficio" prefWidth="380" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARACTERISTICAS Y BENEFICIOS" />
                             <TableColumn fx:id="colBronce" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BRONCE" />
