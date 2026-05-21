@@ -74,36 +74,8 @@ public class GestionInstructoresController implements Initializable {
     //  MODELO DE TARJETA
     // ═══════════════════════════════════════════════════════════════════════
 
-    public static class InstructorCard {
-        private final String id;
-        private final String nombre;
-        private final double rating;
-        private final int sesiones;
-        private final String especialidad;
-        private final String estilo;
-        private final String[] tags;
-        private final String badgeStyle;
-
-        public InstructorCard(String id, String nombre, double rating, int sesiones,
-                              String especialidad, String estilo, String[] tags, String badgeStyle) {
-            this.id = id;
-            this.nombre = nombre;
-            this.rating = rating;
-            this.sesiones = sesiones;
-            this.especialidad = especialidad;
-            this.estilo = estilo;
-            this.tags = tags;
-            this.badgeStyle = badgeStyle;
-        }
-
-        public String getId() { return id; }
-        public String getNombre() { return nombre; }
-        public double getRating() { return rating; }
-        public int getSesiones() { return sesiones; }
-        public String getEspecialidad() { return especialidad; }
-        public String getEstilo() { return estilo; }
-        public String[] getTags() { return tags; }
-        public String getBadgeStyle() { return badgeStyle; }
+    public record InstructorCard(String id, String nombre, double rating, int sesiones, String especialidad,
+                                 String estilo, String[] tags, String badgeStyle) {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -200,14 +172,14 @@ public class GestionInstructoresController implements Initializable {
 
         instructoresFiltrados.setPredicate(instructor -> {
             if (!busqueda.isEmpty()) {
-                boolean coincideBusqueda = instructor.getNombre().toLowerCase().contains(busqueda)
-                        || instructor.getId().toLowerCase().contains(busqueda)
-                        || instructor.getEspecialidad().toLowerCase().contains(busqueda);
+                boolean coincideBusqueda = instructor.nombre().toLowerCase().contains(busqueda)
+                        || instructor.id().toLowerCase().contains(busqueda)
+                        || instructor.especialidad().toLowerCase().contains(busqueda);
                 if (!coincideBusqueda) return false;
             }
 
             if (filtroActual.equals("TODAS")) return true;
-            return instructor.getEspecialidad().contains(filtroActual);
+            return instructor.especialidad().contains(filtroActual);
         });
 
         paginaActual = 1;
@@ -269,9 +241,9 @@ public class GestionInstructoresController implements Initializable {
         img.setPreserveRatio(false);
         imageStack.getChildren().add(img);
 
-        Label badge = new Label(inst.getEspecialidad());
+        Label badge = new Label(inst.especialidad());
         badge.setAlignment(Pos.CENTER);
-        badge.setStyle(inst.getBadgeStyle() +
+        badge.setStyle(inst.badgeStyle() +
                 "-fx-background-radius: 4; -fx-font-family: 'Space Grotesk';" +
                 "-fx-font-size: 10px; -fx-font-weight: 700; -fx-padding: 3 8 3 8;");
         StackPane.setAlignment(badge, Pos.TOP_LEFT);
@@ -282,21 +254,21 @@ public class GestionInstructoresController implements Initializable {
         VBox info = new VBox(10);
         info.setStyle("-fx-padding: 14 14 14 14;");
 
-        Label lblNombre = new Label(inst.getNombre());
+        Label lblNombre = new Label(inst.nombre());
         lblNombre.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px;" +
                 "-fx-font-weight: 700; -fx-text-fill: white;");
 
         HBox ratingRow = new HBox(6);
         ratingRow.setAlignment(Pos.CENTER_LEFT);
-        Label lblRating = new Label("\u2605 " + inst.getRating());
+        Label lblRating = new Label("\u2605 " + inst.rating());
         lblRating.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;" +
                 "-fx-font-weight: 700; -fx-text-fill: #D4FF00;");
-        Label lblSesiones = new Label("(" + inst.getSesiones() + " sesiones)");
+        Label lblSesiones = new Label("(" + inst.sesiones() + " sesiones)");
         lblSesiones.setStyle("-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;");
         ratingRow.getChildren().addAll(lblRating, lblSesiones);
 
         HBox tagsRow = new HBox(6);
-        for (String tag : inst.getTags()) {
+        for (String tag : inst.tags()) {
             Label lblTag = new Label(tag);
             lblTag.setStyle("-fx-background-color: #1f2226; -fx-background-radius: 4;" +
                     "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;" +

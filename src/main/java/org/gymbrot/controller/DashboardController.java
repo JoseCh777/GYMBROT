@@ -399,7 +399,7 @@ public class DashboardController implements Initializable {
     @FXML private void handleNavDashboard()    { setNavActivo(navDashboard); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
-    @FXML private void handleNavMembresias()   {  }
+    @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           {  }
 
     @FXML

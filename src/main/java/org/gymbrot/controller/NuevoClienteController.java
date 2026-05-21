@@ -694,7 +694,7 @@ public class NuevoClienteController implements Initializable {
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() {  }
-    @FXML private void handleNavMembresias()   {  }
+    @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           {  }
 
     @FXML

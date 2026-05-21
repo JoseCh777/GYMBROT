@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: Agregar efectos al pasar el cursor por los botones&quot;">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: crear GestionMembresias.fxml&quot;">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,11 +21,19 @@
   <component name="CopilotChats">
     <option name="panelChat">
       <chat>
-        <option name="activeSessionId" value="0fbea07b-1ede-4643-b4cc-e35efa0d2191" />
+        <option name="activeSessionId" value="f49e29c8-62bc-4bf6-ba2d-02000a8ebc41" />
         <option name="sessions">
           <session>
             <option name="chatType" value="PANEL" />
             <option name="id" value="0fbea07b-1ede-4643-b4cc-e35efa0d2191" />
+            <option name="modeId" value="Ask" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="f49e29c8-62bc-4bf6-ba2d-02000a8ebc41" />
             <option name="modeId" value="Ask" />
             <option name="modelType" value="builtin_family" />
             <option name="modelValue" value="auto" />
@@ -34,12 +47,18 @@
   <component name="CopilotPersistence">
     <persistenceIdMap>
       <entry key="_C:/Users/ASUS/Documents/UPC/5' Semestre/GYMBROT" value="3DpNi3Gc7XQgBO4xFfPNzuFv03Z" />
+      <entry key="_C:/Users/ASUS/Documents/UPC/Proyectos/GYMBROT" value="3E0tZNMRx6miwgmepW73jQPBRpY" />
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="88" />
+    <option name="cachedIndexableFilesCount" value="94" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/backend" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -107,10 +126,11 @@
     &quot;git-widget-placeholder&quot;: &quot;feature/frontend&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ASUS/Documents/UPC/5' Semestre/GYMBROT/pom.xml&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ASUS/Documents/UPC/Proyectos/GYMBROT&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
@@ -285,7 +305,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779323338439</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="&quot;feat: crear GestionMembresias.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779331731188</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1779331731188</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -313,7 +341,12 @@
     <MESSAGE value="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;" />
     <MESSAGE value="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;" />
     <MESSAGE value="&quot;feat: Agregar efectos al pasar el cursor por los botones&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Agregar efectos al pasar el cursor por los botones&quot;" />
+    <MESSAGE value="&quot;feat: crear GestionMembresias.fxml&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: crear GestionMembresias.fxml&quot;" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
