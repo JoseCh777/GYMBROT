@@ -45,5 +45,61 @@ public class AuthService {
             return false;
         }
     }
+    /**
+     * Autentica un usuario por correo y contraseña.
+     * Verifica estado activo y guarda la sesión si el login es exitoso.
+     * @param correo Correo del usuario.
+     * @param contrasenaPlana Contraseña en texto plano.
+     * @return Usuario autenticado, o null si falla.
+     */
+    public Usuario login(String correo, String contrasenaPlana) {
+        // 1. Validar campos
+        if (correo == null || correo.trim().isEmpty()) {
+            System.err.println("✗ El correo no puede estar vacío.");
+            return null;
+        }
+        if (contrasenaPlana == null || contrasenaPlana.trim().isEmpty()) {
+            System.err.println("✗ La contraseña no puede estar vacía.");
+            return null;
+        }
+
+        // 2. Buscar usuario por correo
+        Usuario usuario = usuarioDAO.buscarPorCorreo(correo.trim());
+        if (usuario == null) {
+            System.err.println("✗ No se encontró usuario con ese correo.");
+            return null;
+        }
+
+        // 3. Verificar estado activo
+        if (!usuario.getEstado().equals("activo")) {
+            System.err.println("✗ El usuario está " + usuario.getEstado() + ".");
+            return null;
+        }
+
+        // 4. Verificar contraseña
+        if (!validarContrasena(contrasenaPlana, usuario.getContrasenaHash())) {
+            System.err.println("✗ Contraseña incorrecta.");
+            return null;
+        }
+
+        // 5. Si es administrador, guardar en sesión
+        if (usuario.getTipoUsuario().equals("administrador")) {
+            Administrador admin = administradorDAO.buscarPorCorreo(correo.trim());
+            if (admin != null) {
+                SessionManager.setAdminActual(admin);
+            }
+        }
+
+        System.out.println("✓ Login exitoso: " + usuario.getNombre() + " (" + usuario.getTipoUsuario() + ")");
+        return usuario;
+    }
+
+    /**
+     * Cierra la sesión activa del administrador.
+     */
+    public void cerrarSesion() {
+        SessionManager.cerrarSesion();
+        System.out.println("✓ Sesión cerrada exitosamente.");
+    }
 
 }
