@@ -131,17 +131,19 @@
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
-                    <StackPane HBox.hgrow="ALWAYS">
-                        <TextField fx:id="searchField" prefHeight="44" promptText="Buscar por nombre, especialidad o ID..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
-                  <Label prefHeight="20.0" prefWidth="272.0" text="," textFill="#282a2d">
+                    <StackPane prefHeight="44.0" prefWidth="262.0" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="searchField" prefHeight="44" prefWidth="372.0" promptText="Buscar por nombre, especialidad o ID..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
+                            <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
+                            <StackPane.margin><Insets left="12" /></StackPane.margin>
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/lupa.png" />
                            </image>
                         </ImageView>
                      </graphic>
-                  </Label>
+                        </Label>
                     </StackPane>
 
                     <!-- Chips filtro -->
