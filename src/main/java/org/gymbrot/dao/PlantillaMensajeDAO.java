@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PlantillaMensajeDAO {
 
-    private Connection getConexion() {
+    private Connection getConexion() throws SQLException  {
         return DatabaseConnection.getInstance();
     }
 

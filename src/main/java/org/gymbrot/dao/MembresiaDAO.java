@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MembresiaDAO {
 
-    private Connection getConexion() {
+    private Connection getConexion() throws SQLException  {
         return DatabaseConnection.getInstance();
     }
 
@@ -71,6 +71,17 @@ public class MembresiaDAO {
         }
         return null;
     }
+    public boolean membresiaPlan(int idPlan) {
+    String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'activa'";
+    try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+        ps.setInt(1, idPlan);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) return rs.getInt(1) > 0;
+    } catch (SQLException e) {
+        System.err.println("Error verificar plan: " + e.getMessage());
+    }
+    return false;
+}
     // ── LISTAR VENCIDAS ───────────────────────────────────────────────────
     public List<Membresia> listarVencidas() {
         List<Membresia> lista = new ArrayList<>();

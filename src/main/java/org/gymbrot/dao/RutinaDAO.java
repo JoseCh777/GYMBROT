@@ -1,4 +1,4 @@
-package dao;
+package org.gymbrot.dao;
 
 import org.gymbrot.model.Rutina;
 import org.gymbrot.util.DatabaseConnection;
