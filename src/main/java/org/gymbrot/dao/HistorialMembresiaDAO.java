@@ -66,6 +66,23 @@ public class HistorialMembresiaDAO {
         }
         return null;
     }
+
+    public HistorialMembresia buscarPorMembresia(int idMembresia) {
+        String sql = """
+            SELECT * FROM HISTORIAL_MEMBRESIAS
+            WHERE id_membresia = ? AND activa = 1
+            """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idMembresia);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar por membresía: " + e.getMessage());
+        }
+        return null;
+    }
+
     // ── DESACTIVAR ────────────────────────────────────────────────────────
     public boolean desactivar(int idHistorial) {
         String sql = """

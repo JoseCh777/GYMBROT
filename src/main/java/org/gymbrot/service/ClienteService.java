@@ -4,7 +4,7 @@ import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Usuario;
-import com.digitalpersona.onetouch.DPFPTemplate;
+//import com.digitalpersona.onetouch.DPFPTemplate;
 
 import java.time.LocalDate;
 import java.util.List;

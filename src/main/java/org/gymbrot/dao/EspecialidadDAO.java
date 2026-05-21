@@ -66,6 +66,31 @@ public class EspecialidadDAO {
         }
     }
 
+    public boolean actualizar(Especialidad especialidad) {
+        String sql = "UPDATE ESPECIALIDADES SET nombre = ? WHERE id_especialidad = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, especialidad.getNombre());
+            pstmt.setInt(2, especialidad.getIdEspecialidad());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error actualizar especialidad: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean eliminar(int idEspecialidad) {
+        String sql = "DELETE FROM ESPECIALIDADES WHERE id_especialidad = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idEspecialidad);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error eliminar especialidad: " + e.getMessage());
+            return false;
+        }
+    }
+
     private Especialidad mapearEspecialidad(ResultSet rs) throws SQLException {
         Especialidad especialidad = new Especialidad();
         especialidad.setIdEspecialidad(rs.getInt("id_especialidad"));

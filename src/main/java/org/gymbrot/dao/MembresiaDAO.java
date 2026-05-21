@@ -71,6 +71,33 @@ public class MembresiaDAO {
         }
         return null;
     }
+
+    public int insertarYRetornarId(Membresia m) {
+        String sql = """
+            INSERT INTO MEMBRESIAS
+                (id_plan, tipo_membresia, modalidad_pago, valor,
+                 fecha_inicio, fecha_vencimiento, estado)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql, new String[]{"id_membresia"})) {
+            ps.setInt(1, m.getIdPlan());
+            ps.setString(2, m.getTipoMembresia());
+            ps.setString(3, m.getModalidadPago());
+            ps.setDouble(4, m.getValor());
+            ps.setDate(5, Date.valueOf(m.getFechaInicio()));
+            ps.setDate(6, Date.valueOf(m.getFechaVencimiento()));
+            ps.setString(7, m.getEstado());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al insertar membresía: " + e.getMessage());
+        }
+        return -1;
+    }
+
     public boolean membresiaPlan(int idPlan) {
     String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'activa'";
     try (PreparedStatement ps = getConexion().prepareStatement(sql)) {

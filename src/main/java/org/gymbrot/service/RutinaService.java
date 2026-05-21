@@ -6,6 +6,7 @@ import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.RutinaDAO;
 import org.gymbrot.dao.RutinaEjercicioDAO;
 import org.gymbrot.model.Rutina;
+import org.gymbrot.model.Ejercicio;
 import org.gymbrot.model.RutinaEjercicio;
 import java.time.LocalDate;
 import java.util.List;

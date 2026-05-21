@@ -1,20 +1,21 @@
 package org.gymbrot.service;
 
 import org.gymbrot.dao.RegistroIngresoDAO;
-import org.gymbrot.model.RegistroIngreso;
-import com.digitalpersona.onetouch.DPFPSample;
+import org.gymbrot.model.*;
+import org.gymbrot.service.*;
+//import com.digitalpersona.onetouch.DPFPSample;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class IngresoService {
+public class RegistroIngresoService {
 
     private RegistroIngresoDAO ingresoDAO;
     private HuellaService huellaService;
     private MembresiaService membresiaService;
 
-    public IngresoService() {
+    public RegistroIngresoService() {
         this.ingresoDAO = new RegistroIngresoDAO();
         this.huellaService = new HuellaService();
         this.membresiaService = new MembresiaService();

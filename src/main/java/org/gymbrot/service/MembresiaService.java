@@ -4,6 +4,7 @@ import org.gymbrot.dao.HistorialMembresiaDAO;
 import org.gymbrot.dao.MembresiaDAO;
 import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.model.HistorialMembresia;
+import org.gymbrot.model.Pago;
 import org.gymbrot.model.Membresia;
 
 import java.time.LocalDate;
@@ -53,7 +54,8 @@ public class MembresiaService {
             }
 
             // 4. Desactivar membresía actual del cliente (si existe)
-            historialDAO.desactivarActual(idCliente);
+            HistorialMembresia actual = historialDAO.buscarActiva(idCliente);
+            if (actual != null) historialDAO.desactivar(actual.getIdHistorial());
 
             // 5. Crear registro en historial
             HistorialMembresia historial = new HistorialMembresia();
@@ -143,7 +145,7 @@ public class MembresiaService {
             }
 
             // 5. Enviar notificación de renovación exitosa
-            notifService.enviarPorPlantilla(idCliente, 3); // Plantilla renovación
+            notifService.enviarPorPlantilla(idCliente, 3, null, null);
 
             System.out.println("✓ Membresía renovada hasta: " + nuevaFechaVencimiento);
             return true;
@@ -175,13 +177,13 @@ public class MembresiaService {
 
                 // Notificar 7 días antes
                 if (diasRestantes == 7) {
-                    notifService.enviarPorPlantilla(idCliente, 1); // Plantilla "próximo vencimiento"
+                    notifService.enviarPorPlantilla(idCliente, 1, null, null);
                     System.out.println("✓ Notificación enviada - Vence en 7 días");
                 }
 
                 // Notificar 1 día antes
                 else if (diasRestantes == 1) {
-                    notifService.enviarPorPlantilla(idCliente, 2); // Plantilla "vence mañana"
+                    notifService.enviarPorPlantilla(idCliente, 2, null, null);
                     System.out.println("✓ Notificación enviada - Vence mañana");
                 }
 
@@ -191,7 +193,8 @@ public class MembresiaService {
                     membresiaDAO.actualizar(membresia);
 
                     // Desactivar en historial
-                    historialDAO.desactivarActual(idCliente);
+                    HistorialMembresia actual = historialDAO.buscarActiva(idCliente);
+                    if (actual != null) historialDAO.desactivar(actual.getIdHistorial());
 
                     System.out.println("✓ Membresía marcada como vencida");
                 }
