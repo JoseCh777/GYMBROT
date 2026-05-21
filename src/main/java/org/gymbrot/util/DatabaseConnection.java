@@ -17,7 +17,7 @@ public class DatabaseConnection {
     public static Connection getInstance() throws SQLException {
         try {
             if (instance == null || instance.isClosed()) {
-                Class.forName("oracle.jdbc.driver.OracleDriver");
+                Class.forName("oracle.jdbc.OracleDriver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
                 System.out.println("Conexión exitosa a GYMBROT DB");
             }

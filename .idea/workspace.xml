@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ClienteService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +131,7 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.main">
+  <component name="RunManager" selected="Maven.GYMBROT [javafx:run]">
     <configuration name="main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="org.gymbrot.Main" />
       <module name="GYMBROT" />
@@ -323,7 +326,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779332010118</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png">
+      <option name="closed" value="true" />
+      <created>1779391108184</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1779391108184</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png">
+      <option name="closed" value="true" />
+      <created>1779391114050</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1779391114050</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -354,7 +373,8 @@
     <MESSAGE value="&quot;feat: crear GestionMembresias.fxml&quot;" />
     <MESSAGE value="&quot;feat: crear GestionMembresiasController&quot;" />
     <MESSAGE value="&quot;feat: Navegacion hacia GestionMembresias&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: Navegacion hacia GestionMembresias&quot;" />
+    <MESSAGE value="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
