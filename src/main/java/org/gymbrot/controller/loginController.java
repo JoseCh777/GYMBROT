@@ -11,6 +11,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.UsuarioDAO;
+import org.gymbrot.model.Usuario;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.net.URL;
@@ -108,9 +111,10 @@ public class loginController implements Initializable {
             return;
         }
 
-        // TODO: reemplazar con autenticacion real contra USUARIOS en BD
-        // SELECT * FROM USUARIOS WHERE (nombre = ? OR correo = ?) AND contrasena_hash = ?
-        if (usuario.equals("admin") && contrasena.equals("admin")) {
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario user = dao.buscarPorNombreOCorreo(usuario);
+
+        if (user != null && BCrypt.checkpw(contrasena, user.getContrasenaHash())) {
             navegarA("/fxml/Dashboard.fxml");
         } else {
             mostrarError("Credenciales invalidas", "Usuario o contrasena incorrectos.");

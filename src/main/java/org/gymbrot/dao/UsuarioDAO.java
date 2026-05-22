@@ -114,6 +114,23 @@ public class UsuarioDAO {
         return null;
     }
 
+    public Usuario buscarPorNombreOCorreo(String login) {
+        String sql = "SELECT * FROM USUARIOS WHERE (LOWER(nombre) = LOWER(?) OR LOWER(correo) = LOWER(?)) AND estado = 'ACTIVO'";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, login);
+            pstmt.setString(2, login);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapearUsuario(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error buscar por nombre/correo: " + e.getMessage());
+        }
+        return null;
+    }
+
     public List<Usuario> listarTodos() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM USUARIOS ORDER BY fecha_registro DESC";

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: crear carpeta de libs&quot;">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: el programa avanza desde el login&quot;&#10;&#10;# Conflicts:&#10;#&#9;pom.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -379,7 +380,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779393484452</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="&quot;feat: el programa avanza desde el login&quot;&#10;&#10;# Conflicts:&#10;#&#9;pom.xml">
+      <option name="closed" value="true" />
+      <created>1779414564311</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1779414564311</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -413,7 +422,8 @@
     <MESSAGE value="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png" />
     <MESSAGE value="&quot;feat: actualizar la conexion a la BD&quot;" />
     <MESSAGE value="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;" />
+    <MESSAGE value="&quot;feat: el programa avanza desde el login&quot;&#10;&#10;# Conflicts:&#10;#&#9;pom.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: el programa avanza desde el login&quot;&#10;&#10;# Conflicts:&#10;#&#9;pom.xml" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
