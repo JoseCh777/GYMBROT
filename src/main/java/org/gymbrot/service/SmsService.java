@@ -18,7 +18,9 @@ public class SmsService {
         this.accountSid = config.getProperty("TWILIO_ACCOUNT_SID");
         this.authToken = config.getProperty("TWILIO_AUTH_TOKEN");
         this.phoneNumber = config.getProperty("TWILIO_PHONE_NUMBER");
-        Twilio.init(accountSid, authToken);
+        if (accountSid != null && authToken != null) {
+            Twilio.init(accountSid, authToken);
+        }
     }
 
     // ── CARGAR CONFIG ─────────────────────────────────────────────────────
@@ -34,6 +36,10 @@ public class SmsService {
 
     // ── ENVIAR SMS ────────────────────────────────────────────────────────
     public boolean enviarSms(String destinatario, String mensaje) {
+        if (accountSid == null || authToken == null || phoneNumber == null) {
+            System.err.println("⚠ SMS no configurado — revisa config.properties");
+            return false;
+        }
         try {
             Message message = Message.creator(
                     new PhoneNumber(destinatario),

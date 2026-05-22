@@ -4,12 +4,12 @@ import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.util.HuellaUtil;
 
-import com.digitalpersona.onetouch.DPFPCapture;
 import com.digitalpersona.onetouch.DPFPDataPurpose;
 import com.digitalpersona.onetouch.DPFPFeatureSet;
 import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import com.digitalpersona.onetouch.capture.DPFPCapture;
 import com.digitalpersona.onetouch.capture.DPFPCapturePriority;
 import com.digitalpersona.onetouch.processing.DPFPEnrollment;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
@@ -70,7 +70,6 @@ public class HuellaService {
             lector.startCapture();
 
             System.out.println("✓ Lector de huellas iniciado correctamente");
-            System.out.println("  Dispositivo: " + lector.getReaderDescription());
 
             return true;
 
@@ -176,7 +175,7 @@ public class HuellaService {
             System.out.println("  Muestras capturadas: " + muestrasCapturadas + "/4");
 
             // Verificar si ya se completó el enrolamiento
-            if (enroller.getTemplateStatus() == DPFPEnrollment.TEMPLATE_STATUS_READY) {
+            if (enroller.getFeaturesNeeded() <= 0) {
                 return finalizarEnrolamiento();
             }
 

@@ -3,7 +3,7 @@ package org.gymbrot.service;
 import org.gymbrot.dao.RegistroIngresoDAO;
 import org.gymbrot.model.*;
 import org.gymbrot.service.*;
-//import com.digitalpersona.onetouch.DPFPSample;
+import com.digitalpersona.onetouch.DPFPSample;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
