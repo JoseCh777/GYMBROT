@@ -113,14 +113,14 @@ public class CitaService {
         for (Cita c : citasInstructor) {
             if (c.getFecha().equals(cita.getFecha()) &&
                     c.getHora().equals(cita.getHora()) &&
-                    c.getEstado().equals("programada")) {
+                    c.getEstado().equals("PENDIENTE")) {
                 System.err.println("✗ El instructor ya tiene una cita en ese horario.");
                 return false;
             }
         }
 
         // 7. Establecer estado inicial
-        cita.setEstado("programada");
+        cita.setEstado("PENDIENTE");
 
         // 8. Persistir
         boolean resultado = citaDAO.insertar(cita);
@@ -150,13 +150,13 @@ public class CitaService {
         }
 
         // 3. Verificar estado
-        if (!cita.getEstado().equals("programada")) {
+        if (!cita.getEstado().equals("PENDIENTE")) {
             System.err.println("✗ Solo se pueden cancelar citas programadas.");
             return false;
         }
 
         // 4. Cambiar estado y persistir
-        cita.setEstado("cancelada");
+        cita.setEstado("CANCELADA");
         boolean resultado = citaDAO.actualizar(cita);
         if (resultado) {
             System.out.println("✓ Cita cancelada exitosamente.");
@@ -185,13 +185,13 @@ public class CitaService {
         }
 
         // 3. Verificar estado
-        if (!cita.getEstado().equals("programada")) {
+        if (!cita.getEstado().equals("PENDIENTE")) {
             System.err.println("✗ Solo se pueden completar citas programadas.");
             return false;
         }
 
         // 4. Cambiar estado y persistir
-        cita.setEstado("completada");
+        cita.setEstado("COMPLETADA");
         boolean resultado = citaDAO.actualizar(cita);
         if (resultado) {
             System.out.println("✓ Cita completada exitosamente.");

@@ -5,12 +5,12 @@ import org.gymbrot.util.DatabaseConnection;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CitaDAO {
-
 
     private Connection getConexion() throws SQLException {
         return DatabaseConnection.getInstance();
@@ -29,7 +29,9 @@ public class CitaDAO {
             ps.setString(1, c.getIdInstructor());
             ps.setString(2, c.getIdCliente());
             ps.setDate  (3, Date.valueOf(c.getFecha()));
-            ps.setTime  (4, Time.valueOf(c.getHora()));
+            // ✅ Combina fecha + hora en Timestamp para evitar 01/01/1970
+            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
+            ps.setTimestamp(4, Timestamp.valueOf(fechaHora));
             ps.setString(5, c.getTipoCita());
             ps.setString(6, c.getEstado());
             ps.setString(7, c.getNotas());
@@ -55,7 +57,9 @@ public class CitaDAO {
 
             ps.setString(1, c.getIdInstructor());
             ps.setDate  (2, Date.valueOf(c.getFecha()));
-            ps.setTime  (3, Time.valueOf(c.getHora()));
+            // ✅ Combina fecha + hora en Timestamp
+            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
+            ps.setTimestamp(3, Timestamp.valueOf(fechaHora));
             ps.setString(4, c.getTipoCita());
             ps.setString(5, c.getEstado());
             ps.setString(6, c.getNotas());
@@ -175,17 +179,19 @@ public class CitaDAO {
 
     // ── MAPEO ─────────────────────────────────────────────────────────────
     private Cita mapearCita(ResultSet rs) throws SQLException {
+        // ✅ Lee el Timestamp y extrae solo la hora
+        Timestamp horaTs = rs.getTimestamp("hora");
+        LocalTime hora = (horaTs != null) ? horaTs.toLocalDateTime().toLocalTime() : LocalTime.MIDNIGHT;
+
         return new Cita(
                 rs.getInt   ("id_cita"),
                 rs.getString("id_instructor"),
                 rs.getString("id_cliente"),
                 rs.getDate  ("fecha").toLocalDate(),
-                rs.getTime  ("hora").toLocalTime(),
+                hora,
                 rs.getString("tipo_cita"),
                 rs.getString("estado"),
                 rs.getString("notas")
         );
     }
-
-
 }

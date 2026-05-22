@@ -15,6 +15,7 @@ public class PruebaChatbot {
 
         while (true) {
             System.out.print("Tú: ");
+            
             String mensaje = scanner.nextLine();
             if (mensaje.equalsIgnoreCase("salir")) break;
 

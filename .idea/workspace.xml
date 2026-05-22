@@ -5,98 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="Merge branch 'feature/biometria' into feature/backend&#10;&#10;# Conflicts:&#10;#&#9;pom.xml">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_19a_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_19 a_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_19 a_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_27a_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_27 a_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_27 a_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_36p_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_36 p_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_05_2026_8_36 p_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_20_05_2026_8_11p_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_20_05_2026_8_11 p_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_20_05_2026_8_11 p_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_10_04a_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_10_04 a_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_10_04 a_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_2_08p_m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_2_08 p_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_05_2026_2_08 p_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/css/gymbrot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Inter_24pt-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Inter_24pt-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Inter_24pt-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-Black.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-ExtraBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/Lexend-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/SpaceGrotesk-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fonts/SpaceGrotesk-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fxml/Dashboard.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fxml/GestionClientes.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fxml/NuevoCliente.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/fxml/login.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/images/Logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/images/dashboard.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/images/dashboard_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/images/group.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/images/group_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/UsuarioPruebaChat.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/DashboardController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionMembresiasController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/HuellaUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/css/gymbrot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Inter_24pt-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Inter_24pt-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Inter_24pt-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-Black.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-ExtraBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/Lexend-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/SpaceGrotesk-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/SpaceGrotesk-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fonts/fonts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionClientes.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionMembresias.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/NuevoCliente.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/NuevoInstructor.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/Logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/add.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/bot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/bot_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/dashboard.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/dashboard_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/group.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/group_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/huella-dactilar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/instructor.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/instructor_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/lupa.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/membresias.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/membresias_white.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ClienteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/HuellaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/HuellaService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/RegistroIngresoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/RegistroIngresoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/SmsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/SmsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/PruebaChatbot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/PruebaChatbot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/AdministradorDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/AdministradorDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/EspecialidadDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/EspecialidadDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,12 +92,12 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/JoseCh777/GYMBROT.git&quot;,
-    &quot;accountId&quot;: &quot;8af03a07-bb07-4ba8-880d-78b21ae03667&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/JoseCh777/GYMBROT.git",
+    "accountId": "38a822cc-aad7-428a-805b-5c76fa1dbd9a"
   }
-}</component>
+}]]></component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -207,12 +122,20 @@
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Merging feature/backend",
+    "git-widget-placeholder": "backend/Daniel",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ASUS/Documents/UPC/Proyectos/GYMBROT",
+    "last_opened_file_path": "C:/Users/Daniel/GYMBROT",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
@@ -220,7 +143,7 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.PruebaChatbot">
+  <component name="RunManager" selected="Application.main">
     <configuration name="PruebaChatbot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.gymbrot.PruebaChatbot" />
       <module name="GYMBROT" />
@@ -237,7 +160,7 @@
     <configuration name="main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="org.gymbrot.Main" />
       <module name="GYMBROT" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\ASUS\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\ASUS\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21-win.jar;C:\Users\ASUS\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\ASUS\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
+      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -469,6 +392,9 @@
     </task>
     <option name="localTasksCounter" value="22" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
