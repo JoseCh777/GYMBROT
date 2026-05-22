@@ -100,7 +100,10 @@
           <!-- ═══════════════════════════════════════════
                CAPA 3: Indicador BIO-SCAN superior izquierdo
           ═══════════════════════════════════════════ -->
-          <HBox alignment="CENTER_LEFT" mouseTransparent="true" opacity="0.4" spacing="8" />
+           <HBox fx:id="bioStatusHBox" alignment="CENTER_LEFT" spacing="8">
+               <Region fx:id="bioIndicator" prefHeight="15.0" prefWidth="15.0" style="-fx-background-color: #555759; -fx-background-radius: 50%; -fx-min-width: 8; -fx-min-height: 8;" />
+               <Label fx:id="bioStatusLabel" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #555759;" text="LECTOR" />
+           </HBox>
 
             <!-- Recordarme + Olvidaste contraseña -->
             <HBox alignment="CENTER_LEFT" spacing="0">

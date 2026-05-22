@@ -271,9 +271,15 @@
 
                             <!-- Titulo biometria -->
                             <HBox alignment="CENTER_LEFT" spacing="10">
-                                <VBox.margin><Insets bottom="20" /></VBox.margin>
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
                                 <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="HUELLA" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="BIOMETRIC ENROLLMENT" />
+                            </HBox>
+
+                            <!-- Indicador de estado del lector -->
+                            <HBox fx:id="bioStatusHBox" alignment="CENTER_LEFT" spacing="6">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Region fx:id="bioIndicator" prefHeight="15.0" prefWidth="16.0" style="-fx-background-color: #555759; -fx-background-radius: 50%; -fx-min-width: 6; -fx-min-height: 6;" />
+                                <Label fx:id="bioStatusLabel" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #555759;" text="LECTOR" />
                             </HBox>
 
                             <!-- Area del scanner -->

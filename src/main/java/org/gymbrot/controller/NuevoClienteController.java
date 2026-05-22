@@ -1,6 +1,7 @@
 package org.gymbrot.controller;
 
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.animation.KeyFrame;
@@ -18,6 +19,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.service.HuellaService;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,12 +81,15 @@ public class NuevoClienteController implements Initializable {
     @FXML private Label       lblScannerStatus;
     @FXML private ProgressBar pbHuella;
     @FXML private Label       lblPorcentajeHuella;
+    @FXML private Region      bioIndicator;
+    @FXML private Label       bioStatusLabel;
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private File   archivoFotoSeleccionado = null;
     private boolean huellaCapturada        = false;
     private Timeline timelineHuella        = null;
     private Timeline timelineLineaEscaneo  = null;
+    private HuellaService huellaService;
 
     // ─── Validación ────────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -121,9 +126,34 @@ public class NuevoClienteController implements Initializable {
         configurarComboBox();
         configurarValidacionEnVivo();
         configurarFocusFields();
-        iniciarAnimacionHuella();
-        iniciarAnimacionLineaEscaneo();
         aplicarClipCircularFoto();
+        inicializarBiometria();
+    }
+
+    private void inicializarBiometria() {
+        huellaService = HuellaService.getInstancia();
+
+        huellaService.addStatusListener(conectado -> {
+            if (Platform.isFxApplicationThread()) {
+                actualizarIndicadorBio(conectado);
+            } else {
+                Platform.runLater(() -> actualizarIndicadorBio(conectado));
+            }
+        });
+
+        actualizarIndicadorBio(huellaService.lectorActivo());
+    }
+
+    private void actualizarIndicadorBio(boolean conectado) {
+        if (conectado) {
+            bioIndicator.setStyle("-fx-background-color: #72e06a; -fx-background-radius: 50%; -fx-min-width: 6; -fx-min-height: 6;");
+            bioStatusLabel.setText("LECTOR CONECTADO");
+            bioStatusLabel.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #72e06a;");
+        } else {
+            bioIndicator.setStyle("-fx-background-color: #ff6b6b; -fx-background-radius: 50%; -fx-min-width: 6; -fx-min-height: 6;");
+            bioStatusLabel.setText("LECTOR DESCONECTADO");
+            bioStatusLabel.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #ff6b6b;");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -474,10 +504,11 @@ public class NuevoClienteController implements Initializable {
         // byte[] template = sensor.capturarHuella();
         // huellaTemplate = template;
 
-        // Simulación: llenar la barra hasta 100% y marcar como capturada
-        if (timelineHuella != null) timelineHuella.stop();
-        if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
+        // Iniciar animaciones de escaneo al capturar
+        iniciarAnimacionHuella();
+        iniciarAnimacionLineaEscaneo();
 
+        // Simulación: llenar la barra hasta 100% y marcar como capturada
         Timeline captura = new Timeline(
                 new KeyFrame(Duration.millis(30), e -> {
                     double actual = pbHuella.getProgress();

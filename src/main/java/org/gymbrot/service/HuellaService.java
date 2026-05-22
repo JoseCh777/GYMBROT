@@ -11,19 +11,30 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
 import com.digitalpersona.onetouch.capture.DPFPCapture;
 import com.digitalpersona.onetouch.capture.DPFPCapturePriority;
+import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusAdapter;
+import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusEvent;
 import com.digitalpersona.onetouch.processing.DPFPEnrollment;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
+import com.digitalpersona.onetouch.readers.DPFPReadersCollection;
 import com.digitalpersona.onetouch.verification.DPFPVerification;
 import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Servicio para gestión de huellas dactilares usando DigitalPersona SDK.
  * Maneja enrolamiento, verificación y almacenamiento de templates.
  */
 public class HuellaService {
+
+    private static HuellaService instancia;
 
     private ClienteDAO clienteDAO;
     private HuellaUtil huellaUtil;
@@ -36,11 +47,52 @@ public class HuellaService {
     private boolean enrolandoActivo = false;
     private String idClienteEnrolando = null;
 
+    // Estado del lector
+    private Boolean lectorConectado = null; // null = desconocido, true = conectado, false = desconectado
+
+    // Múltiples callbacks para cambios de estado del lector
+    private final List<Consumer<Boolean>> statusListeners = new ArrayList<>();
+
+    // Polling periódico para detectar conexión/desconexión en tiempo real
+    private ScheduledExecutorService scheduler;
+    private ScheduledFuture<?> pollingTask;
+
+    public static HuellaService getInstancia() {
+        if (instancia == null) {
+            instancia = new HuellaService();
+        }
+        return instancia;
+    }
+
     public HuellaService() {
         this.clienteDAO = new ClienteDAO();
         this.huellaUtil = new HuellaUtil();
-        this.verificador = DPFPGlobal.getVerificationFactory().createVerification();
-        this.extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+        try {
+            this.verificador = DPFPGlobal.getVerificationFactory().createVerification();
+            this.extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+        } catch (Exception e) {
+            System.err.println("⚠ No se pudieron inicializar componentes de verificación: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Registra un callback para cambios de estado del lector.
+     * Notifica inmediatamente con el estado actual si ya se conoce.
+     *
+     * @param callback Consumer que recibe true (conectado) o false (desconectado)
+     */
+    public void addStatusListener(Consumer<Boolean> callback) {
+        statusListeners.add(callback);
+        if (lectorConectado != null) {
+            callback.accept(lectorConectado);
+        }
+    }
+
+    /**
+     * Elimina un callback previamente registrado.
+     */
+    public void removeStatusListener(Consumer<Boolean> callback) {
+        statusListeners.remove(callback);
     }
 
     /**
@@ -55,28 +107,127 @@ public class HuellaService {
                 return true;
             }
 
-            // Crear instancia del lector
             lector = DPFPGlobal.getCaptureFactory().createCapture();
 
             if (lector == null) {
                 System.err.println("✗ No se pudo crear el lector");
+                notificarStatus(false);
                 return false;
             }
 
-            // Configurar prioridad de captura
+            lector.addReaderStatusListener(new DPFPReaderStatusAdapter() {
+                @Override
+                public void readerConnected(DPFPReaderStatusEvent e) {
+                    System.out.println("✓ Lector conectado");
+                    notificarStatus(true);
+                }
+                @Override
+                public void readerDisconnected(DPFPReaderStatusEvent e) {
+                    System.out.println("✗ Lector desconectado");
+                    notificarStatus(false);
+                }
+            });
+
             lector.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_HIGH);
 
-            // Iniciar captura
-            lector.startCapture();
+            // Intentar iniciar captura — si falla (DpHost ocupando el lector) no importa,
+            // la detección de conectividad se hace vía ReadersCollection API
+            try {
+                lector.startCapture();
+                System.out.println("✓ Captura iniciada correctamente");
+            } catch (Exception e) {
+                System.out.println("⚠ startCapture falló (posible conflicto con DpHost): " + e.getMessage());
+            }
 
-            System.out.println("✓ Lector de huellas iniciado correctamente");
+            // Detectar lector conectado mediante ReadersCollection (no requiere acceso exclusivo)
+            boolean conectado = lectorEstaConectado();
+            notificarStatus(conectado);
 
-            return true;
+            // Iniciar polling para detectar cambios en tiempo real
+            iniciarPolling();
+
+            return conectado;
 
         } catch (Exception e) {
             System.err.println("Error al iniciar lector: " + e.getMessage());
             e.printStackTrace();
+            lector = null;
+            notificarStatus(false);
             return false;
+        }
+    }
+
+    /**
+     * Verifica si hay al menos un lector de huellas conectado al sistema
+     * usando ReadersCollection API (no requiere startCapture).
+     */
+    private boolean lectorEstaConectado() {
+        try {
+            DPFPReadersCollection readers = DPFPGlobal.getReadersFactory().getReaders();
+            boolean presente = readers != null && !readers.isEmpty();
+            if (presente) {
+                System.out.println("✓ Lector detectado: " + readers.get(0).getProductName());
+            } else {
+                System.out.println("✗ No se detectaron lectores");
+            }
+            return presente;
+        } catch (Exception e) {
+            System.out.println("⚠ Error al consultar ReadersCollection: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Inicia un polling periódico (cada 1s) para detectar cambios de conexión
+     * del lector cuando los eventos del SDK no están disponibles.
+     */
+    public void iniciarPolling() {
+        if (scheduler == null || scheduler.isShutdown()) {
+            scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "lector-polling");
+                t.setDaemon(true);
+                return t;
+            });
+        }
+        if (pollingTask != null && !pollingTask.isCancelled()) {
+            pollingTask.cancel(false);
+        }
+        pollingTask = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                boolean actual = lectorEstaConectado();
+                if (lectorConectado == null || actual != lectorConectado) {
+                    notificarStatus(actual);
+                }
+            } catch (Exception e) {
+                // ignorar errores en polling
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+        System.out.println("✓ Polling de lector iniciado (cada 1s)");
+    }
+
+    /**
+     * Detiene el polling periódico.
+     */
+    public void detenerPolling() {
+        if (pollingTask != null) {
+            pollingTask.cancel(false);
+            pollingTask = null;
+        }
+        if (scheduler != null) {
+            scheduler.shutdown();
+            scheduler = null;
+        }
+        System.out.println("✗ Polling de lector detenido");
+    }
+
+    /**
+     * Notifica a todos los callbacks registrados sobre un cambio de estado.
+     */
+    private void notificarStatus(boolean conectado) {
+        lectorConectado = conectado;
+        System.out.println("ℹ notificarStatus: " + (conectado ? "conectado" : "desconectado") + " | listeners: " + statusListeners.size());
+        for (Consumer<Boolean> listener : statusListeners) {
+            listener.accept(conectado);
         }
     }
 
@@ -84,6 +235,7 @@ public class HuellaService {
      * Detiene y libera el lector de huellas digitales.
      */
     public void detenerLector() {
+        detenerPolling();
         try {
             if (lector != null) {
                 lector.stopCapture();
@@ -91,7 +243,6 @@ public class HuellaService {
                 System.out.println("✓ Lector de huellas detenido");
             }
 
-            // Limpiar estado de enrolamiento
             enrolandoActivo = false;
             idClienteEnrolando = null;
             enroller = null;

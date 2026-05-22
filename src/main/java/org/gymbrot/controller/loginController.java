@@ -2,17 +2,20 @@ package org.gymbrot.controller;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Usuario;
+import org.gymbrot.service.HuellaService;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
@@ -29,12 +32,48 @@ public class loginController implements Initializable {
     @FXML private CheckBox rememberMe;
     @FXML private Hyperlink forgotPasswordLink;
     @FXML private Button loginButton;
+    @FXML private Region bioIndicator;
+    @FXML private Label bioStatusLabel;
+
+    private HuellaService huellaService;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarFocusFields();
         configurarAnimaciones();
         animarEntrada();
+        inicializarBiometria();
+    }
+
+    private void inicializarBiometria() {
+        try {
+            huellaService = HuellaService.getInstancia();
+
+            huellaService.addStatusListener(conectado -> {
+                if (Platform.isFxApplicationThread()) {
+                    actualizarIndicadorBio(conectado);
+                } else {
+                    Platform.runLater(() -> actualizarIndicadorBio(conectado));
+                }
+            });
+
+            boolean exito = huellaService.iniciarLector();
+            actualizarIndicadorBio(exito && huellaService.lectorActivo());
+        } catch (Exception e) {
+            System.err.println("✗ " + e.getMessage());
+        }
+    }
+
+    private void actualizarIndicadorBio(boolean conectado) {
+        if (conectado) {
+            bioIndicator.setStyle("-fx-background-color: #72e06a; -fx-background-radius: 50%; -fx-min-width: 8; -fx-min-height: 8;");
+            bioStatusLabel.setText("LECTOR CONECTADO");
+            bioStatusLabel.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #72e06a;");
+        } else {
+            bioIndicator.setStyle("-fx-background-color: #ff6b6b; -fx-background-radius: 50%; -fx-min-width: 8; -fx-min-height: 8;");
+            bioStatusLabel.setText("LECTOR DESCONECTADO");
+            bioStatusLabel.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #ff6b6b;");
+        }
     }
 
     private void configurarFocusFields() {
