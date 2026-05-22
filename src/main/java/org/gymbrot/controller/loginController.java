@@ -126,7 +126,7 @@ public class loginController implements Initializable {
     }
 
     @FXML
-    private void btnContrasena() {
+    private void btnContrase\u00F1a() {
         mostrarInfo("Recuperar contrasena",
                 "Contacta al administrador del sistema para restablecer tu contrasena.");
     }

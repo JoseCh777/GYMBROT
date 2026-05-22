@@ -27,7 +27,7 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream("/fonts/SpaceGrotesk-Medium.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("/fonts/SpaceGrotesk-Bold.ttf"), 14);
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Dashboard.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
 
         Scene scene = new Scene(root, 1040, 700);
         scene.getStylesheets().add(getClass().getResource("/css/gymbrot.css").toExternalForm());
