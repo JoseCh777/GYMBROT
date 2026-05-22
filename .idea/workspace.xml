@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: crear carpeta de libs&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,6 +189,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PruebaChatbot" />
         <item itemvalue="Application.PruebaChatbot" />
       </list>
     </recent_temporary>

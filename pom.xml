@@ -37,6 +37,8 @@
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc11</artifactId>
             <version>23.6.0.24.10</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ojdbc11.jar</systemPath>
         </dependency>
 
         <!-- Jackson -->
@@ -73,28 +75,28 @@
             <artifactId>dpotapi</artifactId>
             <version>1.6.1</version>
             <scope>system</scope>
-            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpotapi.jar</systemPath>
+            <systemPath>${project.basedir}/libs/dpotapi.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.digitalpersona</groupId>
             <artifactId>dpotjni</artifactId>
             <version>1.6.1</version>
             <scope>system</scope>
-            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpotjni.jar</systemPath>
+            <systemPath>${project.basedir}/libs/dpotjni.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.digitalpersona</groupId>
             <artifactId>dpfpenrollment</artifactId>
             <version>1.6.1</version>
             <scope>system</scope>
-            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpfpenrollment.jar</systemPath>
+            <systemPath>${project.basedir}/libs/dpfpenrollment.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.digitalpersona</groupId>
             <artifactId>dpfpverification</artifactId>
             <version>1.6.1</version>
             <scope>system</scope>
-            <systemPath>C:\Program Files\DigitalPersona\Bin\Java\dpfpverification.jar</systemPath>
+            <systemPath>${project.basedir}/libs/dpfpverification.jar</systemPath>
         </dependency>
 
     </dependencies>
