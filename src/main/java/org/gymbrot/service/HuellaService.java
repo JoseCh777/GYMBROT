@@ -164,15 +164,8 @@ public class HuellaService {
     private boolean lectorEstaConectado() {
         try {
             DPFPReadersCollection readers = DPFPGlobal.getReadersFactory().getReaders();
-            boolean presente = readers != null && !readers.isEmpty();
-            if (presente) {
-                System.out.println("✓ Lector detectado: " + readers.get(0).getProductName());
-            } else {
-                System.out.println("✗ No se detectaron lectores");
-            }
-            return presente;
+            return readers != null && !readers.isEmpty();
         } catch (Exception e) {
-            System.out.println("⚠ Error al consultar ReadersCollection: " + e.getMessage());
             return false;
         }
     }
@@ -202,7 +195,6 @@ public class HuellaService {
                 // ignorar errores en polling
             }
         }, 0, 1, TimeUnit.SECONDS);
-        System.out.println("✓ Polling de lector iniciado (cada 1s)");
     }
 
     /**
@@ -217,15 +209,10 @@ public class HuellaService {
             scheduler.shutdown();
             scheduler = null;
         }
-        System.out.println("✗ Polling de lector detenido");
     }
 
-    /**
-     * Notifica a todos los callbacks registrados sobre un cambio de estado.
-     */
     private void notificarStatus(boolean conectado) {
         lectorConectado = conectado;
-        System.out.println("ℹ notificarStatus: " + (conectado ? "conectado" : "desconectado") + " | listeners: " + statusListeners.size());
         for (Consumer<Boolean> listener : statusListeners) {
             listener.accept(conectado);
         }

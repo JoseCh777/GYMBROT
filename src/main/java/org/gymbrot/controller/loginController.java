@@ -41,8 +41,14 @@ public class loginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarFocusFields();
         configurarAnimaciones();
+        configurarEnter();
         animarEntrada();
         inicializarBiometria();
+    }
+
+    private void configurarEnter() {
+        usernameField.setOnAction(e -> passwordField.requestFocus());
+        passwordField.setOnAction(e -> BtnIniciarSecion());
     }
 
     private void inicializarBiometria() {
