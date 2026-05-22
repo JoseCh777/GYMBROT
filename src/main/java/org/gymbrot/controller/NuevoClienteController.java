@@ -78,15 +78,21 @@ public class NuevoClienteController implements Initializable {
     @FXML private Button      btnEscanearHuella;
     @FXML private StackPane   scannerCircle;  // círculo del scanner con glow
     @FXML private Region      lineaEscaneo;    // línea animada de escaneo
+    @FXML private Label       lblScannerTitulo;
     @FXML private Label       lblScannerStatus;
     @FXML private ProgressBar pbHuella;
     @FXML private Label       lblPorcentajeHuella;
     @FXML private Region      bioIndicator;
     @FXML private Label       bioStatusLabel;
+    @FXML private Region      dot1;
+    @FXML private Region      dot2;
+    @FXML private Region      dot3;
+    @FXML private Region      dot4;
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private File   archivoFotoSeleccionado = null;
     private boolean huellaCapturada        = false;
+    private int     muestrasCapturadas     = 0;   // 0..4
     private Timeline timelineHuella        = null;
     private Timeline timelineLineaEscaneo  = null;
     private HuellaService huellaService;
@@ -140,8 +146,6 @@ public class NuevoClienteController implements Initializable {
                 Platform.runLater(() -> actualizarIndicadorBio(conectado));
             }
         });
-
-        actualizarIndicadorBio(huellaService.lectorActivo());
     }
 
     private void actualizarIndicadorBio(boolean conectado) {
@@ -363,31 +367,8 @@ public class NuevoClienteController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  ANIMACIÓN HUELLA — Pulso de la barra de progreso
+    //  ANIMACIÓN LÍNEA DE ESCANEO
     // ═══════════════════════════════════════════════════════════════════════
-
-    private void iniciarAnimacionHuella() {
-        // Simula progreso pulsante mientras el sensor no está conectado
-        final double[] progreso = {0.0};
-        final boolean[] subiendo = {true};
-
-        timelineHuella = new Timeline(
-                new KeyFrame(Duration.millis(60), e -> {
-                    if (huellaCapturada) return;
-                    if (subiendo[0]) {
-                        progreso[0] += 0.012;
-                        if (progreso[0] >= 1.0) { progreso[0] = 1.0; subiendo[0] = false; }
-                    } else {
-                        progreso[0] -= 0.012;
-                        if (progreso[0] <= 0.1) { progreso[0] = 0.1; subiendo[0] = true; }
-                    }
-                    pbHuella.setProgress(progreso[0]);
-                    lblPorcentajeHuella.setText(String.format("%.0f%%", progreso[0] * 100));
-                })
-        );
-        timelineHuella.setCycleCount(Timeline.INDEFINITE);
-        timelineHuella.play();
-    }
 
     private void iniciarAnimacionLineaEscaneo() {
         // Línea que baja de arriba (0) a abajo (78px) y regresa — simula el scan
@@ -473,82 +454,78 @@ public class NuevoClienteController implements Initializable {
 
     @FXML
     private void handleEscanearHuella() {
-        if (huellaCapturada) {
-            // Resetear para capturar de nuevo
-            huellaCapturada = false;
-            pbHuella.setProgress(0.1);
-            lblPorcentajeHuella.setText("10%");
-            lblScannerStatus.setText("CAPTURANDO DATOS...");
-            lblScannerStatus.setStyle(lblScannerStatus.getStyle()
-                    .replace("-fx-text-fill: #bdf4ff", "-fx-text-fill: #D4FF00"));
-            btnEscanearHuella.setText("PROCESANDO HUELLA...");
-            btnEscanearHuella.setStyle(
-                    "-fx-background-color: #1e2a00; -fx-background-radius: 8;" +
-                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                            "-fx-font-weight: 700; -fx-text-fill: #b0d500;" +
-                            "-fx-border-color: #2a3d00; -fx-border-width: 1;" +
-                            "-fx-border-radius: 8; -fx-cursor: hand;"
-            );
-            // Reiniciar linea de escaneo
-            lineaEscaneo.setOpacity(1);
-            iniciarAnimacionHuella();
-            lineaEscaneo.setStyle("-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);");
+        if (huellaCapturada) return; // ya completado, botón deshabilitado desde el código
+
+        // Iniciar animación de línea de escaneo solo en la primera muestra
+        if (muestrasCapturadas == 0) {
             iniciarAnimacionLineaEscaneo();
-            return;
         }
 
-        // TODO: Integrar con jSerialComm + AS608
-        // SerialPort puerto = SerialPort.getCommPort("COM3");
-        // puerto.openPort();
-        // AS608Driver sensor = new AS608Driver(puerto);
-        // byte[] template = sensor.capturarHuella();
-        // huellaTemplate = template;
+        // Deshabilitar botón mientras simula la captura de esta muestra
+        btnEscanearHuella.setDisable(true);
+        lblScannerStatus.setText("CAPTURANDO MUESTRA " + (muestrasCapturadas + 1) + "...");
 
-        // Iniciar animaciones de escaneo al capturar
-        iniciarAnimacionHuella();
-        iniciarAnimacionLineaEscaneo();
+        // Animar la barra desde el progreso actual hasta el siguiente paso (25%)
+        double progInicio = muestrasCapturadas * 0.25;
+        double progFin    = progInicio + 0.25;
 
-        // Simulación: llenar la barra hasta 100% y marcar como capturada
+        // 20 pasos de 50ms = ~1 segundo por muestra
+        final double[] paso = {progInicio};
+        final double incremento = 0.25 / 20.0;
+
         Timeline captura = new Timeline(
-                new KeyFrame(Duration.millis(30), e -> {
-                    double actual = pbHuella.getProgress();
-                    if (actual < 1.0) {
-                        double nuevo = Math.min(actual + 0.025, 1.0);
-                        pbHuella.setProgress(nuevo);
-                        lblPorcentajeHuella.setText(String.format("%.0f%%", nuevo * 100));
-                    }
+                new KeyFrame(Duration.millis(50), e -> {
+                    paso[0] = Math.min(paso[0] + incremento, progFin);
+                    pbHuella.setProgress(paso[0]);
+                    lblPorcentajeHuella.setText(String.format("%.0f%%", paso[0] * 100));
                 })
         );
-        captura.setCycleCount(40);
+        captura.setCycleCount(20);
         captura.setOnFinished(e -> {
-            huellaCapturada = true;
-            if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
-            pbHuella.setProgress(1.0);
-            lblPorcentajeHuella.setText("100%");
-            // Línea fija en centro al completar
-            lineaEscaneo.setTranslateY(40);
-            lineaEscaneo.setOpacity(1.0);
-            lineaEscaneo.setStyle("-fx-background-color: #bdf4ff; -fx-effect: dropshadow(gaussian, #bdf4ff, 12, 0.9, 0, 0);");
-            scannerCircle.setStyle(scannerCircle.getStyle()
-                    .replaceAll("-fx-effect:.*?;", "")
-                    + "-fx-effect: dropshadow(gaussian, #bdf4ff, 20, 0.6, 0, 0);");
+            muestrasCapturadas++;
+            pbHuella.setProgress(muestrasCapturadas * 0.25);
+            lblPorcentajeHuella.setText((muestrasCapturadas * 25) + "%");
 
+            if (muestrasCapturadas < 4) {
+                // Quedan muestras: volver a habilitar para la siguiente
+                lblScannerStatus.setText("MUESTRA " + muestrasCapturadas + "/4 CAPTURADA");
+                lblScannerTitulo.setText("Captura " + muestrasCapturadas + " de 4");
+                btnEscanearHuella.setText("CAPTURAR SIGUIENTE");
+                btnEscanearHuella.setDisable(false);
+            } else {
+                // 4/4 completadas
+                huellaCapturada = true;
+                if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
 
+                // Línea fija en centro con color cian
+                lineaEscaneo.setTranslateY(40);
+                lineaEscaneo.setOpacity(1.0);
+                lineaEscaneo.setStyle("-fx-background-color: #bdf4ff; -fx-effect: dropshadow(gaussian, #bdf4ff, 12, 0.9, 0, 0);");
+                scannerCircle.setStyle(scannerCircle.getStyle()
+                        .replaceAll("-fx-effect:.*?;", "")
+                        + "-fx-effect: dropshadow(gaussian, #bdf4ff, 20, 0.6, 0, 0);");
 
-            lblScannerStatus.setText("HUELLA REGISTRADA");
-            lblScannerStatus.setStyle(
-                    "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;" +
-                            "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;"
-            );
+                lblScannerTitulo.setText("Huella Registrada");
+                lblScannerTitulo.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #bdf4ff;");
 
-            btnEscanearHuella.setText("CAPTURAR DE NUEVO");
-            btnEscanearHuella.setStyle(
-                    "-fx-background-color: #002a30; -fx-background-radius: 8;" +
-                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                            "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;" +
-                            "-fx-border-color: #0a4a50; -fx-border-width: 1;" +
-                            "-fx-border-radius: 8; -fx-cursor: hand;"
-            );
+                lblScannerStatus.setText("HUELLA REGISTRADA");
+                lblScannerStatus.setStyle(
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;" +
+                                "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;"
+                );
+                lblPorcentajeHuella.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;");
+                pbHuella.setStyle("-fx-accent: #bdf4ff; -fx-background-color: #282a2d; -fx-background-radius: 4; -fx-border-width: 0;");
+
+                btnEscanearHuella.setText("REGISTRO COMPLETO ✓");
+                btnEscanearHuella.setDisable(true);
+                btnEscanearHuella.setStyle(
+                        "-fx-background-color: #002a30; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;" +
+                                "-fx-border-color: #0a4a50; -fx-border-width: 1;" +
+                                "-fx-border-radius: 8; -fx-cursor: default;"
+                );
+            }
         });
         captura.play();
     }

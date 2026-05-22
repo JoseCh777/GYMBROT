@@ -305,9 +305,9 @@
                                     <Region fx:id="lineaEscaneo" prefHeight="2.0" prefWidth="221.0" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);" StackPane.alignment="TOP_CENTER" />
                                 </StackPane>
 
-                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Escaneando Huella..." />
+                                <Label fx:id="lblScannerTitulo" style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Coloca tu dedo" />
 
-                                <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESANDO HUELLA..." />
+                                <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="CAPTURAR" />
                             </VBox>
 
                             <!-- Estado del scanner -->
@@ -316,15 +316,15 @@
                                 <Label prefHeight="15.0" prefWidth="132.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="Estado del escanner:" HBox.hgrow="ALWAYS" />
                                 <HBox alignment="CENTER" prefHeight="15.0" prefWidth="140.0" spacing="6">
                                     <Rectangle arcHeight="6" arcWidth="6" height="6" style="-fx-fill: #D4FF00;" width="6" />
-                                    <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="CAPTURANDO DATOS..." />
+                                    <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="LISTO" />
                                 </HBox>
                             </HBox>
 
                             <!-- Barra de progreso biometrica -->
-                            <ProgressBar fx:id="pbHuella" maxWidth="Infinity" prefHeight="6" progress="0.65" style="-fx-accent: #D4FF00; -fx-background-color: #282a2d;                                                 -fx-background-radius: 4; -fx-border-width: 0;" />
+                            <ProgressBar fx:id="pbHuella" maxWidth="Infinity" prefHeight="6" progress="0.0" style="-fx-accent: #D4FF00; -fx-background-color: #282a2d;                                                 -fx-background-radius: 4; -fx-border-width: 0;" />
                             <HBox>
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lblPorcentajeHuella" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="65%" />
+                                <Label fx:id="lblPorcentajeHuella" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0%" />
                             </HBox>
 
                         </VBox>

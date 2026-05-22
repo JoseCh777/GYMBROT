@@ -83,9 +83,7 @@ public class HuellaService {
      */
     public void addStatusListener(Consumer<Boolean> callback) {
         statusListeners.add(callback);
-        if (lectorConectado != null) {
-            callback.accept(lectorConectado);
-        }
+        callback.accept(lectorConectado != null ? lectorConectado : false);
     }
 
     /**
@@ -139,14 +137,10 @@ public class HuellaService {
                 System.out.println("⚠ startCapture falló (posible conflicto con DpHost): " + e.getMessage());
             }
 
-            // Detectar lector conectado mediante ReadersCollection (no requiere acceso exclusivo)
-            boolean conectado = lectorEstaConectado();
-            notificarStatus(conectado);
-
-            // Iniciar polling para detectar cambios en tiempo real
+            // El polling se encarga de detectar el estado real del lector
             iniciarPolling();
 
-            return conectado;
+            return true;
 
         } catch (Exception e) {
             System.err.println("Error al iniciar lector: " + e.getMessage());

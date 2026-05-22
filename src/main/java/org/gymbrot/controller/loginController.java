@@ -63,8 +63,7 @@ public class loginController implements Initializable {
                 }
             });
 
-            boolean exito = huellaService.iniciarLector();
-            actualizarIndicadorBio(exito && huellaService.lectorActivo());
+            huellaService.iniciarLector();
         } catch (Exception e) {
             System.err.println("✗ " + e.getMessage());
         }
