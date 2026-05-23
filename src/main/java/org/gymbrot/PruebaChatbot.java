@@ -19,7 +19,7 @@ public class PruebaChatbot {
             String mensaje = scanner.nextLine();
             if (mensaje.equalsIgnoreCase("salir")) break;
 
-            String respuesta = chatbot.procesarMensaje(sesion.getIdSesion(), mensaje);
+            String respuesta = chatbot.procesarMensaje(sesion.getIdSesion(), mensaje, "123456");
             System.out.println("GymBrot: " + respuesta + "\n");
         }
 

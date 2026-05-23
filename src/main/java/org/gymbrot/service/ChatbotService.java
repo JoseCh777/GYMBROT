@@ -10,7 +10,6 @@ import org.gymbrot.model.MensajeGymbrot;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 public class ChatbotService {
@@ -38,9 +37,7 @@ public class ChatbotService {
     }
 
     // ── PROCESAR MENSAJE ──────────────────────────────────────────────────
-    public String procesarMensaje(int idSesion, String texto) {
-
-        // 1. Guardar mensaje del usuario
+    public String procesarMensaje(int idSesion, String texto, String idCliente) {
         MensajeGymbrot msgUsuario = new MensajeGymbrot();
         msgUsuario.setIdSesion(idSesion);
         msgUsuario.setRemitente("CLIENTE");
@@ -57,35 +54,33 @@ public class ChatbotService {
                 || textoLower.contains("reservar") || textoLower.contains("turno")
                 || textoLower.contains("agendame") || textoLower.contains("agenda")) {
 
-            notificacionService.enviarSmsDirecto(
-                "GYMBROT: Tu solicitud de cita fue recibida. Pronto un instructor te contactará para confirmar."
-            );
+            boolean agendada = agendarCitaDesdeChat(texto, idCliente, historial);
 
-            // Agendar y capturar resultado
-            boolean agendada = agendarCitaDesdeChat(texto, "123456", historial);
-
-            // Informar a Groq el resultado real
             if (agendada) {
+                notificacionService.enviarSmsDirecto(
+                    "GYMBROT: Tu cita fue agendada exitosamente. Pronto recibirás más detalles."
+                );
+                List<String> correosHistorial = extraerCorreosDeHistorial(historial);
+                String contenidoCita = "<h2>¡Cita agendada exitosamente!</h2>" +
+                    "<p>Hola, tu cita en <b>GYMBROT Valledupar</b> ha sido registrada en nuestro sistema.</p>" +
+                    "<p><b>Detalle de tu cita:</b> " + texto + "</p>" +
+                    "<p>Pronto recibirás confirmación con todos los detalles.</p>" +
+                    "<p>Si necesitas cancelar o reprogramar, escríbenos por el chat.</p>" +
+                    "<p>¡Te esperamos!</p>";
+                for (String correo : correosHistorial) {
+                    emailService.enviarCorreo(correo, "Cita agendada - GYMBROT", contenidoCita);
+                    System.out.println("Confirmación de cita enviada a: " + correo);
+                }
                 contextoExtra = " [SISTEMA: La cita fue agendada exitosamente en la base de datos. " +
-                    "Confirma al cliente de forma amable y profesional que su cita quedo registrada " +
-                    "y que pronto sera contactado para confirmar los detalles.]";
+                    "Confirma al cliente de forma amable que su cita quedó registrada " +
+                    "y que pronto será contactado para confirmar los detalles.]";
             } else {
+                notificacionService.enviarSmsDirecto(
+                    "GYMBROT: Tu solicitud de cita fue recibida. Pronto un instructor te contactará para confirmar."
+                );
                 contextoExtra = " [SISTEMA: No se pudo agendar la cita automaticamente. " +
                     "Disculpate con el cliente e indicale que un asesor se comunicara con el pronto " +
                     "para coordinar la cita manualmente.]";
-            }
-
-            // Enviar correos de confirmación
-            List<String> correosHistorial = extraerCorreosDeHistorial(historial);
-            String contenidoCita = "<h2>¡Solicitud de cita recibida!</h2>" +
-                "<p>Hola, hemos recibido tu solicitud de cita en <b>GYMBROT Valledupar</b>.</p>" +
-                "<p><b>Detalle de tu solicitud:</b> " + texto + "</p>" +
-                "<p>Uno de nuestros instructores se pondrá en contacto contigo pronto para confirmar.</p>" +
-                "<p>Si tienes alguna pregunta, escríbenos por el chat.</p>" +
-                "<p>¡Te esperamos!</p>";
-            for (String correo : correosHistorial) {
-                emailService.enviarCorreo(correo, "Confirmación de solicitud de cita - GYMBROT", contenidoCita);
-                System.out.println("Confirmación de cita enviada a: " + correo);
             }
         }
 
@@ -121,10 +116,17 @@ public class ChatbotService {
             System.out.println("SMS enviado a: +57" + telefonoDetectado);
         }
 
-        // 2. Llamar a Groq DESPUÉS de procesar todo, con contexto del resultado
+        // ── DETECTAR CANCELACION DE CITA ──────────────────────────────────
+        if (textoLower.contains("cancelar") || textoLower.contains("cancela")
+                || textoLower.contains("cancelar cita") || textoLower.contains("no puedo ir")) {
+            contextoExtra += " [SISTEMA: El cliente quiere cancelar una cita. " +
+                "Indícale amablemente que para cancelar necesitamos el ID de su cita " +
+                "o que un asesor se comunicará con él para gestionar la cancelación.]";
+        }
+
+        // ── ENVIAR MENSAJE A GROQ CON CONTEXTO ────────────────────────────
         String respuesta = groqService.enviarMensaje(texto + contextoExtra, historial);
 
-        // 3. Guardar respuesta del bot
         MensajeGymbrot msgBot = new MensajeGymbrot();
         msgBot.setIdSesion(idSesion);
         msgBot.setRemitente("BOT");
@@ -180,123 +182,40 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER HORA DEL TEXTO O HISTORIAL ───────────────────────────────
-    private LocalTime extraerHora(String texto, List<MensajeGymbrot> historial) {
-        LocalTime hora = extraerHoraDeTexto(texto);
-        if (hora != null) return hora;
-
-        // Buscar en historial de más reciente a más antiguo
-        if (historial != null) {
-            for (int i = historial.size() - 1; i >= 0; i--) {
-                MensajeGymbrot msg = historial.get(i);
-                if (msg.getRemitente().equals("CLIENTE")) {
-                    hora = extraerHoraDeTexto(msg.getContenido());
-                    if (hora != null) return hora;
-                }
-            }
-        }
-        return null;
-    }
-
-    private LocalTime extraerHoraDeTexto(String texto) {
-        String textoLower = texto.toLowerCase();
-        java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile("(\\d{1,2})(am|pm)");
-        java.util.regex.Matcher horaMatcher = horaPattern.matcher(textoLower);
-        if (horaMatcher.find()) {
-            int h = Integer.parseInt(horaMatcher.group(1));
-            if (horaMatcher.group(2).equals("pm") && h != 12) h += 12;
-            if (horaMatcher.group(2).equals("am") && h == 12) h = 0;
-            return LocalTime.of(h, 0);
-        }
-        return null;
-    }
-
-    // ── EXTRAER DIA DEL TEXTO O HISTORIAL ────────────────────────────────
-    private LocalDate extraerFecha(String texto, List<MensajeGymbrot> historial) {
-        LocalDate fecha = extraerFechaDeTexto(texto);
-        if (fecha != null) return fecha;
-
-        // Buscar en historial de más reciente a más antiguo
-        if (historial != null) {
-            for (int i = historial.size() - 1; i >= 0; i--) {
-                MensajeGymbrot msg = historial.get(i);
-                if (msg.getRemitente().equals("CLIENTE")) {
-                    fecha = extraerFechaDeTexto(msg.getContenido());
-                    if (fecha != null) return fecha;
-                }
-            }
-        }
-        return null;
-    }
-
-    private LocalDate extraerFechaDeTexto(String texto) {
-        String textoLower = texto.toLowerCase();
-        LocalDate hoy = LocalDate.now();
-        if (textoLower.contains("lunes"))
-            return hoy.with(java.time.DayOfWeek.MONDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 1 ? 1 : 0);
-        if (textoLower.contains("martes"))
-            return hoy.with(java.time.DayOfWeek.TUESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 2 ? 1 : 0);
-        if (textoLower.contains("miércoles") || textoLower.contains("miercoles"))
-            return hoy.with(java.time.DayOfWeek.WEDNESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 3 ? 1 : 0);
-        if (textoLower.contains("jueves"))
-            return hoy.with(java.time.DayOfWeek.THURSDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 4 ? 1 : 0);
-        if (textoLower.contains("viernes"))
-            return hoy.with(java.time.DayOfWeek.FRIDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 5 ? 1 : 0);
-        if (textoLower.contains("sábado") || textoLower.contains("sabado"))
-            return hoy.with(java.time.DayOfWeek.SATURDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 6 ? 1 : 0);
-        return null;
-    }
-
     // ── AGENDAR CITA DESDE CHATBOT ────────────────────────────────────────
     private boolean agendarCitaDesdeChat(String texto, String idCliente, List<MensajeGymbrot> historial) {
         try {
-            List<Instructor> instructores = instructorDAO.listarTodos();
-
-            // 1. Buscar instructor en mensaje actual
             String idInstructor = null;
+            List<Instructor> instructores = instructorDAO.listarTodos();
             for (Instructor i : instructores) {
                 if (texto.toLowerCase().contains(i.getNombre().toLowerCase())) {
                     idInstructor = i.getNumeroIdentificacion();
                     break;
                 }
             }
+            if (idInstructor == null) return false;
 
-            // 2. Si no encontró, buscar en historial (más reciente primero)
-            if (idInstructor == null && historial != null) {
-                for (int i = historial.size() - 1; i >= 0; i--) {
-                    MensajeGymbrot msg = historial.get(i);
-                    if (msg.getRemitente().equals("CLIENTE")) {
-                        for (Instructor inst : instructores) {
-                            if (msg.getContenido().toLowerCase().contains(inst.getNombre().toLowerCase())) {
-                                idInstructor = inst.getNumeroIdentificacion();
-                                break;
-                            }
-                        }
-                    }
-                    if (idInstructor != null) break;
-                }
+            LocalDate fecha = null;
+            LocalDate hoy = LocalDate.now();
+            String textoLower = texto.toLowerCase();
+            if (textoLower.contains("lunes")) fecha = hoy.with(java.time.DayOfWeek.MONDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 1 ? 1 : 0);
+            else if (textoLower.contains("martes")) fecha = hoy.with(java.time.DayOfWeek.TUESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 2 ? 1 : 0);
+            else if (textoLower.contains("miércoles") || textoLower.contains("miercoles")) fecha = hoy.with(java.time.DayOfWeek.WEDNESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 3 ? 1 : 0);
+            else if (textoLower.contains("jueves")) fecha = hoy.with(java.time.DayOfWeek.THURSDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 4 ? 1 : 0);
+            else if (textoLower.contains("viernes")) fecha = hoy.with(java.time.DayOfWeek.FRIDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 5 ? 1 : 0);
+            else if (textoLower.contains("sábado") || textoLower.contains("sabado")) fecha = hoy.with(java.time.DayOfWeek.SATURDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 6 ? 1 : 0);
+            if (fecha == null) return false;
+
+            java.time.LocalTime hora = null;
+            java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile("(\\d{1,2})(am|pm)");
+            java.util.regex.Matcher horaMatcher = horaPattern.matcher(textoLower);
+            if (horaMatcher.find()) {
+                int h = Integer.parseInt(horaMatcher.group(1));
+                if (horaMatcher.group(2).equals("pm") && h != 12) h += 12;
+                hora = java.time.LocalTime.of(h, 0);
             }
+            if (hora == null) return false;
 
-            if (idInstructor == null) {
-                System.err.println("No se encontró instructor en el mensaje ni en el historial.");
-                return false;
-            }
-
-            // 3. Buscar fecha en mensaje actual o historial
-            LocalDate fecha = extraerFecha(texto, historial);
-            if (fecha == null) {
-                System.err.println("No se encontró día en el mensaje ni en el historial.");
-                return false;
-            }
-
-            // 4. Buscar hora en mensaje actual o historial
-            LocalTime hora = extraerHora(texto, historial);
-            if (hora == null) {
-                System.err.println("No se encontró hora en el mensaje ni en el historial.");
-                return false;
-            }
-
-            // 5. Construir y guardar la cita
             Cita cita = new Cita();
             cita.setIdCliente(idCliente);
             cita.setIdInstructor(idInstructor);
