@@ -19,7 +19,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import com.digitalpersona.onetouch.DPFPTemplate;
 import org.gymbrot.service.HuellaService;
+import org.gymbrot.util.HuellaUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,6 +98,7 @@ public class NuevoClienteController implements Initializable {
     private Timeline timelineHuella        = null;
     private Timeline timelineLineaEscaneo  = null;
     private HuellaService huellaService;
+    private DPFPTemplate templateCapturado = null;
 
     // ─── Validación ────────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -371,10 +374,9 @@ public class NuevoClienteController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void iniciarAnimacionLineaEscaneo() {
-        // Línea que baja de arriba (0) a abajo (78px) y regresa — simula el scan
         final double[] posY   = {0.0};
         final boolean[] baja  = {true};
-        final double    MAX_Y = 78.0;
+        final double    MAX_Y = 98.0;
         final double    STEP  = 1.8;
 
         timelineLineaEscaneo = new Timeline(
@@ -394,12 +396,11 @@ public class NuevoClienteController implements Initializable {
                     double opacity = baja[0] ? 0.9 : 0.6;
                     lineaEscaneo.setOpacity(opacity);
 
-                    // Pulso de glow en el círculo del scanner
-                    double glow = 0.4 + 0.6 * (posY[0] / MAX_Y);
+                    double glow = 0.3 + 0.5 * (posY[0] / MAX_Y);
                     scannerCircle.setStyle(scannerCircle.getStyle()
                             .replaceAll("-fx-effect:.*?;", "")
-                            + String.format("-fx-effect: dropshadow(gaussian, #D4FF00, %.0f, 0.4, 0, 0);",
-                            8 + glow * 16));
+                            + String.format("-fx-effect: dropshadow(gaussian, #D4FF00, %.0f, 0.3, 0, 0);",
+                            6 + glow * 10));
                 })
         );
         timelineLineaEscaneo.setCycleCount(Timeline.INDEFINITE);
@@ -454,80 +455,82 @@ public class NuevoClienteController implements Initializable {
 
     @FXML
     private void handleEscanearHuella() {
-        if (huellaCapturada) return; // ya completado, botón deshabilitado desde el código
+        if (huellaCapturada) return;
 
-        // Iniciar animación de línea de escaneo solo en la primera muestra
-        if (muestrasCapturadas == 0) {
-            iniciarAnimacionLineaEscaneo();
-        }
+        muestrasCapturadas = 0;
+        iniciarAnimacionLineaEscaneo();
 
-        // Deshabilitar botón mientras simula la captura de esta muestra
         btnEscanearHuella.setDisable(true);
-        lblScannerStatus.setText("CAPTURANDO MUESTRA " + (muestrasCapturadas + 1) + "...");
+        lblScannerStatus.setText("INICIANDO...");
+        pbHuella.setProgress(0);
+        lblPorcentajeHuella.setText("0%");
 
-        // Animar la barra desde el progreso actual hasta el siguiente paso (25%)
-        double progInicio = muestrasCapturadas * 0.25;
-        double progFin    = progInicio + 0.25;
+        huellaService.iniciarEnrolamientoConCaptura(new HuellaService.EnrollmentCallback() {
+            @Override
+            public void onStatus(String status) {
+                Platform.runLater(() -> {
+                    lblScannerStatus.setText(status);
+                    btnEscanearHuella.setText("ESPERANDO DEDO...");
+                });
+            }
 
-        // 20 pasos de 50ms = ~1 segundo por muestra
-        final double[] paso = {progInicio};
-        final double incremento = 0.25 / 20.0;
+            @Override
+            public void onProgress(int captured, int total) {
+                Platform.runLater(() -> {
+                    muestrasCapturadas = captured;
+                    double progreso = captured / (double) total;
+                    pbHuella.setProgress(progreso);
+                    lblPorcentajeHuella.setText((captured * 25) + "%");
+                    lblScannerTitulo.setText("Captura " + captured + " de " + total);
+                    btnEscanearHuella.setText("CAPTURANDO...");
+                });
+            }
 
-        Timeline captura = new Timeline(
-                new KeyFrame(Duration.millis(50), e -> {
-                    paso[0] = Math.min(paso[0] + incremento, progFin);
-                    pbHuella.setProgress(paso[0]);
-                    lblPorcentajeHuella.setText(String.format("%.0f%%", paso[0] * 100));
-                })
-        );
-        captura.setCycleCount(20);
-        captura.setOnFinished(e -> {
-            muestrasCapturadas++;
-            pbHuella.setProgress(muestrasCapturadas * 0.25);
-            lblPorcentajeHuella.setText((muestrasCapturadas * 25) + "%");
+            @Override
+            public void onSampleRejected(String reason) {
+                Platform.runLater(() -> {
+                    lblScannerStatus.setText("REPETIR: " + reason);
+                    btnEscanearHuella.setDisable(false);
+                    btnEscanearHuella.setText("INTENTAR DE NUEVO");
+                });
+            }
 
-            if (muestrasCapturadas < 4) {
-                // Quedan muestras: volver a habilitar para la siguiente
-                lblScannerStatus.setText("MUESTRA " + muestrasCapturadas + "/4 CAPTURADA");
-                lblScannerTitulo.setText("Captura " + muestrasCapturadas + " de 4");
-                btnEscanearHuella.setText("CAPTURAR SIGUIENTE");
-                btnEscanearHuella.setDisable(false);
-            } else {
-                // 4/4 completadas
-                huellaCapturada = true;
-                if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
+            @Override
+            public void onComplete(DPFPTemplate template) {
+                Platform.runLater(() -> {
+                    templateCapturado = template;
+                    huellaCapturada = true;
+                    if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
 
-                // Línea fija en centro con color cian
-                lineaEscaneo.setTranslateY(40);
-                lineaEscaneo.setOpacity(1.0);
-                lineaEscaneo.setStyle("-fx-background-color: #bdf4ff; -fx-effect: dropshadow(gaussian, #bdf4ff, 12, 0.9, 0, 0);");
-                scannerCircle.setStyle(scannerCircle.getStyle()
-                        .replaceAll("-fx-effect:.*?;", "")
-                        + "-fx-effect: dropshadow(gaussian, #bdf4ff, 20, 0.6, 0, 0);");
+                    lineaEscaneo.setTranslateY(40);
+                    lineaEscaneo.setOpacity(1.0);
+                    lineaEscaneo.setStyle("-fx-background-color: #bdf4ff; -fx-effect: dropshadow(gaussian, #bdf4ff, 6, 0.7, 0, 0);");
+                    scannerCircle.setStyle(scannerCircle.getStyle()
+                            .replaceAll("-fx-effect:.*?;", "")
+                            + "-fx-effect: dropshadow(gaussian, #bdf4ff, 12, 0.5, 0, 0);");
 
-                lblScannerTitulo.setText("Huella Registrada");
-                lblScannerTitulo.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #bdf4ff;");
+                    lblScannerTitulo.setText("Huella Registrada");
+                    lblScannerTitulo.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #bdf4ff;");
+                    lblScannerStatus.setText("HUELLA REGISTRADA");
+                    lblScannerStatus.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;");
+                    lblPorcentajeHuella.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;");
+                    pbHuella.setStyle("-fx-accent: #bdf4ff; -fx-background-color: #282a2d; -fx-background-radius: 4; -fx-border-width: 0;");
 
-                lblScannerStatus.setText("HUELLA REGISTRADA");
-                lblScannerStatus.setStyle(
-                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;" +
-                                "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;"
-                );
-                lblPorcentajeHuella.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;");
-                pbHuella.setStyle("-fx-accent: #bdf4ff; -fx-background-color: #282a2d; -fx-background-radius: 4; -fx-border-width: 0;");
+                    btnEscanearHuella.setText("REGISTRO COMPLETO ✓");
+                    btnEscanearHuella.setDisable(true);
+                    btnEscanearHuella.setStyle("-fx-background-color: #002a30; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff; -fx-border-color: #0a4a50; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: default;");
+                });
+            }
 
-                btnEscanearHuella.setText("REGISTRO COMPLETO ✓");
-                btnEscanearHuella.setDisable(true);
-                btnEscanearHuella.setStyle(
-                        "-fx-background-color: #002a30; -fx-background-radius: 8;" +
-                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                                "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;" +
-                                "-fx-border-color: #0a4a50; -fx-border-width: 1;" +
-                                "-fx-border-radius: 8; -fx-cursor: default;"
-                );
+            @Override
+            public void onError(String error) {
+                Platform.runLater(() -> {
+                    lblScannerStatus.setText("ERROR: " + error);
+                    btnEscanearHuella.setDisable(false);
+                    btnEscanearHuella.setText("REINTENTAR");
+                });
             }
         });
-        captura.play();
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -733,6 +736,11 @@ public class NuevoClienteController implements Initializable {
     private void navegarA(String rutaFxml) {
         if (timelineHuella != null) timelineHuella.stop();
         if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
+        // Limpiar captura activa si la hay
+        if (huellaService.isCapturaActiva()) {
+            huellaService.deshabilitarCaptura();
+        }
+        huellaService.cancelarEnrolamiento();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFxml));
             Parent root = loader.load();

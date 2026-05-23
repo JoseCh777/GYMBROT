@@ -11,8 +11,12 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
 import com.digitalpersona.onetouch.capture.DPFPCapture;
 import com.digitalpersona.onetouch.capture.DPFPCapturePriority;
+import com.digitalpersona.onetouch.capture.event.DPFPDataAdapter;
+import com.digitalpersona.onetouch.capture.event.DPFPDataEvent;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusAdapter;
 import com.digitalpersona.onetouch.capture.event.DPFPReaderStatusEvent;
+import com.digitalpersona.onetouch.capture.event.DPFPSensorAdapter;
+import com.digitalpersona.onetouch.capture.event.DPFPSensorEvent;
 import com.digitalpersona.onetouch.processing.DPFPEnrollment;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
@@ -22,6 +26,7 @@ import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -33,6 +38,14 @@ import java.util.function.Consumer;
  * Maneja enrolamiento, verificación y almacenamiento de templates.
  */
 public class HuellaService {
+
+    public interface EnrollmentCallback {
+        void onStatus(String status);
+        void onProgress(int captured, int total);
+        void onSampleRejected(String reason);
+        void onComplete(DPFPTemplate template);
+        void onError(String error);
+    }
 
     private static HuellaService instancia;
 
@@ -52,6 +65,10 @@ public class HuellaService {
 
     // Múltiples callbacks para cambios de estado del lector
     private final List<Consumer<Boolean>> statusListeners = new ArrayList<>();
+    // Callback para eventos de captura (enrolamiento)
+    private EnrollmentCallback enrollCallback;
+    // Flag que indica si la captura activa (startCapture) está funcionando
+    private boolean capturaActiva = false;
 
     // Polling periódico para detectar conexión/desconexión en tiempo real
     private ScheduledExecutorService scheduler;
@@ -67,12 +84,8 @@ public class HuellaService {
     public HuellaService() {
         this.clienteDAO = new ClienteDAO();
         this.huellaUtil = new HuellaUtil();
-        try {
-            this.verificador = DPFPGlobal.getVerificationFactory().createVerification();
-            this.extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
-        } catch (Exception e) {
-            System.err.println("⚠ No se pudieron inicializar componentes de verificación: " + e.getMessage());
-        }
+        // NOTA: verificador y extractor se crean bajo demanda (lazy)
+        // para evitar que su inicialización nativa interfiera con startCapture()
     }
 
     /**
@@ -99,56 +112,11 @@ public class HuellaService {
      * @return true si se inicializó correctamente
      */
     public boolean iniciarLector() {
-        try {
-            if (lector != null) {
-                System.out.println("⚠ Lector ya está activo");
-                return true;
-            }
-
-            lector = DPFPGlobal.getCaptureFactory().createCapture();
-
-            if (lector == null) {
-                System.err.println("✗ No se pudo crear el lector");
-                notificarStatus(false);
-                return false;
-            }
-
-            lector.addReaderStatusListener(new DPFPReaderStatusAdapter() {
-                @Override
-                public void readerConnected(DPFPReaderStatusEvent e) {
-                    System.out.println("✓ Lector conectado");
-                    notificarStatus(true);
-                }
-                @Override
-                public void readerDisconnected(DPFPReaderStatusEvent e) {
-                    System.out.println("✗ Lector desconectado");
-                    notificarStatus(false);
-                }
-            });
-
-            lector.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_HIGH);
-
-            // Intentar iniciar captura — si falla (DpHost ocupando el lector) no importa,
-            // la detección de conectividad se hace vía ReadersCollection API
-            try {
-                lector.startCapture();
-                System.out.println("✓ Captura iniciada correctamente");
-            } catch (Exception e) {
-                System.out.println("⚠ startCapture falló (posible conflicto con DpHost): " + e.getMessage());
-            }
-
-            // El polling se encarga de detectar el estado real del lector
-            iniciarPolling();
-
-            return true;
-
-        } catch (Exception e) {
-            System.err.println("Error al iniciar lector: " + e.getMessage());
-            e.printStackTrace();
-            lector = null;
-            notificarStatus(false);
-            return false;
-        }
+        // El lector se crea bajo demanda en habilitarCaptura() para evitar
+        // que la creación temprana interfiera con el estado de la API nativa.
+        // Solo iniciamos el polling para detectar conectividad.
+        iniciarPolling();
+        return true;
     }
 
     /**
@@ -212,12 +180,273 @@ public class HuellaService {
         }
     }
 
+    // ─── DpHost control ─────────────────────────────────────────────────
+    private boolean detenerDpHost() {
+        try {
+            Process p = new ProcessBuilder("sc", "stop", "DpHost").start();
+            p.waitFor(5, TimeUnit.SECONDS);
+            // Force-kill cualquier proceso residual de DpHost
+            new ProcessBuilder("taskkill", "/f", "/im", "DpHostW.exe").start();
+            Thread.sleep(500);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean reiniciarDpHost() {
+        try {
+            new ProcessBuilder("sc", "start", "DpHost").start();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean forzarLimpiezaAPI() {
+        try {
+            // Forzar limpieza de la API DPFP en nuestro proceso:
+            // 1. Forzar garbage collection + finalization para liberar objetos nativos
+            // 2. Llamar DPFPApi_Exit via rundll32
+            System.gc();
+            System.runFinalization();
+            Thread.sleep(300);
+            ProcessBuilder pb = new ProcessBuilder(
+                "rundll32.exe",
+                "C:\\Windows\\System32\\DPFPApi.dll",
+                "DPFPApi_Exit"
+            );
+            Process p = pb.start();
+            p.waitFor(3, TimeUnit.SECONDS);
+            Thread.sleep(500);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean iniciarDpHost() {
+        try {
+            Process p = new ProcessBuilder("sc", "start", "DpHost").start();
+            p.waitFor(5, TimeUnit.SECONDS);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Intenta cargar los controladores del kernel manualmente.
+     * DpHost los carga al iniciar; al detenerlo se descargan.
+     */
+    private boolean cargarDriversKernel() {
+        try {
+            new ProcessBuilder("sc", "start", "dpK00701").start();
+            new ProcessBuilder("sc", "start", "usbdpfp").start();
+            Thread.sleep(500);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ─── Captura activa (on-demand) ──────────────────────────────────────
+
+    private String obtenerIdDispositivoUSB() {
+        try {
+            Process p = new ProcessBuilder("pnputil", "/enum-devices").start();
+            String output = new String(p.getInputStream().readAllBytes());
+            for (String line : output.split("\n")) {
+                if (line.contains("USB\\VID_05BA&PID_000A")) {
+                    return line.replaceAll(".*Id. de instancia:\\s*", "").trim();
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.err.println("⚠ Error obteniendo ID USB: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private boolean reiniciarApiDPFP() {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                "rundll32.exe",
+                "C:\\Windows\\System32\\DPFPApi.dll",
+                "DPFPApi_Exit"
+            );
+            Process p = pb.start();
+            p.waitFor(3, TimeUnit.SECONDS);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Habilita la captura activa del lector.
+     * El sample C++ funciona con DpHost activo sin problemas.
+     * El problema de nuestra app era que verificador/extractor
+     * se inicializaban antes que startCapture() y eso interfería.
+     * Ahora son lazy, así que solo creamos lector + startCapture.
+     */
+    public boolean habilitarCaptura() {
+        if (capturaActiva) return true;
+        try {
+            if (lector == null) {
+                lector = DPFPGlobal.getCaptureFactory().createCapture();
+                if (lector == null) return false;
+                lector.addReaderStatusListener(new DPFPReaderStatusAdapter() {
+                    @Override public void readerConnected(DPFPReaderStatusEvent e) { notificarStatus(true); }
+                    @Override public void readerDisconnected(DPFPReaderStatusEvent e) { notificarStatus(false); }
+                });
+                lector.addDataListener(new DPFPDataAdapter() {
+                    @Override public void dataAcquired(DPFPDataEvent e) {
+                        if (enrolandoActivo) procesarMuestraEnrolamiento(e.getSample());
+                    }
+                });
+                lector.addSensorListener(new DPFPSensorAdapter() {
+                    @Override public void fingerTouched(DPFPSensorEvent e) {
+                        if (enrolandoActivo && enrollCallback != null) enrollCallback.onStatus("Procesando huella...");
+                    }
+                    @Override public void fingerGone(DPFPSensorEvent e) {
+                        if (enrolandoActivo && enrollCallback != null) enrollCallback.onStatus("Dedo retirado, espere...");
+                    }
+                });
+                lector.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_HIGH);
+            }
+
+            lector.startCapture();
+            capturaActiva = true;
+            System.out.println("✓ Captura activa iniciada");
+            return true;
+        } catch (Exception e) {
+            System.err.println("✗ Error al habilitar captura: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void recrearLector() {
+        try { if (lector != null) lector.stopCapture(); } catch (Exception e) { }
+        lector = DPFPGlobal.getCaptureFactory().createCapture();
+        if (lector == null) return;
+        lector.addReaderStatusListener(new DPFPReaderStatusAdapter() {
+            @Override
+            public void readerConnected(DPFPReaderStatusEvent e) {
+                System.out.println("✓ Lector conectado");
+                notificarStatus(true);
+            }
+            @Override
+            public void readerDisconnected(DPFPReaderStatusEvent e) {
+                System.out.println("✗ Lector desconectado");
+                notificarStatus(false);
+            }
+        });
+        lector.addDataListener(new DPFPDataAdapter() {
+            @Override
+            public void dataAcquired(DPFPDataEvent e) {
+                if (enrolandoActivo) {
+                    procesarMuestraEnrolamiento(e.getSample());
+                }
+            }
+        });
+        lector.addSensorListener(new DPFPSensorAdapter() {
+            @Override
+            public void fingerTouched(DPFPSensorEvent e) {
+                if (enrolandoActivo && enrollCallback != null) {
+                    enrollCallback.onStatus("Procesando huella...");
+                }
+            }
+            @Override
+            public void fingerGone(DPFPSensorEvent e) {
+                if (enrolandoActivo && enrollCallback != null) {
+                    enrollCallback.onStatus("Dedo retirado, espere...");
+                }
+            }
+        });
+        lector.setPriority(DPFPCapturePriority.CAPTURE_PRIORITY_HIGH);
+    }
+
+    /**
+     * Deshabilita la captura activa y restaura DpHost.
+     */
+    public void deshabilitarCaptura() {
+        try {
+            if (lector != null) lector.stopCapture();
+        } catch (Exception e) { }
+        capturaActiva = false;
+        System.out.println("⏳ Restaurando DpHost...");
+        iniciarDpHost();
+        // Reanudar polling
+        iniciarPolling();
+        System.out.println("✓ Captura desactivada");
+    }
+
+    // ─── Enrollment con captura real (similar a PruebaBiometrica) ───────
+
+    /**
+     * Inicia el proceso completo de enrolamiento con captura real:
+     * 1. Crea el enroller
+     * 2. Detiene DpHost y activa startCapture()
+     * 3. Los eventos dataAcquired/fingerTouched actualizan el progreso vía callback
+     * 4. Al completar las 4 muestras, deshabilita captura y restaura DpHost
+     */
+    public void iniciarEnrolamientoConCaptura(EnrollmentCallback callback) {
+        this.enrollCallback = callback;
+
+        try {
+            enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
+            enrolandoActivo = true;
+            idClienteEnrolando = null;
+        } catch (Exception e) {
+            if (callback != null) callback.onError("Error al crear enroller: " + e.getMessage());
+            return;
+        }
+
+        if (callback != null) callback.onStatus("Preparando lector...");
+
+        CompletableFuture.runAsync(() -> {
+            boolean ok = habilitarCaptura();
+            if (ok) {
+                if (callback != null) callback.onStatus("Coloque el dedo en el lector");
+            } else {
+                enrolandoActivo = false;
+                enroller = null;
+                if (callback != null) callback.onError("No se pudo iniciar la captura. Asegúrese de que el lector está conectado.");
+            }
+        });
+    }
+
+    /**
+     * Obtiene el template generado al finalizar el enrolamiento.
+     */
+    public DPFPTemplate obtenerTemplate() {
+        try {
+            return enroller != null ? enroller.getTemplate() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Indica si la captura activa (startCapture) está funcionando.
+     */
+    public boolean isCapturaActiva() {
+        return capturaActiva;
+    }
+    
     /**
      * Detiene y libera el lector de huellas digitales.
      */
     public void detenerLector() {
         detenerPolling();
         try {
+            if (capturaActiva) {
+                try { lector.stopCapture(); } catch (Exception e) { }
+                iniciarDpHost();
+                capturaActiva = false;
+            }
             if (lector != null) {
                 lector.stopCapture();
                 lector = null;
@@ -286,7 +515,6 @@ public class HuellaService {
     public boolean procesarMuestraEnrolamiento(DPFPSample sample) {
         try {
             if (!enrolandoActivo || enroller == null) {
-                System.err.println("✗ No hay enrolamiento activo");
                 return false;
             }
 
@@ -294,30 +522,48 @@ public class HuellaService {
             DPFPFeatureSet features = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
 
             if (features == null) {
-                System.err.println("✗ Calidad de huella insuficiente - Intente de nuevo");
+                if (enrollCallback != null) enrollCallback.onSampleRejected("Calidad de huella insuficiente");
                 return false;
             }
 
-            // Agregar muestra al enrolamiento
+            int neededAntes = enroller.getFeaturesNeeded();
             enroller.addFeatures(features);
+            int neededDespues = enroller.getFeaturesNeeded();
+            int capturadas = 4 - neededDespues;
 
-            // Mostrar progreso
-            int muestrasCapturadas = enroller.getFeaturesNeeded();
-            int muestrasRestantes = enroller.getFeaturesNeeded();
-            System.out.println("  Muestras capturadas: " + muestrasCapturadas + "/4");
+            if (neededAntes == neededDespues) {
+                // La muestra no se agregó (repetida o inválida)
+                if (enrollCallback != null) enrollCallback.onSampleRejected("Muestra repetida o inválida");
+                return false;
+            }
+
+            if (enrollCallback != null) {
+                enrollCallback.onProgress(capturadas, 4);
+                if (capturadas < 4) {
+                    enrollCallback.onStatus("Muestra " + capturadas + "/4 capturada");
+                }
+            }
 
             // Verificar si ya se completó el enrolamiento
-            if (enroller.getFeaturesNeeded() <= 0) {
-                return finalizarEnrolamiento();
+            if (neededDespues <= 0) {
+                DPFPTemplate template = obtenerTemplate();
+                deshabilitarCaptura();
+                enrolandoActivo = false;
+                enroller = null;
+                if (template != null) {
+                    if (enrollCallback != null) enrollCallback.onComplete(template);
+                } else {
+                    if (enrollCallback != null) enrollCallback.onError("Error al generar template");
+                }
             }
 
             return true;
 
         } catch (DPFPImageQualityException e) {
-            System.err.println("✗ Calidad de imagen insuficiente");
+            if (enrollCallback != null) enrollCallback.onSampleRejected("Calidad de imagen insuficiente");
             return false;
         } catch (Exception e) {
-            System.err.println("Error procesando muestra: " + e.getMessage());
+            if (enrollCallback != null) enrollCallback.onError("Error: " + e.getMessage());
             return false;
         }
     }
@@ -361,6 +607,9 @@ public class HuellaService {
      */
     private DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, DPFPDataPurpose purpose) {
         try {
+            if (extractor == null) {
+                extractor = DPFPGlobal.getFeatureExtractionFactory().createFeatureExtraction();
+            }
             return extractor.createFeatureSet(sample, purpose);
         } catch (DPFPImageQualityException e) {
             return null;
@@ -380,6 +629,11 @@ public class HuellaService {
             if (features == null) {
                 System.err.println("✗ Calidad de huella insuficiente");
                 return null;
+            }
+
+            // Inicializar verificador bajo demanda
+            if (verificador == null) {
+                verificador = DPFPGlobal.getVerificationFactory().createVerification();
             }
 
             // Obtener todos los clientes con huella registrada
