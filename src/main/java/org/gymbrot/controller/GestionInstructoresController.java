@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -33,6 +34,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
     @FXML private Button navAI;
+    @FXML private Button navProgreso;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -46,7 +48,11 @@ public class GestionInstructoresController implements Initializable {
     // ─── Toolbar ───────────────────────────────────────────────────────────
     @FXML private TextField searchField;
     @FXML private ComboBox<String> cmbFiltroEspecialidad;
-    @FXML private Button btnAgregarInstructor;
+    @FXML private Button btnNuevoInstructor;
+    @FXML private Button btnNuevaRutina1;
+    @FXML private Button btnNuevoEjercicio1;
+    @FXML private Button btnMostrarRutinas;
+    @FXML private Button btnMostrarEjercicios;
 
     // ─── Grid ──────────────────────────────────────────────────────────────
     @FXML private FlowPane gridInstructores;
@@ -374,6 +380,98 @@ public class GestionInstructoresController implements Initializable {
         navegarA("/fxml/NuevoInstructor.fxml");
     }
 
+    @FXML
+    private void handleNuevaRutina() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevaRutina.fxml"));
+            Parent overlay = loader.load();
+            NuevaRutinaController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Nueva Rutina");
+        }
+    }
+
+    @FXML
+    private void handleNuevoEjercicio() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevoEjercicio.fxml"));
+            Parent overlay = loader.load();
+            NuevoEjercicioController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Nuevo Ejercicio");
+        }
+    }
+
+    @FXML
+    private void handleMostrarRutinas() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DirectorioRutinas.fxml"));
+            Parent overlay = loader.load();
+            DirectorioRutinasController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Directorio de Rutinas");
+        }
+    }
+
+    @FXML
+    private void handleMostrarEjercicios() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DirectorioEjercicios.fxml"));
+            Parent overlay = loader.load();
+            DirectorioEjerciciosController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Directorio de Ejercicios");
+        }
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — NAV
     // ═══════════════════════════════════════════════════════════════════════
@@ -381,8 +479,9 @@ public class GestionInstructoresController implements Initializable {
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { }
-    @FXML private void handleNavMembresias()   { }
-    @FXML private void handleNavAI()           { }
+    @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
+    @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
+    @FXML private void handleNavProgreso()     { }
 
     @FXML
     private void handleLogout() {
@@ -400,13 +499,17 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navMembresias, navAI};
+        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navInstructores);
     }
 
     private void configurarAnimacionesBotones() {
-        agregarHoverActivo(btnAgregarInstructor);
+        agregarHoverActivo(btnNuevoInstructor);
+        agregarHoverActivo(btnNuevaRutina1);
+        agregarHoverActivo(btnNuevoEjercicio1);
+        agregarHoverActivo(btnMostrarRutinas);
+        agregarHoverActivo(btnMostrarEjercicios);
         agregarHoverInactivo(btnEmparejamiento);
     }
 
@@ -457,7 +560,7 @@ public class GestionInstructoresController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(

@@ -45,6 +45,7 @@ public class GestionClientesController implements Initializable {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
     @FXML private Button navAI;
+    @FXML private Button navProgreso;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -512,7 +513,7 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navAI};
+        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navClientes);
     }
@@ -570,7 +571,7 @@ public class GestionClientesController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -653,7 +654,8 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavClientes()     { }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml");}
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
-    @FXML private void handleNavAI()           { }
+    @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
 
     @FXML
     private void handleLogout() {
