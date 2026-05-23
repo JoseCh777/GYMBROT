@@ -28,8 +28,7 @@ public class CitaDAO {
 
             ps.setString(1, c.getIdInstructor());
             ps.setString(2, c.getIdCliente());
-            ps.setDate  (3, Date.valueOf(c.getFecha()));
-            // ✅ Combina fecha + hora en Timestamp para evitar 01/01/1970
+            ps.setDate(3, Date.valueOf(c.getFecha()));
             LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
             ps.setTimestamp(4, Timestamp.valueOf(fechaHora));
             ps.setString(5, c.getTipoCita());
@@ -44,6 +43,36 @@ public class CitaDAO {
         }
     }
 
+    // ── INSERTAR Y RETORNAR ID ────────────────────────────────────────────
+    public int insertarYRetornarId(Cita c) {
+        String sql = """
+            INSERT INTO CITAS
+                (id_instructor, id_cliente, fecha, hora, tipo_cita, estado, notas)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql, new String[]{"ID_CITA"})) {
+
+            ps.setString(1, c.getIdInstructor());
+            ps.setString(2, c.getIdCliente());
+            ps.setDate(3, Date.valueOf(c.getFecha()));
+            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
+            ps.setTimestamp(4, Timestamp.valueOf(fechaHora));
+            ps.setString(5, c.getTipoCita());
+            ps.setString(6, c.getEstado());
+            ps.setString(7, c.getNotas());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al insertar cita y retornar ID: " + e.getMessage());
+        }
+        return -1;
+    }
+
     // ── ACTUALIZAR ────────────────────────────────────────────────────────
     public boolean actualizar(Cita c) {
         String sql = """
@@ -56,14 +85,13 @@ public class CitaDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, c.getIdInstructor());
-            ps.setDate  (2, Date.valueOf(c.getFecha()));
-            // ✅ Combina fecha + hora en Timestamp
+            ps.setDate(2, Date.valueOf(c.getFecha()));
             LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
             ps.setTimestamp(3, Timestamp.valueOf(fechaHora));
             ps.setString(4, c.getTipoCita());
             ps.setString(5, c.getEstado());
             ps.setString(6, c.getNotas());
-            ps.setInt   (7, c.getIdCita());
+            ps.setInt(7, c.getIdCita());
 
             return ps.executeUpdate() > 0;
 
@@ -100,9 +128,7 @@ public class CitaDAO {
 
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearCita(rs);
-                }
+                if (rs.next()) return mapearCita(rs);
             }
 
         } catch (SQLException e) {
@@ -117,7 +143,7 @@ public class CitaDAO {
         String sql = """
             SELECT id_cita, id_instructor, id_cliente, fecha, hora,
                    tipo_cita, estado, notas
-            FROM CITAS WHERE id_cliente = ? ORDER BY fecha, hora
+            FROM CITAS WHERE id_cliente = ? ORDER BY id_cita ASC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -179,15 +205,14 @@ public class CitaDAO {
 
     // ── MAPEO ─────────────────────────────────────────────────────────────
     private Cita mapearCita(ResultSet rs) throws SQLException {
-        // ✅ Lee el Timestamp y extrae solo la hora
         Timestamp horaTs = rs.getTimestamp("hora");
         LocalTime hora = (horaTs != null) ? horaTs.toLocalDateTime().toLocalTime() : LocalTime.MIDNIGHT;
 
         return new Cita(
-                rs.getInt   ("id_cita"),
+                rs.getInt("id_cita"),
                 rs.getString("id_instructor"),
                 rs.getString("id_cliente"),
-                rs.getDate  ("fecha").toLocalDate(),
+                rs.getDate("fecha").toLocalDate(),
                 hora,
                 rs.getString("tipo_cita"),
                 rs.getString("estado"),
