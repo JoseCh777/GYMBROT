@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;fix: Arrelar bug en el indicador de lector conectao en login y en NuevoCliente&quot;&#10;&#10;# Conflicts:&#10;#&#9;pom.xml">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/HuellaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/HuellaService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/NuevoCliente.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/NuevoCliente.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,6 +190,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PruebaChatbot" />
         <item itemvalue="Application.PruebaChatbot" />
         <item itemvalue="Application.PruebaChatbot" />
         <item itemvalue="Application.PruebaChatbot" />

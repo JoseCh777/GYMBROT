@@ -39,3 +39,7 @@ build/
 .DS_Storeconfig.properties
 
 config.properties
+
+# C# fingerprint capture binary
+/capture/*.exe
+/capture/*.pdb
