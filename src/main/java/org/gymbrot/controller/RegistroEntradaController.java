@@ -21,6 +21,10 @@ import org.gymbrot.service.HuellaService;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.service.AuthService;
+import org.gymbrot.controller.PerfilClienteController;
+
 public class RegistroEntradaController implements Initializable {
 
     @FXML private Button btnCancelar;
@@ -171,8 +175,8 @@ public class RegistroEntradaController implements Initializable {
                     pbScan.setProgress(1);
                     dotBioScan.setStyle("-fx-fill: #22c55e;");
                     lblEstadoScan.setText("BIENVENIDO " + cliente.getNombre());
-                    mostrarInfo("Acceso Concedido", "Bienvenido " + cliente.getNombre() + " " + cliente.getApellidos());
                     verificando = false;
+                    PerfilClienteController.abrirConCliente(cliente, wrapperStack, overlayRoot);
                 });
             }
 
@@ -249,8 +253,20 @@ public class RegistroEntradaController implements Initializable {
             return;
         }
 
-        mostrarInfo("Acceso Validado", "Ingreso registrado para el socio N° " + numId);
-        cerrarOverlay();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        Cliente cliente = clienteDAO.buscarPorId(numId);
+        if (cliente == null) {
+            mostrarAlerta("Error", "No se encontró un cliente con ese número de identificación");
+            return;
+        }
+
+        AuthService auth = new AuthService();
+        if (!auth.validarContrasena(codigo, cliente.getContrasenaHash())) {
+            mostrarAlerta("Acceso Denegado", "Contraseña incorrecta");
+            return;
+        }
+
+        PerfilClienteController.abrirConCliente(cliente, wrapperStack, overlayRoot);
     }
 
 

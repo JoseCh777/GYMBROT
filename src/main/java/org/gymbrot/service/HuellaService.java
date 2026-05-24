@@ -34,7 +34,7 @@ public class HuellaService {
         void onStatus(String status);
         void onProgress(int captured, int total);
         void onSampleRejected(String reason);
-        void onComplete(DPFPTemplate template);
+        void onComplete(byte[] templateBytes);
         void onError(String error);
     }
 
@@ -243,14 +243,8 @@ public class HuellaService {
                 if (templateBase64.length() > 0) {
                     System.out.println("[HuellaService] Decodificando template...");
                     byte[] templateBytes = Base64.getDecoder().decode(templateBase64.toString());
-                    DPFPTemplate template = huellaUtil.deserializarTemplate(templateBytes);
-                    if (template != null) {
-                        System.out.println("[HuellaService] Template OK, llamando onComplete");
-                        if (callback != null) callback.onComplete(template);
-                    } else {
-                        System.err.println("[HuellaService] Error al deserializar template");
-                        if (callback != null) callback.onError("Error al deserializar template");
-                    }
+                    System.out.println("[HuellaService] Template OK, " + templateBytes.length + " bytes, llamando onComplete");
+                    if (callback != null) callback.onComplete(templateBytes);
                 } else {
                     System.err.println("[HuellaService] No se recibio template (stdout vacio)");
                     if (callback != null) callback.onError("No se recibio template del capturador");

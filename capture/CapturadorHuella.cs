@@ -242,6 +242,7 @@ namespace CapturadorHuella
             {
                 capturer = new DPFP.Capture.Capture();
                 capturer.EventHandler = this;
+                Console.Error.WriteLine("DEBUG:capturer creado OK");
             }
             catch (Exception ex)
             {
@@ -254,6 +255,7 @@ namespace CapturadorHuella
             try
             {
                 capturer.StartCapture();
+                Console.Error.WriteLine("DEBUG:StartCapture() OK");
             }
             catch (Exception ex)
             {
@@ -263,28 +265,38 @@ namespace CapturadorHuella
 
         public void OnComplete(object Capture, string ReaderSerialNumber, DPFP.Sample Sample)
         {
+            Console.Error.WriteLine("DEBUG:OnComplete llamado");
             try
             {
                 var extractor = new DPFP.Processing.FeatureExtraction();
                 var feedback = DPFP.Capture.CaptureFeedback.None;
                 var features = new DPFP.FeatureSet();
                 extractor.CreateFeatureSet(Sample, DPFP.Processing.DataPurpose.Verification, ref feedback, ref features);
+                Console.Error.WriteLine("DEBUG:features creadas, feedback=" + feedback);
 
                 if (feedback == DPFP.Capture.CaptureFeedback.Good)
                 {
                     Console.Error.WriteLine("STATUS:Verificando identidad...");
+                    Console.Error.WriteLine("DEBUG:comparando contra " + templates.Count + " templates");
 
                     int matchIndex = -1;
 
                     for (int i = 0; i < templates.Count; i++)
                     {
-                        var result = DPFP.Verification.Verification.Verify(features, templates[i]);
-                        if (result.Verified)
+                        try
                         {
-                            matchIndex = i;
-                            break;
+                            int FAR = 100000;
+                            var result3 = DPFP.Verification.Verification.Verify(features, templates[i], FAR);
+                            Console.Error.WriteLine("DEBUG:verify[" + i + "] ok=" + result3.Verified);
+                            if (result3.Verified) { matchIndex = i; break; }
+                        }
+                        catch (Exception ex2)
+                        {
+                            Console.Error.WriteLine("DEBUG:verify[" + i + "] exception: " + ex2.Message);
                         }
                     }
+
+                    Console.Error.WriteLine("DEBUG:matchIndex=" + matchIndex);
 
                     if (matchIndex >= 0)
                     {
@@ -295,18 +307,20 @@ namespace CapturadorHuella
                         Console.Out.WriteLine("NO_MATCH");
                     }
                     Console.Out.Flush();
+                    Console.Error.WriteLine("DEBUG:stdout flushed");
 
                     capturer.StopCapture();
                     this.Close();
                 }
                 else
                 {
-                    Console.Error.WriteLine("SAMPLE_REJECTED:Calidad de huella insuficiente");
+                    Console.Error.WriteLine("SAMPLE_REJECTED:Calidad de huella insuficiente feedback=" + feedback);
                     Console.Error.WriteLine("STATUS:Intente de nuevo");
                 }
             }
             catch (Exception ex)
             {
+                Console.Error.WriteLine("DEBUG:Excepcion en OnComplete: " + ex.Message);
                 ReportError("Error verificando: " + ex.Message);
             }
         }

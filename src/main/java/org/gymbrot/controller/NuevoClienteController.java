@@ -19,7 +19,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import com.digitalpersona.onetouch.DPFPTemplate;
 import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Cliente;
@@ -103,7 +102,7 @@ public class NuevoClienteController implements Initializable {
     private Timeline timelineHuella        = null;
     private Timeline timelineLineaEscaneo  = null;
     private HuellaService huellaService;
-    private DPFPTemplate templateCapturado = null;
+    private byte[] templateBytesCapturado = null;
 
     // ─── Validación ────────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -501,9 +500,9 @@ public class NuevoClienteController implements Initializable {
             }
 
             @Override
-            public void onComplete(DPFPTemplate template) {
+            public void onComplete(byte[] template) {
                 Platform.runLater(() -> {
-                    templateCapturado = template;
+                    templateBytesCapturado = template;
                     huellaCapturada = true;
                     if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
 
@@ -574,8 +573,8 @@ public class NuevoClienteController implements Initializable {
         c.setFechaNacimiento(dateFechaNacimiento.getValue());
         if (archivoFotoSeleccionado != null)
             c.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
-        if (templateCapturado != null)
-            c.setHuellaDactilar(templateCapturado.serialize());
+        if (templateBytesCapturado != null)
+            c.setHuellaDactilar(templateBytesCapturado);
         ok = clienteDAO.insertar(c);
         if (!ok) {
             mostrarError("Error", "No se pudo registrar el cliente.");
