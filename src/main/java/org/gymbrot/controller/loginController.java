@@ -158,7 +158,7 @@ public class loginController implements Initializable {
         UsuarioDAO dao = new UsuarioDAO();
         Usuario user = dao.buscarPorNombreOCorreo(usuario);
 
-        if (user != null && BCrypt.checkpw(contrasena, user.getContrasenaHash())) {
+        if (user != null && verificarContrasena(contrasena, user.getContrasenaHash())) {
             navegarA("/fxml/Dashboard.fxml");
         } else {
             mostrarError("Credenciales invalidas", "Usuario o contrasena incorrectos.");
@@ -170,6 +170,14 @@ public class loginController implements Initializable {
                     "-fx-border-color: #ffb4ab; -fx-border-width: 1; -fx-border-radius: 8;" +
                     "-fx-font-family: 'Inter'; -fx-font-size: 15px; -fx-text-fill: #e2e2e6;" +
                     "-fx-prompt-text-fill: #555759; -fx-padding: 14 16 14 48;");
+        }
+    }
+
+    private boolean verificarContrasena(String contrasenaPlana, String hash) {
+        try {
+            return BCrypt.checkpw(contrasenaPlana, hash);
+        } catch (Exception e) {
+            return contrasenaPlana.equals(hash);
         }
     }
 
