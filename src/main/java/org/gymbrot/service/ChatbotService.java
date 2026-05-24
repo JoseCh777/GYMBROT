@@ -12,7 +12,9 @@ import org.gymbrot.model.MensajeGymbrot;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChatbotService {
 
@@ -55,12 +57,44 @@ public class ChatbotService {
         String contextoExtra = "";
         boolean correosYaEnviados = false;
 
+        // ── DETECTAR CONSULTA DE CITAS PENDIENTES ─────────────────────────
+        if ((textoLower.contains("mis citas") || textoLower.contains("qué citas")
+                || textoLower.contains("que citas") || textoLower.contains("citas tengo")
+                || textoLower.contains("citas pendientes") || textoLower.contains("ver citas")
+                || textoLower.contains("mostrar citas") || textoLower.contains("listar citas"))
+                && !textoLower.contains("agendar") && !textoLower.contains("cancelar")) {
+
+            List<Cita> citasPendientes = citaDAO.listarPorCliente(idCliente)
+                .stream()
+                .filter(c -> c.getEstado().equals("PENDIENTE"))
+                .collect(Collectors.toList());
+
+            if (!citasPendientes.isEmpty()) {
+                DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter fmtHora  = DateTimeFormatter.ofPattern("HH:mm");
+                StringBuilder listaCitas = new StringBuilder();
+                for (Cita c : citasPendientes) {
+                    String nombreInstructor = obtenerNombreInstructor(c.getIdInstructor());
+                    listaCitas.append(String.format("Cita #%d — Instructor: %s | Fecha: %s | Hora: %s\n",
+                        c.getIdCita(),
+                        nombreInstructor,
+                        c.getFecha().format(fmtFecha),
+                        c.getHora().format(fmtHora)));
+                }
+                contextoExtra = " [SISTEMA: El cliente tiene las siguientes citas PENDIENTES:\n" +
+                    listaCitas.toString() +
+                    "Muéstraselas de forma clara y amable. Recuérdale que puede cancelar o reagendar " +
+                    "cualquier cita indicando su número de ID.]";
+            } else {
+                contextoExtra = " [SISTEMA: El cliente no tiene citas pendientes en este momento. " +
+                    "Infórmale amablemente y ofrécele agendar una nueva cita.]";
+            }
+
         // ── DETECTAR REAGENDAMIENTO ────────────────────────────────────────
-        if (textoLower.contains("reagendar") || textoLower.contains("cambiar")
+        } else if (textoLower.contains("reagendar") || textoLower.contains("cambiar")
                 || textoLower.contains("mover") || textoLower.contains("reprogramar")) {
 
             int idCitaVieja = extraerIdCita(texto);
-
             if (idCitaVieja > 0) {
                 boolean cancelada = citaService.cancelarCita(idCitaVieja);
                 if (cancelada) {
@@ -148,10 +182,8 @@ public class ChatbotService {
                 notificacionService.enviarSmsDirecto(
                     "GYMBROT: Tu cita #" + idCitaAgendada + " fue agendada exitosamente. ¡Te esperamos!"
                 );
-                // ✅ Extraer correos solo del mensaje actual para evitar duplicados
                 List<String> correosTextoActual = extraerCorreos(texto);
                 List<String> correosHistorial = extraerCorreosDeHistorial(historial);
-                // Unir sin duplicados
                 List<String> todosCorreos = new java.util.ArrayList<>(correosTextoActual);
                 for (String c : correosHistorial) {
                     if (!todosCorreos.contains(c)) todosCorreos.add(c);
@@ -180,7 +212,6 @@ public class ChatbotService {
         }
 
         // ── DETECTAR CORREO EN EL MENSAJE (solo info general) ─────────────
-        // ✅ Solo envía info general si NO hay contexto de cita y no se enviaron ya
         if (!correosYaEnviados) {
             List<String> correosDetectados = extraerCorreos(texto);
             boolean pidioInfoGeneral = (textoLower.contains("envia") || textoLower.contains("envía")
@@ -244,7 +275,6 @@ public class ChatbotService {
     // ── EXTRAER TODOS LOS CORREOS DEL TEXTO ──────────────────────────────
     private List<String> extraerCorreos(String texto) {
         List<String> correos = new java.util.ArrayList<>();
-        // ✅ Regex mejorado — requiere que el correo empiece con letra o número
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
             "(?<![\\w.])([a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})");
         java.util.regex.Matcher matcher = pattern.matcher(texto);
