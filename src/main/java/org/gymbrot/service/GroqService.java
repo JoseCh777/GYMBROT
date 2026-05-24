@@ -43,14 +43,33 @@ public class GroqService {
     }
 
     // ── ENVIAR MENSAJE CON HISTORIAL ──────────────────────────────────────
+    // ✅ Cuando ChatbotService ya procesó una acción (agendar, cancelar, etc.)
+    // le pasa contextoExtra con [SISTEMA: ...] y NO se consulta la BD de instructores
+    // para evitar confusión con horas recién ocupadas
     public String enviarMensaje(String mensajeUsuario, List<MensajeGymbrot> historial) {
         try {
-            String contextoDB = consultaService.buscarInfoRelevante(mensajeUsuario);
+            // ✅ Solo consultar BD si NO hay un contexto de sistema ya procesado
+            String contextoDB = "";
+            boolean tieneContextoSistema = mensajeUsuario.contains("[SISTEMA:");
+
+            if (!tieneContextoSistema) {
+                // Consulta normal — buscar info relevante
+                contextoDB = consultaService.buscarInfoRelevante(mensajeUsuario);
+            } else {
+                // Ya viene con contexto procesado — solo buscar planes si pregunta por eso
+                // No buscar instructores para evitar mostrar horas recién ocupadas
+                if (mensajeUsuario.toLowerCase().contains("plan")
+                        || mensajeUsuario.toLowerCase().contains("precio")
+                        || mensajeUsuario.toLowerCase().contains("membresia")) {
+                    contextoDB = consultaService.buscarInfoRelevante("planes membresia precio");
+                }
+            }
 
             String systemPrompt = "Eres GymBrot, asistente virtual del gimnasio GYMBROT en Valledupar. " +
                 "INFORMACION ACTUAL DE NUESTRA BASE DE DATOS: " +
                 (contextoDB.isEmpty() ? "No hay informacion especifica en este momento." : contextoDB) +
                 " INSTRUCCIONES: Responde SOLO con la informacion proporcionada arriba cuando sea relevante. " +
+                "Si el mensaje contiene [SISTEMA:], sigue exactamente esas instrucciones. " +
                 "Si el cliente da su correo confirma que le enviaste informacion. " +
                 "Si el cliente da su numero de celular confirma que le enviaste un SMS. " +
                 "Recuerda toda la conversacion anterior. " +

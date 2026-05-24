@@ -76,10 +76,8 @@ public class ChatbotService {
                 for (Cita c : citasPendientes) {
                     String nombreInstructor = obtenerNombreInstructor(c.getIdInstructor());
                     listaCitas.append(String.format("Cita #%d — Instructor: %s | Fecha: %s | Hora: %s\n",
-                        c.getIdCita(),
-                        nombreInstructor,
-                        c.getFecha().format(fmtFecha),
-                        c.getHora().format(fmtHora)));
+                        c.getIdCita(), nombreInstructor,
+                        c.getFecha().format(fmtFecha), c.getHora().format(fmtHora)));
                 }
                 contextoExtra = " [SISTEMA: El cliente tiene las siguientes citas PENDIENTES:\n" +
                     listaCitas.toString() +
@@ -178,9 +176,15 @@ public class ChatbotService {
 
             if (idCitaAgendada > 0) {
                 Cita citaAgendada = citaDAO.buscarPorId(idCitaAgendada);
-                String nombreInstructor = obtenerNombreInstructor(citaAgendada.getIdInstructor());
+                String nombreInst = obtenerNombreInstructor(citaAgendada.getIdInstructor());
+                String fechaFmt = citaAgendada.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                String horaFmt = citaAgendada.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
                 notificacionService.enviarSmsDirecto(
-                    "GYMBROT: Tu cita #" + idCitaAgendada + " fue agendada exitosamente. ¡Te esperamos!"
+                    "GYMBROT ✓ Cita #" + idCitaAgendada + " agendada\n" +
+                    "Instructor: " + nombreInst + "\n" +
+                    "Fecha: " + fechaFmt + "\n" +
+                    "Hora: " + horaFmt + "\n" +
+                    "Para cancelar indica tu ID de cita en el chat."
                 );
                 List<String> correosTextoActual = extraerCorreos(texto);
                 List<String> correosHistorial = extraerCorreosDeHistorial(historial);
@@ -192,9 +196,9 @@ public class ChatbotService {
                     "<p>Hola, tu cita en <b>GYMBROT Valledupar</b> ha sido registrada.</p>" +
                     "<table style='border-collapse:collapse;'>" +
                     "<tr><td><b>ID de cita:</b></td><td>#" + idCitaAgendada + "</td></tr>" +
-                    "<tr><td><b>Instructor:</b></td><td>" + nombreInstructor + "</td></tr>" +
-                    "<tr><td><b>Fecha:</b></td><td>" + citaAgendada.getFecha() + "</td></tr>" +
-                    "<tr><td><b>Hora:</b></td><td>" + citaAgendada.getHora() + "</td></tr>" +
+                    "<tr><td><b>Instructor:</b></td><td>" + nombreInst + "</td></tr>" +
+                    "<tr><td><b>Fecha:</b></td><td>" + fechaFmt + "</td></tr>" +
+                    "<tr><td><b>Hora:</b></td><td>" + horaFmt + "</td></tr>" +
                     "</table><br>" +
                     "<p>Guarda el ID por si necesitas cancelar o reprogramar.</p>" +
                     "<p>¡Te esperamos en GYMBROT!</p>";
@@ -282,15 +286,6 @@ public class ChatbotService {
         return correos;
     }
 
-    // ── EXTRAER CORREO DEL TEXTO ──────────────────────────────────────────
-    private String extraerCorreo(String texto) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-            "(?<![\\w.])([a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})");
-        java.util.regex.Matcher matcher = pattern.matcher(texto);
-        if (matcher.find()) return matcher.group(1);
-        return null;
-    }
-
     // ── EXTRAER TODOS LOS CORREOS DEL HISTORIAL ───────────────────────────
     private List<String> extraerCorreosDeHistorial(List<MensajeGymbrot> historial) {
         List<String> correosEncontrados = new java.util.ArrayList<>();
@@ -349,14 +344,31 @@ public class ChatbotService {
     }
 
     private LocalTime extraerHoraDeTexto(String texto) {
-        java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile("(\\d{1,2})(am|pm)");
-        java.util.regex.Matcher horaMatcher = horaPattern.matcher(texto.toLowerCase());
+        String textoLower = texto.toLowerCase();
+
+        // ✅ Detecta: 10am, 10 am, 10:00, 10:00am, 10:00 am
+        java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile(
+            "(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
+        java.util.regex.Matcher horaMatcher = horaPattern.matcher(textoLower);
         if (horaMatcher.find()) {
             int h = Integer.parseInt(horaMatcher.group(1));
-            if (horaMatcher.group(2).equals("pm") && h != 12) h += 12;
-            if (horaMatcher.group(2).equals("am") && h == 12) h = 0;
-            return LocalTime.of(h, 0);
+            String ampm = horaMatcher.group(3);
+            if (ampm.equals("pm") && h != 12) h += 12;
+            if (ampm.equals("am") && h == 12) h = 0;
+            int min = horaMatcher.group(2) != null ? Integer.parseInt(horaMatcher.group(2)) : 0;
+            return LocalTime.of(h, min);
         }
+
+        // ✅ Detecta formato 24h: 15:00, 08:30
+        java.util.regex.Pattern hora24Pattern = java.util.regex.Pattern.compile(
+            "\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
+        java.util.regex.Matcher hora24Matcher = hora24Pattern.matcher(textoLower);
+        if (hora24Matcher.find()) {
+            int h = Integer.parseInt(hora24Matcher.group(1));
+            int min = Integer.parseInt(hora24Matcher.group(2));
+            return LocalTime.of(h, min);
+        }
+
         return null;
     }
 
