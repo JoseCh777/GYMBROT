@@ -278,9 +278,15 @@
 
                             <!-- Titulo biometria -->
                             <HBox alignment="CENTER_LEFT" spacing="10">
-                                <VBox.margin><Insets bottom="20" /></VBox.margin>
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
                                 <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="HUELLA" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #b0d500;" text="BIOMETRIC ENROLLMENT" />
+                            </HBox>
+
+                            <!-- Indicador de estado del lector -->
+                            <HBox fx:id="bioStatusHBox" alignment="CENTER_LEFT" spacing="6">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Region fx:id="bioIndicator" prefHeight="15.0" prefWidth="16.0" style="-fx-background-color: #555759; -fx-background-radius: 50%; -fx-min-width: 6; -fx-min-height: 6;" />
+                                <Label fx:id="bioStatusLabel" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #555759;" text="LECTOR" />
                             </HBox>
 
                             <!-- Area del scanner -->
@@ -288,27 +294,23 @@
                                 <padding><Insets bottom="32" left="24" right="24" top="32" /></padding>
                                 <VBox.margin><Insets bottom="16" /></VBox.margin>
 
-                                <!-- Icono de huella con animacion de escaneo -->
-                                <StackPane fx:id="scannerPane" prefHeight="80" prefWidth="80">
-                                    <!-- Circulo base con borde amarillo -->
-                                    <StackPane fx:id="scannerCircle" prefHeight="80" prefWidth="80" style="-fx-background-color: #1e2a00; -fx-background-radius: 40;                                                       -fx-border-color: #D4FF00; -fx-border-width: 1;                                                       -fx-border-radius: 40;">
-                                        <!-- Lineas del patron de huella (SVG-like con Regions) -->
-                                        <VBox alignment="CENTER" prefWidth="50" spacing="5">
-                                            <Region prefHeight="2" prefWidth="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
-                                            <Region prefHeight="2" prefWidth="42" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
-                                            <Region prefHeight="2" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
-                                            <Region prefHeight="2" prefWidth="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
-                                            <Region prefHeight="2" prefWidth="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.7;" />
-                                            <Region prefHeight="2" prefWidth="24" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.6;" />
+                                <StackPane fx:id="scannerPane" prefHeight="100" prefWidth="100">
+                                    <StackPane fx:id="scannerCircle" prefHeight="100" prefWidth="100" style="-fx-background-color: #1e2a00; -fx-background-radius: 50; -fx-border-color: #D4FF00; -fx-border-width: 1; -fx-border-radius: 50;">
+                                        <VBox alignment="CENTER" prefWidth="60" spacing="6">
+                                            <Region prefHeight="1.5" prefWidth="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
+                                            <Region prefHeight="1.5" prefWidth="50" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
+                                            <Region prefHeight="1.5" prefWidth="58" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.9;" />
+                                            <Region prefHeight="1.5" prefWidth="52" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.8;" />
+                                            <Region prefHeight="1.5" prefWidth="42" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.7;" />
+                                            <Region prefHeight="1.5" prefWidth="28" style="-fx-background-color: #D4FF00; -fx-background-radius: 4; -fx-opacity: 0.6;" />
                                         </VBox>
                                     </StackPane>
-                                    <!-- Linea de escaneo animada (se mueve de arriba a abajo) -->
-                                    <Region fx:id="lineaEscaneo" prefHeight="2.0" prefWidth="221.0" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 8, 0.8, 0, 0);" StackPane.alignment="TOP_CENTER" />
+                                    <Region fx:id="lineaEscaneo" prefHeight="1.5" prefWidth="62" style="-fx-background-color: #D4FF00; -fx-effect: dropshadow(gaussian, #D4FF00, 4, 0.5, 0, 0);" StackPane.alignment="TOP_CENTER" />
                                 </StackPane>
 
-                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Escaneando Huella..." />
+                                <Label fx:id="lblScannerTitulo" style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Coloca tu dedo" />
 
-                                <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESANDO HUELLA..." />
+                                <Button fx:id="btnEscanearHuella" maxWidth="Infinity" onAction="#handleEscanearHuella" prefHeight="40" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #b0d500;                                                -fx-border-color: #2a3d00; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="CAPTURAR" />
                             </VBox>
 
                             <!-- Estado del scanner -->
@@ -317,15 +319,15 @@
                                 <Label prefHeight="15.0" prefWidth="132.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="Estado del escanner:" HBox.hgrow="ALWAYS" />
                                 <HBox alignment="CENTER" prefHeight="15.0" prefWidth="140.0" spacing="6">
                                     <Rectangle arcHeight="6" arcWidth="6" height="6" style="-fx-fill: #D4FF00;" width="6" />
-                                    <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="CAPTURANDO DATOS..." />
+                                    <Label fx:id="lblScannerStatus" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="LISTO" />
                                 </HBox>
                             </HBox>
 
                             <!-- Barra de progreso biometrica -->
-                            <ProgressBar fx:id="pbHuella" maxWidth="Infinity" prefHeight="6" progress="0.65" style="-fx-accent: #D4FF00; -fx-background-color: #282a2d;                                                 -fx-background-radius: 4; -fx-border-width: 0;" />
+                            <ProgressBar fx:id="pbHuella" maxWidth="Infinity" prefHeight="6" progress="0.0" style="-fx-accent: #D4FF00; -fx-background-color: #282a2d;                                                 -fx-background-radius: 4; -fx-border-width: 0;" />
                             <HBox>
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lblPorcentajeHuella" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="65%" />
+                                <Label fx:id="lblPorcentajeHuella" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0%" />
                             </HBox>
 
                         </VBox>

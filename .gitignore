@@ -40,4 +40,10 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store
+.DS_Storeconfig.properties
+
+config.properties
+
+# C# fingerprint capture binary
+/capture/*.exe
+/capture/*.pdb

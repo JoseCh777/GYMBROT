@@ -11,10 +11,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
+        <maven.compiler.source>26</maven.compiler.source>
+        <maven.compiler.target>26</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <javafx.version>21</javafx.version>
     </properties>
 
@@ -37,9 +36,67 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc11</artifactId>
-            <version>23.4.0.24.05</version>
+            <version>23.6.0.24.10</version>
             <scope>system</scope>
-            <systemPath>C:\libs\ojdbc11.jar</systemPath>
+            <systemPath>${project.basedir}/libs/ojdbc11.jar</systemPath>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+
+        <!-- JavaMail -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+        <!-- Twilio -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>9.14.0</version>
+        </dependency>
+
+        <!-- BCrypt -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <!-- DigitalPersona SDK (huella dactilar) -->
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpotapi</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dpotapi.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpotjni</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dpotjni.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpfpenrollment</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dpfpenrollment.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.digitalpersona</groupId>
+            <artifactId>dpfpverification</artifactId>
+            <version>1.6.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dpfpverification.jar</systemPath>
         </dependency>
 
     </dependencies>
@@ -56,20 +113,16 @@
                 </includes>
             </resource>
         </resources>
-        <plugins>
 
-            <!-- Plugin JavaFX -->
+        <plugins>
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
-
                 <configuration>
                     <mainClass>org.gymbrot.Main</mainClass>
                 </configuration>
-
             </plugin>
-
         </plugins>
     </build>
 
