@@ -12,9 +12,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.gymbrot.dao.EjercicioDAO;
+import org.gymbrot.model.Ejercicio;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class DirectorioEjerciciosController implements Initializable {
 
@@ -48,22 +52,39 @@ public class DirectorioEjerciciosController implements Initializable {
     private StackPane wrapperStack;
     private Parent overlayRoot;
 
+    private final EjercicioDAO ejercicioDAO = new EjercicioDAO();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarComboBoxes();
         configurarTabla();
-        cargarDatosMock();
+        cargarEjercicios();
         configurarBuscador();
         configurarAnimaciones();
         aplicarFiltro();
     }
 
     private void configurarComboBoxes() {
-        cmbFiltroGrupo.getItems().addAll("Todos", "Pecho", "Espalda", "Hombros", "Biceps", "Triceps", "Piernas", "Gluteos", "Abdomen", "Cardio", "Cuerpo Completo");
+        List<Ejercicio> todos = ejercicioDAO.listarTodos();
+        List<String> grupos = todos.stream()
+                .map(Ejercicio::getGrupoMuscular)
+                .filter(g -> g != null && !g.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        cmbFiltroGrupo.getItems().add("Todos");
+        cmbFiltroGrupo.getItems().addAll(grupos);
         cmbFiltroGrupo.getSelectionModel().selectFirst();
         cmbFiltroGrupo.setOnAction(e -> aplicarFiltro());
 
-        cmbFiltroNivel.getItems().addAll("Todos", "Principiante", "Intermedio", "Avanzado");
+        List<String> niveles = todos.stream()
+                .map(Ejercicio::getNivel)
+                .filter(n -> n != null && !n.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        cmbFiltroNivel.getItems().add("Todos");
+        cmbFiltroNivel.getItems().addAll(niveles);
         cmbFiltroNivel.getSelectionModel().selectFirst();
         cmbFiltroNivel.setOnAction(e -> aplicarFiltro());
     }
@@ -84,28 +105,16 @@ public class DirectorioEjerciciosController implements Initializable {
         tablaEjercicios.setFixedCellSize(48);
     }
 
-    private void cargarDatosMock() {
-        todosLosEjercicios.setAll(
-                new EjercicioRow("Press Banca",          "Pecho",    "Intermedio", "Acostado en banco, barra al pecho y extiende"),
-                new EjercicioRow("Sentadilla",           "Piernas",  "Intermedio", "Barra en trapecios, cadera abajo y arriba"),
-                new EjercicioRow("Peso Muerto",          "Espalda",  "Avanzado",   "Barra en suelo, espalda recta, levanta"),
-                new EjercicioRow("Dominadas",            "Espalda",  "Intermedio", "Agarrar barra, subir hasta menton"),
-                new EjercicioRow("Fondos",               "Triceps",  "Intermedio", "En paralelas, baja y empuja"),
-                new EjercicioRow("Remo con Barra",       "Espalda",  "Intermedio", "Inclinado, barra al abdomen"),
-                new EjercicioRow("Press Militar",        "Hombros",  "Intermedio", "Barra desde hombros hasta extension"),
-                new EjercicioRow("Curl Biceps",          "Biceps",   "Principiante", "Mancuernas, flexion de codo"),
-                new EjercicioRow("Extension Triceps",    "Triceps",  "Principiante", "Polea alta, extension completa"),
-                new EjercicioRow("Elevaciones Laterales","Hombros",  "Principiante", "Mancuernas laterales hasta altura hombro"),
-                new EjercicioRow("Jalon al Pecho",       "Espalda",  "Principiante", "Polea alta, barra al pecho"),
-                new EjercicioRow("Prensa de Piernas",    "Piernas",  "Principiante", "Plataforma, empuja con piernas"),
-                new EjercicioRow("Crunches",             "Abdomen",  "Principiante", "Acostado, elevacion de tronco"),
-                new EjercicioRow("Plancha",              "Abdomen",  "Intermedio", "Antebrazos en suelo, cuerpo recto"),
-                new EjercicioRow("Zancadas",             "Piernas",  "Intermedio", "Paso al frente, rodilla trasera al suelo"),
-                new EjercicioRow("Press Inclinado",      "Pecho",    "Intermedio", "Banco 45°, barra a claviculas"),
-                new EjercicioRow("Peso Muerto Rumano",   "Gluteos",  "Avanzado",   "Barra, cadera atras, torso firme"),
-                new EjercicioRow("Aperturas",            "Pecho",    "Principiante", "Mancuernas, apertura pectoral")
-        );
-
+    private void cargarEjercicios() {
+        List<Ejercicio> lista = ejercicioDAO.listarTodos();
+        todosLosEjercicios.clear();
+        for (Ejercicio e : lista) {
+            String nivel = e.getNivel() != null ? e.getNivel().substring(0, 1).toUpperCase()
+                    + e.getNivel().substring(1).toLowerCase() : "";
+            String desc = e.getDescripcion() != null ? e.getDescripcion() : "";
+            todosLosEjercicios.add(new EjercicioRow(
+                    e.getNombre(), e.getGrupoMuscular(), nivel, desc));
+        }
         ejerciciosFiltrados = new FilteredList<>(todosLosEjercicios, p -> true);
     }
 

@@ -24,10 +24,14 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.dao.RegistroIngresoDAO;
+import org.gymbrot.dao.HistorialMembresiaDAO;
 import org.gymbrot.model.Cliente;
+import org.gymbrot.model.RegistroIngreso;
 
 /**
  * GestionClientesController
@@ -89,6 +93,11 @@ public class GestionClientesController implements Initializable {
     @FXML private VBox logAccesos;
     @FXML private Label lblAIInsight;
     @FXML private Button btnOptimizarFlujo;
+
+    // ─── DAOs ──────────────────────────────────────────────────────────────
+    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final RegistroIngresoDAO registroIngresoDAO = new RegistroIngresoDAO();
+    private final HistorialMembresiaDAO historialMembresiaDAO = new HistorialMembresiaDAO();
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private ObservableList<ClienteRow> todosLosClientes;
@@ -156,22 +165,22 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarStats() {
-        // TODO: reemplazar con DAO
-        // int total = clienteDAO.contarClientesActivos();
-        // Query: SELECT COUNT(*) FROM USUARIOS WHERE tipo_usuario='CLIENTE' AND estado='ACTIVO'
-        lblTotalClientes.setText("1,250");
-        lblTendenciaClientes.setText("12% vs mes anterior");
+        List<Cliente> clientes = clienteDAO.listarTodos();
+        int totalActivos = 0;
+        for (Cliente c : clientes) {
+            if ("ACTIVO".equalsIgnoreCase(c.getEstado())) totalActivos++;
+        }
+        lblTotalClientes.setText(String.valueOf(totalActivos));
+        lblTendenciaClientes.setText(clientes.size() + " registrados");
 
-        // Query: SELECT COUNT(*) FROM REGISTROS_INGRESOS
-        //        WHERE fecha = TRUNC(SYSDATE) AND hora_salida IS NULL
-        lblSesionesActivas.setText("42");
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
+        long activosAhora = ingresosHoy.stream().filter(r -> r.getHoraSalida() == null).count();
+        lblSesionesActivas.setText(String.valueOf(activosAhora));
 
-        // Query: (ingresos hoy / capacidad maxima) * 100
-        lblTasaIngreso.setText("88%");
-        lblTasaTendencia.setText("2% hoy");
-
-        // Query: SELECT COUNT(*) FROM REGISTROS_INGRESOS WHERE fecha = TRUNC(SYSDATE)
-        lblFlujoDiario.setText("156");
+        lblTasaIngreso.setText(ingresosHoy.size() + " hoy");
+        lblTasaTendencia.setText("—");
+        lblFlujoDiario.setText(String.valueOf(ingresosHoy.size()));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -392,31 +401,22 @@ public class GestionClientesController implements Initializable {
     }
 
     private void cargarDatosMock() {
-        // TODO: reemplazar con llamada al DAO
-        // List<ClienteRow> lista = clienteDAO.listarClientes(paginaActual, REGISTROS_POR_PAGINA);
-        // Query sugerida:
-        // SELECT u.numero_identificacion, u.nombre||' '||u.apellidos, u.correo, u.telefono,
-        //   CASE WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,u.fecha_nacimiento)/12) < 18 THEN 'Juvenil'
-        //        WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,u.fecha_nacimiento)/12) <= 55 THEN 'Adulto Elite'
-        //        ELSE 'Senior Pro' END categoria,
-        //   CASE WHEN hm.activa = 1 THEN 'ACTIVO' ELSE 'VENCIDO' END estado
-        // FROM USUARIOS u JOIN CLIENTES c ON u.numero_identificacion = c.numero_identificacion
-        // LEFT JOIN HISTORIAL_MEMBRESIAS hm ON hm.id_cliente = u.numero_identificacion AND hm.activa = 1
-        // WHERE u.tipo_usuario = 'CLIENTE'
-        // ORDER BY u.nombre OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-
-        todosLosClientes = FXCollections.observableArrayList(
-                new ClienteRow("KP-8842", "Elena Rodriguez",  "e.rodriguez@email.com", "612 345 678", "Adulto Elite", "ACTIVO"),
-                new ClienteRow("KP-2195", "Marco Valles",     "m.valles@fitness.com",  "655 890 123", "Senior Pro",   "ACTIVO"),
-                new ClienteRow("KP-4432", "Lucia Mendez",     "l.mendez@sport.es",     "677 211 004", "Juvenil",      "VENCIDO"),
-                new ClienteRow("KP-1023", "Carlos Herrera",   "c.herrera@gym.co",      "310 222 3344","Adulto Elite", "ACTIVO"),
-                new ClienteRow("KP-5541", "Andrea Gomez",     "a.gomez@email.com",     "315 888 9900","Juvenil",      "ACTIVO"),
-                new ClienteRow("KP-3310", "Roberto Suarez",   "r.suarez@mail.co",      "300 111 2200","Senior Pro",   "VENCIDO"),
-                new ClienteRow("KP-7790", "Diana Torres",     "d.torres@fit.com",      "321 444 5566","Adulto Elite", "ACTIVO"),
-                new ClienteRow("KP-6612", "Felipe Cardona",   "f.cardona@sport.co",    "318 777 8800","Adulto Elite", "ACTIVO"),
-                new ClienteRow("KP-9901", "Valentina Rios",   "v.rios@gym.co",         "312 333 4400","Juvenil",      "ACTIVO"),
-                new ClienteRow("KP-0045", "Sergio Morales",   "s.morales@email.com",   "317 555 6600","Senior Pro",   "ACTIVO")
-        );
+        List<Cliente> clientes = clienteDAO.listarTodos();
+        todosLosClientes = FXCollections.observableArrayList();
+        for (Cliente c : clientes) {
+            String nombreCompleto = c.getNombre() + " " + (c.getApellidos() != null ? c.getApellidos() : "");
+            String correo = c.getCorreo() != null ? c.getCorreo() : "";
+            String telefono = c.getTelefono() != null ? c.getTelefono() : "";
+            String estado = c.getEstado() != null ? c.getEstado() : "ACTIVO";
+            String categoria = "Adulto Elite";
+            if (c.getFechaNacimiento() != null) {
+                int edad = java.time.Period.between(c.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
+                categoria = edad < 18 ? "Juvenil" : edad <= 55 ? "Adulto Elite" : "Senior Pro";
+            }
+            todosLosClientes.add(new ClienteRow(
+                    c.getNumeroIdentificacion(), nombreCompleto, correo, telefono, categoria, estado
+            ));
+        }
 
         clientesFiltrados = new FilteredList<>(todosLosClientes, p -> true);
         tablaClientes.setItems(clientesFiltrados);
@@ -454,12 +454,23 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarLogAccesos() {
-        // TODO: reemplazar con datos reales de REGISTROS_INGRESOS
-        // Query: SELECT u.nombre||' '||u.apellidos, ri.hora_entrada, ri.metodo_verificacion
-        //        FROM REGISTROS_INGRESOS ri JOIN USUARIOS u ON ri.id_cliente = u.numero_identificacion
-        //        WHERE ri.fecha = TRUNC(SYSDATE) ORDER BY ri.hora_entrada DESC FETCH FIRST 5 ROWS ONLY
-        agregarEntradaLog("Roberto Gomez", "Terminal Principal", "Hace 2 minutos", true);
-        agregarEntradaLog("Sara Wilson",   "Terminal Norte",     "Hace 5 minutos", true);
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(hoy);
+        int max = Math.min(ingresos.size(), 5);
+        for (int i = 0; i < max; i++) {
+            RegistroIngreso ri = ingresos.get(i);
+            String idCliente = ri.getIdCliente();
+            String nombreCliente = idCliente;
+            try {
+                Cliente c = clienteDAO.buscarPorId(idCliente);
+                if (c != null) nombreCliente = c.getNombre() + " " + (c.getApellidos() != null ? c.getApellidos() : "");
+            } catch (Exception e) { /* ignore */ }
+            String terminal = ri.getMetodoVerificacion() != null ? ri.getMetodoVerificacion() : "Terminal Principal";
+            agregarEntradaLog(nombreCliente, terminal, "Hoy", true);
+        }
+        if (max == 0) {
+            agregarEntradaLog("Sin registros", "—", "—", true);
+        }
     }
 
     private void agregarEntradaLog(String nombre, String terminal, String tiempo, boolean exitoso) {

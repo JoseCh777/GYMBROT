@@ -15,9 +15,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.PlanMembresiaDAO;
+import org.gymbrot.model.PlanMembresia;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class GestionMembresiasController implements Initializable {
@@ -60,14 +63,16 @@ public class GestionMembresiasController implements Initializable {
     @FXML private TableColumn<FilaComparativa, String> colPlata;
     @FXML private TableColumn<FilaComparativa, String> colOro;
 
+    // ── DAOs ─────────────────────────────────────────────────
+    private final PlanMembresiaDAO planDAO = new PlanMembresiaDAO();
+
     // ── Estado interno ───────────────────────────────────────
     private enum Duracion { MENSUAL, SEMESTRAL, ANUAL }
     private Duracion duracionActual = Duracion.ANUAL;
 
-    // Precios base (mensual)
-    private static final int PRECIO_BRONCE   = 61;
-    private static final int PRECIO_PLATA    = 111;
-    private static final int PRECIO_ORO      = 161;
+    private PlanMembresia planBronce;
+    private PlanMembresia planPlata;
+    private PlanMembresia planOro;
 
     // Descuentos
     private static final double DESC_SEMESTRAL = 0.10;
@@ -96,11 +101,21 @@ public class GestionMembresiasController implements Initializable {
     // ─────────────────────────────────────────────────────────
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        cargarPlanes();
         configurarAnimacionesNav();
         setNavActivo(navMembresias);
         configurarAnimacionesBotones();
         configurarTablaComparativa();
         actualizarPrecios();
+    }
+
+    private void cargarPlanes() {
+        List<PlanMembresia> planes = planDAO.listarTodos();
+        if (planes.size() >= 3) {
+            planBronce = planes.get(0);
+            planPlata  = planes.get(1);
+            planOro    = planes.get(2);
+        }
     }
 
     // ══ Navegacion ═══════════════════════════════════════════
@@ -171,20 +186,21 @@ public class GestionMembresiasController implements Initializable {
 
     @FXML
     private void handleSeleccionarBronce(ActionEvent event) {
-        System.out.println("Plan seleccionado: Bronce | Duracion: " + duracionActual);
-        // TODO: abrir formulario de inscripcion con plan = BRONCE
+        String nombre = planBronce != null ? planBronce.getNombre() : "Bronce";
+        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
     }
 
     @FXML
     private void handleSeleccionarPlata(ActionEvent event) {
-        System.out.println("Plan seleccionado: Plata | Duracion: " + duracionActual);
+        String nombre = planPlata != null ? planPlata.getNombre() : "Plata";
+        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
         // TODO: abrir formulario de inscripcion con plan = PLATA
     }
 
     @FXML
     private void handleSeleccionarOro(ActionEvent event) {
-        System.out.println("Plan seleccionado: Oro Elite | Duracion: " + duracionActual);
-        // TODO: abrir formulario de inscripcion con plan = ORO
+        String nombre = planOro != null ? planOro.getNombre() : "Oro";
+        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
     }
 
     // ══ Banner AI ════════════════════════════════════════════
@@ -203,9 +219,28 @@ public class GestionMembresiasController implements Initializable {
             case ANUAL     -> 1.0 - DESC_ANUAL;
         };
 
-        int precioBronce = (int) Math.round(PRECIO_BRONCE * factor);
-        int precioPlata  = (int) Math.round(PRECIO_PLATA  * factor);
-        int precioOro    = (int) Math.round(PRECIO_ORO    * factor);
+        if (planBronce == null || planPlata == null || planOro == null) return;
+
+        double precioBase = switch (duracionActual) {
+            case MENSUAL   -> planBronce.getPrecioMensual();
+            case SEMESTRAL -> planBronce.getPrecioSemestral() / 6;
+            case ANUAL     -> planBronce.getPrecioAnual() / 12;
+        };
+        int precioBronce = (int) Math.round(precioBase);
+
+        precioBase = switch (duracionActual) {
+            case MENSUAL   -> planPlata.getPrecioMensual();
+            case SEMESTRAL -> planPlata.getPrecioSemestral() / 6;
+            case ANUAL     -> planPlata.getPrecioAnual() / 12;
+        };
+        int precioPlata = (int) Math.round(precioBase * factor);
+
+        precioBase = switch (duracionActual) {
+            case MENSUAL   -> planOro.getPrecioMensual();
+            case SEMESTRAL -> planOro.getPrecioSemestral() / 6;
+            case ANUAL     -> planOro.getPrecioAnual() / 12;
+        };
+        int precioOro = (int) Math.round(precioBase * factor);
 
         lblPrecioBronce.setText(String.valueOf(precioBronce));
         lblPrecioPlata.setText(String.valueOf(precioPlata));
@@ -272,16 +307,24 @@ public class GestionMembresiasController implements Initializable {
             }
         });
 
-        ObservableList<FilaComparativa> filas = FXCollections.observableArrayList(
-                new FilaComparativa("Acceso al Gimnasio",              "Diurno",           "Extendido",         "24/7 Ultra"),
-                new FilaComparativa("Herramientas de IA",              "Basico",           "Avanzado",          "Tiempo Real"),
-                new FilaComparativa("Sesiones con Instructor",         "1 al mes",         "Digital + Grupal",  "1-a-1 Elite"),
-                new FilaComparativa("Suite de Recuperacion",           "No incluida",      "Hidromasaje/Sauna", "Crioterapia"),
-                new FilaComparativa("Locker Personal y Lavanderia",    "No incluida",      "No incluida",       "Incluida"),
-                new FilaComparativa("Pases de Invitado",               "No incluidos",     "No incluidos",      "Ilimitados"),
-                new FilaComparativa("Seguimiento Nutricional",         "No incluido",      "Incluido",          "Incluido")
-        );
+        ObservableList<FilaComparativa> filas = FXCollections.observableArrayList();
+        if (planBronce != null && planPlata != null && planOro != null) {
+            String[] bronceBeneficios = planBronce.getBeneficios() != null
+                    ? planBronce.getBeneficios().split(" - ") : new String[]{planBronce.getDescripcion() != null ? planBronce.getDescripcion() : "Incluido"};
+            String[] plataBeneficios  = planPlata.getBeneficios() != null
+                    ? planPlata.getBeneficios().split(" - ") : new String[]{planPlata.getDescripcion() != null ? planPlata.getDescripcion() : "Incluido"};
+            String[] oroBeneficios    = planOro.getBeneficios() != null
+                    ? planOro.getBeneficios().split(" - ") : new String[]{planOro.getDescripcion() != null ? planOro.getDescripcion() : "Incluido"};
 
+            int maxRows = Math.max(bronceBeneficios.length, Math.max(plataBeneficios.length, oroBeneficios.length));
+            for (int i = 0; i < maxRows; i++) {
+                String b = i < bronceBeneficios.length ? bronceBeneficios[i] : "—";
+                String p = i < plataBeneficios.length  ? plataBeneficios[i]  : "—";
+                String o = i < oroBeneficios.length    ? oroBeneficios[i]    : "—";
+                String nombreBeneficio = Character.toUpperCase(b.charAt(0)) + b.substring(1);
+                filas.add(new FilaComparativa(nombreBeneficio, b, p, o));
+            }
+        }
         tablaComparativa.setItems(filas);
     }
 
@@ -485,6 +528,14 @@ public class GestionMembresiasController implements Initializable {
             System.err.println("Error al navegar a: " + fxmlPath);
             e.printStackTrace();
         }
+    }
+
+    private void mostrarInfo(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 
     // ══ Record interno para la tabla ═════════════════════════

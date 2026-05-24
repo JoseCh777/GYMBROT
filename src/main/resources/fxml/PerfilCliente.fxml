@@ -87,7 +87,7 @@
 
                             <HBox alignment="CENTER_LEFT">
                                 <Label prefHeight="15.0" prefWidth="109.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MIEMBRO DESDE" HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lblMiembroDesde" prefHeight="19.0" prefWidth="37.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="---" />
+                                <Label fx:id="lblMiembroDesde" prefHeight="19.0" prefWidth="79.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="---" />
                             </HBox>
 
                             <HBox alignment="CENTER_LEFT">

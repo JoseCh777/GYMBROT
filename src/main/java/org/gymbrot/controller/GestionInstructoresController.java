@@ -20,9 +20,12 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.*;
+import org.gymbrot.model.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class GestionInstructoresController implements Initializable {
@@ -69,12 +72,16 @@ public class GestionInstructoresController implements Initializable {
     @FXML private Button btnEmparejamiento;
     @FXML private Label lblAIInsight;
 
+    // ─── DAOs ──────────────────────────────────────────────────────────────
+    private final InstructorDAO instructorDAO = new InstructorDAO();
+    private final EspecialidadDAO especialidadDAO = new EspecialidadDAO();
+
     // ─── Estado interno ────────────────────────────────────────────────────
     private final ObservableList<InstructorCard> todosLosInstructores = FXCollections.observableArrayList();
     private FilteredList<InstructorCard> instructoresFiltrados;
     private int paginaActual = 1;
     private static final int TARJETAS_POR_PAGINA = 8;
-    private String filtroActual = "TODOS";
+    private String filtroActual = "TODAS";
 
     // ═══════════════════════════════════════════════════════════════════════
     //  MODELO DE TARJETA
@@ -107,9 +114,10 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarStats() {
-        lblTotalInstructores.setText("24");
-        lblTendenciaInstructores.setText("8% vs mes anterior");
-        lblSesionesHoy.setText("18");
+        List<Instructor> todos = instructorDAO.listarTodos();
+        lblTotalInstructores.setText(String.valueOf(todos.size()));
+        lblTendenciaInstructores.setText(todos.size() + " registrados");
+        lblSesionesHoy.setText("—");
     }
 
     private void iniciarAnimacionDotSesiones() {
@@ -126,21 +134,36 @@ public class GestionInstructoresController implements Initializable {
     //  DATOS MOCK
     // ═══════════════════════════════════════════════════════════════════════
 
+    private String badgeColor(int idEsp) {
+        return switch (idEsp) {
+            case 1 -> "-fx-background-color: #D4FF00; -fx-text-fill: black;";
+            case 2 -> "-fx-background-color: #00e3fd; -fx-text-fill: #001f24;";
+            case 3 -> "-fx-background-color: #e9ddff; -fx-text-fill: #3c0090;";
+            case 4 -> "-fx-background-color: #9cf0ff; -fx-text-fill: #001f24;";
+            default -> "-fx-background-color: #D4FF00; -fx-text-fill: black;";
+        };
+    }
+
     private void cargarDatosMock() {
-        todosLosInstructores.setAll(
-                new InstructorCard("INS-001", "Marcus Thorne",   4.9, 128, "TREN SUPERIOR",  "Fuerza",     new String[]{"FUERZA", "HIPERTROFIA"},     "-fx-background-color: #D4FF00; -fx-text-fill: black;"),
-                new InstructorCard("INS-002", "Elena Rodriguez", 5.0, 94,  "TREN INFERIOR",  "Piernas",    new String[]{"PIERNAS", "MOVILIDAD"},     "-fx-background-color: #00e3fd; -fx-text-fill: #001f24;"),
-                new InstructorCard("INS-003", "Jaxson Vane",     4.8, 210, "CARDIO",         "HIIT",       new String[]{"HIIT", "RESISTENCIA"},      "-fx-background-color: #e9ddff; -fx-text-fill: #3c0090;"),
-                new InstructorCard("INS-004", "Sarah Chen",      4.9, 156, "NUTRICION",      "Dieta",      new String[]{"DIETA", "SUPLEMENTOS"},     "-fx-background-color: #9cf0ff; -fx-text-fill: #001f24;"),
-                new InstructorCard("INS-005", "Diego Rojas",     4.7, 82,  "TREN SUPERIOR",  "Funcional",  new String[]{"FUNCIONAL", "FUERZA"},      "-fx-background-color: #D4FF00; -fx-text-fill: black;"),
-                new InstructorCard("INS-006", "Camila Torres",   4.9, 67,  "TREN INFERIOR",  "Potencia",   new String[]{"POTENCIA", "SALTOS"},       "-fx-background-color: #00e3fd; -fx-text-fill: #001f24;"),
-                new InstructorCard("INS-007", "Liam O'Brien",    4.6, 193, "CARDIO",         "Boxeo",      new String[]{"BOXEO", "CONDICION"},       "-fx-background-color: #e9ddff; -fx-text-fill: #3c0090;"),
-                new InstructorCard("INS-008", "Valentina Paz",   5.0, 112, "NUTRICION",      "Nutricion",  new String[]{"NUTRICION", "BIENESTAR"},   "-fx-background-color: #9cf0ff; -fx-text-fill: #001f24;"),
-                new InstructorCard("INS-009", "Andres Marin",    4.8, 145, "TREN SUPERIOR",  "Powerlifting", new String[]{"POWERLIFTING", "PESAS"},  "-fx-background-color: #D4FF00; -fx-text-fill: black;"),
-                new InstructorCard("INS-010", "Sofia Lagos",     4.7, 73,  "TREN INFERIOR",  "Yoga",       new String[]{"YOGA", "FLEXIBILIDAD"},    "-fx-background-color: #00e3fd; -fx-text-fill: #001f24;"),
-                new InstructorCard("INS-011", "Kai Nakamura",    4.9, 201, "CARDIO",         "Crossfit",   new String[]{"CROSSFIT", "AGILIDAD"},     "-fx-background-color: #e9ddff; -fx-text-fill: #3c0090;"),
-                new InstructorCard("INS-012", "Lucia Fernandez", 4.8, 89,  "NUTRICION",      "Suplementos", new String[]{"DIETA", "RENDIMIENTO"},     "-fx-background-color: #9cf0ff; -fx-text-fill: #001f24;")
-        );
+        List<Instructor> instructores = instructorDAO.listarTodos();
+        List<Especialidad> especialidades = especialidadDAO.listarTodas();
+        java.util.Map<Integer, String> nombreEsp = new java.util.HashMap<>();
+        for (Especialidad e : especialidades) nombreEsp.put(e.getIdEspecialidad(), e.getNombre().toUpperCase());
+
+        todosLosInstructores.clear();
+        for (int i = 0; i < instructores.size(); i++) {
+            Instructor inst = instructores.get(i);
+            String id = inst.getNumeroIdentificacion();
+            String nombreCompleto = inst.getNombre() + " " + inst.getApellidos();
+            String espNombre = nombreEsp.getOrDefault(inst.getIdEspecialidad(), "GENERAL");
+            String[] tags = {espNombre.replaceAll("\\s.*", "").toUpperCase()};
+            if (tags[0].isEmpty()) tags[0] = "ACTIVO";
+
+            todosLosInstructores.add(new InstructorCard(
+                    id, nombreCompleto, 4.5, 0, espNombre,
+                    tags[0], tags, badgeColor(inst.getIdEspecialidad())
+            ));
+        }
 
         instructoresFiltrados = new FilteredList<>(todosLosInstructores, p -> true);
         aplicarFiltro();
@@ -151,13 +174,11 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarFiltroEspecialidad() {
-        cmbFiltroEspecialidad.getItems().addAll(
-                "TODAS",
-                "TREN SUPERIOR",
-                "TREN INFERIOR",
-                "CARDIO",
-                "NUTRICION"
-        );
+        cmbFiltroEspecialidad.getItems().add("TODAS");
+        List<Especialidad> especialidades = especialidadDAO.listarTodas();
+        for (Especialidad e : especialidades) {
+            cmbFiltroEspecialidad.getItems().add(e.getNombre().toUpperCase());
+        }
         cmbFiltroEspecialidad.getSelectionModel().selectFirst();
         cmbFiltroEspecialidad.setStyle(
                 "-fx-background-color: #282a2d; -fx-background-radius: 8;" +

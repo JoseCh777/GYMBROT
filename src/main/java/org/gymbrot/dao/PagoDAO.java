@@ -69,6 +69,19 @@ public class PagoDAO {
         }
         return lista;
     }
+    // ── LISTAR TODOS ──────────────────────────────────────────────────────
+    public List<Pago> listarTodos() {
+        List<Pago> lista = new ArrayList<>();
+        String sql = "SELECT * FROM PAGOS ORDER BY fecha_pago DESC";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            System.err.println("Error al listar pagos: " + e.getMessage());
+        }
+        return lista;
+    }
+
     // ── LISTAR POR MEMBRESIA ──────────────────────────────────────────────
     public List<Pago> listarPorMembresia(int idMembresia) {
         List<Pago> lista = new ArrayList<>();

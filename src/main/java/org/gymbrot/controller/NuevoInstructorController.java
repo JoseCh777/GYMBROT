@@ -16,11 +16,17 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.EspecialidadDAO;
+import org.gymbrot.dao.InstructorDAO;
+import org.gymbrot.dao.UsuarioDAO;
+import org.gymbrot.model.Especialidad;
+import org.gymbrot.model.Instructor;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -56,6 +62,11 @@ public class NuevoInstructorController implements Initializable {
     @FXML private ImageView imgFotoPerfil;
     @FXML private Label lblFotoPlaceholder;
     @FXML private Button btnCargarFoto;
+
+    // ─── DAOs ─────────────────────────────────────────────────────────
+    private final EspecialidadDAO especialidadDAO = new EspecialidadDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final InstructorDAO instructorDAO = new InstructorDAO();
 
     // ─── Estado interno ────────────────────────────────────────────────
     private File archivoFotoSeleccionado;
@@ -196,16 +207,11 @@ public class NuevoInstructorController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarEspecialidades() {
-        cmbEspecialidad.getItems().addAll(
-            "Bodybuilding y Hipertrofia",
-            "Powerlifting / Fuerza",
-            "Crossfit / Entrenamiento Funcional",
-            "Rehabilitacion Deportiva",
-            "HIIT y Cardiovascular",
-            "Yoga y Flexibilidad",
-            "Natacion",
-            "Artes Marciales"
-        );
+        List<Especialidad> especialidades = especialidadDAO.listarTodas();
+        for (Especialidad esp : especialidades) {
+            cmbEspecialidad.getItems().add(esp.getNombre());
+            cmbEspecialidad.getProperties().put(esp.getNombre(), esp.getIdEspecialidad());
+        }
         cmbEspecialidad.setStyle(
                 "-fx-background-color: #1a1c1f; -fx-background-radius: 8;" +
                         "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 8;" +
@@ -330,17 +336,34 @@ public class NuevoInstructorController implements Initializable {
     private void handleGuardar() {
         if (!validarFormulario()) return;
 
-        btnGuardar.setText("GUARDADO \u2713");
-        btnGuardar.setStyle(
-                "-fx-background-color: #bdf4ff; -fx-background-radius: 8;" +
-                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
-                        "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
+        String id = txtNumeroId.getText().trim();
+        String nombre = txtNombres.getText().trim();
+        String apellidos = txtApellidos.getText().trim();
+        String correo = txtCorreo.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        int idEspecialidad = (int) cmbEspecialidad.getProperties().get(cmbEspecialidad.getValue());
+
+        Instructor instructor = new Instructor(
+                id, "CC", nombre, apellidos, telefono, correo,
+                "Inst2024*", null, "activo", LocalDate.now(), "instructor",
+                idEspecialidad, txtNotas.getText(), dateFechaContratacion.getValue()
         );
 
-        Timeline espera = new Timeline(
-                new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionInstructores.fxml"))
-        );
-        espera.play();
+        boolean guardado = instructorDAO.insertar(instructor);
+        if (guardado) {
+            btnGuardar.setText("GUARDADO \u2713");
+            btnGuardar.setStyle(
+                    "-fx-background-color: #bdf4ff; -fx-background-radius: 8;" +
+                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
+                            "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
+            );
+            Timeline espera = new Timeline(
+                    new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionInstructores.fxml"))
+            );
+            espera.play();
+        } else {
+            mostrarError("Error", "No se pudo guardar el instructor. Verifica que el ID no esté repetido.");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════

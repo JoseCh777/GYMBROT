@@ -84,6 +84,26 @@ public class RutinaDAO {
         }
     }
 
+    // ── LISTAR TODAS ───────────────────────────────────────────────────────
+    public List<Rutina> listarTodas() {
+        List<Rutina> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
+                   fecha_creacion, fecha_fin, dias_semana, objetivo
+            FROM RUTINAS ORDER BY fecha_creacion DESC
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) lista.add(mapearRutina(rs));
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar rutinas: " + e.getMessage());
+        }
+        return lista;
+    }
+
     // ── BUSCAR POR CLIENTE ────────────────────────────────────────────────
     public List<Rutina> buscarPorCliente(String idCliente) {
         List<Rutina> lista = new ArrayList<>();

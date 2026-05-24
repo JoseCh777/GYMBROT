@@ -8,9 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.gymbrot.dao.EjercicioDAO;
+import org.gymbrot.model.Ejercicio;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class NuevoEjercicioController implements Initializable {
 
@@ -26,6 +30,7 @@ public class NuevoEjercicioController implements Initializable {
 
     @FXML private Region progressBar;
 
+    private final EjercicioDAO ejercicioDAO = new EjercicioDAO();
     private StackPane wrapperStack;
     private Parent overlayRoot;
 
@@ -36,15 +41,29 @@ public class NuevoEjercicioController implements Initializable {
     }
 
     private void configurarComboBoxes() {
-        cmbGrupoMuscular.getItems().addAll(
-                "Pecho", "Espalda", "Hombros",
-                "Biceps", "Triceps", "Piernas",
-                "Gluteos", "Abdomen", "Cardio",
-                "Cuerpo Completo"
-        );
-        cmbNivel.getItems().addAll(
-                "Principiante", "Intermedio", "Avanzado"
-        );
+        List<Ejercicio> todos = ejercicioDAO.listarTodos();
+        List<String> grupos = todos.stream()
+                .map(Ejercicio::getGrupoMuscular)
+                .filter(g -> g != null && !g.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        if (grupos.isEmpty()) {
+            grupos = List.of("Pecho", "Espalda", "Hombros", "Biceps", "Triceps",
+                    "Piernas", "Gluteos", "Abdomen", "Cardio", "Cuerpo Completo");
+        }
+        cmbGrupoMuscular.getItems().addAll(grupos);
+
+        List<String> niveles = todos.stream()
+                .map(Ejercicio::getNivel)
+                .filter(n -> n != null && !n.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        if (niveles.isEmpty()) {
+            niveles = List.of("PRINCIPIANTE", "INTERMEDIO", "AVANZADO");
+        }
+        cmbNivel.getItems().addAll(niveles);
     }
 
     private void configurarAnimaciones() {
@@ -83,19 +102,24 @@ public class NuevoEjercicioController implements Initializable {
             return;
         }
 
-        StringBuilder resumen = new StringBuilder();
-        resumen.append("Ejercicio creado:\n");
-        resumen.append("Nombre: ").append(txtNombre.getText()).append("\n");
-        resumen.append("Grupo Muscular: ").append(cmbGrupoMuscular.getValue()).append("\n");
-        resumen.append("Nivel: ").append(cmbNivel.getValue()).append("\n");
+        Ejercicio e = new Ejercicio();
+        e.setNombre(txtNombre.getText().trim());
+        e.setGrupoMuscular(cmbGrupoMuscular.getValue());
+        e.setNivel(cmbNivel.getValue());
+        e.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
+        e.setRecursoUrl(txtRecursoUrl.getText() != null ? txtRecursoUrl.getText().trim() : null);
 
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Ejercicio Guardado");
-        info.setHeaderText(null);
-        info.setContentText(resumen.toString());
-        info.showAndWait();
-
-        cerrarOverlay();
+        boolean guardado = ejercicioDAO.insertar(e);
+        if (guardado) {
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Ejercicio Guardado");
+            info.setHeaderText(null);
+            info.setContentText("Ejercicio \"" + e.getNombre() + "\" guardado exitosamente.");
+            info.showAndWait();
+            cerrarOverlay();
+        } else {
+            mostrarAlerta("Error al guardar el ejercicio. Intenta de nuevo.");
+        }
     }
 
     @FXML

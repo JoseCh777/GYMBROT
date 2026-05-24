@@ -230,8 +230,11 @@ public class PerfilClienteController implements Initializable {
             return new javafx.beans.property.SimpleStringProperty(
                     h != null ? h.format(FMT_HORA) : "---");
         });
-        colPuntoAcceso.setCellValueFactory(celda ->
-                new javafx.beans.property.SimpleStringProperty("Entrada Principal"));
+        colPuntoAcceso.setCellValueFactory(celda -> {
+            var metodo = celda.getValue().getMetodoVerificacion();
+            return new javafx.beans.property.SimpleStringProperty(
+                    metodo != null ? metodo : "Entrada Principal");
+        });
         colDuracion.setCellValueFactory(celda -> {
             var entrada = celda.getValue().getHoraEntrada();
             var salida  = celda.getValue().getHoraSalida();

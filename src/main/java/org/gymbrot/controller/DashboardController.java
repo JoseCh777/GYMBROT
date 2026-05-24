@@ -13,9 +13,14 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.*;
+import org.gymbrot.model.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
@@ -67,6 +72,11 @@ public class DashboardController implements Initializable {
     @FXML private Region h06, h07, h08, h09, h10, h11;
     @FXML private Region h12, h13, h14, h15, h16, h17;
     @FXML private Region h18, h19, h20, h21;
+
+    // ─── DAOs ──────────────────────────────────────────────────────────────
+    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final RegistroIngresoDAO registroIngresoDAO = new RegistroIngresoDAO();
+    private final PagoDAO pagoDAO = new PagoDAO();
 
     // ─── Constantes ────────────────────────────────────────────────────────
     private static final String COLOR_ACTIVO   = "#D4FF00";
@@ -184,28 +194,32 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarMetricas() {
-        // TODO: reemplazar con llamada al DAO
-        // Query: SELECT COUNT(*) FROM USUARIOS WHERE tipo_usuario='CLIENTE' AND estado='ACTIVO'
-        int totalMiembros    = 2842;
-        int totalMesAnterior = 2537;
-        double trend = ((double)(totalMiembros - totalMesAnterior) / totalMesAnterior) * 100;
+        List<Cliente> clientes = clienteDAO.listarTodos();
+        int totalActive = 0;
+        for (Cliente c : clientes) {
+            if ("ACTIVO".equalsIgnoreCase(c.getEstado())) totalActive++;
+        }
+        lblTotalMiembros.setText(String.valueOf(totalActive));
+        lblMiembrosTrend.setText(clientes.size() + " total");
+        pbMiembros.setProgress(Math.min(1.0, (double) totalActive / META_MIEMBROS));
 
-        lblTotalMiembros.setText(String.format("%,d", totalMiembros));
-        lblMiembrosTrend.setText(String.format("%.0f%%", trend));
-        pbMiembros.setProgress((double) totalMiembros / META_MIEMBROS);
+        LocalDate hoy = LocalDate.now();
+        List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
+        long activosAhora = ingresosHoy.stream().filter(r -> r.getHoraSalida() == null).count();
+        lblActivosAhora.setText(String.valueOf(activosAhora));
 
-        // Query: SELECT COUNT(*) FROM REGISTROS_INGRESOS
-        //        WHERE fecha = TRUNC(SYSDATE) AND hora_salida IS NULL
-        lblActivosAhora.setText("184");
-
-        // Query: SELECT NVL(SUM(valor),0) FROM PAGOS
-        //        WHERE EXTRACT(MONTH FROM fecha_pago) = EXTRACT(MONTH FROM SYSDATE)
-        //        AND estado_pago = 'COMPLETADO'
-        double ingresosMes = 42800.0;
-        double progreso    = ingresosMes / META_INGRESOS_MES;
+        double ingresosMes = 0;
+        List<org.gymbrot.model.Pago> pagos = pagoDAO.listarTodos();
+        LocalDate inicioMes = hoy.withDayOfMonth(1);
+        for (var pago : pagos) {
+            if (pago.getFechaPago() != null && !pago.getFechaPago().isBefore(inicioMes)
+                    && "EXITOSO".equalsIgnoreCase(pago.getEstadoPago())) {
+                ingresosMes += pago.getValor();
+            }
+        }
         lblIngresos.setText(formatearDinero(ingresosMes));
-        lblIngresosProgreso.setText(String.format("%.0f%%", progreso * 100));
-        lblIngresosStatus.setText(progreso >= 1.0 ? "Meta Alcanzada" : String.format("%.0f%% meta", progreso * 100));
+        lblIngresosProgreso.setVisible(false);
+        lblIngresosStatus.setVisible(false);
     }
 
     private String formatearDinero(double valor) {
@@ -219,9 +233,13 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarAsistenciaSemanal() {
-        // TODO: Query SELECT TO_CHAR(fecha,'D'), COUNT(*) FROM REGISTROS_INGRESOS
-        //       WHERE fecha >= TRUNC(SYSDATE)-6 GROUP BY TO_CHAR(fecha,'D')
-        int[] asistencia = {120, 185, 230, 198, 160, 245, 175};
+        int[] asistencia = new int[7];
+        LocalDate hoy = LocalDate.now();
+        for (int i = 6; i >= 0; i--) {
+            LocalDate dia = hoy.minusDays(i);
+            List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(dia);
+            asistencia[6 - i] = ingresos.size();
+        }
         actualizarBarrasAsistencia(asistencia);
     }
 
@@ -230,13 +248,14 @@ public class DashboardController implements Initializable {
         double maxValor = 0;
         for (int v : valores) if (v > maxValor) maxValor = v;
         double alturaMax = 200.0;
+        int hoyIdx = LocalDate.now().getDayOfWeek().getValue() - 1;
 
         for (int i = 0; i < barras.length; i++) {
-            double altura = (valores[i] / maxValor) * alturaMax;
+            double altura = maxValor > 0 ? (valores[i] / maxValor) * alturaMax : 0;
             barras[i].setPrefHeight(altura);
             barras[i].setMaxHeight(altura);
 
-            String color = (valores[i] == (int) maxValor) ? COLOR_ACTIVO : COLOR_INACTIVO;
+            String color = (i == hoyIdx) ? COLOR_ACTIVO : COLOR_INACTIVO;
             barras[i].setStyle("-fx-background-color: " + color + "; -fx-background-radius: 2;");
 
             // Animación de entrada — igual que GestionClientes
@@ -267,9 +286,19 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarDemografia() {
-        // TODO: Query SELECT categoria, COUNT(*) FROM REGISTROS_INGRESOS JOIN USUARIOS...
-        int menores = 33, adultos = 120, seniors = 31;
-        int total   = menores + adultos + seniors;
+        LocalDate hoy = LocalDate.now();
+        List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
+        int menores = 0, adultos = 0, seniors = 0;
+        for (RegistroIngreso ri : ingresosHoy) {
+            Cliente c = clienteDAO.buscarPorId(ri.getIdCliente());
+            if (c == null || c.getFechaNacimiento() == null) continue;
+            int edad = (int) ChronoUnit.YEARS.between(c.getFechaNacimiento(), hoy);
+            if (edad < 18)       menores++;
+            else if (edad <= 55) adultos++;
+            else                 seniors++;
+        }
+        int total = menores + adultos + seniors;
+        if (total == 0) total = 1;
 
         if (lblPctAdulto != null) lblPctAdulto.setText(String.format("%.0f%%", (adultos  * 100.0) / total));
         if (lblCntAdulto != null) lblCntAdulto.setText(adultos  + " presentes");
@@ -284,9 +313,15 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarHorasPico() {
-        // TODO: Query SELECT EXTRACT(HOUR FROM hora_entrada), COUNT(*)
-        //       FROM REGISTROS_INGRESOS GROUP BY EXTRACT(HOUR FROM hora_entrada)
-        int[] horasPico = {40, 70, 100, 130, 190, 160, 120, 90, 80, 84, 110, 170, 180, 120, 60, 30};
+        LocalDate hoy = LocalDate.now();
+        List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(hoy);
+        int[] horasPico = new int[16];
+        for (RegistroIngreso ri : ingresos) {
+            if (ri.getHoraEntrada() != null) {
+                int h = ri.getHoraEntrada().getHour();
+                if (h >= 6 && h <= 21) horasPico[h - 6]++;
+            }
+        }
         actualizarBarrasHorasPico(horasPico);
     }
 
@@ -355,8 +390,16 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleViewDiario() {
-        // TODO: cargar datos de ingresos del dia de hoy
-        int[] datosDiario = {10, 25, 45, 60, 85, 70, 50, 40, 35, 38, 48, 75, 80, 55, 30, 15};
+        LocalDate hoy = LocalDate.now();
+        List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(hoy);
+        int[] datosDiario = new int[7];
+        for (int i = 0; i < 7; i++) datosDiario[i] = 0;
+        for (RegistroIngreso ri : ingresos) {
+            if (ri.getHoraEntrada() != null) {
+                int diaSemana = ri.getHoraEntrada().getDayOfWeek().getValue() - 1;
+                if (diaSemana >= 0 && diaSemana < 7) datosDiario[diaSemana]++;
+            }
+        }
         actualizarBarrasAsistencia(datosDiario);
 
         btnDiario.setStyle(

@@ -12,9 +12,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.gymbrot.dao.InstructorDAO;
+import org.gymbrot.dao.RutinaDAO;
+import org.gymbrot.model.Instructor;
+import org.gymbrot.model.Rutina;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class DirectorioRutinasController implements Initializable {
 
@@ -44,6 +50,8 @@ public class DirectorioRutinasController implements Initializable {
     private int paginaActual = 1;
     private static final int FILAS_POR_PAGINA = 10;
 
+    private final RutinaDAO rutinaDAO = new RutinaDAO();
+    private final InstructorDAO instructorDAO = new InstructorDAO();
     private StackPane wrapperStack;
     private Parent overlayRoot;
 
@@ -51,14 +59,22 @@ public class DirectorioRutinasController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarComboBox();
         configurarTabla();
-        cargarDatosMock();
+        cargarRutinas();
         configurarBuscador();
         configurarAnimaciones();
         aplicarFiltro();
     }
 
     private void configurarComboBox() {
-        cmbObjetivo.getItems().addAll("Todos", "MASA MUSCULAR", "DEFINICION", "FUERZA", "RESISTENCIA");
+        List<Rutina> todas = rutinaDAO.listarTodas();
+        List<String> objetivos = todas.stream()
+                .map(Rutina::getObjetivo)
+                .filter(o -> o != null && !o.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        cmbObjetivo.getItems().add("Todos");
+        cmbObjetivo.getItems().addAll(objetivos);
         cmbObjetivo.getSelectionModel().selectFirst();
         cmbObjetivo.setOnAction(e -> aplicarFiltro());
     }
@@ -79,24 +95,21 @@ public class DirectorioRutinasController implements Initializable {
         tablaRutinas.setFixedCellSize(48);
     }
 
-    private void cargarDatosMock() {
-        todasLasRutinas.setAll(
-                new RutinaRow("Rutina Hipertrofia Pecho",   "MASA MUSCULAR", "Marcus Thorne",   "Lun, Mie, Vie"),
-                new RutinaRow("Full Body Quema Grasa",      "DEFINICION",    "Elena Rodriguez",  "Mar, Jue, Sab"),
-                new RutinaRow("Fuerza Pura 5x5",            "FUERZA",        "Jaxson Vane",      "Lun, Mie, Vie"),
-                new RutinaRow("Cardio HIIT 30min",          "RESISTENCIA",   "Camila Torres",    "Mar, Jue"),
-                new RutinaRow("Piernas y Gluteos",          "MASA MUSCULAR", "Diego Rojas",      "Lun, Mie, Vie"),
-                new RutinaRow("Definicion Full Body",       "DEFINICION",    "Sarah Chen",       "Mar, Jue, Sab"),
-                new RutinaRow("Powerlifting Clasico",       "FUERZA",        "Andres Marin",     "Lun, Mie, Vie"),
-                new RutinaRow("Resistencia Funcional",      "RESISTENCIA",   "Liam O'Brien",     "Mar, Jue"),
-                new RutinaRow("Hipertrofia Espalda",        "MASA MUSCULAR", "Valentina Paz",    "Lun, Mie, Vie"),
-                new RutinaRow("Circuito Definition",        "DEFINICION",    "Sofia Lagos",      "Mar, Jue, Sab"),
-                new RutinaRow("Fuerza y Potencia",          "FUERZA",        "Kai Nakamura",     "Lun, Mie, Vie"),
-                new RutinaRow("CrossFit WOD",               "RESISTENCIA",   "Liam O'Brien",     "Mar, Jue, Sab"),
-                new RutinaRow("Hipertrofia Biceps/Triceps", "MASA MUSCULAR", "Marcus Thorne",    "Lun, Mie"),
-                new RutinaRow("Yoga + Cardio",              "DEFINICION",    "Sofia Lagos",      "Mar, Jue, Sab")
-        );
+    private String instructorNombre(String id) {
+        Instructor inst = instructorDAO.buscarPorId(id);
+        if (inst != null) return inst.getNombre() + " " + inst.getApellidos();
+        return id;
+    }
 
+    private void cargarRutinas() {
+        List<Rutina> lista = rutinaDAO.listarTodas();
+        todasLasRutinas.clear();
+        for (Rutina r : lista) {
+            String prog = r.getDiasSemana() != null ? r.getDiasSemana() : "";
+            String obj = r.getObjetivo() != null ? r.getObjetivo() : "";
+            todasLasRutinas.add(new RutinaRow(
+                    r.getNombre(), obj, instructorNombre(r.getIdInstructor()), prog));
+        }
         rutinasFiltradas = new FilteredList<>(todasLasRutinas, p -> true);
     }
 

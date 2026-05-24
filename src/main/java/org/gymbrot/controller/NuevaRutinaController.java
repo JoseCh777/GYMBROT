@@ -14,12 +14,16 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
+import org.gymbrot.dao.*;
+import org.gymbrot.model.*;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NuevaRutinaController implements Initializable {
 
@@ -64,6 +68,11 @@ public class NuevaRutinaController implements Initializable {
     @FXML private TableColumn<EjercicioRow, String> colCarga;
     @FXML private TableColumn<EjercicioRow, Button> colAccion;
 
+    private final InstructorDAO instructorDAO = new InstructorDAO();
+    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final EjercicioDAO ejercicioDAO = new EjercicioDAO();
+    private final RutinaDAO rutinaDAO = new RutinaDAO();
+
     private final Set<String> diasSeleccionados = new HashSet<>();
     private final ObservableList<EjercicioRow> ejerciciosList = FXCollections.observableArrayList();
     private StackPane wrapperStack;
@@ -79,20 +88,24 @@ public class NuevaRutinaController implements Initializable {
     }
 
     private void configurarComboBoxes() {
-        cmbInstructor.getItems().addAll(
-                "Marcus Thorne", "Elena Rodriguez", "Jaxson Vane",
-                "Sarah Chen", "Diego Rojas", "Camila Torres"
-        );
-        cmbCliente.getItems().addAll(
-                "Carlos Mendez", "Ana Lucia Perez", "Pedro Ramirez",
-                "Maria Gomez", "Luis Torres", "Sofia Castro"
-        );
-        cmbEjercicio.getItems().addAll(
-                "Press Banca", "Sentadilla", "Peso Muerto",
-                "Dominadas", "Fondos", "Remo con Barra",
-                "Press Militar", "Curl Biceps", "Extension Triceps",
-                "Elevaciones Laterales", "Jalon al Pecho", "Prensa de Piernas"
-        );
+        List<Instructor> instructores = instructorDAO.listarDisponibles();
+        if (instructores.isEmpty()) instructores = instructorDAO.listarTodos();
+        for (Instructor i : instructores) {
+            cmbInstructor.getItems().add(i.getNombre() + " " + i.getApellidos());
+            cmbInstructor.getProperties().put(i.getNombre() + " " + i.getApellidos(), i.getNumeroIdentificacion());
+        }
+
+        List<Cliente> clientes = clienteDAO.listarTodos();
+        for (Cliente c : clientes) {
+            cmbCliente.getItems().add(c.getNombre() + " " + c.getApellidos());
+            cmbCliente.getProperties().put(c.getNombre() + " " + c.getApellidos(), c.getNumeroIdentificacion());
+        }
+
+        List<Ejercicio> ejercicios = ejercicioDAO.listarTodos();
+        for (Ejercicio e : ejercicios) {
+            cmbEjercicio.getItems().add(e.getNombre());
+            cmbEjercicio.getProperties().put(e.getNombre(), e.getIdEjercicio());
+        }
     }
 
     private void configurarTabla() {
@@ -216,6 +229,14 @@ public class NuevaRutinaController implements Initializable {
             mostrarAlerta("Selecciona un objetivo");
             return;
         }
+        if (cmbCliente.getValue() == null) {
+            mostrarAlerta("Selecciona un cliente");
+            return;
+        }
+        if (cmbInstructor.getValue() == null) {
+            mostrarAlerta("Selecciona un instructor");
+            return;
+        }
         if (ejerciciosList.isEmpty()) {
             mostrarAlerta("Agrega al menos un ejercicio");
             return;
@@ -224,20 +245,27 @@ public class NuevaRutinaController implements Initializable {
         RadioButton selected = (RadioButton) tgObjetivo.getSelectedToggle();
         String objetivo = selected.getText();
 
-        StringBuilder resumen = new StringBuilder();
-        resumen.append("Rutina creada:\n");
-        resumen.append("Nombre: ").append(txtNombre.getText()).append("\n");
-        resumen.append("Objetivo: ").append(objetivo).append("\n");
-        resumen.append("Ejercicios: ").append(ejerciciosList.size()).append("\n");
-        resumen.append("Dias: ").append(String.join(", ", diasSeleccionados)).append("\n");
+        Rutina rutina = new Rutina();
+        rutina.setNombre(txtNombre.getText().trim());
+        rutina.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
+        rutina.setObjetivo(objetivo);
+        rutina.setIdInstructor((String) cmbInstructor.getProperties().get(cmbInstructor.getValue()));
+        rutina.setIdCliente((String) cmbCliente.getProperties().get(cmbCliente.getValue()));
+        rutina.setFechaCreacion(dpInicio.getValue() != null ? dpInicio.getValue() : LocalDate.now());
+        rutina.setFechaFin(dpFin.getValue());
+        rutina.setDiasSemana(String.join(", ", diasSeleccionados));
 
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Rutina Guardada");
-        info.setHeaderText(null);
-        info.setContentText(resumen.toString());
-        info.showAndWait();
-
-        cerrarOverlay();
+        boolean guardado = rutinaDAO.insertar(rutina);
+        if (guardado) {
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Rutina Guardada");
+            info.setHeaderText(null);
+            info.setContentText("Rutina \"" + rutina.getNombre() + "\" guardada exitosamente.");
+            info.showAndWait();
+            cerrarOverlay();
+        } else {
+            mostrarAlerta("Error al guardar la rutina. Intenta de nuevo.");
+        }
     }
 
     @FXML
