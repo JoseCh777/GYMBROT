@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Overlay: fondo semitransparente sobre la vista anterior -->
+
+<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.DirectorioEjerciciosController">
+
+    <!-- Modal principal -->
+    <VBox maxHeight="590" maxWidth="880" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">
+
+        <!-- ── HEADER ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="878.0" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 12 12 0 0;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <VBox spacing="2" HBox.hgrow="NEVER">
+                <padding><Insets left="12" /></padding>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px; -fx-font-weight: 700;                               -fx-text-fill: #D4FF00;" text="DIRECTORIO DE EJERCICIOS" />
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Region prefWidth="16" />
+
+            <!-- Botón Cerrar -->
+            <Button fx:id="btnCerrar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 20;                            -fx-cursor: hand; -fx-padding: 6 6 6 6;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <image><Image url="@../images/close.png" /></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- ── BARRA DE FILTROS ── -->
+        <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: rgba(255,255,255,0.03);                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets bottom="14" left="24" right="24" top="14" /></padding>
+
+            <!-- Campo de búsqueda -->
+            <StackPane prefHeight="44.0" HBox.hgrow="ALWAYS">
+                <TextField fx:id="txtBusqueda" prefHeight="44" promptText="Filtrar por nombre de ejercicio o grupo muscular..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
+                    <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
+                    <StackPane.margin><Insets left="12" /></StackPane.margin>
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/lupa.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Label>
+            </StackPane>
+
+            <!-- Filtro Grupo Muscular -->
+            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MÚSCULO:" />
+            <ComboBox fx:id="cmbFiltroGrupo" prefWidth="180" promptText="Todos" style="-fx-background-color: #1a1c1f;                              -fx-border-color: rgba(255,255,255,0.1);                              -fx-border-width: 1; -fx-border-radius: 8;                              -fx-background-radius: 8;                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                              -fx-text-fill: #e2e2e6;" />
+
+            <!-- Filtro Nivel -->
+            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NIVEL:" />
+            <ComboBox fx:id="cmbFiltroNivel" prefWidth="160" promptText="Todos" style="-fx-background-color: #1a1c1f;                              -fx-border-color: rgba(255,255,255,0.1);                              -fx-border-width: 1; -fx-border-radius: 8;                              -fx-background-radius: 8;                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                              -fx-text-fill: #e2e2e6;" />
+        </HBox>
+
+        <!-- ── TABLA DE EJERCICIOS ── -->
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;                            -fx-border-width: 0;" VBox.vgrow="ALWAYS">
+
+            <TableView fx:id="tablaEjercicios" style="-fx-background-color: #111316;                               -fx-control-inner-background: #111316;                               -fx-border-color: transparent;                               -fx-table-cell-border-color: rgba(255,255,255,0.05);">
+                <columns>
+                    <TableColumn fx:id="colNombre" prefWidth="245.59992306938705" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NOMBRE DEL EJERCICIO" />
+
+                    <TableColumn fx:id="colDescripcion" prefWidth="250.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DESCRIPCIÓN" />
+
+                    <TableColumn fx:id="colGrupoMuscular" prefWidth="130.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="GRUPO MUSCULAR" />
+
+                    <TableColumn fx:id="colNivel" prefWidth="130.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NIVEL / DIFICULTAD" />
+
+                          <TableColumn fx:id="colAcciones" prefWidth="117.59992675781245" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
+                </columns>
+            </TableView>
+        </ScrollPane>
+
+        <!-- ── FOOTER / PAGINACIÓN ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="56" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 0 0 12 12;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 1 0 0 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <!-- Contador -->
+            <Label fx:id="lblContador" style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                           -fx-text-fill: #6b7280;" text="Mostrando 0 ejercicios registrados" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Controles de paginación -->
+            <HBox alignment="CENTER" spacing="6">
+
+                <Button fx:id="btnPaginaAnterior" onAction="#handlePaginaAnterior" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-cursor: hand; -fx-padding: 6 8 6 8;">
+                    <graphic>
+                        <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                            <image><Image url="@../images/chevron_left.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="btnPag1" onAction="#handlePagina1" prefHeight="32" prefWidth="32" style="-fx-background-color: #D4FF00; -fx-background-radius: 6;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                -fx-font-weight: 700; -fx-text-fill: #1a1c1f; -fx-cursor: hand;" text="1" />
+
+                <Button fx:id="btnPag2" onAction="#handlePagina2" prefHeight="32" prefWidth="32" style="-fx-background-color: transparent; -fx-background-radius: 6;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                -fx-font-weight: 700; -fx-text-fill: #6b7280; -fx-cursor: hand;" text="2" />
+
+                <Button fx:id="btnPag3" onAction="#handlePagina3" prefHeight="32" prefWidth="32" style="-fx-background-color: transparent; -fx-background-radius: 6;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                -fx-font-weight: 700; -fx-text-fill: #6b7280; -fx-cursor: hand;" text="3" />
+
+                <Button fx:id="btnPaginaSiguiente" onAction="#handlePaginaSiguiente" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-cursor: hand; -fx-padding: 6 8 6 8;">
+                    <graphic>
+                        <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                            <image><Image url="@../images/chevron_right.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="btnCancelar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #e2e2e6; -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="CANCELAR" />
+        </HBox>
+
+    </VBox>
+</StackPane>

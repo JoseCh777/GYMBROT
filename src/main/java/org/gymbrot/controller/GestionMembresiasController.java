@@ -28,25 +28,30 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
     @FXML private Button navAI;
+    @FXML private Button navProgreso;
 
-    // ── Selector de duracion ─────────────────────────────────
+    @FXML private Button btnLogout;
+
+    // ── Selector de duracion ──────────────────────────────────
     @FXML private Button btnMensual;
     @FXML private Button btnSemestral;
     @FXML private Button btnAnual;
 
-    // ── Labels de precios ────────────────────────────────────
-    @FXML private Label lblPrecioBronce;
-    @FXML private Label lblPrecioPlata;
-    @FXML private Label lblPrecioOro;
-
-    @FXML private Label lblFacturacionBronce;
-    @FXML private Label lblFacturacionPlata;
-    @FXML private Label lblFacturacionOro;
-
-    // ── Botones de seleccion de plan ─────────────────────────
+    // ── Botones de plan ───────────────────────────────────────
     @FXML private Button btnSeleccionarBronce;
     @FXML private Button btnSeleccionarPlata;
     @FXML private Button btnSeleccionarOro;
+
+    // ── Banner AI ─────────────────────────────────────────────
+    @FXML private Button btnChatearAI;
+
+    // ── Labels de precio ─────────────────────────────────────
+    @FXML private Label lblPrecioBronce;
+    @FXML private Label lblPrecioPlata;
+    @FXML private Label lblPrecioOro;
+    @FXML private Label lblFacturacionBronce;
+    @FXML private Label lblFacturacionPlata;
+    @FXML private Label lblFacturacionOro;
 
     // ── Tabla comparativa ────────────────────────────────────
     @FXML private TableView<FilaComparativa> tablaComparativa;
@@ -54,11 +59,6 @@ public class GestionMembresiasController implements Initializable {
     @FXML private TableColumn<FilaComparativa, String> colBronce;
     @FXML private TableColumn<FilaComparativa, String> colPlata;
     @FXML private TableColumn<FilaComparativa, String> colOro;
-
-    // ── Banner AI ────────────────────────────────────────────
-    @FXML private Button btnChatearAI;
-
-    @FXML private Button btnLogout;
 
     // ── Estado interno ───────────────────────────────────────
     private enum Duracion { MENSUAL, SEMESTRAL, ANUAL }
@@ -76,22 +76,22 @@ public class GestionMembresiasController implements Initializable {
     // Estilos nav
     private static final String STYLE_NAV_ACTIVO =
             "-fx-background-color: #D4FF00; -fx-background-radius: 8; " +
-            "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; " +
-            "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
+                    "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; " +
+                    "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
     private static final String STYLE_NAV_INACTIVO =
             "-fx-background-color: transparent; -fx-background-radius: 8; " +
-            "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; " +
-            "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
+                    "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; " +
+                    "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;";
 
     // Estilos selector duracion
     private static final String STYLE_BTN_DURACION_ACTIVO =
             "-fx-background-color: #D4FF00; -fx-background-radius: 8; " +
-            "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
-            "-fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
+                    "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
+                    "-fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
     private static final String STYLE_BTN_DURACION_INACTIVO =
             "-fx-background-color: transparent; -fx-background-radius: 8; " +
-            "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
-            "-fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
+                    "-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; " +
+                    "-fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 6 20 6 20;";
 
     // ─────────────────────────────────────────────────────────
     @Override
@@ -129,6 +129,9 @@ public class GestionMembresiasController implements Initializable {
     private void handleNavAI(ActionEvent event) {
         navegarA("/fxml/GymbroAI.fxml", event);
     }
+
+    @FXML
+    private void handleNavProgreso(ActionEvent event) { }
 
     @FXML
     private void handleLogout(ActionEvent event) {
@@ -226,8 +229,8 @@ public class GestionMembresiasController implements Initializable {
     private void configurarTablaComparativa() {
         tablaComparativa.setStyle(
                 "-fx-background-color: #1a1d21; -fx-control-inner-background: #1a1d21;" +
-                "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12;" +
-                "-fx-table-cell-border-color: #1f2125;"
+                        "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12;" +
+                        "-fx-table-cell-border-color: #1f2125;"
         );
         // Column headers oscuros
         tablaComparativa.widthProperty().addListener((obs, old, w) -> {
@@ -270,13 +273,13 @@ public class GestionMembresiasController implements Initializable {
         });
 
         ObservableList<FilaComparativa> filas = FXCollections.observableArrayList(
-            new FilaComparativa("Acceso al Gimnasio",              "Diurno",           "Extendido",         "24/7 Ultra"),
-            new FilaComparativa("Herramientas de IA",              "Basico",           "Avanzado",          "Tiempo Real"),
-            new FilaComparativa("Sesiones con Instructor",         "1 al mes",         "Digital + Grupal",  "1-a-1 Elite"),
-            new FilaComparativa("Suite de Recuperacion",           "No incluida",      "Hidromasaje/Sauna", "Crioterapia"),
-            new FilaComparativa("Locker Personal y Lavanderia",    "No incluida",      "No incluida",       "Incluida"),
-            new FilaComparativa("Pases de Invitado",               "No incluidos",     "No incluidos",      "Ilimitados"),
-            new FilaComparativa("Seguimiento Nutricional",         "No incluido",      "Incluido",          "Incluido")
+                new FilaComparativa("Acceso al Gimnasio",              "Diurno",           "Extendido",         "24/7 Ultra"),
+                new FilaComparativa("Herramientas de IA",              "Basico",           "Avanzado",          "Tiempo Real"),
+                new FilaComparativa("Sesiones con Instructor",         "1 al mes",         "Digital + Grupal",  "1-a-1 Elite"),
+                new FilaComparativa("Suite de Recuperacion",           "No incluida",      "Hidromasaje/Sauna", "Crioterapia"),
+                new FilaComparativa("Locker Personal y Lavanderia",    "No incluida",      "No incluida",       "Incluida"),
+                new FilaComparativa("Pases de Invitado",               "No incluidos",     "No incluidos",      "Ilimitados"),
+                new FilaComparativa("Seguimiento Nutricional",         "No incluido",      "Incluido",          "Incluido")
         );
 
         tablaComparativa.setItems(filas);
@@ -285,7 +288,7 @@ public class GestionMembresiasController implements Initializable {
     // ══ Animaciones de navegacion ═════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navAI, btnLogout};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navProgreso, navAI, btnLogout};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navMembresias);
     }
@@ -444,7 +447,7 @@ public class GestionMembresiasController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navAI, btnLogout};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI, btnLogout};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -487,9 +490,9 @@ public class GestionMembresiasController implements Initializable {
     // ══ Record interno para la tabla ═════════════════════════
 
     public record FilaComparativa(
-        String beneficio,
-        String bronce,
-        String plata,
-        String oro
+            String beneficio,
+            String bronce,
+            String plata,
+            String oro
     ) {}
 }

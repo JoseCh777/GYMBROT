@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -24,6 +25,9 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.model.Cliente;
 
 /**
  * GestionClientesController
@@ -45,6 +49,7 @@ public class GestionClientesController implements Initializable {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
     @FXML private Button navAI;
+    @FXML private Button navProgreso;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -296,8 +301,9 @@ public class GestionClientesController implements Initializable {
         // ── Columna Acciones ──
         colAcciones.setCellValueFactory(data -> new SimpleStringProperty(""));
         colAcciones.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEditar  = new Button("Ed.");
+            private final Button btnEditar   = new Button("Ed.");
             private final Button btnEliminar = new Button("El.");
+            private final Button btnVer      = new Button("Ver");
 
             {
                 btnEditar.setStyle(
@@ -331,6 +337,21 @@ public class GestionClientesController implements Initializable {
                         btnEliminar.getStyle().replace("-fx-text-fill: #ffb4ab", "-fx-text-fill: #6b7280")
                                 .replace("-fx-border-color: #ffb4ab", "-fx-border-color: #333538")));
 
+                btnVer.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                        "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;");
+                btnVer.setOnMouseEntered(e -> btnVer.setStyle(
+                        "-fx-background-color: #D4FF00; -fx-background-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: black; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                                "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+                btnVer.setOnMouseExited(e -> btnVer.setStyle(
+                        "-fx-background-color: transparent; -fx-background-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                                "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+
                 btnEditar.setOnAction(e -> {
                     ClienteRow row = getTableView().getItems().get(getIndex());
                     handleEditarCliente(row);
@@ -339,13 +360,17 @@ public class GestionClientesController implements Initializable {
                     ClienteRow row = getTableView().getItems().get(getIndex());
                     handleEliminarCliente(row);
                 });
+                btnVer.setOnAction(e -> {
+                    ClienteRow row = getTableView().getItems().get(getIndex());
+                    handleVerPerfil(row);
+                });
             }
 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) { setGraphic(null); return; }
-                HBox box = new HBox(6, btnEditar, btnEliminar);
+                HBox box = new HBox(6, btnVer, btnEditar, btnEliminar);
                 box.setAlignment(Pos.CENTER_RIGHT);
                 setGraphic(box);
                 setText(null);
@@ -512,7 +537,7 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navAI};
+        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navClientes);
     }
@@ -570,7 +595,7 @@ public class GestionClientesController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -600,6 +625,34 @@ public class GestionClientesController implements Initializable {
         mostrarInfo("Editar", "Editando cliente: " + row.getNombre());
     }
 
+    private void handleVerPerfil(ClienteRow row) {
+        try {
+            ClienteDAO dao = new ClienteDAO();
+            Cliente cliente = dao.buscarPorId(row.getId());
+            if (cliente == null) {
+                mostrarError("Error", "No se encontró el cliente");
+                return;
+            }
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PerfilCliente.fxml"));
+            Parent overlay = loader.load();
+            PerfilClienteController ctrl = loader.getController();
+            ctrl.setWrapperStack(wrapper, overlay);
+            ctrl.setCliente(cliente);
+
+            wrapper.getChildren().add(overlay);
+            scene.setRoot(wrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir el perfil del cliente");
+        }
+    }
+
     private void handleEliminarCliente(ClienteRow row) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "Eliminar a " + row.getNombre() + "?",
@@ -626,8 +679,25 @@ public class GestionClientesController implements Initializable {
 
     @FXML
     private void handleValidarHuella() {
-        // TODO: integrar con lector de huella
-        mostrarInfo("Validacion Biometrica", "Conecta el lector de huella para continuar.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistroEntrada.fxml"));
+            Parent overlay = loader.load();
+            RegistroEntradaController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Registro de Entrada");
+        }
     }
 
     @FXML
@@ -653,7 +723,8 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavClientes()     { }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml");}
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
-    @FXML private void handleNavAI()           { }
+    @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
 
     @FXML
     private void handleLogout() {
@@ -683,6 +754,14 @@ public class GestionClientesController implements Initializable {
 
     private void mostrarInfo(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void mostrarError(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);

@@ -58,6 +58,15 @@
                         </ImageView>
                     </graphic>
                 </Button>
+            <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
+               <graphic>
+                  <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/muscle_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
                 <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
@@ -98,7 +107,7 @@
                 <HBox spacing="20">
 
                     <!-- Card: Total Instructores -->
-                    <VBox spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                    <VBox prefHeight="162.0" prefWidth="229.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                         <HBox alignment="CENTER_LEFT">
                             <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL INSTRUCTORES" HBox.hgrow="ALWAYS" />
@@ -111,7 +120,7 @@
                     </VBox>
 
                     <!-- Card: Sesiones Hoy -->
-                    <VBox prefHeight="162.0" prefWidth="230.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #D4FF00; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                    <VBox prefHeight="162.0" prefWidth="321.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #D4FF00; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                         <HBox alignment="CENTER_LEFT">
                             <Label prefHeight="16.0" prefWidth="286.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SESIONES HOY" HBox.hgrow="ALWAYS" />
@@ -123,6 +132,48 @@
                         </HBox>
                     </VBox>
 
+                    <!-- Botones: Nueva Rutina / Nuevo Ejercicio -->
+                    <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
+                  <Button fx:id="btnNuevaRutina1" maxWidth="Infinity" onAction="#handleNuevaRutina" prefHeight="44" prefWidth="180.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="NUEVA RUTINA">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/rutina-de-ejercicio.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                         <Button fx:id="btnMostrarRutinas" maxWidth="Infinity" onAction="#handleMostrarRutinas" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="MOSTRAR RUTINAS">
+                            <graphic>
+                                <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                                    <image><Image url="@../images/papel.png" /></image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </VBox>
+               <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
+                  <children>
+                     <Button fx:id="btnNuevoEjercicio1" maxWidth="Infinity" onAction="#handleNuevoEjercicio" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="NUEVO EJERCICIO">
+                        <graphic>
+                           <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/ejercicios-de-estiramiento.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                     <Button fx:id="btnMostrarEjercicios" maxWidth="Infinity" onAction="#handleMostrarEjercicios" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="MOSTRAR EJERCICIOS">
+                        <graphic>
+                           <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/papel.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                  </children>
+               </VBox>
+
                 </HBox>
 
                 <!-- ── SECCION 2: Toolbar ── -->
@@ -132,8 +183,8 @@
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
-                    <StackPane prefHeight="44.0" prefWidth="262.0" HBox.hgrow="ALWAYS">
-                        <TextField fx:id="searchField" prefHeight="44" prefWidth="372.0" promptText="Buscar por nombre, especialidad o ID..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                    <StackPane prefHeight="44.0" prefWidth="343.0" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="searchField" prefHeight="44" prefWidth="434.0" promptText="Buscar por nombre, especialidad o ID..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
                         <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
                             <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
                             <StackPane.margin><Insets left="12" /></StackPane.margin>
@@ -148,9 +199,9 @@
                     </StackPane>
 
                     <!-- Filtro por especialidad -->
-                    <ComboBox fx:id="cmbFiltroEspecialidad" onAction="#handleFiltroEspecialidad" prefHeight="44" prefWidth="220" promptText="Filtrar por especialidad..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;" />
+                    <ComboBox fx:id="cmbFiltroEspecialidad" onAction="#handleFiltroEspecialidad" prefHeight="44" prefWidth="202.0" promptText="Filtrar por especialidad..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;" />
 
-                    <Button fx:id="btnAgregarInstructor" onAction="#handleAgregarInstructor" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
+                    <Button fx:id="btnNuevoInstructor" onAction="#handleAgregarInstructor" prefHeight="44" prefWidth="191.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
                         <graphic>
                             <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                                 <image><Image url="@../images/add.png" /></image>
