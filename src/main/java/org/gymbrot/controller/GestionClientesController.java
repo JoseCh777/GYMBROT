@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -626,8 +627,25 @@ public class GestionClientesController implements Initializable {
 
     @FXML
     private void handleValidarHuella() {
-        // TODO: integrar con lector de huella
-        mostrarInfo("Validacion Biometrica", "Conecta el lector de huella para continuar.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistroEntrada.fxml"));
+            Parent overlay = loader.load();
+            RegistroEntradaController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Registro de Entrada");
+        }
     }
 
     @FXML
@@ -683,6 +701,14 @@ public class GestionClientesController implements Initializable {
 
     private void mostrarInfo(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void mostrarError(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);

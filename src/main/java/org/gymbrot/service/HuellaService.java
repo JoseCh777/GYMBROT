@@ -38,6 +38,13 @@ public class HuellaService {
         void onError(String error);
     }
 
+    public interface VerificacionCallback {
+        void onStatus(String status);
+        void onIdentificado(Cliente cliente);
+        void onNoIdentificado();
+        void onError(String error);
+    }
+
     private static HuellaService instancia;
 
     private ClienteDAO clienteDAO;
@@ -281,6 +288,105 @@ public class HuellaService {
         }
         enrolamientoActivo = false;
         idClienteEnrolando = null;
+    }
+
+    public void verificarConCaptura(VerificacionCallback callback) {
+        String exePath = encontrarEjecutable();
+        if (exePath == null) {
+            if (callback != null) callback.onError("No se encuentra CapturadorHuella.exe");
+            return;
+        }
+
+        List<Cliente> clientes = clienteDAO.obtenerTemplatesHuella();
+        if (clientes == null || clientes.isEmpty()) {
+            if (callback != null) callback.onError("No hay huellas registradas en el sistema");
+            return;
+        }
+
+        enrolamientoActivo = true;
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                if (callback != null) callback.onStatus("Preparando lector...");
+
+                ProcessBuilder pb = new ProcessBuilder(exePath, "verify");
+                pb.redirectErrorStream(false);
+                procesoCaptura = pb.start();
+
+                BufferedReader stderrReader = new BufferedReader(new InputStreamReader(procesoCaptura.getErrorStream()));
+                BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(procesoCaptura.getInputStream()));
+                var stdinWriter = new java.io.OutputStreamWriter(procesoCaptura.getOutputStream());
+
+                for (Cliente c : clientes) {
+                    byte[] tb = c.getHuellaDactilar();
+                    if (tb != null && tb.length > 0) {
+                        stdinWriter.write(Base64.getEncoder().encodeToString(tb));
+                        stdinWriter.write("\n");
+                    }
+                }
+                stdinWriter.close();
+
+                StringBuilder resultado = new StringBuilder();
+                Thread stderrThread = new Thread(() -> {
+                    try {
+                        String line;
+                        while ((line = stderrReader.readLine()) != null) {
+                            if (line.startsWith("DEBUG:")) {
+                                System.out.println("[C# DEBUG] " + line.substring(6));
+                                continue;
+                            }
+                            if (callback == null) continue;
+                            if (line.startsWith("STATUS:")) {
+                                callback.onStatus(line.substring(7));
+                            } else if (line.startsWith("ERROR:")) {
+                                callback.onError(line.substring(6));
+                            }
+                        }
+                    } catch (Exception e) { }
+                });
+                stderrThread.setDaemon(true);
+                stderrThread.start();
+
+                Thread stdoutThread = new Thread(() -> {
+                    try {
+                        String line;
+                        while ((line = stdoutReader.readLine()) != null) {
+                            resultado.append(line);
+                        }
+                    } catch (Exception e) { }
+                });
+                stdoutThread.setDaemon(true);
+                stdoutThread.start();
+
+                boolean finished = procesoCaptura.waitFor(120, TimeUnit.SECONDS);
+                if (!finished) {
+                    procesoCaptura.destroyForcibly();
+                    if (callback != null) callback.onError("Tiempo de espera agotado (120s)");
+                    return;
+                }
+                stderrThread.join(2000);
+                stdoutThread.join(2000);
+
+                String result = resultado.toString().trim();
+                System.out.println("[HuellaService] verify result: " + result);
+
+                if (result.startsWith("MATCH:")) {
+                    int idx = Integer.parseInt(result.substring(6));
+                    if (idx >= 0 && idx < clientes.size()) {
+                        if (callback != null) callback.onIdentificado(clientes.get(idx));
+                    } else {
+                        if (callback != null) callback.onNoIdentificado();
+                    }
+                } else {
+                    if (callback != null) callback.onNoIdentificado();
+                }
+            } catch (Exception e) {
+                if (callback != null) callback.onError("Error: " + e.getMessage());
+            } finally {
+                enrolamientoActivo = false;
+                procesoCaptura = null;
+            }
+        });
     }
 
     private DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, DPFPDataPurpose purpose) {

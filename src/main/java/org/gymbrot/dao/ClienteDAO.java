@@ -187,7 +187,7 @@ public class ClienteDAO {
                 "FROM CLIENTES c " +
                 "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
                 "WHERE c.huella_dactilar IS NOT NULL " +
-                "AND u.estado = 'activo'";
+                "AND LOWER(u.estado) = 'activo'";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

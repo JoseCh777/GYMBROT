@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using DPFP.Processing;
 
 namespace CapturadorHuella
 {
@@ -11,9 +13,19 @@ namespace CapturadorHuella
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CapturaForm());
+
+            if (args.Length > 0 && args[0] == "verify")
+            {
+                Application.Run(new VerificadorForm());
+            }
+            else
+            {
+                Application.Run(new CapturaForm());
+            }
         }
     }
+
+    // ─── Enrollment (captura 4 muestras, genera template) ───
 
     class CapturaForm : Form, DPFP.Capture.EventHandler
     {
@@ -86,7 +98,6 @@ namespace CapturadorHuella
                     int neededDespues = (int)enroller.FeaturesNeeded;
                     var status = enroller.TemplateStatus;
 
-                    int capturadas = totalNeeded - neededDespues;
                     Console.Error.WriteLine("DEBUG:neededAntes=" + neededAntes + " neededDespues=" + neededDespues + " status=" + status);
 
                     if (status == DPFP.Processing.Enrollment.Status.Failed)
@@ -97,7 +108,7 @@ namespace CapturadorHuella
                         return;
                     }
 
-                    Console.Error.WriteLine("PROGRESS:" + capturadas + "/" + totalNeeded);
+                    Console.Error.WriteLine("PROGRESS:" + (totalNeeded - neededDespues) + "/" + totalNeeded);
 
                     if (neededAntes == neededDespues)
                     {
@@ -106,7 +117,7 @@ namespace CapturadorHuella
                     }
                     else
                     {
-                        Console.Error.WriteLine("STATUS:Muestra " + capturadas + "/" + totalNeeded + " capturada");
+                        Console.Error.WriteLine("STATUS:Muestra " + (totalNeeded - neededDespues) + "/" + totalNeeded + " capturada");
 
                         if (status == DPFP.Processing.Enrollment.Status.Ready)
                         {
@@ -171,19 +182,170 @@ namespace CapturadorHuella
         {
             Console.Error.WriteLine("ERROR:" + msg);
             Console.Error.Flush();
-            if (capturer != null)
-            {
-                try { capturer.StopCapture(); } catch { }
-            }
+            if (capturer != null) try { capturer.StopCapture(); } catch { }
             this.Close();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            if (capturer != null)
+            if (capturer != null) try { capturer.StopCapture(); } catch { }
+            base.OnFormClosed(e);
+        }
+    }
+
+    // ─── Verification (captura 1 muestra, verifica contra templates stdin) ───
+
+    class VerificadorForm : Form, DPFP.Capture.EventHandler
+    {
+        private DPFP.Capture.Capture capturer;
+        private List<DPFP.Template> templates = new List<DPFP.Template>();
+
+        public VerificadorForm()
+        {
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.Manual;
+            Location = new System.Drawing.Point(-32000, -32000);
+            Width = 1;
+            Height = 1;
+            FormBorderStyle = FormBorderStyle.None;
+            Load += VerificadorForm_Load;
+        }
+
+        private void VerificadorForm_Load(object sender, EventArgs e)
+        {
+            // Leer templates desde stdin
+            try
             {
-                try { capturer.StopCapture(); } catch { }
+                string line;
+                while ((line = Console.In.ReadLine()) != null)
+                {
+                    line = line.Trim();
+                    if (line.Length == 0) continue;
+                    byte[] bytes = Convert.FromBase64String(line);
+                    using (var ms = new MemoryStream(bytes))
+                    {
+                        var template = new DPFP.Template(ms);
+                        templates.Add(template);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ReportError("Error leyendo templates: " + ex.Message);
+                return;
+            }
+
+            Console.Error.WriteLine("DEBUG:templates=" + templates.Count);
+
+            try
+            {
+                capturer = new DPFP.Capture.Capture();
+                capturer.EventHandler = this;
+            }
+            catch (Exception ex)
+            {
+                ReportError("No se pudo iniciar la captura: " + ex.Message);
+                return;
+            }
+
+            Console.Error.WriteLine("STATUS:Coloque el dedo en el lector");
+
+            try
+            {
+                capturer.StartCapture();
+            }
+            catch (Exception ex)
+            {
+                ReportError("Error al iniciar captura: " + ex.Message);
+            }
+        }
+
+        public void OnComplete(object Capture, string ReaderSerialNumber, DPFP.Sample Sample)
+        {
+            try
+            {
+                var extractor = new DPFP.Processing.FeatureExtraction();
+                var feedback = DPFP.Capture.CaptureFeedback.None;
+                var features = new DPFP.FeatureSet();
+                extractor.CreateFeatureSet(Sample, DPFP.Processing.DataPurpose.Verification, ref feedback, ref features);
+
+                if (feedback == DPFP.Capture.CaptureFeedback.Good)
+                {
+                    Console.Error.WriteLine("STATUS:Verificando identidad...");
+
+                    int matchIndex = -1;
+
+                    for (int i = 0; i < templates.Count; i++)
+                    {
+                        var result = DPFP.Verification.Verification.Verify(features, templates[i]);
+                        if (result.Verified)
+                        {
+                            matchIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (matchIndex >= 0)
+                    {
+                        Console.Out.WriteLine("MATCH:" + matchIndex);
+                    }
+                    else
+                    {
+                        Console.Out.WriteLine("NO_MATCH");
+                    }
+                    Console.Out.Flush();
+
+                    capturer.StopCapture();
+                    this.Close();
+                }
+                else
+                {
+                    Console.Error.WriteLine("SAMPLE_REJECTED:Calidad de huella insuficiente");
+                    Console.Error.WriteLine("STATUS:Intente de nuevo");
+                }
+            }
+            catch (Exception ex)
+            {
+                ReportError("Error verificando: " + ex.Message);
+            }
+        }
+
+        public void OnFingerGone(object Capture, string ReaderSerialNumber)
+        {
+            Console.Error.WriteLine("STATUS:Dedo retirado, espere...");
+        }
+
+        public void OnFingerTouch(object Capture, string ReaderSerialNumber)
+        {
+            Console.Error.WriteLine("STATUS:Procesando huella...");
+        }
+
+        public void OnReaderConnect(object Capture, string ReaderSerialNumber)
+        {
+            Console.Error.WriteLine("STATUS:Lector conectado");
+        }
+
+        public void OnReaderDisconnect(object Capture, string ReaderSerialNumber)
+        {
+            ReportError("Lector desconectado");
+        }
+
+        public void OnSampleQuality(object Capture, string ReaderSerialNumber, DPFP.Capture.CaptureFeedback CaptureFeedback)
+        {
+        }
+
+        private void ReportError(string msg)
+        {
+            Console.Error.WriteLine("ERROR:" + msg);
+            Console.Error.Flush();
+            if (capturer != null) try { capturer.StopCapture(); } catch { }
+            this.Close();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (capturer != null) try { capturer.StopCapture(); } catch { }
             base.OnFormClosed(e);
         }
     }

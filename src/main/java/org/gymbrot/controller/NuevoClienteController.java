@@ -20,6 +20,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import com.digitalpersona.onetouch.DPFPTemplate;
+import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.dao.UsuarioDAO;
+import org.gymbrot.model.Cliente;
+import org.gymbrot.model.Usuario;
+import org.gymbrot.service.AuthService;
 import org.gymbrot.service.HuellaService;
 import org.gymbrot.util.HuellaUtil;
 
@@ -541,29 +546,41 @@ public class NuevoClienteController implements Initializable {
     private void handleGuardar() {
         if (!validarFormulario()) return;
 
-        // TODO: reemplazar con llamada al DAO
-        // UsuarioDAO usuarioDAO = new UsuarioDAO();
-        // ClienteDAO clienteDAO = new ClienteDAO();
-        //
-        // Usuario u = new Usuario();
-        // u.setNumeroIdentificacion(txtNumeroDoc.getText().trim());
-        // u.setTipoDoc(cmbTipoDoc.getValue());
-        // u.setNombre(txtNombres.getText().trim());
-        // u.setApellidos(txtApellidos.getText().trim());
-        // u.setCorreo(txtCorreo.getText().trim());
-        // u.setTelefono(txtTelefono.getText().trim());
-        // u.setContrasenaHash(BCrypt.hashpw(txtContrasena.getText(), BCrypt.gensalt()));
-        // u.setFechaNacimiento(dateFechaNacimiento.getValue());
-        // u.setTipoUsuario("CLIENTE");
-        // u.setEstado("ACTIVO");
-        // usuarioDAO.insertar(u);
-        //
-        // Cliente c = new Cliente();
-        // c.setNumeroIdentificacion(u.getNumeroIdentificacion());
-        // c.setDireccion(txtDireccion.getText().trim());
-        // if (archivoFotoSeleccionado != null)
-        //     c.setFotoPerfil(archivoFotoSeleccionado.getAbsolutePath());
-        // clienteDAO.insertar(c);
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        AuthService authService = new AuthService();
+
+        Usuario u = new Usuario();
+        u.setNumeroIdentificacion(txtNumeroDoc.getText().trim());
+        u.setTipoIdentificacion(tipoDocToCode(cmbTipoDoc.getValue()));
+        u.setNombre(txtNombres.getText().trim());
+        u.setApellidos(txtApellidos.getText().trim());
+        u.setCorreo(txtCorreo.getText().trim());
+        u.setTelefono(txtTelefono.getText().trim());
+        u.setContrasenaHash(authService.hashContrasena(txtContrasena.getText()));
+        u.setFechaRegistro(LocalDate.now());
+        u.setTipoUsuario("CLIENTE");
+        u.setEstado("ACTIVO");
+
+        boolean ok = usuarioDAO.insertar(u);
+        if (!ok) {
+            mostrarError("Error", "No se pudo registrar el usuario.");
+            return;
+        }
+
+        Cliente c = new Cliente();
+        c.setNumeroIdentificacion(u.getNumeroIdentificacion());
+        c.setDireccion(txtDireccion.getText().trim());
+        c.setFechaNacimiento(dateFechaNacimiento.getValue());
+        if (archivoFotoSeleccionado != null)
+            c.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+        if (templateCapturado != null)
+            c.setHuellaDactilar(templateCapturado.serialize());
+        ok = clienteDAO.insertar(c);
+        if (!ok) {
+            mostrarError("Error", "No se pudo registrar el cliente.");
+            return;
+        }
 
         // Animación de confirmación en el botón Guardar
         btnGuardar.setText("GUARDADO ✓");
@@ -583,6 +600,18 @@ public class NuevoClienteController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLER — Cancelar
     // ═══════════════════════════════════════════════════════════════════════
+
+    private String tipoDocToCode(String display) {
+        if (display == null) return null;
+        switch (display) {
+            case "Cédula de Ciudadanía":        return "CC";
+            case "Cédula de Extranjería":       return "CE";
+            case "Tarjeta de Identidad":        return "TI";
+            case "Pasaporte":                   return "PASAPORTE";
+            case "NIT":                         return "NIT";
+            default:                            return display;
+        }
+    }
 
     @FXML
     private void handleCancelar() {
