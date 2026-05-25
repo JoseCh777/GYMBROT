@@ -43,21 +43,14 @@ public class GroqService {
     }
 
     // ── ENVIAR MENSAJE CON HISTORIAL ──────────────────────────────────────
-    // ✅ Cuando ChatbotService ya procesó una acción (agendar, cancelar, etc.)
-    // le pasa contextoExtra con [SISTEMA: ...] y NO se consulta la BD de instructores
-    // para evitar confusión con horas recién ocupadas
     public String enviarMensaje(String mensajeUsuario, List<MensajeGymbrot> historial) {
         try {
-            // ✅ Solo consultar BD si NO hay un contexto de sistema ya procesado
             String contextoDB = "";
             boolean tieneContextoSistema = mensajeUsuario.contains("[SISTEMA:");
 
             if (!tieneContextoSistema) {
-                // Consulta normal — buscar info relevante
                 contextoDB = consultaService.buscarInfoRelevante(mensajeUsuario);
             } else {
-                // Ya viene con contexto procesado — solo buscar planes si pregunta por eso
-                // No buscar instructores para evitar mostrar horas recién ocupadas
                 if (mensajeUsuario.toLowerCase().contains("plan")
                         || mensajeUsuario.toLowerCase().contains("precio")
                         || mensajeUsuario.toLowerCase().contains("membresia")) {
@@ -65,26 +58,35 @@ public class GroqService {
                 }
             }
 
-            String systemPrompt = "Eres GYMBROT ADMIN, el asistente inteligente del sistema de gestión del gimnasio GYMBROT en Valledupar. " +
-                    "Tu función es asistir al ADMINISTRADOR del gimnasio en procesos administrativos, operativos, analíticos y de comunicación. " +
-                    "INFORMACION ACTUAL DE LA BASE DE DATOS: " +
-                    (contextoDB.isEmpty() ? "No hay informacion especifica en este momento." : contextoDB) +
-                    " CAPACIDADES: Gestión de clientes, usuarios, rutinas, ejercicios, citas, membresías, accesos biométricos y estadísticas. " +
-                    "AUTOMATIZACIONES: Cuando se cree, modifique o elimine una cita, generar SMS y correo automáticamente. " +
-                    "Cuando una membresía esté próxima a vencer, enviar recordatorio 7, 3 y 1 día antes. " +
-                    "REGLAS IMPORTANTES: " +
-                    "1. NUNCA inventes información. Usa solo datos de la base de datos. " +
-                    "2. Solicita datos faltantes antes de ejecutar acciones. " +
-                    "3. Antes de eliminar, solicita confirmación. " +
-                    "4. Valida duplicados antes de crear registros. " +
-                    "5. Valida disponibilidad antes de crear citas. " +
-                    "6. Si el mensaje contiene [SISTEMA:], sigue exactamente esas instrucciones. " +
-                    "FORMATO DE RESPUESTA: " +
-                    "Operación: [Crear/Consultar/Modificar/Eliminar/Estadística/Notificación] " +
-                    "Resultado: [Información o acción realizada] " +
-                    "Automatizaciones ejecutadas: [SMS enviado / Correo enviado] " +
-                    "Estado: [Éxito / Error / Información faltante] " +
-                    "Recuerda toda la conversacion anterior. Responde siempre en español de manera clara y profesional.";
+            String systemPrompt =
+                    "Eres GYMBROT ADMIN, el asistente inteligente del sistema de gestión del gimnasio GYMBROT en Valledupar. " +
+                            "Tu función es asistir al ADMINISTRADOR del gimnasio en tareas administrativas, operativas, analíticas y de comunicación. " +
+                            "INFORMACION ACTUAL DE LA BASE DE DATOS: " +
+                            (contextoDB.isEmpty() ? "No hay informacion especifica en este momento." : contextoDB) +
+                            " CAPACIDADES DEL ADMINISTRADOR: " +
+                            "1. Gestión de clientes: crear, modificar, consultar estado, historial, progreso físico, ingresos y membresías. " +
+                            "2. Gestión de citas: crear, modificar, cancelar, validar disponibilidad y detectar conflictos de horario. " +
+                            "3. Gestión de membresías: consultar activas, vencidas, por vencer, crear nuevas y actualizar existentes. " +
+                            "4. Gestión de rutinas y ejercicios: crear, modificar y recomendar por objetivos del cliente. " +
+                            "5. Estadísticas: clientes activos/inactivos, ingresos del mes, asistencia, horarios pico, membresías por vencer, retención. " +
+                            "6. Notificaciones: enviar SMS y correos a clientes de forma manual o automática. " +
+                            "AUTOMATIZACIONES: " +
+                            "- Cita creada/modificada/cancelada → SMS + correo automático con detalles completos. " +
+                            "- Membresía por vencer → recordatorio automático 7, 3 y 1 día antes con opciones de renovación. " +
+                            "- Cliente nuevo → SMS y correo de bienvenida automático. " +
+                            "REGLAS IMPORTANTES: " +
+                            "1. NUNCA inventes datos. Usa SOLO la información de la base de datos. " +
+                            "2. Si faltan datos para ejecutar una acción, solicítalos antes de proceder. " +
+                            "3. Antes de eliminar cualquier registro, pide confirmación explícita. " +
+                            "4. Valida duplicados antes de crear clientes o registros. " +
+                            "5. Valida disponibilidad del instructor antes de crear citas. " +
+                            "6. Si el mensaje contiene [SISTEMA:], sigue exactamente esas instrucciones y confírmaselas al administrador. " +
+                            "FORMATO DE RESPUESTA OBLIGATORIO: " +
+                            "Operación: [Crear / Consultar / Modificar / Cancelar / Estadística / Notificación] " +
+                            "Resultado: [Descripción clara de lo encontrado o ejecutado] " +
+                            "Automatizaciones ejecutadas: [SMS enviado / Correo enviado / Ninguna] " +
+                            "Estado: [Éxito / Error / Información faltante] " +
+                            "Recuerda toda la conversación anterior. Responde siempre en español de manera clara, directa y profesional.";
 
             StringBuilder mensajes = new StringBuilder();
             mensajes.append("{\"role\": \"system\", \"content\": \"")
@@ -104,7 +106,7 @@ public class GroqService {
                     .append(mensajeUsuario.replace("\"", "'").replace("\n", " "))
                     .append("\"}");
 
-            String body = "{\"model\": \"" + MODEL + "\", \"messages\": [" + mensajes + "], \"max_tokens\": 500}";
+            String body = "{\"model\": \"" + MODEL + "\", \"messages\": [" + mensajes + "], \"max_tokens\": 800}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_URL))

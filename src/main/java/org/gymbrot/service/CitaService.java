@@ -54,7 +54,7 @@ public class CitaService {
         return validarYProgramar(cita) && citaDAO.insertar(cita);
     }
 
-    // ── PROGRAMAR CITA Y RETORNAR ID ──────────────────────────────────────
+    // ── PROGRAMAR CITA Y RETORNAR ID (para cliente) ───────────────────────
     public int programarCitaYRetornarId(Cita cita) {
         if (!validarYProgramar(cita)) return -1;
         int id = citaDAO.insertarYRetornarId(cita);
@@ -62,7 +62,65 @@ public class CitaService {
         return id;
     }
 
-    // ── VALIDACIONES COMPARTIDAS ──────────────────────────────────────────
+    // ── PROGRAMAR CITA DESDE ADMIN (retorna código de error específico) ───
+    // Códigos: id > 0 = éxito | -1 = cliente inválido | -2 = instructor inválido
+    //          -3 = cliente no existe | -4 = instructor no existe
+    //          -5 = fecha inválida | -6 = hora inválida
+    //          -7 = instructor no trabaja ese día | -8 = hora fuera de horario
+    //          -9 = conflicto de horario
+    public int programarCitaAdminYRetornarId(Cita cita) {
+        if (cita.getIdCliente() == null || cita.getIdCliente().trim().isEmpty()) {
+            System.err.println("✗ ID de cliente inválido.");
+            return -1;
+        }
+        if (cita.getIdInstructor() == null || cita.getIdInstructor().trim().isEmpty()) {
+            System.err.println("✗ ID de instructor inválido.");
+            return -2;
+        }
+        if (clienteDAO.buscarPorId(cita.getIdCliente()) == null) {
+            System.err.println("✗ No se encontró el cliente.");
+            return -3;
+        }
+        Instructor instructor = instructorDAO.buscarPorId(cita.getIdInstructor());
+        if (instructor == null) {
+            System.err.println("✗ No se encontró el instructor.");
+            return -4;
+        }
+        if (cita.getFecha() == null || !cita.getFecha().isAfter(LocalDate.now())) {
+            System.err.println("✗ La fecha debe ser posterior a hoy.");
+            return -5;
+        }
+        if (cita.getHora() == null) {
+            System.err.println("✗ La hora no puede estar vacía.");
+            return -6;
+        }
+        if (!diaDisponible(instructor.getDisponibilidad(), cita.getFecha().getDayOfWeek())) {
+            System.err.println("✗ El instructor no trabaja ese día. Disponibilidad: " + instructor.getDisponibilidad());
+            return -7;
+        }
+        if (!horaDisponible(instructor.getDisponibilidad(), cita.getHora())) {
+            System.err.println("✗ La hora está fuera del horario del instructor. Disponibilidad: " + instructor.getDisponibilidad());
+            return -8;
+        }
+
+        // Verificar conflicto de horario
+        List<Cita> citasInstructor = citaDAO.listarPorInstructor(cita.getIdInstructor());
+        for (Cita c : citasInstructor) {
+            if (c.getFecha().equals(cita.getFecha()) &&
+                    c.getHora().equals(cita.getHora()) &&
+                    c.getEstado().equals("PENDIENTE")) {
+                System.err.println("✗ El instructor ya tiene una cita en ese horario.");
+                return -9;
+            }
+        }
+
+        cita.setEstado("PENDIENTE");
+        int id = citaDAO.insertarYRetornarId(cita);
+        if (id > 0) System.out.println("✓ Cita admin programada exitosamente. ID: #" + id);
+        return id;
+    }
+
+    // ── VALIDACIONES PARA CLIENTE ─────────────────────────────────────────
     private boolean validarYProgramar(Cita cita) {
         if (cita.getIdCliente() == null || cita.getIdCliente().trim().isEmpty()) {
             System.err.println("✗ ID de cliente inválido.");
@@ -89,20 +147,14 @@ public class CitaService {
             System.err.println("✗ La hora no puede estar vacía.");
             return false;
         }
-
-        // ✅ Validar que el día esté en la disponibilidad del instructor
         if (!diaDisponible(instructor.getDisponibilidad(), cita.getFecha().getDayOfWeek())) {
             System.err.println("✗ El instructor no trabaja ese día. Disponibilidad: " + instructor.getDisponibilidad());
             return false;
         }
-
-        // ✅ Validar que la hora esté dentro del rango del instructor
         if (!horaDisponible(instructor.getDisponibilidad(), cita.getHora())) {
             System.err.println("✗ La hora está fuera del horario del instructor. Disponibilidad: " + instructor.getDisponibilidad());
             return false;
         }
-
-        // Verificar conflicto de horario
         List<Cita> citasInstructor = citaDAO.listarPorInstructor(cita.getIdInstructor());
         for (Cita c : citasInstructor) {
             if (c.getFecha().equals(cita.getFecha()) &&
@@ -120,8 +172,6 @@ public class CitaService {
     private boolean diaDisponible(String disponibilidad, DayOfWeek dia) {
         if (disponibilidad == null) return true;
         String disp = disponibilidad.toLowerCase();
-
-        // Mapear día de la semana a texto en español
         String nombreDia = switch (dia) {
             case MONDAY    -> "lunes";
             case TUESDAY   -> "martes";
@@ -131,13 +181,10 @@ public class CitaService {
             case SATURDAY  -> "sabado";
             case SUNDAY    -> "domingo";
         };
-
-        // Manejar rangos: "lunes a viernes", "lunes a sabado"
         if (disp.contains(" a ")) {
             String[] partes = disp.split(" a ");
             if (partes.length >= 2) {
                 String diaInicio = partes[0].trim().replaceAll("[^a-z]", "");
-                // Extraer solo el primer día de la parte después de "a"
                 String diaFin = partes[1].trim().split("[\\s,]")[0].replaceAll("[^a-z]", "");
                 int inicio = diaANumero(diaInicio);
                 int fin = diaANumero(diaFin);
@@ -147,21 +194,19 @@ public class CitaService {
                 }
             }
         }
-
-        // Manejar días específicos: "martes, jueves y sabado"
         return disp.contains(nombreDia);
     }
 
     private int diaANumero(String dia) {
         return switch (dia.trim()) {
-            case "lunes"      -> 1;
-            case "martes"     -> 2;
-            case "miercoles"  -> 3;
-            case "jueves"     -> 4;
-            case "viernes"    -> 5;
-            case "sabado"     -> 6;
-            case "domingo"    -> 7;
-            default           -> -1;
+            case "lunes"     -> 1;
+            case "martes"    -> 2;
+            case "miercoles" -> 3;
+            case "jueves"    -> 4;
+            case "viernes"   -> 5;
+            case "sabado"    -> 6;
+            case "domingo"   -> 7;
+            default          -> -1;
         };
     }
 
@@ -169,27 +214,20 @@ public class CitaService {
     private boolean horaDisponible(String disponibilidad, LocalTime hora) {
         if (disponibilidad == null) return true;
         String disp = disponibilidad.toLowerCase();
-
-        // Buscar patrón de hora: "6am-2pm", "8am-12pm", "2pm-10pm"
         java.util.regex.Pattern rangoPattern = java.util.regex.Pattern.compile(
-            "(\\d{1,2})(am|pm)-(\\d{1,2})(am|pm)");
+                "(\\d{1,2})(am|pm)-(\\d{1,2})(am|pm)");
         java.util.regex.Matcher m = rangoPattern.matcher(disp);
-
         if (m.find()) {
             int hInicio = Integer.parseInt(m.group(1));
             String ampmInicio = m.group(2);
             int hFin = Integer.parseInt(m.group(3));
             String ampmFin = m.group(4);
-
-            // Convertir a formato 24h
             if (ampmInicio.equals("pm") && hInicio != 12) hInicio += 12;
             if (ampmInicio.equals("am") && hInicio == 12) hInicio = 0;
             if (ampmFin.equals("pm") && hFin != 12) hFin += 12;
             if (ampmFin.equals("am") && hFin == 12) hFin = 0;
-
             LocalTime horaInicio = LocalTime.of(hInicio, 0);
             LocalTime horaFin = LocalTime.of(hFin, 0);
-
             return !hora.isBefore(horaInicio) && hora.isBefore(horaFin);
         }
         return true;

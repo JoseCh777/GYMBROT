@@ -1,13 +1,7 @@
 package org.gymbrot.service;
 
-import org.gymbrot.dao.SesionGymbrotDAO;
-import org.gymbrot.dao.InstructorDAO;
-import org.gymbrot.dao.MensajeGymbrotDAO;
-import org.gymbrot.dao.CitaDAO;
-import org.gymbrot.model.SesionGymbrot;
-import org.gymbrot.model.Cita;
-import org.gymbrot.model.Instructor;
-import org.gymbrot.model.MensajeGymbrot;
+import org.gymbrot.dao.*;
+import org.gymbrot.model.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,33 +12,36 @@ import java.util.stream.Collectors;
 
 public class ChatbotService {
 
-    private final SesionGymbrotDAO sesionDAO = new SesionGymbrotDAO();
-    private final MensajeGymbrotDAO mensajeDAO = new MensajeGymbrotDAO();
-    private final GroqService groqService = new GroqService();
-    private final NotificacionService notificacionService = new NotificacionService();
-    private final EmailService emailService = new EmailService();
-    private final SmsService smsService = new SmsService();
+    private final SesionGymbrotDAO       sesionDAO       = new SesionGymbrotDAO();
+    private final MensajeGymbrotDAO      mensajeDAO      = new MensajeGymbrotDAO();
+    private final GroqService            groqService     = new GroqService();
+    private final NotificacionService    notifService    = new NotificacionService();
+    private final EmailService           emailService    = new EmailService();
     private final ConsultaGymbrotService consultaService = new ConsultaGymbrotService();
-    private final CitaService citaService = new CitaService();
-    private final CitaDAO citaDAO = new CitaDAO();
-    private final InstructorDAO instructorDAO = new InstructorDAO();
+    private final CitaService            citaService     = new CitaService();
+    private final CitaDAO                citaDAO         = new CitaDAO();
+    private final InstructorDAO          instructorDAO   = new InstructorDAO();
+    private final ClienteDAO             clienteDAO      = new ClienteDAO();
+    private final UsuarioDAO             usuarioDAO      = new UsuarioDAO();
+    private final MembresiaDAO           membresiaDAO    = new MembresiaDAO();
+    private final HistorialMembresiaDAO  historialDAO    = new HistorialMembresiaDAO();
+    private final RegistroIngresoDAO     ingresoDAO      = new RegistroIngresoDAO();
 
     // ── INICIAR SESION ────────────────────────────────────────────────────
-    public SesionGymbrot iniciarSesion(String idCliente) {
+    public SesionGymbrot iniciarSesion(String idAdmin) {
         SesionGymbrot sesion = new SesionGymbrot();
-        sesion.setIdCliente(idCliente);
+        sesion.setIdCliente(idAdmin);
         sesion.setFecha(LocalDate.now());
         sesion.setHoraInicio(LocalDateTime.now());
-        sesion.setContextoActivo("inicio");
+        sesion.setContextoActivo("admin");
         int idSesion = sesionDAO.crearSesion(sesion);
         sesion.setIdSesion(idSesion);
         return sesion;
     }
 
     // ── PROCESAR MENSAJE ──────────────────────────────────────────────────
-    public String procesarMensaje(int idSesion, String texto, String idCliente) {
+    public String procesarMensaje(int idSesion, String texto, String idAdmin) {
 
-        // 1. Guardar mensaje del usuario
         MensajeGymbrot msgUsuario = new MensajeGymbrot();
         msgUsuario.setIdSesion(idSesion);
         msgUsuario.setRemitente("CLIENTE");
@@ -53,211 +50,275 @@ public class ChatbotService {
         mensajeDAO.insertar(msgUsuario);
 
         List<MensajeGymbrot> historial = mensajeDAO.listarPorSesion(idSesion);
-        String textoLower = texto.toLowerCase();
+        String textoLower  = texto.toLowerCase();
         String contextoExtra = "";
-        boolean correosYaEnviados = false;
 
-        // ── DETECTAR CONSULTA DE CITAS PENDIENTES ─────────────────────────
-        if ((textoLower.contains("mis citas") || textoLower.contains("qué citas")
-                || textoLower.contains("que citas") || textoLower.contains("citas tengo")
-                || textoLower.contains("citas pendientes") || textoLower.contains("ver citas")
-                || textoLower.contains("mostrar citas") || textoLower.contains("listar citas"))
-                && !textoLower.contains("agendar") && !textoLower.contains("cancelar")) {
+        // ── CREAR CLIENTE ─────────────────────────────────────────────────
+        if ((textoLower.contains("crear cliente") || textoLower.contains("registrar cliente")
+                || textoLower.contains("nuevo cliente") || textoLower.contains("agregar cliente"))) {
 
-            List<Cita> citasPendientes = citaDAO.listarPorCliente(idCliente)
-                .stream()
-                .filter(c -> c.getEstado().equals("PENDIENTE"))
-                .collect(Collectors.toList());
+            contextoExtra = procesarCrearCliente(texto, historial);
 
-            if (!citasPendientes.isEmpty()) {
-                DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                DateTimeFormatter fmtHora  = DateTimeFormatter.ofPattern("HH:mm");
-                StringBuilder listaCitas = new StringBuilder();
-                for (Cita c : citasPendientes) {
-                    String nombreInstructor = obtenerNombreInstructor(c.getIdInstructor());
-                    listaCitas.append(String.format("Cita #%d — Instructor: %s | Fecha: %s | Hora: %s\n",
-                        c.getIdCita(), nombreInstructor,
-                        c.getFecha().format(fmtFecha), c.getHora().format(fmtHora)));
-                }
-                contextoExtra = " [SISTEMA: El cliente tiene las siguientes citas PENDIENTES:\n" +
-                    listaCitas.toString() +
-                    "Muéstraselas de forma clara y amable. Recuérdale que puede cancelar o reagendar " +
-                    "cualquier cita indicando su número de ID.]";
+            // ── CONSULTAR CLIENTE ─────────────────────────────────────────────
+        } else if ((textoLower.contains("consultar cliente") || textoLower.contains("buscar cliente")
+                || textoLower.contains("información del cliente") || textoLower.contains("info del cliente")
+                || textoLower.contains("ver cliente") || textoLower.contains("datos del cliente"))
+                && extraerIdCliente(texto) != null) {
+
+            String idCliente = extraerIdCliente(texto);
+            Cliente c = clienteDAO.buscarPorId(idCliente);
+            if (c != null) {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                StringBuilder info = new StringBuilder();
+                info.append(String.format("Nombre: %s %s\n", c.getNombre(), c.getApellidos()));
+                info.append(String.format("ID: %s\n", c.getNumeroIdentificacion()));
+                info.append(String.format("Correo: %s\n", c.getCorreo()));
+                info.append(String.format("Teléfono: %s\n", c.getTelefono()));
+                info.append(String.format("Estado: %s\n", c.getEstado()));
+                info.append(String.format("Dirección: %s\n", c.getDireccion()));
+                if (c.getFechaNacimiento() != null)
+                    info.append(String.format("Fecha nacimiento: %s\n", c.getFechaNacimiento().format(fmt)));
+
+                // Membresía activa
+                List<Membresia> activas = membresiaDAO.listarPorEstado("ACTIVA");
+                activas.stream()
+                        .filter(m -> {
+                            HistorialMembresia h = historialDAO.buscarPorMembresia(m.getIdMembresia());
+                            return h != null && idCliente.equals(h.getIdCliente());
+                        })
+                        .findFirst()
+                        .ifPresentOrElse(
+                                m -> info.append(String.format("Membresía activa: %s | Vence: %s\n",
+                                        m.getTipoMembresia(), m.getFechaVencimiento().format(fmt))),
+                                () -> info.append("Sin membresía activa.\n"));
+
+                // Últimas citas
+                List<Cita> citas = citaDAO.listarPorCliente(idCliente);
+                info.append(String.format("Citas registradas: %d\n", citas.size()));
+                citas.stream().limit(3).forEach(cita ->
+                        info.append(String.format("  * Cita #%d | %s | Instructor: %s | %s\n",
+                                cita.getIdCita(), cita.getFecha().format(fmt),
+                                cita.getIdInstructor(), cita.getEstado())));
+
+                // Ingresos del mes
+                List<RegistroIngreso> ingresos = ingresoDAO.listarPorCliente(idCliente);
+                long ingresosMes = ingresos.stream()
+                        .filter(r -> r.getFecha().getMonth() == LocalDate.now().getMonth()
+                                && r.getFecha().getYear() == LocalDate.now().getYear())
+                        .count();
+                info.append(String.format("Ingresos este mes: %d\n", ingresosMes));
+
+                contextoExtra = " [SISTEMA: Información completa del cliente:\n" + info +
+                        "Muéstrasela al administrador de forma organizada y clara.]";
             } else {
-                contextoExtra = " [SISTEMA: El cliente no tiene citas pendientes en este momento. " +
-                    "Infórmale amablemente y ofrécele agendar una nueva cita.]";
+                contextoExtra = " [SISTEMA: No existe ningún cliente con ID " + idCliente +
+                        ". Informa al administrador.]";
             }
 
-        // ── DETECTAR REAGENDAMIENTO ────────────────────────────────────────
-        } else if (textoLower.contains("reagendar") || textoLower.contains("cambiar")
-                || textoLower.contains("mover") || textoLower.contains("reprogramar")) {
+            // ── ACTIVAR / DESACTIVAR CLIENTE ──────────────────────────────────
+        } else if ((textoLower.contains("activar") || textoLower.contains("desactivar")
+                || textoLower.contains("suspender") || textoLower.contains("inactivar"))
+                && textoLower.contains("cliente")) {
 
-            int idCitaVieja = extraerIdCita(texto);
-            if (idCitaVieja > 0) {
-                boolean cancelada = citaService.cancelarCita(idCitaVieja);
-                if (cancelada) {
-                    int idCitaNueva = agendarCitaDesdeChat(texto, idCliente, historial);
-                    if (idCitaNueva > 0) {
-                        Cita citaNueva = citaDAO.buscarPorId(idCitaNueva);
-                        String nombreInstructor = obtenerNombreInstructor(citaNueva.getIdInstructor());
-                        notificacionService.enviarSmsDirecto(
-                            "GYMBROT: Tu cita #" + idCitaVieja + " fue cancelada y reagendada con ID #" + idCitaNueva + ". ¡Te esperamos!"
-                        );
-                        List<String> correosHistorial = extraerCorreosDeHistorial(historial);
-                        for (String correo : correosHistorial) {
-                            emailService.enviarCorreo(correo, "Cita reagendada - GYMBROT",
-                                "<h2>¡Cita reagendada exitosamente!</h2>" +
-                                "<p>Tu cita anterior <b>#" + idCitaVieja + "</b> fue cancelada.</p>" +
-                                "<p>Tu nueva cita ha sido registrada:</p>" +
-                                "<table style='border-collapse:collapse;'>" +
-                                "<tr><td><b>ID de cita:</b></td><td>#" + idCitaNueva + "</td></tr>" +
-                                "<tr><td><b>Instructor:</b></td><td>" + nombreInstructor + "</td></tr>" +
-                                "<tr><td><b>Fecha:</b></td><td>" + citaNueva.getFecha() + "</td></tr>" +
-                                "<tr><td><b>Hora:</b></td><td>" + citaNueva.getHora() + "</td></tr>" +
-                                "</table><br>" +
-                                "<p>Guarda el ID por si necesitas cancelar o reprogramar.</p>" +
-                                "<p>¡Te esperamos en GYMBROT!</p>");
-                            System.out.println("Confirmación de reagendamiento enviada a: " + correo);
-                        }
-                        correosYaEnviados = true;
-                        contextoExtra = " [SISTEMA: La cita #" + idCitaVieja + " fue cancelada y la nueva cita es #" + idCitaNueva + ". " +
-                            "Confirma ambos IDs al cliente.]";
+            String idCliente = extraerIdCliente(texto);
+            if (idCliente != null) {
+                Usuario usuario = usuarioDAO.buscarPorId(idCliente);
+                if (usuario != null) {
+                    String nuevoEstado = (textoLower.contains("activar")) ? "ACTIVO" : "INACTIVO";
+                    if (textoLower.contains("suspender")) nuevoEstado = "SUSPENDIDO";
+                    usuario.setEstado(nuevoEstado);
+                    boolean ok = usuarioDAO.actualizar(usuario);
+                    if (ok) {
+                        contextoExtra = " [SISTEMA: Cliente " + idCliente + " actualizado a estado " +
+                                nuevoEstado + " exitosamente. Confirma al administrador.]";
                     } else {
-                        contextoExtra = " [SISTEMA: La cita #" + idCitaVieja + " fue cancelada pero no se pudo agendar la nueva. " +
-                            "Pide al cliente instructor, día y hora para la nueva cita.]";
+                        contextoExtra = " [SISTEMA: No se pudo actualizar el estado del cliente " +
+                                idCliente + ". Informa al administrador.]";
                     }
                 } else {
-                    contextoExtra = " [SISTEMA: No se pudo cancelar la cita #" + idCitaVieja + ". Informa al cliente amablemente.]";
+                    contextoExtra = " [SISTEMA: No existe ningún usuario con ID " + idCliente + ".]";
                 }
             } else {
-                contextoExtra = " [SISTEMA: El cliente quiere reagendar pero no dio el ID. " +
-                    "Pídele el número de cita. Ejemplo: 'Quiero reagendar la cita #86 para el jueves a las 2pm']";
+                contextoExtra = " [SISTEMA: El administrador quiere cambiar el estado de un cliente " +
+                        "pero no indicó el ID. Pídele el número de identificación.]";
             }
 
-        // ── DETECTAR CANCELACION DE CITA ──────────────────────────────────
-        } else if (textoLower.contains("cancelar") || textoLower.contains("cancela")
-                || textoLower.contains("no puedo ir")) {
+            // ── CREAR CITA ────────────────────────────────────────────────────
+        } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
+                || textoLower.contains("agendar") || textoLower.contains("programa")
+                || textoLower.contains("registra"))
+                && textoLower.contains("cita")
+                && !textoLower.contains("cancelar") && !textoLower.contains("eliminar")
+                && !textoLower.contains("ver") && !textoLower.contains("listar")) {
+
+            String[] resultado = agendarCitaAdmin(texto, historial);
+            int idCitaCreada = Integer.parseInt(resultado[0]);
+            String mensajeError = resultado[1];
+
+            if (idCitaCreada > 0) {
+                Cita cita = citaDAO.buscarPorId(idCitaCreada);
+                String nombreInst = obtenerNombreInstructor(cita.getIdInstructor());
+                String fechaFmt   = cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                String horaFmt    = cita.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
+
+                notifService.enviarSmsDirecto(
+                        "GYMBROT: Cita #" + idCitaCreada + " creada.\n" +
+                                "Instructor: " + nombreInst + " | Fecha: " + fechaFmt + " | Hora: " + horaFmt);
+
+                Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
+                if (cliente != null && cliente.getCorreo() != null) {
+                    emailService.enviarCorreo(cliente.getCorreo(), "Cita agendada - GYMBROT",
+                            "<h2>¡Cita agendada!</h2>" +
+                                    "<table style='border-collapse:collapse;'>" +
+                                    "<tr><td><b>ID:</b></td><td>#" + idCitaCreada + "</td></tr>" +
+                                    "<tr><td><b>Instructor:</b></td><td>" + nombreInst + "</td></tr>" +
+                                    "<tr><td><b>Fecha:</b></td><td>" + fechaFmt + "</td></tr>" +
+                                    "<tr><td><b>Hora:</b></td><td>" + horaFmt + "</td></tr>" +
+                                    "</table><p>¡Te esperamos en GYMBROT!</p>");
+                }
+
+                contextoExtra = " [SISTEMA: Cita #" + idCitaCreada + " creada exitosamente. " +
+                        "Instructor: " + nombreInst + " | Fecha: " + fechaFmt + " | Hora: " + horaFmt + ". " +
+                        "SMS y correo enviados al cliente. Confirma todos los detalles al administrador.]";
+            } else {
+                contextoExtra = " [SISTEMA: No se pudo crear la cita. Motivo: " + mensajeError + ". " +
+                        "Informa al administrador con este motivo exacto y pídele que corrija los datos.]";
+            }
+
+            // ── CANCELAR CITA ─────────────────────────────────────────────────
+        } else if ((textoLower.contains("cancelar") || textoLower.contains("eliminar")
+                || textoLower.contains("borrar")) && textoLower.contains("cita")) {
 
             int idCita = extraerIdCita(texto);
             if (idCita > 0) {
-                boolean cancelada = citaService.cancelarCita(idCita);
-                if (cancelada) {
-                    notificacionService.enviarSmsDirecto(
-                        "GYMBROT: Tu cita #" + idCita + " ha sido cancelada exitosamente."
-                    );
-                    List<String> correosHistorial = extraerCorreosDeHistorial(historial);
-                    for (String correo : correosHistorial) {
-                        emailService.enviarCorreo(correo, "Cita cancelada - GYMBROT",
-                            "<h2>Cita cancelada</h2>" +
-                            "<p>Tu cita <b>#" + idCita + "</b> ha sido cancelada exitosamente.</p>" +
-                            "<p>Si deseas reagendar, escríbenos por el chat.</p>" +
-                            "<p>¡Te esperamos en GYMBROT!</p>");
-                        System.out.println("Confirmación de cancelación enviada a: " + correo);
+                Cita cita = citaDAO.buscarPorId(idCita);
+                if (cita != null) {
+                    boolean cancelada = citaService.cancelarCita(idCita);
+                    if (cancelada) {
+                        String nombreInst = obtenerNombreInstructor(cita.getIdInstructor());
+                        String fechaFmt   = cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        String horaFmt    = cita.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
+
+                        notifService.enviarSmsDirecto(
+                                "GYMBROT: Tu cita #" + idCita + " del " + fechaFmt +
+                                        " a las " + horaFmt + " con " + nombreInst + " fue cancelada.");
+
+                        Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
+                        if (cliente != null && cliente.getCorreo() != null) {
+                            emailService.enviarCorreo(cliente.getCorreo(), "Cita cancelada - GYMBROT",
+                                    "<h2>Cita cancelada</h2>" +
+                                            "<p>Tu cita <b>#" + idCita + "</b> con " + nombreInst +
+                                            " el " + fechaFmt + " a las " + horaFmt + " fue cancelada.</p>" +
+                                            "<p>Contáctanos para reagendar.</p>");
+                        }
+
+                        contextoExtra = " [SISTEMA: Cita #" + idCita + " cancelada exitosamente. " +
+                                "SMS y correo enviados al cliente. Confirma al administrador.]";
+                    } else {
+                        contextoExtra = " [SISTEMA: No se pudo cancelar la cita #" + idCita + ". " +
+                                "Puede que ya esté cancelada. Informa al administrador.]";
                     }
-                    correosYaEnviados = true;
-                    contextoExtra = " [SISTEMA: La cita #" + idCita + " fue cancelada exitosamente. " +
-                        "IMPORTANTE: Confirma al cliente que su cita #" + idCita + " fue cancelada con exito " +
-                        "y ofrécele reagendar si lo desea.]";
                 } else {
-                    contextoExtra = " [SISTEMA: No se pudo cancelar la cita #" + idCita + ". " +
-                        "Puede que ya esté cancelada o no exista. Informa al cliente amablemente.]";
+                    contextoExtra = " [SISTEMA: No existe la cita #" + idCita + ".]";
                 }
             } else {
-                contextoExtra = " [SISTEMA: El cliente quiere cancelar pero no dio el ID. " +
-                    "Pídele el número de cita. Ejemplo: 'Quiero cancelar la cita #5']";
+                contextoExtra = " [SISTEMA: El administrador quiere cancelar una cita pero no " +
+                        "especificó el ID. Pídele el número. Ejemplo: 'cancelar cita #12']";
             }
 
-        // ── DETECTAR INTENCION AGENDAR CITA ───────────────────────────────
-        } else if (textoLower.contains("agendar") || textoLower.contains("cita")
-                || textoLower.contains("reservar") || textoLower.contains("turno")
-                || textoLower.contains("agendame") || textoLower.contains("agenda")) {
+            // ── VER CITAS DEL DÍA ─────────────────────────────────────────────
+        } else if ((textoLower.contains("citas") || textoLower.contains("agenda"))
+                && (textoLower.contains("hoy") || textoLower.contains("pendientes")
+                || textoLower.contains("ver") || textoLower.contains("listar"))) {
 
-            int idCitaAgendada = agendarCitaDesdeChat(texto, idCliente, historial);
-
-            if (idCitaAgendada > 0) {
-                Cita citaAgendada = citaDAO.buscarPorId(idCitaAgendada);
-                String nombreInst = obtenerNombreInstructor(citaAgendada.getIdInstructor());
-                String fechaFmt = citaAgendada.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                String horaFmt = citaAgendada.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
-                notificacionService.enviarSmsDirecto(
-                    "GYMBROT ✓ Cita #" + idCitaAgendada + " agendada\n" +
-                    "Instructor: " + nombreInst + "\n" +
-                    "Fecha: " + fechaFmt + "\n" +
-                    "Hora: " + horaFmt + "\n" +
-                    "Para cancelar indica tu ID de cita en el chat."
-                );
-                List<String> correosTextoActual = extraerCorreos(texto);
-                List<String> correosHistorial = extraerCorreosDeHistorial(historial);
-                List<String> todosCorreos = new java.util.ArrayList<>(correosTextoActual);
-                for (String c : correosHistorial) {
-                    if (!todosCorreos.contains(c)) todosCorreos.add(c);
+            List<Cita> citasHoy = citaDAO.listarPorFecha(LocalDate.now());
+            if (!citasHoy.isEmpty()) {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
+                StringBuilder lista = new StringBuilder();
+                for (Cita c : citasHoy) {
+                    String nombreInst = obtenerNombreInstructor(c.getIdInstructor());
+                    lista.append(String.format(
+                            "Cita #%d | Cliente: %s | Instructor: %s | Hora: %s | Estado: %s\n",
+                            c.getIdCita(), c.getIdCliente(), nombreInst,
+                            c.getHora().format(fmt), c.getEstado()));
                 }
-                String contenidoCita = "<h2>¡Cita agendada exitosamente!</h2>" +
-                    "<p>Hola, tu cita en <b>GYMBROT Valledupar</b> ha sido registrada.</p>" +
-                    "<table style='border-collapse:collapse;'>" +
-                    "<tr><td><b>ID de cita:</b></td><td>#" + idCitaAgendada + "</td></tr>" +
-                    "<tr><td><b>Instructor:</b></td><td>" + nombreInst + "</td></tr>" +
-                    "<tr><td><b>Fecha:</b></td><td>" + fechaFmt + "</td></tr>" +
-                    "<tr><td><b>Hora:</b></td><td>" + horaFmt + "</td></tr>" +
-                    "</table><br>" +
-                    "<p>Guarda el ID por si necesitas cancelar o reprogramar.</p>" +
-                    "<p>¡Te esperamos en GYMBROT!</p>";
-                for (String correo : todosCorreos) {
-                    emailService.enviarCorreo(correo, "Cita agendada - GYMBROT", contenidoCita);
-                    System.out.println("Confirmación de cita enviada a: " + correo);
-                }
-                correosYaEnviados = true;
-                contextoExtra = " [SISTEMA: La cita fue agendada exitosamente con ID #" + idCitaAgendada + ". " +
-                    "Confirma al cliente que su cita quedó registrada con ID #" + idCitaAgendada + ".]";
+                contextoExtra = " [SISTEMA: Citas de hoy:\n" + lista +
+                        "Muéstralas en formato claro al administrador.]";
             } else {
-                contextoExtra = " [SISTEMA: No se pudo agendar la cita automaticamente. " +
-                    "Disculpate con el cliente e indicale que un asesor se comunicara con el pronto.]";
+                contextoExtra = " [SISTEMA: No hay citas programadas para hoy.]";
             }
-        }
 
-        // ── DETECTAR CORREO EN EL MENSAJE (solo info general) ─────────────
-        if (!correosYaEnviados) {
-            List<String> correosDetectados = extraerCorreos(texto);
-            boolean pidioInfoGeneral = (textoLower.contains("envia") || textoLower.contains("envía")
-                    || textoLower.contains("manda") || textoLower.contains("información")
-                    || textoLower.contains("informacion") || textoLower.contains("planes")
-                    || textoLower.contains("detalles") || textoLower.contains("quiero saber"))
-                    && !textoLower.contains("cita")
-                    && !textoLower.contains("agend")
-                    && !textoLower.contains("reserv");
-            if (!correosDetectados.isEmpty() && pidioInfoGeneral) {
+            // ── MEMBRESÍAS POR VENCER / VENCIDAS ─────────────────────────────
+        } else if (textoLower.contains("membres") || textoLower.contains("venc")
+                || textoLower.contains("renovar")) {
 
+            LocalDate hoy = LocalDate.now();
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            List<Membresia> vencidas = membresiaDAO.listarVencidas();
+            List<Membresia> activas  = membresiaDAO.listarPorEstado("ACTIVA");
+            List<Membresia> porVencer = activas.stream()
+                    .filter(m -> !m.getFechaVencimiento().isAfter(hoy.plusDays(7)))
+                    .collect(Collectors.toList());
 
-                String planesContexto = consultaService.buscarInfoRelevante("planes membresia precio");
-                String contenidoCorreo = "<h2>¡Bienvenido a GYMBROT Valledupar!</h2>" +
-                        "<p>Aquí está la información actualizada de nuestro gimnasio:</p>" +
-                        "<pre style='font-family:Arial;'>" +
-                        planesContexto +
-                        "</pre>" +
-                        "<p>Para consultar disponibilidad de instructores, escríbenos por el chat.</p>" +
-                        "<p>¡Te esperamos en GYMBROT!</p>";
-                for (String correo : correosDetectados) {
-                    emailService.enviarCorreo(correo, "Información GYMBROT", contenidoCorreo);
-                    System.out.println("Correo enviado a: " + correo);
+            StringBuilder lista = new StringBuilder();
+            if (!vencidas.isEmpty()) {
+                lista.append(String.format("VENCIDAS (%d):\n", vencidas.size()));
+                for (Membresia m : vencidas) {
+                    HistorialMembresia h = historialDAO.buscarPorMembresia(m.getIdMembresia());
+                    String idCliente = h != null ? h.getIdCliente() : "N/A";
+                    lista.append(String.format("- #%d | Cliente: %s | Tipo: %s | Venció: %s\n",
+                            m.getIdMembresia(), idCliente, m.getTipoMembresia(),
+                            m.getFechaVencimiento().format(fmt)));
                 }
             }
+            if (!porVencer.isEmpty()) {
+                lista.append("POR VENCER (próximos 7 días):\n");
+                for (Membresia m : porVencer) {
+                    HistorialMembresia h = historialDAO.buscarPorMembresia(m.getIdMembresia());
+                    String idCliente = h != null ? h.getIdCliente() : "N/A";
+                    long dias = java.time.temporal.ChronoUnit.DAYS.between(hoy, m.getFechaVencimiento());
+                    lista.append(String.format("- #%d | Cliente: %s | Tipo: %s | Vence: %s | En %d días\n",
+                            m.getIdMembresia(), idCliente, m.getTipoMembresia(),
+                            m.getFechaVencimiento().format(fmt), dias));
+                    if (dias == 7 || dias == 3 || dias == 1) {
+                        Cliente cliente = clienteDAO.buscarPorId(idCliente);
+                        if (cliente != null) {
+                            notifService.enviarSmsDirecto("GYMBROT: Tu membresía " +
+                                    m.getTipoMembresia() + " vence el " +
+                                    m.getFechaVencimiento().format(fmt) + ". Renuévala pronto.");
+                            if (cliente.getCorreo() != null) {
+                                emailService.enviarCorreo(cliente.getCorreo(),
+                                        "Tu membresía vence pronto - GYMBROT",
+                                        "<h2>Recordatorio</h2><p>Hola <b>" + cliente.getNombre() +
+                                                "</b>, tu membresía <b>" + m.getTipoMembresia() +
+                                                "</b> vence el <b>" + m.getFechaVencimiento().format(fmt) +
+                                                "</b> (en " + dias + " días).</p>");
+                            }
+                        }
+                    }
+                }
+            }
+            if (vencidas.isEmpty() && porVencer.isEmpty())
+                lista.append("No hay membresías vencidas ni por vencer en los próximos 7 días.\n");
+
+            contextoExtra = " [SISTEMA: " + lista + "Muéstraselas al administrador de forma organizada.]";
+
+            // ── ESTADÍSTICAS ──────────────────────────────────────────────────
+        } else if (textoLower.contains("estadística") || textoLower.contains("estadistica")
+                || textoLower.contains("resumen") || textoLower.contains("reporte")
+                || textoLower.contains("cuantos") || textoLower.contains("total")) {
+
+            String stats = consultaService.buscarInfoRelevante(texto);
+            if (!stats.isEmpty()) {
+                contextoExtra = " [SISTEMA: " + stats +
+                        "Presenta estas estadísticas de forma clara al administrador.]";
+            }
         }
 
-        // ── DETECTAR NUMERO DE TELEFONO ───────────────────────────────────
-        String telefonoDetectado = extraerTelefono(texto);
-        if (telefonoDetectado != null) {
-            String contexto = consultaService.buscarInfoRelevante(texto);
-            String mensajeSms = contexto.isEmpty() ?
-                "GYMBROT: Plan Básico $80k | Premium $120k | Elite $200k/mes. ¡Visítanos!" :
-                "GYMBROT: " + contexto.substring(0, Math.min(contexto.length(), 130));
-            smsService.enviarSms("+57" + telefonoDetectado, mensajeSms);
-            System.out.println("SMS enviado a: +57" + telefonoDetectado);
-        }
-
-        // 2. Llamar a Groq DESPUÉS de procesar todo
+        // 2. Llamar a Groq
         String respuesta = groqService.enviarMensaje(texto + contextoExtra, historial);
 
-        // 3. Guardar respuesta del bot
+        // 3. Guardar respuesta
         MensajeGymbrot msgBot = new MensajeGymbrot();
         msgBot.setIdSesion(idSesion);
         msgBot.setRemitente("BOT");
@@ -268,68 +329,247 @@ public class ChatbotService {
         return respuesta;
     }
 
-    // ── OBTENER NOMBRE DEL INSTRUCTOR ─────────────────────────────────────
-    private String obtenerNombreInstructor(String idInstructor) {
-        for (Instructor inst : instructorDAO.listarTodos()) {
-            if (inst.getNumeroIdentificacion().equals(idInstructor)) {
-                return inst.getNombre();
-            }
+    // ── PROCESAR CREAR CLIENTE ────────────────────────────────────────────
+    private String procesarCrearCliente(String texto, List<MensajeGymbrot> historial) {
+        // Extraer datos del mensaje y del historial
+        String nombre     = extraerDato(texto, historial, "nombre");
+        String apellidos  = extraerDato(texto, historial, "apellidos");
+        String id         = extraerIdCliente(texto);
+        String correo     = extraerCorreo(texto, historial);
+        String telefono   = extraerTelefono(texto, historial);
+        String direccion  = extraerDato(texto, historial, "direccion");
+
+        // Validar datos mínimos
+        if (nombre == null || id == null || correo == null) {
+            StringBuilder faltantes = new StringBuilder("Faltan datos para crear el cliente: ");
+            if (nombre == null)   faltantes.append("nombre, ");
+            if (id == null)       faltantes.append("número de identificación, ");
+            if (correo == null)   faltantes.append("correo, ");
+            return " [SISTEMA: " + faltantes.toString().replaceAll(", $", "") +
+                    ". Pídele al administrador que los proporcione.]";
         }
-        return idInstructor;
+
+        // Verificar duplicado
+        if (usuarioDAO.buscarPorId(id) != null) {
+            return " [SISTEMA: Ya existe un usuario con ID " + id +
+                    ". No se puede crear duplicado. Informa al administrador.]";
+        }
+
+        // Crear usuario
+        Usuario usuario = new Usuario();
+        usuario.setNumeroIdentificacion(id);
+        usuario.setTipoIdentificacion("CC");
+        usuario.setNombre(nombre);
+        usuario.setApellidos(apellidos != null ? apellidos : "");
+        usuario.setTelefono(telefono != null ? telefono : "");
+        usuario.setCorreo(correo);
+        usuario.setContrasenaHash(id); // contraseña temporal = ID
+        usuario.setEstado("ACTIVO");
+        usuario.setFechaRegistro(LocalDate.now());
+        usuario.setTipoUsuario("CLIENTE");
+
+        boolean usuarioCreado = usuarioDAO.insertar(usuario);
+        if (!usuarioCreado) {
+            return " [SISTEMA: Error al crear el usuario en la base de datos. Informa al administrador.]";
+        }
+
+        // Crear cliente
+        Cliente cliente = new Cliente();
+        cliente.setNumeroIdentificacion(id);
+        cliente.setDireccion(direccion != null ? direccion : "");
+        cliente.setFechaNacimiento(LocalDate.of(2000, 1, 1)); // fecha por defecto
+
+        boolean clienteCreado = clienteDAO.insertar(cliente);
+        if (!clienteCreado) {
+            return " [SISTEMA: Error al crear el cliente en la base de datos. Informa al administrador.]";
+        }
+
+        // SMS y correo de bienvenida
+        notifService.enviarSmsDirecto(
+                "¡Bienvenido a GYMBROT, " + nombre + "! Tu cuenta ha sido creada exitosamente. " +
+                        "Tu contraseña temporal es tu número de identificación.");
+        emailService.enviarCorreo(correo, "Bienvenido a GYMBROT",
+                "<h2>¡Bienvenido a GYMBROT Valledupar!</h2>" +
+                        "<p>Hola <b>" + nombre + "</b>, tu cuenta ha sido creada exitosamente.</p>" +
+                        "<p>Tu contraseña temporal es tu número de identificación: <b>" + id + "</b></p>" +
+                        "<p>Te recomendamos cambiarla al ingresar por primera vez.</p>" +
+                        "<p>¡Te esperamos en GYMBROT!</p>");
+
+        return " [SISTEMA: Cliente " + nombre + " (ID: " + id + ") creado exitosamente. " +
+                "SMS y correo de bienvenida enviados a " + correo + ". " +
+                "Contraseña temporal: número de identificación. Confirma al administrador.]";
     }
 
-    // ── EXTRAER TODOS LOS CORREOS DEL TEXTO ──────────────────────────────
-    private List<String> extraerCorreos(String texto) {
-        List<String> correos = new java.util.ArrayList<>();
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-            "(?<![\\w.])([a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})");
-        java.util.regex.Matcher matcher = pattern.matcher(texto);
-        while (matcher.find()) correos.add(matcher.group(1));
-        return correos;
-    }
-
-    // ── EXTRAER TODOS LOS CORREOS DEL HISTORIAL ───────────────────────────
-    private List<String> extraerCorreosDeHistorial(List<MensajeGymbrot> historial) {
-        List<String> correosEncontrados = new java.util.ArrayList<>();
-        if (historial == null) return correosEncontrados;
-        for (MensajeGymbrot msg : historial) {
-            if (msg.getRemitente().equals("CLIENTE")) {
-                List<String> correos = extraerCorreos(msg.getContenido());
-                for (String correo : correos) {
-                    if (!correosEncontrados.contains(correo)) {
-                        correosEncontrados.add(correo);
-                    }
+    // ── EXTRAER DATO GENÉRICO DEL TEXTO O HISTORIAL ───────────────────────
+    private String extraerDato(String texto, List<MensajeGymbrot> historial, String campo) {
+        String valor = extraerDatoDeTexto(texto, campo);
+        if (valor != null) return valor;
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                MensajeGymbrot msg = historial.get(i);
+                if (msg.getRemitente().equals("CLIENTE")) {
+                    valor = extraerDatoDeTexto(msg.getContenido(), campo);
+                    if (valor != null) return valor;
                 }
             }
         }
-        return correosEncontrados;
-    }
-
-    // ── EXTRAER TELEFONO DEL TEXTO ────────────────────────────────────────
-    private String extraerTelefono(String texto) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-            "\\b3[0-9]{9}\\b");
-        java.util.regex.Matcher matcher = pattern.matcher(texto);
-        if (matcher.find()) return matcher.group();
         return null;
     }
 
-    // ── EXTRAER ID DE CITA DEL TEXTO ─────────────────────────────────────
-    private int extraerIdCita(String texto) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-            "#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)|pedro\\s+(\\d+)|laura\\s+(\\d+)|diego\\s+(\\d+)");
-        java.util.regex.Matcher matcher = pattern.matcher(texto.toLowerCase());
-        if (matcher.find()) {
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                if (matcher.group(i) != null) {
-                    return Integer.parseInt(matcher.group(i));
+    private String extraerDatoDeTexto(String texto, String campo) {
+        String t = texto.toLowerCase();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                campo + "[:\\s]+([\\w\\s]+?)(?:,|\\.|$)", java.util.regex.Pattern.CASE_INSENSITIVE);
+        java.util.regex.Matcher m = p.matcher(t);
+        if (m.find()) return m.group(1).trim();
+        return null;
+    }
+
+    // ── EXTRAER CORREO ────────────────────────────────────────────────────
+    private String extraerCorreo(String texto, List<MensajeGymbrot> historial) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+        java.util.regex.Matcher m = p.matcher(texto);
+        if (m.find()) return m.group();
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                java.util.regex.Matcher mh = p.matcher(historial.get(i).getContenido());
+                if (mh.find()) return mh.group();
+            }
+        }
+        return null;
+    }
+
+    // ── EXTRAER TELÉFONO ──────────────────────────────────────────────────
+    private String extraerTelefono(String texto, List<MensajeGymbrot> historial) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\b3[0-9]{9}\\b");
+        java.util.regex.Matcher m = p.matcher(texto);
+        if (m.find()) return m.group();
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                java.util.regex.Matcher mh = p.matcher(historial.get(i).getContenido());
+                if (mh.find()) return mh.group();
+            }
+        }
+        return null;
+    }
+
+    // ── AGENDAR CITA DESDE ADMIN ──────────────────────────────────────────
+    private String[] agendarCitaAdmin(String texto, List<MensajeGymbrot> historial) {
+        try {
+            List<Instructor> instructores = instructorDAO.listarTodos();
+
+            String idInstructor = null;
+            String disponibilidad = "";
+            for (Instructor i : instructores) {
+                if (texto.toLowerCase().contains(i.getNombre().toLowerCase())) {
+                    idInstructor = i.getNumeroIdentificacion();
+                    disponibilidad = i.getDisponibilidad();
+                    System.out.println("Instructor encontrado: " + i.getNombre() + " | ID: " + idInstructor);
+                    break;
                 }
+            }
+            if (idInstructor == null && historial != null) {
+                for (int i = historial.size() - 1; i >= 0; i--) {
+                    MensajeGymbrot msg = historial.get(i);
+                    if (msg.getRemitente().equals("CLIENTE")) {
+                        for (Instructor inst : instructores) {
+                            if (msg.getContenido().toLowerCase().contains(inst.getNombre().toLowerCase())) {
+                                idInstructor = inst.getNumeroIdentificacion();
+                                disponibilidad = inst.getDisponibilidad();
+                                break;
+                            }
+                        }
+                    }
+                    if (idInstructor != null) break;
+                }
+            }
+            if (idInstructor == null)
+                return new String[]{"-1", "No se encontró el instructor. Indica el nombre del instructor."};
+
+            String idCliente = extraerIdCliente(texto);
+            if (idCliente == null && historial != null) {
+                for (int i = historial.size() - 1; i >= 0; i--) {
+                    MensajeGymbrot msg = historial.get(i);
+                    if (msg.getRemitente().equals("CLIENTE")) {
+                        idCliente = extraerIdCliente(msg.getContenido());
+                        if (idCliente != null) break;
+                    }
+                }
+            }
+            if (idCliente == null)
+                return new String[]{"-1", "No se encontró el ID del cliente. Indica el número de identificación."};
+
+            Cliente cliente = clienteDAO.buscarPorId(idCliente);
+            if (cliente == null)
+                return new String[]{"-1", "El cliente con ID " + idCliente + " no existe en la base de datos."};
+
+            LocalDate fecha = extraerFecha(texto, historial);
+            if (fecha == null)
+                return new String[]{"-1", "No se encontró la fecha. Indica el día (ejemplo: lunes, martes)."};
+
+            LocalTime hora = extraerHora(texto, historial);
+            if (hora == null)
+                return new String[]{"-1", "No se encontró la hora. Indica la hora (ejemplo: 10am, 2pm)."};
+
+            Cita cita = new Cita();
+            cita.setIdCliente(idCliente);
+            cita.setIdInstructor(idInstructor);
+            cita.setFecha(fecha);
+            cita.setHora(hora);
+            cita.setTipoCita("CONSULTA");
+            cita.setNotas("Cita creada por administrador desde GYMBROT AI");
+
+            int idCita = citaService.programarCitaAdminYRetornarId(cita);
+
+            if (idCita > 0) return new String[]{String.valueOf(idCita), ""};
+            else if (idCita == -7) return new String[]{"-1",
+                    "El instructor no trabaja ese día. Su disponibilidad es: " + disponibilidad + ". Indica un día válido."};
+            else if (idCita == -8) return new String[]{"-1",
+                    "La hora está fuera del horario del instructor. Su disponibilidad es: " + disponibilidad + ". Indica una hora válida."};
+            else if (idCita == -9) return new String[]{"-1",
+                    "El instructor ya tiene una cita en ese horario. Indica otra hora."};
+            else return new String[]{"-1", "No se pudo crear la cita. Verifica los datos."};
+
+        } catch (Exception e) {
+            System.err.println("ADMIN CITA EXCEPTION: " + e.getMessage());
+            return new String[]{"-1", "Error interno: " + e.getMessage()};
+        }
+    }
+
+    // ── EXTRAER ID CLIENTE ────────────────────────────────────────────────
+    private String extraerIdCliente(String texto) {
+        java.util.regex.Pattern p1 = java.util.regex.Pattern.compile("cliente\\s+(\\d{4,12})");
+        java.util.regex.Matcher m1 = p1.matcher(texto.toLowerCase());
+        if (m1.find()) return m1.group(1);
+        java.util.regex.Pattern p2 = java.util.regex.Pattern.compile("\\b(\\d{6,12})\\b");
+        java.util.regex.Matcher m2 = p2.matcher(texto);
+        if (m2.find()) return m2.group(1);
+        return null;
+    }
+
+    // ── EXTRAER ID DE CITA ────────────────────────────────────────────────
+    private int extraerIdCita(String texto) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
+        java.util.regex.Matcher m = p.matcher(texto.toLowerCase());
+        if (m.find()) {
+            for (int i = 1; i <= m.groupCount(); i++) {
+                if (m.group(i) != null) return Integer.parseInt(m.group(i));
             }
         }
         return -1;
     }
 
-    // ── EXTRAER HORA DEL TEXTO O HISTORIAL ───────────────────────────────
+    // ── OBTENER NOMBRE DEL INSTRUCTOR ─────────────────────────────────────
+    private String obtenerNombreInstructor(String idInstructor) {
+        for (Instructor inst : instructorDAO.listarTodos()) {
+            if (inst.getNumeroIdentificacion().equals(idInstructor)) return inst.getNombre();
+        }
+        return idInstructor;
+    }
+
+    // ── EXTRAER HORA ──────────────────────────────────────────────────────
     private LocalTime extraerHora(String texto, List<MensajeGymbrot> historial) {
         LocalTime hora = extraerHoraDeTexto(texto);
         if (hora != null) return hora;
@@ -346,35 +586,26 @@ public class ChatbotService {
     }
 
     private LocalTime extraerHoraDeTexto(String texto) {
-        String textoLower = texto.toLowerCase();
-
-        //  Detecta: 10am, 10 am, 10:00, 10:00am, 10:00 am
-        java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile(
-            "(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
-        java.util.regex.Matcher horaMatcher = horaPattern.matcher(textoLower);
-        if (horaMatcher.find()) {
-            int h = Integer.parseInt(horaMatcher.group(1));
-            String ampm = horaMatcher.group(3);
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                "(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
+        java.util.regex.Matcher m = p.matcher(texto.toLowerCase());
+        if (m.find()) {
+            int h = Integer.parseInt(m.group(1));
+            String ampm = m.group(3);
             if (ampm.equals("pm") && h != 12) h += 12;
             if (ampm.equals("am") && h == 12) h = 0;
-            int min = horaMatcher.group(2) != null ? Integer.parseInt(horaMatcher.group(2)) : 0;
+            int min = m.group(2) != null ? Integer.parseInt(m.group(2)) : 0;
             return LocalTime.of(h, min);
         }
-
-        // Detecta formato 24h: 15:00, 08:30
-        java.util.regex.Pattern hora24Pattern = java.util.regex.Pattern.compile(
-            "\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
-        java.util.regex.Matcher hora24Matcher = hora24Pattern.matcher(textoLower);
-        if (hora24Matcher.find()) {
-            int h = Integer.parseInt(hora24Matcher.group(1));
-            int min = Integer.parseInt(hora24Matcher.group(2));
-            return LocalTime.of(h, min);
-        }
-
+        java.util.regex.Pattern p24 = java.util.regex.Pattern.compile(
+                "\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
+        java.util.regex.Matcher m24 = p24.matcher(texto.toLowerCase());
+        if (m24.find()) return LocalTime.of(
+                Integer.parseInt(m24.group(1)), Integer.parseInt(m24.group(2)));
         return null;
     }
 
-    // ── EXTRAER FECHA DEL TEXTO O HISTORIAL ──────────────────────────────
+    // ── EXTRAER FECHA ─────────────────────────────────────────────────────
     private LocalDate extraerFecha(String texto, List<MensajeGymbrot> historial) {
         LocalDate fecha = extraerFechaDeTexto(texto);
         if (fecha != null) return fecha;
@@ -391,86 +622,23 @@ public class ChatbotService {
     }
 
     private LocalDate extraerFechaDeTexto(String texto) {
-        String textoLower = texto.toLowerCase();
+        String t = texto.toLowerCase();
         LocalDate hoy = LocalDate.now();
-        if (textoLower.contains("lunes"))
+        if (t.contains("hoy"))    return hoy;
+        if (t.contains("mañana") || t.contains("manana")) return hoy.plusDays(1);
+        if (t.contains("lunes"))
             return hoy.with(java.time.DayOfWeek.MONDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 1 ? 1 : 0);
-        if (textoLower.contains("martes"))
+        if (t.contains("martes"))
             return hoy.with(java.time.DayOfWeek.TUESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 2 ? 1 : 0);
-        if (textoLower.contains("miércoles") || textoLower.contains("miercoles"))
+        if (t.contains("miércoles") || t.contains("miercoles"))
             return hoy.with(java.time.DayOfWeek.WEDNESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 3 ? 1 : 0);
-        if (textoLower.contains("jueves"))
+        if (t.contains("jueves"))
             return hoy.with(java.time.DayOfWeek.THURSDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 4 ? 1 : 0);
-        if (textoLower.contains("viernes"))
+        if (t.contains("viernes"))
             return hoy.with(java.time.DayOfWeek.FRIDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 5 ? 1 : 0);
-        if (textoLower.contains("sábado") || textoLower.contains("sabado"))
+        if (t.contains("sábado") || t.contains("sabado"))
             return hoy.with(java.time.DayOfWeek.SATURDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 6 ? 1 : 0);
         return null;
-    }
-
-    // ── AGENDAR CITA DESDE CHATBOT ────────────────────────────────────────
-    private int agendarCitaDesdeChat(String texto, String idCliente, List<MensajeGymbrot> historial) {
-        try {
-            List<Instructor> instructores = instructorDAO.listarTodos();
-
-            String idInstructor = null;
-            for (Instructor i : instructores) {
-                if (texto.toLowerCase().contains(i.getNombre().toLowerCase())) {
-                    idInstructor = i.getNumeroIdentificacion();
-                    break;
-                }
-            }
-
-            if (idInstructor == null && historial != null) {
-                for (int i = historial.size() - 1; i >= 0; i--) {
-                    MensajeGymbrot msg = historial.get(i);
-                    if (msg.getRemitente().equals("CLIENTE")) {
-                        for (Instructor inst : instructores) {
-                            if (msg.getContenido().toLowerCase().contains(inst.getNombre().toLowerCase())) {
-                                idInstructor = inst.getNumeroIdentificacion();
-                                break;
-                            }
-                        }
-                    }
-                    if (idInstructor != null) break;
-                }
-            }
-
-            if (idInstructor == null) {
-                System.err.println("No se encontró instructor en el mensaje ni en el historial.");
-                return -1;
-            }
-
-            LocalDate fecha = extraerFecha(texto, historial);
-            if (fecha == null) {
-                System.err.println("No se encontró día en el mensaje ni en el historial.");
-                return -1;
-            }
-
-            LocalTime hora = extraerHora(texto, historial);
-            if (hora == null) {
-                System.err.println("No se encontró hora en el mensaje ni en el historial.");
-                return -1;
-            }
-
-            Cita cita = new Cita();
-            cita.setIdCliente(idCliente);
-            cita.setIdInstructor(idInstructor);
-            cita.setFecha(fecha);
-            cita.setHora(hora);
-            cita.setTipoCita("CONSULTA");
-            cita.setNotas("Cita agendada desde el chatbot GymBrot");
-
-            int idCita = citaService.programarCitaYRetornarId(cita);
-            if (idCita > 0) {
-                System.out.println("Cita agendada en Oracle con ID: #" + idCita);
-            }
-            return idCita;
-
-        } catch (Exception e) {
-            System.err.println("Error al agendar cita: " + e.getMessage());
-            return -1;
-        }
     }
 
     // ── CERRAR SESION ─────────────────────────────────────────────────────
