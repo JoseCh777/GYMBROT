@@ -128,7 +128,7 @@
                 <!-- Header de la pagina -->
                 <VBox spacing="4">
                     <VBox.margin><Insets bottom="32" /></VBox.margin>
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO CLIENTE" />
+                    <Label fx:id="lblTituloPagina" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO CLIENTE" />
                 </VBox>
 
                 <!-- Grid principal: columna izquierda (formulario) + derecha (foto y biometria) -->

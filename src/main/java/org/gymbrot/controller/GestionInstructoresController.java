@@ -87,7 +87,7 @@ public class GestionInstructoresController implements Initializable {
     //  MODELO DE TARJETA
     // ═══════════════════════════════════════════════════════════════════════
 
-    public record InstructorCard(String id, String nombre, double rating, int sesiones, String especialidad,
+    public record InstructorCard(String id, String nombre, String especialidad,
                                  String estilo, String[] tags, String badgeStyle) {
     }
 
@@ -160,7 +160,7 @@ public class GestionInstructoresController implements Initializable {
             if (tags[0].isEmpty()) tags[0] = "ACTIVO";
 
             todosLosInstructores.add(new InstructorCard(
-                    id, nombreCompleto, 4.5, 0, espNombre,
+                    id, nombreCompleto, espNombre,
                     tags[0], tags, badgeColor(inst.getIdEspecialidad())
             ));
         }
@@ -285,15 +285,6 @@ public class GestionInstructoresController implements Initializable {
         lblNombre.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px;" +
                 "-fx-font-weight: 700; -fx-text-fill: white;");
 
-        HBox ratingRow = new HBox(6);
-        ratingRow.setAlignment(Pos.CENTER_LEFT);
-        Label lblRating = new Label("\u2605 " + inst.rating());
-        lblRating.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;" +
-                "-fx-font-weight: 700; -fx-text-fill: #D4FF00;");
-        Label lblSesiones = new Label("(" + inst.sesiones() + " sesiones)");
-        lblSesiones.setStyle("-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #6b7280;");
-        ratingRow.getChildren().addAll(lblRating, lblSesiones);
-
         HBox tagsRow = new HBox(6);
         for (String tag : inst.tags()) {
             Label lblTag = new Label(tag);
@@ -331,7 +322,7 @@ public class GestionInstructoresController implements Initializable {
         btnRutina.setOnMouseEntered(e -> grow2.playFromStart());
         btnRutina.setOnMouseExited(e -> shrink2.playFromStart());
 
-        info.getChildren().addAll(lblNombre, ratingRow, tagsRow, btnReservar, btnRutina);
+        info.getChildren().addAll(lblNombre, tagsRow, btnReservar, btnRutina);
         card.getChildren().addAll(imageStack, info);
         return card;
     }

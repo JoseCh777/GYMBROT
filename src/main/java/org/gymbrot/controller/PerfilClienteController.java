@@ -60,6 +60,7 @@ public class PerfilClienteController implements Initializable {
     @FXML private TableView<RegistroIngreso> tablaAccesos;
     @FXML private TableColumn<RegistroIngreso, String>  colFecha;
     @FXML private TableColumn<RegistroIngreso, String>  colHoraEntrada;
+    @FXML private TableColumn<RegistroIngreso, String>  colHoraSalida;
     @FXML private TableColumn<RegistroIngreso, String>  colPuntoAcceso;
     @FXML private TableColumn<RegistroIngreso, String>  colDuracion;
     @FXML private TableColumn<RegistroIngreso, String>  colEstadoAcceso;
@@ -116,11 +117,15 @@ public class PerfilClienteController implements Initializable {
         // ── Avatar ──
         String fotoUrl = cliente.getFotoUrl();
         if (fotoUrl != null && !fotoUrl.isBlank()) {
-            Image img = new Image(new File(fotoUrl).toURI().toString(), true);
-            if (!img.isError()) {
-                imgFotoPerfil.setImage(img);
-                lblInicialesAvatar.setVisible(false);
-            } else {
+            try {
+                Image img = new Image(new File(fotoUrl).toURI().toString(), false);
+                if (!img.isError()) {
+                    imgFotoPerfil.setImage(img);
+                    lblInicialesAvatar.setVisible(false);
+                } else {
+                    mostrarIniciales();
+                }
+            } catch (Exception e) {
                 mostrarIniciales();
             }
         } else {
@@ -230,6 +235,11 @@ public class PerfilClienteController implements Initializable {
             return new javafx.beans.property.SimpleStringProperty(
                     h != null ? h.format(FMT_HORA) : "---");
         });
+        colHoraSalida.setCellValueFactory(celda -> {
+            var h = celda.getValue().getHoraSalida();
+            return new javafx.beans.property.SimpleStringProperty(
+                    h != null ? h.format(FMT_HORA) : "—");
+        });
         colPuntoAcceso.setCellValueFactory(celda -> {
             var metodo = celda.getValue().getMetodoVerificacion();
             return new javafx.beans.property.SimpleStringProperty(
@@ -264,7 +274,25 @@ public class PerfilClienteController implements Initializable {
 
     @FXML
     private void handleEditarPerfil() {
-        abrirOverlay("/fxml/NuevoCliente.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevoCliente.fxml"));
+            Parent overlay = loader.load();
+            NuevoClienteController ctrl = loader.getController();
+            ctrl.setCliente(cliente);
+
+            StackPane wrapper = new StackPane();
+            Stage stage = (Stage) btnCerrar.getScene().getWindow();
+            Parent rootActual = stage.getScene().getRoot();
+            if (rootActual instanceof StackPane sp && sp.getChildren().size() > 1) {
+                wrapper.getChildren().add(sp.getChildren().get(0));
+            } else {
+                wrapper.getChildren().add(rootActual);
+            }
+            wrapper.getChildren().add(overlay);
+            stage.getScene().setRoot(wrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════

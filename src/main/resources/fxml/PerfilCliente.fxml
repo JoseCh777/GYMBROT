@@ -191,12 +191,13 @@
                             </HBox>
 
                             <!-- Tabla de accesos -->
-                            <!-- Columnas: FECHA / HORA ENTRADA / PUNTO ACCESO / DURACION / ESTADO -->
+                            <!-- Columnas: FECHA / HORA ENTRADA / HORA SALIDA / PUNTO ACCESO / DURACION / ESTADO -->
                             <!-- Datos: REGISTROS_INGRESOS WHERE id_cliente = ? ORDER BY fecha DESC FETCH FIRST 10 -->
                             <TableView fx:id="tablaAccesos" prefHeight="220" style="-fx-background-color: rgba(255,255,255,0.04);                                               -fx-background-radius: 16;                                               -fx-border-color: rgba(255,255,255,0.08);                                               -fx-border-width: 1; -fx-border-radius: 16;                                               -fx-control-inner-background: transparent;                                               -fx-table-cell-border-color: rgba(255,255,255,0.04);                                               -fx-font-family: 'Inter'; -fx-font-size: 13px;">
                                 <columns>
                                     <TableColumn fx:id="colFecha" prefWidth="130" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
                                     <TableColumn fx:id="colHoraEntrada" prefWidth="150" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA DE ENTRADA" />
+                                    <TableColumn fx:id="colHoraSalida" prefWidth="150" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA DE SALIDA" />
                                     <TableColumn fx:id="colPuntoAcceso" prefWidth="180" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PUNTO DE ACCESO" />
                                     <TableColumn fx:id="colDuracion" prefWidth="130" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DURACION" />
                                     <TableColumn fx:id="colEstadoAcceso" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                         -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />

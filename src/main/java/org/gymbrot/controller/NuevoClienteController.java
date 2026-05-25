@@ -62,6 +62,7 @@ public class NuevoClienteController implements Initializable {
     @FXML private HBox   topBar;
     @FXML private Button btnCancelar;
     @FXML private Button btnGuardar;
+    @FXML private Label lblTituloPagina;
 
     // ─── Formulario: Información del Usuario ───────────────────────────────
     @FXML private TextField     txtNumeroDoc;
@@ -100,6 +101,8 @@ public class NuevoClienteController implements Initializable {
     private File   archivoFotoSeleccionado = null;
     private boolean huellaCapturada        = false;
     private int     muestrasCapturadas     = 0;   // 0..4
+    private boolean modoEdicion            = false;
+    private Cliente clienteEditando        = null;
     private Timeline timelineHuella        = null;
     private Timeline timelineLineaEscaneo  = null;
     private HuellaService huellaService;
@@ -142,6 +145,50 @@ public class NuevoClienteController implements Initializable {
         configurarFocusFields();
         aplicarClipCircularFoto();
         inicializarBiometria();
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.clienteEditando = cliente;
+        this.modoEdicion = true;
+
+        lblTituloPagina.setText("EDITAR CLIENTE");
+        btnGuardar.setText("  GUARDAR CAMBIOS");
+
+        txtNumeroDoc.setText(cliente.getNumeroIdentificacion());
+        txtNumeroDoc.setDisable(true);
+        txtNombres.setText(cliente.getNombre());
+        txtApellidos.setText(cliente.getApellidos());
+        txtCorreo.setText(cliente.getCorreo());
+        txtTelefono.setText(cliente.getTelefono());
+        txtDireccion.setText(cliente.getDireccion());
+        if (cliente.getFechaNacimiento() != null)
+            dateFechaNacimiento.setValue(cliente.getFechaNacimiento());
+
+        String tipoDoc = cliente.getTipoIdentificacion();
+        if (tipoDoc != null) {
+            switch (tipoDoc) {
+                case "CC" -> cmbTipoDoc.setValue("Cédula de Ciudadanía");
+                case "CE" -> cmbTipoDoc.setValue("Cédula de Extranjería");
+                case "TI" -> cmbTipoDoc.setValue("Tarjeta de Identidad");
+                case "PASAPORTE" -> cmbTipoDoc.setValue("Pasaporte");
+                case "NIT" -> cmbTipoDoc.setValue("NIT");
+            }
+        }
+
+        String fotoUrl = cliente.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isBlank()) {
+            try {
+                Image img = new Image(new File(fotoUrl).toURI().toString(), false);
+                if (!img.isError()) {
+                    imgFotoPerfil.setImage(img);
+                    lblFotoPlaceholder.setVisible(false);
+                }
+            } catch (Exception e) { /* ignore */ }
+        }
+
+        txtContrasena.setDisable(true);
+        txtContrasena.setPromptText("--- SIN CAMBIOS ---");
+        txtContrasena.setStyle(FIELD_NORMAL);
     }
 
     private void inicializarBiometria() {
@@ -550,36 +597,64 @@ public class NuevoClienteController implements Initializable {
         ClienteDAO clienteDAO = new ClienteDAO();
         AuthService authService = new AuthService();
 
-        Usuario u = new Usuario();
-        u.setNumeroIdentificacion(txtNumeroDoc.getText().trim());
-        u.setTipoIdentificacion(tipoDocToCode(cmbTipoDoc.getValue()));
-        u.setNombre(txtNombres.getText().trim());
-        u.setApellidos(txtApellidos.getText().trim());
-        u.setCorreo(txtCorreo.getText().trim());
-        u.setTelefono(txtTelefono.getText().trim());
-        u.setContrasenaHash(authService.hashContrasena(txtContrasena.getText()));
-        u.setFechaRegistro(LocalDate.now());
-        u.setTipoUsuario("CLIENTE");
-        u.setEstado("ACTIVO");
+        if (modoEdicion && clienteEditando != null) {
+            // ── MODO EDICIÓN ──
+            clienteEditando.setNombre(txtNombres.getText().trim());
+            clienteEditando.setApellidos(txtApellidos.getText().trim());
+            clienteEditando.setCorreo(txtCorreo.getText().trim());
+            clienteEditando.setTelefono(txtTelefono.getText().trim());
+            clienteEditando.setDireccion(txtDireccion.getText().trim());
+            clienteEditando.setFechaNacimiento(dateFechaNacimiento.getValue());
+            if (archivoFotoSeleccionado != null)
+                clienteEditando.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
 
-        boolean ok = usuarioDAO.insertar(u);
-        if (!ok) {
-            mostrarError("Error", "No se pudo registrar el usuario.");
-            return;
-        }
+            Usuario usuario = usuarioDAO.buscarPorId(clienteEditando.getNumeroIdentificacion());
+            if (usuario != null) {
+                usuario.setNombre(clienteEditando.getNombre());
+                usuario.setApellidos(clienteEditando.getApellidos());
+                usuario.setCorreo(clienteEditando.getCorreo());
+                usuario.setTelefono(clienteEditando.getTelefono());
+                usuarioDAO.actualizar(usuario);
+            }
 
-        Cliente c = new Cliente();
-        c.setNumeroIdentificacion(u.getNumeroIdentificacion());
-        c.setDireccion(txtDireccion.getText().trim());
-        c.setFechaNacimiento(dateFechaNacimiento.getValue());
-        if (archivoFotoSeleccionado != null)
-            c.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
-        if (templateBytesCapturado != null)
-            c.setHuellaDactilar(templateBytesCapturado);
-        ok = clienteDAO.insertar(c);
-        if (!ok) {
-            mostrarError("Error", "No se pudo registrar el cliente.");
-            return;
+            boolean ok = clienteDAO.actualizar(clienteEditando);
+            if (!ok) {
+                mostrarError("Error", "No se pudieron guardar los cambios.");
+                return;
+            }
+        } else {
+            // ── MODO CREACIÓN ──
+            Usuario u = new Usuario();
+            u.setNumeroIdentificacion(txtNumeroDoc.getText().trim());
+            u.setTipoIdentificacion(tipoDocToCode(cmbTipoDoc.getValue()));
+            u.setNombre(txtNombres.getText().trim());
+            u.setApellidos(txtApellidos.getText().trim());
+            u.setCorreo(txtCorreo.getText().trim());
+            u.setTelefono(txtTelefono.getText().trim());
+            u.setContrasenaHash(authService.hashContrasena(txtContrasena.getText()));
+            u.setFechaRegistro(LocalDate.now());
+            u.setTipoUsuario("CLIENTE");
+            u.setEstado("ACTIVO");
+
+            boolean ok = usuarioDAO.insertar(u);
+            if (!ok) {
+                mostrarError("Error", "No se pudo registrar el usuario.");
+                return;
+            }
+
+            Cliente c = new Cliente();
+            c.setNumeroIdentificacion(u.getNumeroIdentificacion());
+            c.setDireccion(txtDireccion.getText().trim());
+            c.setFechaNacimiento(dateFechaNacimiento.getValue());
+            if (archivoFotoSeleccionado != null)
+                c.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+            if (templateBytesCapturado != null)
+                c.setHuellaDactilar(templateBytesCapturado);
+            ok = clienteDAO.insertar(c);
+            if (!ok) {
+                mostrarError("Error", "No se pudo registrar el cliente.");
+                return;
+            }
         }
 
         // Animación de confirmación en el botón Guardar
@@ -590,9 +665,9 @@ public class NuevoClienteController implements Initializable {
                         "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
         );
 
-        // Volver a GestionClientes después de 800ms
+        String destino = modoEdicion ? "/fxml/GestionClientes.fxml" : "/fxml/GestionClientes.fxml";
         Timeline espera = new Timeline(
-                new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionClientes.fxml"))
+                new KeyFrame(Duration.millis(800), e -> navegarA(destino))
         );
         espera.play();
     }
@@ -680,8 +755,8 @@ public class NuevoClienteController implements Initializable {
             valido = false;
         }
 
-        // Contraseña
-        if (txtContrasena.getText().length() < 8) {
+        // Contraseña (solo obligatoria en creación)
+        if (!modoEdicion && txtContrasena.getText().length() < 8) {
             txtContrasena.setStyle(FIELD_ERROR);
             valido = false;
         }

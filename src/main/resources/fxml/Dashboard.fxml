@@ -118,7 +118,6 @@
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL DE MIEMBROS" />
                         <HBox alignment="BOTTOM_LEFT">
                             <Label fx:id="lblTotalMiembros" prefHeight="70.0" prefWidth="229.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: #D4FF00;" text="0" HBox.hgrow="ALWAYS" />
-                            <!-- CORREGIDO: "+0%" → "0%" — el + fuera de style rompe FXML -->
                             <Label fx:id="lblMiembrosTrend" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="0%" />
                         </HBox>
                         <ProgressBar fx:id="pbMiembros" maxWidth="Infinity" prefHeight="4" progress="0" style="-fx-accent: #D4FF00; -fx-background-color: #2a2d30;                                             -fx-background-radius: 4; -fx-border-width: 0;" />
@@ -151,10 +150,7 @@
                             <Label fx:id="lblIngresos" prefHeight="70.0" prefWidth="211.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
                             <Label fx:id="lblIngresosStatus" prefHeight="68.0" prefWidth="87.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="Cargando..." />
                         </HBox>
-                        <HBox prefHeight="18.0" prefWidth="100.0">
-                            <Label prefHeight="15.0" prefWidth="218.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                           -fx-text-fill: #6b7280;" text="PROGRESO HACIA EL OBJETIVO" HBox.hgrow="ALWAYS" />
-                            <Label fx:id="lblIngresosProgreso" prefHeight="18.0" prefWidth="33.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0%" />
-                        </HBox>
+                        <HBox prefHeight="18.0" prefWidth="100.0" />
                     </VBox>
 
                 </HBox>
@@ -180,31 +176,31 @@
                         <HBox fx:id="chartAsistencia" alignment="BOTTOM_CENTER" prefHeight="200" spacing="8" style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS">
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barLun" maxWidth="8" prefHeight="40" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="LUN" />
+                                <Label fx:id="lblDiaLun" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="LUN" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barMar" maxWidth="8" prefHeight="90" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MAR" />
+                                <Label fx:id="lblDiaMar" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MAR" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barMie" maxWidth="8" prefHeight="150" style="-fx-background-color: #D4FF00; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="MIE" />
+                                <Label fx:id="lblDiaMie" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="MIE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barJue" maxWidth="8" prefHeight="110" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="JUE" />
+                                <Label fx:id="lblDiaJue" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="JUE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barVie" maxWidth="8" prefHeight="70" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="VIE" />
+                                <Label fx:id="lblDiaVie" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="VIE" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barSab" maxWidth="8" prefHeight="180" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SAB" />
+                                <Label fx:id="lblDiaSab" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SAB" />
                             </VBox>
                             <VBox alignment="BOTTOM_CENTER" spacing="6" HBox.hgrow="ALWAYS">
                                 <Region fx:id="barDom" maxWidth="8" prefHeight="130" style="-fx-background-color: #2a4a50; -fx-background-radius: 2;" />
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DOM" />
+                                <Label fx:id="lblDiaDom" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DOM" />
                             </VBox>
                         </HBox>
                     </VBox>
@@ -223,9 +219,9 @@
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
                                     <Label prefHeight="20.0" prefWidth="137.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Adulto" HBox.hgrow="ALWAYS" />
-                                    <Label fx:id="lblCntAdulto" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
+                                    <Label fx:id="lblCntAdulto" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 miembros" />
                                 </HBox>
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="18-55 anos" />
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="18-64 anos" />
                             </VBox>
                         </HBox>
 
@@ -237,24 +233,23 @@
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
                                     <Label prefHeight="20.0" prefWidth="142.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Menor de Edad" HBox.hgrow="ALWAYS" />
-                                    <Label fx:id="lblCntMenor" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
+                                    <Label fx:id="lblCntMenor" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 miembros" />
                                 </HBox>
                                 <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="Bajo 18 anos" />
                             </VBox>
                         </HBox>
 
-                        <!-- Senior -->
-                        <!-- CORREGIDO: "55+ anos" → "55 anos y mas" — el + en text= rompe FXML -->
+                        <!-- Adulto Mayor -->
                         <HBox alignment="CENTER_LEFT" spacing="16">
                             <VBox alignment="CENTER" prefHeight="56" prefWidth="56" style="-fx-background-color: #252729; -fx-background-radius: 28;                                          -fx-border-color: #aaaaaa; -fx-border-width: 3; -fx-border-radius: 28;">
                                 <Label fx:id="lblPctSenior" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="0%" />
                             </VBox>
                             <VBox HBox.hgrow="ALWAYS">
                                 <HBox>
-                                    <Label prefHeight="20.0" prefWidth="140.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Señor" HBox.hgrow="ALWAYS" />
-                                    <Label fx:id="lblCntSenior" prefHeight="16.0" prefWidth="62.0" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 presentes" />
+                                    <Label prefHeight="20.0" prefWidth="140.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                                   -fx-font-weight: 700; -fx-text-fill: white;" text="Adulto Mayor" HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblCntSenior" prefHeight="16.0" prefWidth="62.0" style="-fx-font-family: 'Inter'; -fx-font-size: 11px;                                                   -fx-text-fill: #6b7280;" text="0 miembros" />
                                 </HBox>
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="55 anos y mas" />
+                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                               -fx-text-fill: #6b7280;" text="65 anos y mas" />
                             </VBox>
                         </HBox>
 
@@ -317,7 +312,7 @@
                 <!-- SECCION 4: Acciones rapidas -->
                 <HBox spacing="20">
 
-                    <HBox onMouseClicked="#handleAgregarMiembro" alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" onMouseClicked="#handleAgregarMiembro" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
                         <StackPane prefHeight="48" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 24;">
                             <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                           -fx-font-weight: 900; -fx-text-fill: black;" text="Nuevo" />

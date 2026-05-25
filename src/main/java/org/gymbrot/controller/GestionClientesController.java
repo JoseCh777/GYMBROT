@@ -409,10 +409,10 @@ public class GestionClientesController implements Initializable {
             String correo = c.getCorreo() != null ? c.getCorreo() : "";
             String telefono = c.getTelefono() != null ? c.getTelefono() : "";
             String estado = c.getEstado() != null ? c.getEstado() : "ACTIVO";
-            String categoria = "Adulto Elite";
+            String categoria = "Adulto";
             if (c.getFechaNacimiento() != null) {
                 int edad = java.time.Period.between(c.getFechaNacimiento(), java.time.LocalDate.now()).getYears();
-                categoria = edad < 18 ? "Juvenil" : edad <= 55 ? "Adulto Elite" : "Senior Pro";
+                categoria = edad < 18 ? "Menor de Edad" : edad < 65 ? "Adulto" : "Adulto Mayor";
             }
             todosLosClientes.add(new ClienteRow(
                     c.getNumeroIdentificacion(), nombreCompleto, correo, telefono, categoria, estado
@@ -634,9 +634,30 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void handleEditarCliente(ClienteRow row) {
-        // TODO: navegar a vista de edicion pasando el ID del cliente
-        // navegarA("/fxml/EditarCliente.fxml");
-        mostrarInfo("Editar", "Editando cliente: " + row.getNombre());
+        try {
+            Cliente cliente = clienteDAO.buscarPorId(row.getId());
+            if (cliente == null) {
+                mostrarError("Error", "No se encontró el cliente");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevoCliente.fxml"));
+            Parent overlay = loader.load();
+            NuevoClienteController ctrl = loader.getController();
+            ctrl.setCliente(cliente);
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            scene.setRoot(wrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir el editor");
+        }
     }
 
     private void handleVerPerfil(ClienteRow row) {

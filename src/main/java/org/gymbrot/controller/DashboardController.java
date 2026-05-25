@@ -45,7 +45,6 @@ public class DashboardController implements Initializable {
     @FXML private Rectangle dotActivos;
     @FXML private Label lblIngresos;
     @FXML private Label lblIngresosStatus;
-    @FXML private Label lblIngresosProgreso;
 
     // ─── Gráfica Asistencia Semanal ────────────────────────────────────────
     @FXML private HBox chartAsistencia;
@@ -58,6 +57,15 @@ public class DashboardController implements Initializable {
     @FXML private Region barVie;
     @FXML private Region barSab;
     @FXML private Region barDom;
+
+    // ─── Días Semana ───────────────────────────────────────────────────────
+    @FXML private Label lblDiaLun;
+    @FXML private Label lblDiaMar;
+    @FXML private Label lblDiaMie;
+    @FXML private Label lblDiaJue;
+    @FXML private Label lblDiaVie;
+    @FXML private Label lblDiaSab;
+    @FXML private Label lblDiaDom;
 
     // ─── Demografía ────────────────────────────────────────────────────────
     @FXML private Label lblPctAdulto;
@@ -218,7 +226,6 @@ public class DashboardController implements Initializable {
             }
         }
         lblIngresos.setText(formatearDinero(ingresosMes));
-        lblIngresosProgreso.setVisible(false);
         lblIngresosStatus.setVisible(false);
     }
 
@@ -265,6 +272,9 @@ public class DashboardController implements Initializable {
             ft.setDelay(Duration.millis(i * 60));
             ft.play();
 
+            // Tooltip con número de ingresos
+            Tooltip.install(barras[i], new Tooltip(valores[i] + " ingresos"));
+
             // Hover sobre cada barra
             final int    idx        = i;
             final String colorFinal = color;
@@ -279,6 +289,16 @@ public class DashboardController implements Initializable {
                 barras[idx].setScaleY(1.0);
             });
         }
+
+        // Resaltar el día de hoy
+        Label[] dias = {lblDiaLun, lblDiaMar, lblDiaMie, lblDiaJue, lblDiaVie, lblDiaSab, lblDiaDom};
+        for (int i = 0; i < dias.length; i++) {
+            if (i == hoyIdx) {
+                dias[i].setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: " + COLOR_ACTIVO + ";");
+            } else {
+                dias[i].setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;");
+            }
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -287,25 +307,24 @@ public class DashboardController implements Initializable {
 
     private void cargarDemografia() {
         LocalDate hoy = LocalDate.now();
-        List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
-        int menores = 0, adultos = 0, seniors = 0;
-        for (RegistroIngreso ri : ingresosHoy) {
-            Cliente c = clienteDAO.buscarPorId(ri.getIdCliente());
-            if (c == null || c.getFechaNacimiento() == null) continue;
+        List<Cliente> clientes = clienteDAO.listarTodos();
+        int menores = 0, adultos = 0, adultosMayores = 0;
+        for (Cliente c : clientes) {
+            if (c.getFechaNacimiento() == null) continue;
             int edad = (int) ChronoUnit.YEARS.between(c.getFechaNacimiento(), hoy);
-            if (edad < 18)       menores++;
-            else if (edad <= 55) adultos++;
-            else                 seniors++;
+            if (edad < 18)          menores++;
+            else if (edad < 65)     adultos++;
+            else                    adultosMayores++;
         }
-        int total = menores + adultos + seniors;
+        int total = menores + adultos + adultosMayores;
         if (total == 0) total = 1;
 
         if (lblPctAdulto != null) lblPctAdulto.setText(String.format("%.0f%%", (adultos  * 100.0) / total));
-        if (lblCntAdulto != null) lblCntAdulto.setText(adultos  + " presentes");
+        if (lblCntAdulto != null) lblCntAdulto.setText(adultos  + " miembros");
         if (lblPctMenor  != null) lblPctMenor.setText(String.format("%.0f%%",  (menores  * 100.0) / total));
-        if (lblCntMenor  != null) lblCntMenor.setText(menores   + " presentes");
-        if (lblPctSenior != null) lblPctSenior.setText(String.format("%.0f%%", (seniors  * 100.0) / total));
-        if (lblCntSenior != null) lblCntSenior.setText(seniors   + " presentes");
+        if (lblCntMenor  != null) lblCntMenor.setText(menores   + " miembros");
+        if (lblPctSenior != null) lblPctSenior.setText(String.format("%.0f%%", (adultosMayores  * 100.0) / total));
+        if (lblCntSenior != null) lblCntSenior.setText(adultosMayores   + " miembros");
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -352,6 +371,9 @@ public class DashboardController implements Initializable {
             ft.setToValue(1);
             ft.setDelay(Duration.millis(i * 40));
             ft.play();
+
+            // Tooltip con número de ingresos
+            Tooltip.install(barras[i], new Tooltip(valores[i] + " ingresos"));
 
             // Hover sobre cada barra del histograma
             final String colorFinal = color;
