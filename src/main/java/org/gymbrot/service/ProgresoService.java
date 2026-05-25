@@ -3,13 +3,11 @@ package org.gymbrot.service;
 import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.ProgresoDAO;
 import org.gymbrot.model.Progreso;
-import java.time.LocalDate;
+import org.gymbrot.util.DatabaseConnection;
+
+import java.sql.*;
 import java.util.List;
 
-/**
- * Service para gestión del progreso físico de clientes.
- * Calcula IMC automáticamente y valida datos antes de persistir.
- */
 public class ProgresoService {
 
     private ProgresoDAO progresoDAO;
@@ -20,89 +18,49 @@ public class ProgresoService {
         this.clienteDAO = new ClienteDAO();
     }
 
-    /**
-     * Calcula el IMC dado peso y altura.
-     * @param peso Peso en kilogramos.
-     * @param altura Altura en metros.
-     * @return IMC calculado, o -1 si los datos son inválidos.
-     */
-    public double calcularIMC(double peso, double altura) {
-        if (peso <= 0 || altura <= 0) {
-            System.err.println("✗ Peso y altura deben ser mayores a 0.");
-            return -1;
-        }
-        return Math.round((peso / (altura * altura)) * 100.0) / 100.0;
-    }
-
-    /**
-     * Retorna el último registro de progreso de un cliente.
-     * @param idCliente ID del cliente.
-     * @return Último progreso registrado, o null si no hay ninguno.
-     */
     public Progreso ultimoProgreso(String idCliente) {
-        if (idCliente == null || idCliente.trim().isEmpty()) {
-            System.err.println("✗ ID de cliente inválido.");
-            return null;
-        }
+        if (idCliente == null || idCliente.trim().isEmpty()) return null;
         return progresoDAO.ultimoProgreso(idCliente);
     }
 
-    /**
-     * Lista todo el historial de progreso de un cliente.
-     * @param idCliente ID del cliente.
-     * @return Lista de registros de progreso, vacía si no hay ninguno.
-     */
     public List<Progreso> listarProgreso(String idCliente) {
-        if (idCliente == null || idCliente.trim().isEmpty()) {
-            System.err.println("✗ ID de cliente inválido.");
-            return null;
-        }
+        if (idCliente == null || idCliente.trim().isEmpty()) return null;
         return progresoDAO.listarPorCliente(idCliente);
     }
-    /**
-     * Registra un nuevo progreso físico para un cliente.
-     * Calcula el IMC automáticamente a partir de peso y altura.
-     * @param progreso Progreso a registrar.
-     * @return true si se registró exitosamente.
-     */
+
     public boolean registrarProgreso(Progreso progreso) {
-        // 1. Validar cliente
-        if (progreso.getIdCliente() == null || progreso.getIdCliente().trim().isEmpty()) {
-            System.err.println("✗ ID de cliente inválido.");
+        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_PROGRESO(?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, progreso.getIdCliente());
+            cs.setDouble(2, progreso.getPeso());
+            cs.setDouble(3, progreso.getAltura());
+            if (progreso.getPorcentajeGrasa() > 0) {
+                cs.setDouble(4, progreso.getPorcentajeGrasa());
+            } else {
+                cs.setNull(4, Types.DOUBLE);
+            }
+            if (progreso.getMasaMuscular() > 0) {
+                cs.setDouble(5, progreso.getMasaMuscular());
+            } else {
+                cs.setNull(5, Types.DOUBLE);
+            }
+            cs.setString(6, progreso.getObjetivo());
+            cs.setString(7, progreso.getObservaciones());
+            cs.registerOutParameter(8, Types.INTEGER);
+            cs.registerOutParameter(9, Types.VARCHAR);
+            cs.execute();
+
+            int codigo = cs.getInt(8);
+            String mensaje = cs.getString(9);
+            System.out.println(mensaje);
+            return codigo == 1;
+
+        } catch (SQLException e) {
+            System.err.println("Error en registrarProgreso: " + e.getMessage());
             return false;
         }
-
-        // 2. Verificar que el cliente exista
-        if (clienteDAO.buscarPorId(progreso.getIdCliente()) == null) {
-            System.err.println("✗ No se encontró el cliente.");
-            return false;
-        }
-
-        // 3. Validar peso
-        if (progreso.getPeso() <= 0) {
-            System.err.println("✗ El peso debe ser mayor a 0.");
-            return false;
-        }
-
-        // 4. Validar altura
-        if (progreso.getAltura() <= 0) {
-            System.err.println("✗ La altura debe ser mayor a 0.");
-            return false;
-        }
-
-        // 5. Calcular IMC automáticamente
-        double imc = calcularIMC(progreso.getPeso(), progreso.getAltura());
-        if (imc == -1) return false;
-        progreso.setImc(imc);
-
-        // 6. Establecer fecha de registro
-        progreso.setFechaRegistro(LocalDate.now());
-
-        // 7. Persistir
-        boolean resultado = progresoDAO.insertar(progreso);
-        if (resultado) {
-            System.out.println("✓ Progreso registrado exitosamente. IMC calculado: " + imc);
-        }
-        return resultado;
     }
+
 }

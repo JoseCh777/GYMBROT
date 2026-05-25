@@ -16,7 +16,7 @@ public class RutinaEjercicioDAO {
     // ── INSERTAR ──────────────────────────────────────────────────────────
     public boolean insertar(RutinaEjercicio re) {
         String sql = """
-            INSERT INTO RUTINA_EJERCICIO
+            INSERT INTO RUTINA_EJERCICIOS
                 (id_rutina, id_ejercicio, orden, dia_semana, notas_instructor)
             VALUES (?, ?, ?, ?, ?)
             """;
@@ -39,7 +39,7 @@ public class RutinaEjercicioDAO {
 
     // ── ELIMINAR ──────────────────────────────────────────────────────────
     public boolean eliminar(int idRutina, int idEjercicio) {
-        String sql = "DELETE FROM RUTINA_EJERCICIO WHERE id_rutina = ? AND id_ejercicio = ?";
+        String sql = "DELETE FROM RUTINA_EJERCICIOS WHERE id_rutina = ? AND id_ejercicio = ?";
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -58,7 +58,7 @@ public class RutinaEjercicioDAO {
         List<RutinaEjercicio> lista = new ArrayList<>();
         String sql = """
             SELECT id_rutina, id_ejercicio, orden, dia_semana, notas_instructor
-            FROM RUTINA_EJERCICIO
+            FROM RUTINA_EJERCICIOS
             WHERE id_rutina = ?
             ORDER BY dia_semana, orden
             """;
@@ -87,7 +87,7 @@ public class RutinaEjercicioDAO {
     // ── ACTUALIZAR ORDEN ──────────────────────────────────────────────────
     public boolean actualizarOrden(int idRutina, int idEjercicio, int orden) {
         String sql = """
-            UPDATE RUTINA_EJERCICIO
+            UPDATE RUTINA_EJERCICIOS
             SET orden = ?
             WHERE id_rutina = ? AND id_ejercicio = ?
             """;

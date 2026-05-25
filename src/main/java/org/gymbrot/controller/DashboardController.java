@@ -39,8 +39,6 @@ public class DashboardController implements Initializable {
 
     // ─── Métricas ──────────────────────────────────────────────────────────
     @FXML private Label lblTotalMiembros;
-    @FXML private Label lblMiembrosTrend;
-    @FXML private ProgressBar pbMiembros;
     @FXML private Label lblActivosAhora;
     @FXML private Rectangle dotActivos;
     @FXML private Label lblIngresos;
@@ -93,7 +91,6 @@ public class DashboardController implements Initializable {
     private static final String COLOR_MODERADO = "#3a5a60";
     private static final String COLOR_BAJO     = "#2a2d30";
     private static final double META_INGRESOS_MES = 50000.0;
-    private static final int    META_MIEMBROS     = 3500;
 
     // ═══════════════════════════════════════════════════════════════════════
     //  INITIALIZE
@@ -208,8 +205,6 @@ public class DashboardController implements Initializable {
             if ("ACTIVO".equalsIgnoreCase(c.getEstado())) totalActive++;
         }
         lblTotalMiembros.setText(String.valueOf(totalActive));
-        lblMiembrosTrend.setText(clientes.size() + " total");
-        pbMiembros.setProgress(Math.min(1.0, (double) totalActive / META_MIEMBROS));
 
         LocalDate hoy = LocalDate.now();
         List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
@@ -476,7 +471,7 @@ public class DashboardController implements Initializable {
         alert.setTitle("Cerrar sesion");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

@@ -48,7 +48,7 @@ public class GymbroAIController {
         alert.setTitle("Cerrar sesion");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

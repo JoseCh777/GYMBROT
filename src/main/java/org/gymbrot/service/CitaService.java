@@ -4,14 +4,12 @@ import org.gymbrot.dao.CitaDAO;
 import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.model.Cita;
+import org.gymbrot.util.DatabaseConnection;
+
+import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
-/**
- * Service para gestión de citas entre clientes e instructores.
- * Valida disponibilidad y gestiona estados de citas.
- */
 public class CitaService {
 
     private CitaDAO citaDAO;
@@ -24,178 +22,81 @@ public class CitaService {
         this.instructorDAO = new InstructorDAO();
     }
 
-    /**
-     * Lista todas las citas de un cliente.
-     *
-     * @param idCliente ID del cliente.
-     * @return Lista de citas, vacía si no hay ninguna.
-     */
     public List<Cita> listarPorCliente(String idCliente) {
-        if (idCliente == null || idCliente.trim().isEmpty()) {
-            System.err.println("✗ ID de cliente inválido.");
-            return null;
-        }
+        if (idCliente == null || idCliente.trim().isEmpty()) return null;
         return citaDAO.listarPorCliente(idCliente);
     }
 
-    /**
-     * Lista todas las citas de un instructor.
-     *
-     * @param idInstructor ID del instructor.
-     * @return Lista de citas, vacía si no hay ninguna.
-     */
     public List<Cita> listarPorInstructor(String idInstructor) {
-        if (idInstructor == null || idInstructor.trim().isEmpty()) {
-            System.err.println("✗ ID de instructor inválido.");
-            return null;
-        }
+        if (idInstructor == null || idInstructor.trim().isEmpty()) return null;
         return citaDAO.listarPorInstructor(idInstructor);
     }
 
-    /**
-     * Lista todas las citas programadas para una fecha.
-     *
-     * @param fecha Fecha a consultar.
-     * @return Lista de citas del día.
-     */
     public List<Cita> listarPorFecha(LocalDate fecha) {
-        if (fecha == null) {
-            System.err.println("✗ Fecha inválida.");
-            return null;
-        }
+        if (fecha == null) return null;
         return citaDAO.listarPorFecha(fecha);
     }
 
-    /**
-     * Programa una nueva cita entre un cliente y un instructor.
-     * Valida que ambos existan, la fecha sea futura y no haya conflicto de horario.
-     *
-     * @param cita Cita a programar.
-     * @return true si se programó exitosamente.
-     */
     public boolean programarCita(Cita cita) {
-        // 1. Validar cliente
-        if (cita.getIdCliente() == null || cita.getIdCliente().trim().isEmpty()) {
-            System.err.println("✗ ID de cliente inválido.");
-            return false;
-        }
+        String sql = "{call PKG_GYMBROT.SP_AGENDAR_CITA(?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-        // 2. Validar instructor
-        if (cita.getIdInstructor() == null || cita.getIdInstructor().trim().isEmpty()) {
-            System.err.println("✗ ID de instructor inválido.");
-            return false;
-        }
+            cs.setString(1, cita.getIdInstructor());
+            cs.setString(2, cita.getIdCliente());
+            cs.setDate(3, Date.valueOf(cita.getFecha()));
+            cs.setTimestamp(4, Timestamp.valueOf(cita.getFecha().atTime(cita.getHora())));
+            cs.setString(5, cita.getTipoCita().toUpperCase());
+            cs.setString(6, cita.getNotas());
+            cs.registerOutParameter(7, Types.INTEGER);
+            cs.registerOutParameter(8, Types.VARCHAR);
+            cs.execute();
 
-        // 3. Validar que existan en BD
-        if (clienteDAO.buscarPorId(cita.getIdCliente()) == null) {
-            System.err.println("✗ No se encontró el cliente.");
-            return false;
-        }
-        if (instructorDAO.buscarPorId(cita.getIdInstructor()) == null) {
-            System.err.println("✗ No se encontró el instructor.");
-            return false;
-        }
+            int codigo = cs.getInt(7);
+            String mensaje = cs.getString(8);
+            System.out.println(mensaje);
+            return codigo == 1;
 
-        // 4. Validar fecha futura
-        if (cita.getFecha() == null || !cita.getFecha().isAfter(LocalDate.now())) {
-            System.err.println("✗ La fecha debe ser posterior a hoy.");
+        } catch (SQLException e) {
+            System.err.println("Error en programarCita: " + e.getMessage());
             return false;
         }
+    }
 
-        // 5. Validar hora
-        if (cita.getHora() == null) {
-            System.err.println("✗ La hora no puede estar vacía.");
+    public boolean cancelarCita(int idCita) {
+        String sql = "{call PKG_GYMBROT.SP_CANCELAR_CITA(?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setInt(1, idCita);
+            cs.registerOutParameter(2, Types.INTEGER);
+            cs.registerOutParameter(3, Types.VARCHAR);
+            cs.execute();
+
+            int codigo = cs.getInt(2);
+            String mensaje = cs.getString(3);
+            System.out.println(mensaje);
+            return codigo == 1;
+
+        } catch (SQLException e) {
+            System.err.println("Error en cancelarCita: " + e.getMessage());
             return false;
         }
+    }
 
-        // 6. Verificar conflicto de horario del instructor
-        List<Cita> citasInstructor = citaDAO.listarPorInstructor(cita.getIdInstructor());
-        for (Cita c : citasInstructor) {
-            if (c.getFecha().equals(cita.getFecha()) &&
-                    c.getHora().equals(cita.getHora()) &&
-                    c.getEstado().equals("programada")) {
-                System.err.println("✗ El instructor ya tiene una cita en ese horario.");
+    public boolean completarCita(int idCita) {
+        try {
+            Cita cita = citaDAO.buscarPorId(idCita);
+            if (cita == null) {
+                System.err.println("Cita no encontrada");
                 return false;
             }
-        }
-
-        // 7. Establecer estado inicial
-        cita.setEstado("programada");
-
-        // 8. Persistir
-        boolean resultado = citaDAO.insertar(cita);
-        if (resultado) {
-            System.out.println("✓ Cita programada exitosamente.");
-        }
-        return resultado;
-    }
-    /**
-     * Cancela una cita programada.
-     * Solo se pueden cancelar citas en estado "programada".
-     * @param idCita ID de la cita a cancelar.
-     * @return true si se canceló exitosamente.
-     */
-    public boolean cancelarCita(int idCita) {
-        // 1. Validar ID
-        if (idCita <= 0) {
-            System.err.println("✗ ID de cita inválido.");
+            cita.setEstado("COMPLETADA");
+            return citaDAO.actualizar(cita);
+        } catch (Exception e) {
+            System.err.println("Error en completarCita: " + e.getMessage());
             return false;
         }
-
-        // 2. Verificar que exista
-        Cita cita = citaDAO.buscarPorId(idCita);
-        if (cita == null) {
-            System.err.println("✗ No se encontró la cita con ID: " + idCita);
-            return false;
-        }
-
-        // 3. Verificar estado
-        if (!cita.getEstado().equals("programada")) {
-            System.err.println("✗ Solo se pueden cancelar citas programadas.");
-            return false;
-        }
-
-        // 4. Cambiar estado y persistir
-        cita.setEstado("cancelada");
-        boolean resultado = citaDAO.actualizar(cita);
-        if (resultado) {
-            System.out.println("✓ Cita cancelada exitosamente.");
-        }
-        return resultado;
     }
 
-    /**
-     * Marca una cita como completada.
-     * Solo se pueden completar citas en estado "programada".
-     * @param idCita ID de la cita a completar.
-     * @return true si se completó exitosamente.
-     */
-    public boolean completarCita(int idCita) {
-        // 1. Validar ID
-        if (idCita <= 0) {
-            System.err.println("✗ ID de cita inválido.");
-            return false;
-        }
-
-        // 2. Verificar que exista
-        Cita cita = citaDAO.buscarPorId(idCita);
-        if (cita == null) {
-            System.err.println("✗ No se encontró la cita con ID: " + idCita);
-            return false;
-        }
-
-        // 3. Verificar estado
-        if (!cita.getEstado().equals("programada")) {
-            System.err.println("✗ Solo se pueden completar citas programadas.");
-            return false;
-        }
-
-        // 4. Cambiar estado y persistir
-        cita.setEstado("completada");
-        boolean resultado = citaDAO.actualizar(cita);
-        if (resultado) {
-            System.out.println("✓ Cita completada exitosamente.");
-        }
-        return resultado;
-    }
 }

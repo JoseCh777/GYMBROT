@@ -46,6 +46,9 @@ public class NuevoInstructorController implements Initializable {
     @FXML private Button btnCancelar;
     @FXML private Button btnGuardar;
 
+    // ─── Titulo ──────────────────────────────────────────────────────────
+    @FXML private Label lblTituloPagina;
+
     // ─── Formulario: Informacion del Instructor ─────────────────────────
     @FXML private TextField txtNumeroId;
     @FXML private TextField txtNombres;
@@ -56,6 +59,8 @@ public class NuevoInstructorController implements Initializable {
     // ─── Formulario: Especialidad y Disponibilidad ──────────────────────
     @FXML private ComboBox<String> cmbEspecialidad;
     @FXML private DatePicker dateFechaContratacion;
+    @FXML private ToggleButton togLun, togMar, togMie, togJue, togVie, togSab, togDom;
+    @FXML private ComboBox<String> cmbHorario;
     @FXML private TextArea txtNotas;
 
     // ─── Foto de perfil ────────────────────────────────────────────────
@@ -70,6 +75,8 @@ public class NuevoInstructorController implements Initializable {
 
     // ─── Estado interno ────────────────────────────────────────────────
     private File archivoFotoSeleccionado;
+    private boolean modoEdicion;
+    private Instructor instructorEditando;
 
     // ─── Validacion ────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -106,6 +113,7 @@ public class NuevoInstructorController implements Initializable {
         configurarFechaContratacion();
         configurarValidacionEnVivo();
         configurarFocusFields();
+        configurarDisponibilidad();
         aplicarClipCircularFoto();
     }
 
@@ -228,6 +236,75 @@ public class NuevoInstructorController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    //  DISPONIBILIDAD
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private void configurarDisponibilidad() {
+        cmbHorario.getItems().addAll("Mañana (6am - 12pm)", "Tarde (12pm - 6pm)", "Noche (6pm - 10pm)", "Completo (6am - 10pm)");
+        cmbHorario.setStyle(
+                "-fx-background-color: #1a1c1f; -fx-background-radius: 8;" +
+                        "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 8;" +
+                        "-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;"
+        );
+
+        ToggleButton[] toggles = {togLun, togMar, togMie, togJue, togVie, togSab, togDom};
+        for (ToggleButton tb : toggles) {
+            tb.selectedProperty().addListener((obs, old, val) -> {
+                if (val) {
+                    tb.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 6;" +
+                            "-fx-border-color: #D4FF00; -fx-border-width: 1; -fx-border-radius: 6;" +
+                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
+                            "-fx-text-fill: black; -fx-cursor: hand;");
+                } else {
+                    tb.setStyle("-fx-background-color: #1a1c1f; -fx-background-radius: 6;" +
+                            "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 6;" +
+                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
+                            "-fx-text-fill: #6b7280; -fx-cursor: hand;");
+                }
+            });
+        }
+    }
+
+    private String obtenerDiasSeleccionados() {
+        StringBuilder sb = new StringBuilder();
+        String[] dias = {"LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"};
+        ToggleButton[] toggles = {togLun, togMar, togMie, togJue, togVie, togSab, togDom};
+        for (int i = 0; i < toggles.length; i++) {
+            if (toggles[i].isSelected()) {
+                if (!sb.isEmpty()) sb.append(",");
+                sb.append(dias[i]);
+            }
+        }
+        return sb.toString();
+    }
+
+    private void seleccionarDias(String disponibilidad) {
+        if (disponibilidad == null || disponibilidad.isBlank()) return;
+        String[] partes = disponibilidad.split("\\|");
+        if (partes.length > 0 && !partes[0].isBlank()) {
+            String[] diasSel = partes[0].split(",");
+            ToggleButton[] toggles = {togLun, togMar, togMie, togJue, togVie, togSab, togDom};
+            for (ToggleButton tb : toggles) {
+                for (String d : diasSel) {
+                    if (tb.getText().equals(d.trim())) {
+                        tb.setSelected(true);
+                        break;
+                    }
+                }
+            }
+        }
+        if (partes.length > 1 && !partes[1].isBlank()) {
+            String horario = partes[1].trim();
+            for (String item : cmbHorario.getItems()) {
+                if (item.startsWith(horario)) {
+                    cmbHorario.setValue(item);
+                    break;
+                }
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     //  VALIDACION EN VIVO
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -329,6 +406,50 @@ public class NuevoInstructorController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    //  SET INSTRUCTOR (para modo edicion)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    public void setInstructor(Instructor instructor) {
+        this.instructorEditando = instructor;
+        this.modoEdicion = true;
+
+        lblTituloPagina.setText("EDITAR INSTRUCTOR");
+        btnGuardar.setText("  GUARDAR CAMBIOS");
+
+        txtNumeroId.setText(instructor.getNumeroIdentificacion());
+        txtNumeroId.setDisable(true);
+        txtNombres.setText(instructor.getNombre());
+        txtApellidos.setText(instructor.getApellidos());
+        txtCorreo.setText(instructor.getCorreo());
+        txtTelefono.setText(instructor.getTelefono());
+
+        for (String item : cmbEspecialidad.getItems()) {
+            int idEsp = (int) cmbEspecialidad.getProperties().get(item);
+            if (idEsp == instructor.getIdEspecialidad()) {
+                cmbEspecialidad.setValue(item);
+                break;
+            }
+        }
+
+        if (instructor.getFechaContratacion() != null)
+            dateFechaContratacion.setValue(instructor.getFechaContratacion());
+
+        seleccionarDias(instructor.getDisponibilidad());
+
+        String fotoUrl = instructor.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isBlank()) {
+            try {
+                Image img = new Image(new File(fotoUrl).toURI().toString(), 152, 152, false, true);
+                if (!img.isError()) {
+                    imgFotoPerfil.setImage(img);
+                    lblFotoPlaceholder.setVisible(false);
+                    btnCargarFoto.setText("CAMBIAR IMAGEN");
+                }
+            } catch (Exception ignored) {}
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     //  GUARDAR
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -343,26 +464,53 @@ public class NuevoInstructorController implements Initializable {
         String telefono = txtTelefono.getText().trim();
         int idEspecialidad = (int) cmbEspecialidad.getProperties().get(cmbEspecialidad.getValue());
 
-        Instructor instructor = new Instructor(
-                id, "CC", nombre, apellidos, telefono, correo,
-                "Inst2024*", null, "activo", LocalDate.now(), "instructor",
-                idEspecialidad, txtNotas.getText(), dateFechaContratacion.getValue()
-        );
+        if (modoEdicion && instructorEditando != null) {
+            instructorEditando.setNombre(nombre);
+            instructorEditando.setApellidos(apellidos);
+            instructorEditando.setCorreo(correo);
+            instructorEditando.setTelefono(telefono);
+            instructorEditando.setIdEspecialidad(idEspecialidad);
+            instructorEditando.setDisponibilidad(obtenerDiasSeleccionados() + "|" + (cmbHorario.getValue() != null ? cmbHorario.getValue().replaceAll("\\s*\\(.*\\)", "") : ""));
+            instructorEditando.setFechaContratacion(dateFechaContratacion.getValue());
+            instructorEditando.setTipoIdentificacion("CC");
 
-        boolean guardado = instructorDAO.insertar(instructor);
-        if (guardado) {
-            btnGuardar.setText("GUARDADO \u2713");
-            btnGuardar.setStyle(
-                    "-fx-background-color: #bdf4ff; -fx-background-radius: 8;" +
-                            "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
-                            "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
-            );
-            Timeline espera = new Timeline(
-                    new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionInstructores.fxml"))
-            );
-            espera.play();
+            boolean guardado = instructorDAO.actualizar(instructorEditando);
+            if (guardado) {
+                btnGuardar.setText("GUARDADO \u2713");
+                btnGuardar.setStyle(
+                        "-fx-background-color: #bdf4ff; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
+                );
+                Timeline espera = new Timeline(
+                        new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionInstructores.fxml"))
+                );
+                espera.play();
+            } else {
+                mostrarError("Error", "No se pudo actualizar el instructor.");
+            }
         } else {
-            mostrarError("Error", "No se pudo guardar el instructor. Verifica que el ID no esté repetido.");
+            Instructor instructor = new Instructor(
+                    id, "CC", nombre, apellidos, telefono, correo,
+                    "Inst2024*", null, "activo", LocalDate.now(), "instructor",
+                    idEspecialidad, obtenerDiasSeleccionados() + "|" + (cmbHorario.getValue() != null ? cmbHorario.getValue().replaceAll("\\s*\\(.*\\)", "") : ""), dateFechaContratacion.getValue()
+            );
+
+            boolean guardado = instructorDAO.insertar(instructor);
+            if (guardado) {
+                btnGuardar.setText("GUARDADO \u2713");
+                btnGuardar.setStyle(
+                        "-fx-background-color: #bdf4ff; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: #001f24; -fx-cursor: hand; -fx-padding: 8 20 8 20;"
+                );
+                Timeline espera = new Timeline(
+                        new KeyFrame(Duration.millis(800), e -> navegarA("/fxml/GestionInstructores.fxml"))
+                );
+                espera.play();
+            } else {
+                mostrarError("Error", "No se pudo guardar el instructor. Verifica que el ID no esté repetido.");
+            }
         }
     }
 
@@ -373,7 +521,7 @@ public class NuevoInstructorController implements Initializable {
     private boolean validarFormulario() {
         boolean valido = true;
 
-        if (!txtNumeroId.getText().matches("[0-9 \\-]{5,20}")) {
+        if (!modoEdicion && !txtNumeroId.getText().matches("[0-9 \\-]{5,20}")) {
             txtNumeroId.setStyle(FIELD_ERROR);
             valido = false;
         }
@@ -470,7 +618,7 @@ public class NuevoInstructorController implements Initializable {
         alert.setTitle("Cerrar sesion");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

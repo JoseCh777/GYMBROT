@@ -57,7 +57,6 @@ public class GestionClientesController implements Initializable {
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
-    @FXML private ImageView avatarImage;
 
     // ─── Stats ─────────────────────────────────────────────────────────────
     @FXML private Label lblTotalClientes;
@@ -65,7 +64,6 @@ public class GestionClientesController implements Initializable {
     @FXML private Label lblSesionesActivas;
     @FXML private Label lblTasaIngreso;
     @FXML private Label lblTasaTendencia;
-    @FXML private Label lblFlujoDiario;
 
     // ─── Toolbar ───────────────────────────────────────────────────────────
     @FXML private TextField searchField;
@@ -181,7 +179,6 @@ public class GestionClientesController implements Initializable {
 
         lblTasaIngreso.setText(ingresosHoy.size() + " hoy");
         lblTasaTendencia.setText("—");
-        lblFlujoDiario.setText(String.valueOf(ingresosHoy.size()));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -316,38 +313,7 @@ public class GestionClientesController implements Initializable {
             private final Button btnVer      = new Button("Ver");
 
             {
-                btnEditar.setStyle(
-                        "-fx-background-color: transparent; -fx-background-radius: 6;" +
-                                "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 6;" +
-                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                                "-fx-text-fill: #6b7280; -fx-cursor: hand;" +
-                                "-fx-pref-width: 32; -fx-pref-height: 32;"
-                );
-                btnEliminar.setStyle(
-                        "-fx-background-color: transparent; -fx-background-radius: 6;" +
-                                "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 6;" +
-                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                                "-fx-text-fill: #6b7280; -fx-cursor: hand;" +
-                                "-fx-pref-width: 32; -fx-pref-height: 32;"
-                );
-
-                // Hover editar → amarillo
-                btnEditar.setOnMouseEntered(e -> btnEditar.setStyle(
-                        btnEditar.getStyle().replace("-fx-text-fill: #6b7280", "-fx-text-fill: #D4FF00")
-                                .replace("-fx-border-color: #333538", "-fx-border-color: #D4FF00")));
-                btnEditar.setOnMouseExited(e -> btnEditar.setStyle(
-                        btnEditar.getStyle().replace("-fx-text-fill: #D4FF00", "-fx-text-fill: #6b7280")
-                                .replace("-fx-border-color: #D4FF00", "-fx-border-color: #333538")));
-
-                // Hover eliminar → rojo
-                btnEliminar.setOnMouseEntered(e -> btnEliminar.setStyle(
-                        btnEliminar.getStyle().replace("-fx-text-fill: #6b7280", "-fx-text-fill: #ffb4ab")
-                                .replace("-fx-border-color: #333538", "-fx-border-color: #ffb4ab")));
-                btnEliminar.setOnMouseExited(e -> btnEliminar.setStyle(
-                        btnEliminar.getStyle().replace("-fx-text-fill: #ffb4ab", "-fx-text-fill: #6b7280")
-                                .replace("-fx-border-color: #ffb4ab", "-fx-border-color: #333538")));
-
-                btnVer.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
+                btnVer.setStyle("-fx-background-color: rgba(212,255,0,0.15); -fx-background-radius: 6;" +
                         "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
                         "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
                         "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;");
@@ -357,10 +323,50 @@ public class GestionClientesController implements Initializable {
                                 "-fx-text-fill: black; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
                                 "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
                 btnVer.setOnMouseExited(e -> btnVer.setStyle(
-                        "-fx-background-color: transparent; -fx-background-radius: 6;" +
+                        "-fx-background-color: rgba(212,255,0,0.15); -fx-background-radius: 6;" +
                                 "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
                                 "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
                                 "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+
+                btnEditar.setStyle(
+                        "-fx-background-color: rgba(96,165,250,0.15); -fx-background-radius: 6;" +
+                                "-fx-border-color: #60a5fa; -fx-border-width: 1; -fx-border-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: #60a5fa; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"
+                );
+                btnEditar.setOnMouseEntered(e -> btnEditar.setStyle(
+                        "-fx-background-color: #60a5fa; -fx-background-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: black; -fx-border-color: #60a5fa; -fx-border-width: 1;" +
+                                "-fx-border-radius: 6; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"));
+                btnEditar.setOnMouseExited(e -> btnEditar.setStyle(
+                        "-fx-background-color: rgba(96,165,250,0.15); -fx-background-radius: 6;" +
+                                "-fx-border-color: #60a5fa; -fx-border-width: 1; -fx-border-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: #60a5fa; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"));
+
+                btnEliminar.setStyle(
+                        "-fx-background-color: rgba(255,180,171,0.15); -fx-background-radius: 6;" +
+                                "-fx-border-color: #ffb4ab; -fx-border-width: 1; -fx-border-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: #ffb4ab; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"
+                );
+                btnEliminar.setOnMouseEntered(e -> btnEliminar.setStyle(
+                        "-fx-background-color: #ffb4ab; -fx-background-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: black; -fx-border-color: #ffb4ab; -fx-border-width: 1;" +
+                                "-fx-border-radius: 6; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"));
+                btnEliminar.setOnMouseExited(e -> btnEliminar.setStyle(
+                        "-fx-background-color: rgba(255,180,171,0.15); -fx-background-radius: 6;" +
+                                "-fx-border-color: #ffb4ab; -fx-border-width: 1; -fx-border-radius: 6;" +
+                                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
+                                "-fx-text-fill: #ffb4ab; -fx-cursor: hand;" +
+                                "-fx-padding: 4 8 4 8;"));
 
                 btnEditar.setOnAction(e -> {
                     ClienteRow row = getTableView().getItems().get(getIndex());
@@ -784,7 +790,7 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml");}
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
-    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
+    @FXML private void handleNavProgreso()     { }
 
     @FXML
     private void handleLogout() {
@@ -793,7 +799,7 @@ public class GestionClientesController implements Initializable {
         alert.setTitle("Cerrar sesion");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

@@ -75,6 +75,8 @@ public class GestionInstructoresController implements Initializable {
     // ─── DAOs ──────────────────────────────────────────────────────────────
     private final InstructorDAO instructorDAO = new InstructorDAO();
     private final EspecialidadDAO especialidadDAO = new EspecialidadDAO();
+    private final RutinaDAO rutinaDAO = new RutinaDAO();
+    private final RutinaEjercicioDAO rutinaEjercicioDAO = new RutinaEjercicioDAO();
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private final ObservableList<InstructorCard> todosLosInstructores = FXCollections.observableArrayList();
@@ -87,8 +89,7 @@ public class GestionInstructoresController implements Initializable {
     //  MODELO DE TARJETA
     // ═══════════════════════════════════════════════════════════════════════
 
-    public record InstructorCard(String id, String nombre, String especialidad,
-                                 String estilo, String[] tags, String badgeStyle) {
+    public record InstructorCard(String id, String nombre, String especialidad, String badgeStyle) {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -156,12 +157,9 @@ public class GestionInstructoresController implements Initializable {
             String id = inst.getNumeroIdentificacion();
             String nombreCompleto = inst.getNombre() + " " + inst.getApellidos();
             String espNombre = nombreEsp.getOrDefault(inst.getIdEspecialidad(), "GENERAL");
-            String[] tags = {espNombre.replaceAll("\\s.*", "").toUpperCase()};
-            if (tags[0].isEmpty()) tags[0] = "ACTIVO";
 
             todosLosInstructores.add(new InstructorCard(
-                    id, nombreCompleto, espNombre,
-                    tags[0], tags, badgeColor(inst.getIdEspecialidad())
+                    id, nombreCompleto, espNombre, badgeColor(inst.getIdEspecialidad())
             ));
         }
 
@@ -285,15 +283,6 @@ public class GestionInstructoresController implements Initializable {
         lblNombre.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px;" +
                 "-fx-font-weight: 700; -fx-text-fill: white;");
 
-        HBox tagsRow = new HBox(6);
-        for (String tag : inst.tags()) {
-            Label lblTag = new Label(tag);
-            lblTag.setStyle("-fx-background-color: #1f2226; -fx-background-radius: 4;" +
-                    "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;" +
-                    "-fx-font-weight: 700; -fx-text-fill: #9ca3af; -fx-padding: 3 8 3 8;");
-            tagsRow.getChildren().add(lblTag);
-        }
-
         Button btnReservar = new Button("RESERVAR SESION");
         btnReservar.setMaxWidth(Double.MAX_VALUE);
         btnReservar.setPrefHeight(36);
@@ -307,10 +296,11 @@ public class GestionInstructoresController implements Initializable {
         btnReservar.setOnMouseEntered(e -> grow.playFromStart());
         btnReservar.setOnMouseExited(e -> shrink.playFromStart());
 
+        String instId = inst.id();
         Button btnRutina = new Button("VER RUTINA");
         btnRutina.setMaxWidth(Double.MAX_VALUE);
         btnRutina.setPrefHeight(36);
-        btnRutina.setStyle("-fx-background-color: transparent; -fx-background-radius: 8;" +
+        btnRutina.setStyle("-fx-background-color: rgba(189,244,255,0.15); -fx-background-radius: 8;" +
                 "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
                 "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;" +
                 "-fx-border-color: #bdf4ff; -fx-border-width: 1;" +
@@ -321,8 +311,66 @@ public class GestionInstructoresController implements Initializable {
         shrink2.setToX(1.0); shrink2.setToY(1.0);
         btnRutina.setOnMouseEntered(e -> grow2.playFromStart());
         btnRutina.setOnMouseExited(e -> shrink2.playFromStart());
+        btnRutina.setOnAction(e -> handleNuevaRutina(instId));
 
-        info.getChildren().addAll(lblNombre, tagsRow, btnReservar, btnRutina);
+        // Acciones: Ver, Editar, Eliminar
+        HBox acciones = new HBox(6);
+        acciones.setAlignment(Pos.CENTER);
+
+        Button btnVer = new Button("Ver");
+        btnVer.setStyle("-fx-background-color: rgba(212,255,0,0.15); -fx-background-radius: 6;" +
+                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;");
+        btnVer.setOnMouseEntered(e -> btnVer.setStyle(
+                "-fx-background-color: #D4FF00; -fx-background-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: black; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                        "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnVer.setOnMouseExited(e -> btnVer.setStyle(
+                "-fx-background-color: rgba(212,255,0,0.15); -fx-background-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;" +
+                        "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnVer.setOnAction(e -> handleVerInstructor(instId));
+
+        Button btnEditar = new Button("Ed.");
+        btnEditar.setStyle("-fx-background-color: rgba(96,165,250,0.15); -fx-background-radius: 6;" +
+                "-fx-border-color: #60a5fa; -fx-border-width: 1; -fx-border-radius: 6;" +
+                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                "-fx-text-fill: #60a5fa; -fx-cursor: hand; -fx-padding: 4 8 4 8;");
+        btnEditar.setOnMouseEntered(e -> btnEditar.setStyle(
+                "-fx-background-color: #60a5fa; -fx-background-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: black; -fx-border-color: #60a5fa; -fx-border-width: 1;" +
+                        "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnEditar.setOnMouseExited(e -> btnEditar.setStyle(
+                "-fx-background-color: rgba(96,165,250,0.15); -fx-background-radius: 6;" +
+                        "-fx-border-color: #60a5fa; -fx-border-width: 1; -fx-border-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: #60a5fa; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnEditar.setOnAction(e -> handleEditarInstructor(instId));
+
+        Button btnEliminar = new Button("El.");
+        btnEliminar.setStyle("-fx-background-color: rgba(255,180,171,0.15); -fx-background-radius: 6;" +
+                "-fx-border-color: #ffb4ab; -fx-border-width: 1; -fx-border-radius: 6;" +
+                "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                "-fx-text-fill: #ffb4ab; -fx-cursor: hand; -fx-padding: 4 8 4 8;");
+        btnEliminar.setOnMouseEntered(e -> btnEliminar.setStyle(
+                "-fx-background-color: #ffb4ab; -fx-background-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: black; -fx-border-color: #ffb4ab; -fx-border-width: 1;" +
+                        "-fx-border-radius: 6; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnEliminar.setOnMouseExited(e -> btnEliminar.setStyle(
+                "-fx-background-color: rgba(255,180,171,0.15); -fx-background-radius: 6;" +
+                        "-fx-border-color: #ffb4ab; -fx-border-width: 1; -fx-border-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 9px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: #ffb4ab; -fx-cursor: hand; -fx-padding: 4 8 4 8;"));
+        btnEliminar.setOnAction(e -> handleEliminarInstructor(instId, inst.nombre()));
+
+        acciones.getChildren().addAll(btnVer, btnEditar, btnEliminar);
+
+        info.getChildren().addAll(lblNombre, acciones, btnReservar, btnRutina);
         card.getChildren().addAll(imageStack, info);
         return card;
     }
@@ -394,10 +442,29 @@ public class GestionInstructoresController implements Initializable {
 
     @FXML
     private void handleNuevaRutina() {
+        abrirNuevaRutina(null);
+    }
+
+    private void handleNuevaRutina(String instructorId) {
+        abrirNuevaRutina(instructorId);
+    }
+
+    private void abrirNuevaRutina(String instructorId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevaRutina.fxml"));
             Parent overlay = loader.load();
             NuevaRutinaController ctrl = loader.getController();
+
+            if (instructorId != null) {
+                ctrl.setInstructorSeleccionado(instructorId);
+
+                List<Rutina> rutinas = rutinaDAO.buscarPorInstructor(instructorId);
+                if (!rutinas.isEmpty()) {
+                    Rutina primera = rutinas.get(0);
+                    List<RutinaEjercicio> ejercicios = rutinaEjercicioDAO.listarPorRutina(primera.getIdRutina());
+                    ctrl.cargarRutina(primera, ejercicios);
+                }
+            }
 
             Scene scene = sideNav.getScene();
             Parent rootActual = scene.getRoot();
@@ -485,6 +552,68 @@ public class GestionInstructoresController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    //  HANDLERS — TARJETAS INSTRUCTOR (Ver / Editar / Eliminar)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private void handleVerInstructor(String id) {
+        try {
+            Instructor inst = instructorDAO.buscarPorId(id);
+            if (inst == null) return;
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PerfilInstructor.fxml"));
+            Parent overlay = loader.load();
+            PerfilInstructorController ctrl = loader.getController();
+            ctrl.setWrapperStack(wrapper, overlay);
+            ctrl.setInstructor(inst);
+
+            wrapper.getChildren().add(overlay);
+            scene.setRoot(wrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleEditarInstructor(String id) {
+        try {
+            Instructor inst = instructorDAO.buscarPorId(id);
+            if (inst == null) return;
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevoInstructor.fxml"));
+            Parent overlay = loader.load();
+            NuevoInstructorController ctrl = loader.getController();
+            ctrl.setInstructor(inst);
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+            scene.setRoot(wrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleEliminarInstructor(String id, String nombre) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Eliminar a " + nombre + "?", ButtonType.YES, ButtonType.NO);
+        confirm.setTitle("Confirmar eliminacion");
+        confirm.setHeaderText(null);
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.YES) {
+                instructorDAO.eliminar(id);
+                cargarDatosMock();
+                aplicarFiltro();
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — NAV
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -502,7 +631,7 @@ public class GestionInstructoresController implements Initializable {
         alert.setTitle("Cerrar sesion");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

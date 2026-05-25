@@ -88,7 +88,7 @@ public class PagoService {
             System.err.println("✗ No se encontró la membresía con ID: " + pago.getIdMembresia());
             return false;
         }
-        if (!membresia.getEstado().equals("activa")) {
+        if (!membresia.getEstado().equals("ACTIVA")) {
             System.err.println("✗ La membresía no está activa.");
             return false;
         }
@@ -108,7 +108,7 @@ public class PagoService {
 
         // 6. Establecer fecha y estado
         pago.setFechaPago(LocalDate.now());
-        pago.setEstadoPago("completado");
+        pago.setEstadoPago("EXITOSO");
 
         // 7. Persistir
         boolean resultado = pagoDAO.insertar(pago);

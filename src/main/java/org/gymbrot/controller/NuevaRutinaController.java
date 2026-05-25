@@ -73,6 +73,9 @@ public class NuevaRutinaController implements Initializable {
     private final EjercicioDAO ejercicioDAO = new EjercicioDAO();
     private final RutinaDAO rutinaDAO = new RutinaDAO();
 
+    private boolean modoEdicion = false;
+    private Rutina rutinaActual;
+
     private final Set<String> diasSeleccionados = new HashSet<>();
     private final ObservableList<EjercicioRow> ejerciciosList = FXCollections.observableArrayList();
     private StackPane wrapperStack;
@@ -219,6 +222,90 @@ public class NuevaRutinaController implements Initializable {
         this.overlayRoot = overlayRoot;
     }
 
+    public void setInstructorSeleccionado(String instructorId) {
+        for (String item : cmbInstructor.getItems()) {
+            String id = (String) cmbInstructor.getProperties().get(item);
+            if (id != null && id.equals(instructorId)) {
+                cmbInstructor.setValue(item);
+                break;
+            }
+        }
+    }
+
+    public void cargarRutina(Rutina rutina, List<RutinaEjercicio> ejercicios) {
+        this.rutinaActual = rutina;
+        this.modoEdicion = true;
+
+        txtNombre.setText(rutina.getNombre());
+        txtDescripcion.setText(rutina.getDescripcion());
+
+        for (Toggle toggle : tgObjetivo.getToggles()) {
+            RadioButton rb = (RadioButton) toggle;
+            if (rb.getText().equalsIgnoreCase(rutina.getObjetivo())) {
+                tgObjetivo.selectToggle(toggle);
+                break;
+            }
+        }
+
+        String nombreInstructor = null;
+        for (String item : cmbInstructor.getItems()) {
+            String id = (String) cmbInstructor.getProperties().get(item);
+            if (id != null && id.equals(rutina.getIdInstructor())) {
+                nombreInstructor = item;
+                break;
+            }
+        }
+        if (nombreInstructor != null) cmbInstructor.setValue(nombreInstructor);
+
+        String nombreCliente = null;
+        for (String item : cmbCliente.getItems()) {
+            String id = (String) cmbCliente.getProperties().get(item);
+            if (id != null && id.equals(rutina.getIdCliente())) {
+                nombreCliente = item;
+                break;
+            }
+        }
+        if (nombreCliente != null) cmbCliente.setValue(nombreCliente);
+
+        dpInicio.setValue(rutina.getFechaCreacion());
+        dpFin.setValue(rutina.getFechaFin());
+
+        if (rutina.getDiasSemana() != null) {
+            String[] partes = rutina.getDiasSemana().split(",");
+            for (String d : partes) {
+                String dia = d.trim();
+                if (dia.isEmpty()) continue;
+                diasSeleccionados.add(dia);
+                Button[] botones = {btnLunes, btnMartes, btnMiercoles, btnJueves, btnViernes, btnSabado, btnDomingo};
+                String[] dias = {"LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"};
+                for (int i = 0; i < dias.length; i++) {
+                    if (dias[i].equals(dia)) {
+                        botones[i].setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
+                                "-fx-border-color: rgba(212,255,0,0.5); -fx-border-width: 1;" +
+                                "-fx-border-radius: 8; -fx-font-family: 'Space Grotesk';" +
+                                "-fx-font-size: 11px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: #1a1c1f; -fx-cursor: hand;");
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (RutinaEjercicio re : ejercicios) {
+            Ejercicio ej = ejercicioDAO.buscarPorId(re.getIdEjercicio());
+            if (ej == null) continue;
+
+            Button btnEliminar = new Button("X");
+            btnEliminar.setStyle("-fx-background-color: transparent; -fx-text-fill: #ef4444;" +
+                    "-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;" +
+                    "-fx-cursor: hand; -fx-padding: 4 8 4 8;");
+            btnEliminar.setOnAction(e -> ejerciciosList.removeIf(row -> row.getNombre().equals(ej.getNombre())));
+
+            String carga = re.getNotasInstructor() != null ? re.getNotasInstructor() : ej.getSeries() + " x " + ej.getRepeticiones();
+            ejerciciosList.add(new EjercicioRow(ej.getNombre(), ej.getSeries(), ej.getRepeticiones(), carga, btnEliminar));
+        }
+    }
+
     @FXML
     private void handleGuardar() {
         if (txtNombre.getText() == null || txtNombre.getText().trim().isEmpty()) {
@@ -245,17 +332,33 @@ public class NuevaRutinaController implements Initializable {
         RadioButton selected = (RadioButton) tgObjetivo.getSelectedToggle();
         String objetivo = selected.getText();
 
-        Rutina rutina = new Rutina();
-        rutina.setNombre(txtNombre.getText().trim());
-        rutina.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
-        rutina.setObjetivo(objetivo);
-        rutina.setIdInstructor((String) cmbInstructor.getProperties().get(cmbInstructor.getValue()));
-        rutina.setIdCliente((String) cmbCliente.getProperties().get(cmbCliente.getValue()));
-        rutina.setFechaCreacion(dpInicio.getValue() != null ? dpInicio.getValue() : LocalDate.now());
-        rutina.setFechaFin(dpFin.getValue());
-        rutina.setDiasSemana(String.join(", ", diasSeleccionados));
+        Rutina rutina;
+        boolean guardado;
 
-        boolean guardado = rutinaDAO.insertar(rutina);
+        if (modoEdicion && rutinaActual != null) {
+            rutina = rutinaActual;
+            rutina.setNombre(txtNombre.getText().trim());
+            rutina.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
+            rutina.setObjetivo(objetivo);
+            rutina.setIdInstructor((String) cmbInstructor.getProperties().get(cmbInstructor.getValue()));
+            rutina.setIdCliente((String) cmbCliente.getProperties().get(cmbCliente.getValue()));
+            rutina.setFechaCreacion(dpInicio.getValue() != null ? dpInicio.getValue() : LocalDate.now());
+            rutina.setFechaFin(dpFin.getValue());
+            rutina.setDiasSemana(String.join(", ", diasSeleccionados));
+            guardado = rutinaDAO.actualizar(rutina);
+        } else {
+            rutina = new Rutina();
+            rutina.setNombre(txtNombre.getText().trim());
+            rutina.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
+            rutina.setObjetivo(objetivo);
+            rutina.setIdInstructor((String) cmbInstructor.getProperties().get(cmbInstructor.getValue()));
+            rutina.setIdCliente((String) cmbCliente.getProperties().get(cmbCliente.getValue()));
+            rutina.setFechaCreacion(dpInicio.getValue() != null ? dpInicio.getValue() : LocalDate.now());
+            rutina.setFechaFin(dpFin.getValue());
+            rutina.setDiasSemana(String.join(", ", diasSeleccionados));
+            guardado = rutinaDAO.insertar(rutina);
+        }
+
         if (guardado) {
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setTitle("Rutina Guardada");

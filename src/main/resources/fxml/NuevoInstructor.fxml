@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -121,7 +122,7 @@
                 <!-- Header de la pagina -->
                 <VBox spacing="6">
                     <VBox.margin><Insets bottom="32" /></VBox.margin>
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO INSTRUCTOR" />
+                    <Label fx:id="lblTituloPagina" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO INSTRUCTOR" />
                 </VBox>
 
                 <!-- Grid principal -->
@@ -207,10 +208,32 @@
                                 </VBox>
                             </HBox>
 
-                            <!-- Notas / Perfil profesional (ancho completo) -->
+                            <!-- Disponibilidad: Dias de la semana -->
+                            <VBox spacing="8">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="DIAS DE TRABAJO" />
+                                <HBox spacing="6">
+                                    <ToggleButton fx:id="togLun" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="LUN" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togMar" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="MAR" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togMie" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="MIE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togJue" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="JUE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togVie" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="VIE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togSab" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="SAB" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togDom" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="DOM" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+
+                            <!-- Disponibilidad: Horario -->
                             <VBox spacing="6">
-                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NOTAS ADICIONALES / PERFIL PROFESIONAL" />
-                                <TextArea fx:id="txtNotas" maxWidth="Infinity" prefHeight="120" promptText="Resumen de experiencia, certificaciones o habilidades clave..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8; -fx-control-inner-background: #1a1c1f;                                                  -fx-border-color: #1f2125; -fx-border-width: 1;                                                  -fx-border-radius: 8; -fx-font-family: 'Inter';                                                  -fx-font-size: 14px; -fx-text-fill: white;                                                  -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" wrapText="true" />
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="HORARIO" />
+                                <ComboBox fx:id="cmbHorario" maxWidth="Infinity" prefHeight="44" promptText="Seleccione horario..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                      -fx-border-color: #1f2125; -fx-border-width: 1;                                                      -fx-border-radius: 8; -fx-font-family: 'Inter';                                                      -fx-font-size: 14px; -fx-text-fill: white;" />
+                            </VBox>
+
+                            <!-- Notas adicionales -->
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NOTAS ADICIONALES" />
+                                <TextArea fx:id="txtNotas" maxWidth="Infinity" prefHeight="80" promptText="Experiencia, certificaciones o notas relevantes..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8; -fx-control-inner-background: #1a1c1f;                                                  -fx-border-color: #1f2125; -fx-border-width: 1;                                                  -fx-border-radius: 8; -fx-font-family: 'Inter';                                                  -fx-font-size: 14px; -fx-text-fill: white;                                                  -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" wrapText="true" />
                             </VBox>
 
                         </VBox>

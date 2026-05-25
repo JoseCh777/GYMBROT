@@ -92,10 +92,6 @@ public class NuevoClienteController implements Initializable {
     @FXML private Label       lblPorcentajeHuella;
     @FXML private Region      bioIndicator;
     @FXML private Label       bioStatusLabel;
-    @FXML private Region      dot1;
-    @FXML private Region      dot2;
-    @FXML private Region      dot3;
-    @FXML private Region      dot4;
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private File   archivoFotoSeleccionado = null;
@@ -170,8 +166,7 @@ public class NuevoClienteController implements Initializable {
                 case "CC" -> cmbTipoDoc.setValue("Cédula de Ciudadanía");
                 case "CE" -> cmbTipoDoc.setValue("Cédula de Extranjería");
                 case "TI" -> cmbTipoDoc.setValue("Tarjeta de Identidad");
-                case "PASAPORTE" -> cmbTipoDoc.setValue("Pasaporte");
-                case "NIT" -> cmbTipoDoc.setValue("NIT");
+                case "PP" -> cmbTipoDoc.setValue("Pasaporte");
             }
         }
 
@@ -321,10 +316,9 @@ public class NuevoClienteController implements Initializable {
 
     private void configurarComboBox() {
         cmbTipoDoc.getItems().addAll("Cédula de Ciudadanía", "Cédula de Extranjería",
-                "Tarjeta de Identidad", "Pasaporte", "NIT");
+                "Tarjeta de Identidad", "Pasaporte");
         cmbTipoDoc.getSelectionModel().selectFirst();
 
-        // Estilo del ComboBox para que coincida con los TextField
         cmbTipoDoc.setStyle(
                 "-fx-background-color: #1a1c1f; -fx-background-radius: 8;" +
                         "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 8;" +
@@ -682,8 +676,7 @@ public class NuevoClienteController implements Initializable {
             case "Cédula de Ciudadanía":        return "CC";
             case "Cédula de Extranjería":       return "CE";
             case "Tarjeta de Identidad":        return "TI";
-            case "Pasaporte":                   return "PASAPORTE";
-            case "NIT":                         return "NIT";
+            case "Pasaporte":                   return "PP";
             default:                            return display;
         }
     }
@@ -820,7 +813,7 @@ public class NuevoClienteController implements Initializable {
         alert.setTitle("Cerrar sesión");
         alert.setHeaderText(null);
         alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/Login.fxml");
+            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
         });
     }
 

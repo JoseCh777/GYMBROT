@@ -106,6 +106,27 @@ public class EjercicioDAO {
         return lista;
     }
 
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public Ejercicio buscarPorId(int id) {
+        String sql = """
+            SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
+                   series, repeticiones, duracion_minutos, nivel, recurso_url
+            FROM EJERCICIOS WHERE id_ejercicio = ?
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapearEjercicio(rs);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar ejercicio por id: " + e.getMessage());
+        }
+        return null;
+    }
+
     // ── BUSCAR POR GRUPO MUSCULAR ─────────────────────────────────────────
     public List<Ejercicio> buscarPorGrupoMuscular(String grupo) {
         List<Ejercicio> lista = new ArrayList<>();

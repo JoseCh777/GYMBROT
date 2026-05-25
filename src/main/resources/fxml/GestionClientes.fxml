@@ -119,10 +119,11 @@
                             <Label prefHeight="16.0" prefWidth="159.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL DE CLIENTES" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <Label fx:id="lblTotalClientes" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 32px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
-                        <HBox alignment="CENTER_LEFT" spacing="4">
-                            <Label style="-fx-font-size: 12px; -fx-text-fill: #D4FF00;" text="^" />
-                            <Label fx:id="lblTendenciaClientes" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0% vs mes anterior" />
-                        </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label fx:id="lblTendenciaClientes" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="0 registrados" />
+                                <Label fx:id="lblTasaTendencia" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;" text="-" />
+                            </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="4" />
                     </VBox>
 
                     <!-- Card: Sesiones Activas -->
@@ -145,21 +146,9 @@
                             <Label prefHeight="16.0" prefWidth="129.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TASA DE INGRESO" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <Label fx:id="lblTasaIngreso" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 32px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0%" />
-                        <HBox alignment="CENTER_LEFT" spacing="4">
-                            <Label style="-fx-font-size: 12px; -fx-text-fill: #ffb4ab;" text="v" />
-                            <Label fx:id="lblTasaTendencia" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #ffb4ab;" text="0% hoy" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card: Flujo Diario -->
-                    <VBox prefHeight="158.0" prefWidth="87.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #D4FF00; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
-                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
-                        <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="56.0">
-                            <Label prefHeight="16.0" prefWidth="150.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FLUJO DIARIO" HBox.hgrow="ALWAYS" />
-                        </HBox>
-                        <Label fx:id="lblFlujoDiario" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 32px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
                         <HBox alignment="CENTER_LEFT" spacing="4" />
                     </VBox>
+
 
                 </HBox>
 

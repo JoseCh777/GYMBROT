@@ -40,7 +40,6 @@ public class RegistroEntradaController implements Initializable {
     @FXML private TextField txtNumeroId;
     @FXML private PasswordField txtCodigoAcceso;
     @FXML private Button btnValidarIngreso;
-    @FXML private Button btnContactarSoporte;
 
     @FXML private Region scanLine;
     @FXML private ProgressBar pbScan;

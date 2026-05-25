@@ -4,7 +4,9 @@ import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Usuario;
+import org.gymbrot.util.DatabaseConnection;
 
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,86 +21,90 @@ public class ClienteService {
     }
 
     public boolean registrarCliente(Usuario usuario, Cliente cliente, byte[] templateHuella) {
-        try {
-            usuario.setFechaRegistro(LocalDate.now());
-            usuario.setEstado("activo");
-            usuario.setTipoUsuario("cliente");
+        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-            if (!usuarioDAO.insertar(usuario)) {
-                System.err.println("Error al insertar usuario");
-                return false;
+            cs.setString(1, usuario.getNumeroIdentificacion());
+            cs.setString(2, usuario.getTipoIdentificacion() != null ? usuario.getTipoIdentificacion().toUpperCase() : null);
+            cs.setString(3, usuario.getNombre());
+            cs.setString(4, usuario.getApellidos());
+            cs.setString(5, usuario.getTelefono());
+            cs.setString(6, usuario.getCorreo());
+            cs.setString(7, usuario.getContrasenaHash());
+            cs.setString(8, cliente.getDireccion());
+            if (cliente.getFechaNacimiento() != null) {
+                cs.setDate(9, Date.valueOf(cliente.getFechaNacimiento()));
+            } else {
+                cs.setNull(9, Types.DATE);
             }
-
-            cliente.setNumeroIdentificacion(usuario.getNumeroIdentificacion());
-
             if (templateHuella != null) {
-                cliente.setHuellaDactilar(templateHuella);
+                cs.setBytes(10, templateHuella);
+            } else {
+                cs.setNull(10, Types.BLOB);
             }
+            cs.registerOutParameter(11, Types.INTEGER);
+            cs.registerOutParameter(12, Types.VARCHAR);
+            cs.execute();
 
-            if (!clienteDAO.insertar(cliente)) {
-                System.err.println("Error al insertar cliente");
-                usuarioDAO.eliminar(usuario.getNumeroIdentificacion());
-                return false;
-            }
+            int codigo = cs.getInt(11);
+            String mensaje = cs.getString(12);
+            System.out.println(mensaje);
+            return codigo == 1;
 
-            System.out.println("✓ Cliente registrado exitosamente");
-            return true;
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error en registrarCliente: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Actualiza los datos de un cliente existente.
-     *
-     * @param usuario Datos del usuario actualizados
-     * @param cliente Datos del cliente actualizados
-     * @return true si se actualizó correctamente
-     */
     public boolean actualizarCliente(Usuario usuario, Cliente cliente) {
-        try {
-            // 1. Actualizar tabla USUARIOS
-            if (!usuarioDAO.actualizar(usuario)) {
-                System.err.println("Error al actualizar usuario");
-                return false;
+        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_CLIENTE(?,?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, usuario.getNumeroIdentificacion());
+            cs.setString(2, usuario.getNombre());
+            cs.setString(3, usuario.getApellidos());
+            cs.setString(4, usuario.getTelefono());
+            cs.setString(5, usuario.getCorreo());
+            cs.setString(6, cliente.getDireccion());
+            if (cliente.getFechaNacimiento() != null) {
+                cs.setDate(7, Date.valueOf(cliente.getFechaNacimiento()));
+            } else {
+                cs.setNull(7, Types.DATE);
             }
-
-            if (!clienteDAO.actualizar(cliente)) {
-                System.err.println("Error al actualizar cliente");
-                return false;
+            if (cliente.getHuellaDactilar() != null) {
+                cs.setBytes(8, cliente.getHuellaDactilar());
+            } else {
+                cs.setNull(8, Types.BLOB);
             }
+            cs.registerOutParameter(9, Types.INTEGER);
+            cs.registerOutParameter(10, Types.VARCHAR);
+            cs.execute();
 
-            System.out.println("✓ Cliente actualizado exitosamente");
-            return true;
+            int codigo = cs.getInt(9);
+            String mensaje = cs.getString(10);
+            System.out.println(mensaje);
+            return codigo == 1;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error en actualizarCliente: " + e.getMessage());
             return false;
         }
     }
-    /**
-     * Elimina un cliente del sistema.
-     *
-     * @param numeroIdentificacion ID del cliente
-     * @return true si se eliminó correctamente
-     */
+
     public boolean eliminarCliente(String numeroIdentificacion) {
         try {
-            // 1. Eliminar de tabla CLIENTES
             if (!clienteDAO.eliminar(numeroIdentificacion)) {
                 System.err.println("Error al eliminar cliente");
                 return false;
             }
-
-            // 2. Eliminar de tabla USUARIOS
             if (!usuarioDAO.eliminar(numeroIdentificacion)) {
                 System.err.println("Error al eliminar usuario");
                 return false;
             }
-
-            System.out.println("✓ Cliente eliminado exitosamente");
+            System.out.println("Cliente eliminado exitosamente");
             return true;
 
         } catch (Exception e) {
@@ -107,12 +113,6 @@ public class ClienteService {
         }
     }
 
-    /**
-     * Busca un cliente por su número de identificación.
-     *
-     * @param numeroIdentificacion ID del cliente
-     * @return Cliente encontrado o null
-     */
     public Cliente buscarCliente(String numeroIdentificacion) {
         try {
             return clienteDAO.buscarPorId(numeroIdentificacion);
@@ -122,56 +122,24 @@ public class ClienteService {
         }
     }
 
-    /**
-     * Lista todos los clientes registrados en el sistema.
-     *
-     * @return Lista de clientes
-     */
     public List<Cliente> listarClientes() {
         try {
             return clienteDAO.listarTodos();
         } catch (Exception e) {
             System.err.println("Error en listarClientes: " + e.getMessage());
-            return List.of(); // Lista vacía
+            return List.of();
         }
     }
-    /**
-     * Cambia el estado de un cliente (activo, inactivo, suspendido).
-     *
-     * @param numeroIdentificacion ID del cliente
-     * @param nuevoEstado Estado a establecer
-     * @return true si se cambió correctamente
-     */
+
     public boolean cambiarEstado(String numeroIdentificacion, String nuevoEstado) {
         try {
-            // 1. Buscar el usuario actual
             Usuario usuario = usuarioDAO.buscarPorId(numeroIdentificacion);
-
             if (usuario == null) {
                 System.err.println("Usuario no encontrado");
                 return false;
             }
-
-            // 2. Validar estado
-            if (!nuevoEstado.equals("activo") &&
-                    !nuevoEstado.equals("inactivo") &&
-                    !nuevoEstado.equals("suspendido")) {
-                System.err.println("Estado no válido: " + nuevoEstado);
-                return false;
-            }
-
-            // 3. Cambiar estado
-            usuario.setEstado(nuevoEstado);
-
-            // 4. Actualizar en BD
-            if (!usuarioDAO.actualizar(usuario)) {
-                System.err.println("Error al cambiar estado");
-                return false;
-            }
-
-            System.out.println("✓ Estado cambiado a: " + nuevoEstado);
-            return true;
-
+            usuario.setEstado(nuevoEstado.toUpperCase());
+            return usuarioDAO.actualizar(usuario);
         } catch (Exception e) {
             System.err.println("Error en cambiarEstado: " + e.getMessage());
             return false;

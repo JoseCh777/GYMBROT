@@ -4,8 +4,9 @@ import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Instructor;
 import org.gymbrot.model.Usuario;
+import org.gymbrot.util.DatabaseConnection;
 
-import java.time.LocalDate;
+import java.sql.*;
 import java.util.List;
 
 public class InstructorService {
@@ -18,96 +19,73 @@ public class InstructorService {
         this.instructorDAO = new InstructorDAO();
     }
 
-    /**
-     * Registra un nuevo instructor en el sistema.
-     *
-     * @param usuario Datos del usuario
-     * @param instructor Datos específicos del instructor
-     * @return true si se registró correctamente
-     */
     public boolean registrarInstructor(Usuario usuario, Instructor instructor) {
-        try {
-            // 1. Establecer valores por defecto
-            usuario.setFechaRegistro(LocalDate.now());
-            usuario.setEstado("activo");
-            usuario.setTipoUsuario("instructor");
+        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-            // 2. Insertar en tabla USUARIOS
-            if (!usuarioDAO.insertar(usuario)) {
-                System.err.println("Error al insertar usuario");
-                return false;
-            }
+            cs.setString(1, usuario.getNumeroIdentificacion());
+            cs.setString(2, usuario.getTipoIdentificacion() != null ? usuario.getTipoIdentificacion().toUpperCase() : null);
+            cs.setString(3, usuario.getNombre());
+            cs.setString(4, usuario.getApellidos());
+            cs.setString(5, usuario.getTelefono());
+            cs.setString(6, usuario.getCorreo());
+            cs.setString(7, usuario.getContrasenaHash());
+            cs.setInt(8, instructor.getIdEspecialidad());
+            cs.setString(9, instructor.getDisponibilidad());
+            cs.registerOutParameter(10, Types.INTEGER);
+            cs.registerOutParameter(11, Types.VARCHAR);
+            cs.execute();
 
-            // 3. Establecer la misma identificación
-            instructor.setNumeroIdentificacion(usuario.getNumeroIdentificacion());
+            int codigo = cs.getInt(10);
+            String mensaje = cs.getString(11);
+            System.out.println(mensaje);
+            return codigo == 1;
 
-            // 4. Insertar en tabla INSTRUCTORES
-            if (!instructorDAO.insertar(instructor)) {
-                System.err.println("Error al insertar instructor");
-                // Rollback
-                usuarioDAO.eliminar(usuario.getNumeroIdentificacion());
-                return false;
-            }
-
-            System.out.println("✓ Instructor registrado exitosamente");
-            return true;
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error en registrarInstructor: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Actualiza los datos de un instructor existente.
-     *
-     * @param usuario Datos del usuario actualizados
-     * @param instructor Datos del instructor actualizados
-     * @return true si se actualizó correctamente
-     */
     public boolean actualizarInstructor(Usuario usuario, Instructor instructor) {
-        try {
-            // 1. Actualizar tabla USUARIOS
-            if (!usuarioDAO.actualizar(usuario)) {
-                System.err.println("Error al actualizar usuario");
-                return false;
-            }
+        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-            // 2. Actualizar tabla INSTRUCTORES
-            if (!instructorDAO.actualizar(instructor)) {
-                System.err.println("Error al actualizar instructor");
-                return false;
-            }
+            cs.setString(1, usuario.getNumeroIdentificacion());
+            cs.setString(2, usuario.getNombre());
+            cs.setString(3, usuario.getApellidos());
+            cs.setString(4, usuario.getTelefono());
+            cs.setString(5, usuario.getCorreo());
+            cs.setInt(6, instructor.getIdEspecialidad());
+            cs.setString(7, instructor.getDisponibilidad());
+            cs.registerOutParameter(8, Types.INTEGER);
+            cs.registerOutParameter(9, Types.VARCHAR);
+            cs.execute();
 
-            System.out.println("✓ Instructor actualizado exitosamente");
-            return true;
+            int codigo = cs.getInt(8);
+            String mensaje = cs.getString(9);
+            System.out.println(mensaje);
+            return codigo == 1;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error en actualizarInstructor: " + e.getMessage());
             return false;
         }
     }
-    /**
-     * Elimina un instructor del sistema.
-     *
-     * @param numeroIdentificacion ID del instructor
-     * @return true si se eliminó correctamente
-     */
+
     public boolean eliminarInstructor(String numeroIdentificacion) {
         try {
-            // 1. Eliminar de tabla INSTRUCTORES
             if (!instructorDAO.eliminar(numeroIdentificacion)) {
                 System.err.println("Error al eliminar instructor");
                 return false;
             }
-
-            // 2. Eliminar de tabla USUARIOS
             if (!usuarioDAO.eliminar(numeroIdentificacion)) {
                 System.err.println("Error al eliminar usuario");
                 return false;
             }
-
-            System.out.println("✓ Instructor eliminado exitosamente");
+            System.out.println("Instructor eliminado exitosamente");
             return true;
 
         } catch (Exception e) {
@@ -116,11 +94,6 @@ public class InstructorService {
         }
     }
 
-    /**
-     * Lista todos los instructores del gimnasio.
-     *
-     * @return Lista de instructores
-     */
     public List<Instructor> listarInstructores() {
         try {
             return instructorDAO.listarTodos();
@@ -130,11 +103,6 @@ public class InstructorService {
         }
     }
 
-    /**
-     * Lista solo los instructores disponibles (estado activo).
-     *
-     * @return Lista de instructores disponibles
-     */
     public List<Instructor> listarDisponibles() {
         try {
             return instructorDAO.listarDisponibles();

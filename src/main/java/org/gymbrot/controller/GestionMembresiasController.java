@@ -150,7 +150,7 @@ public class GestionMembresiasController implements Initializable {
 
     @FXML
     private void handleLogout(ActionEvent event) {
-        navegarA("/fxml/Login.fxml", event);
+        navegarA("/fxml/login.fxml", event);
     }
 
     // ══ Selector de duracion ══════════════════════════════════

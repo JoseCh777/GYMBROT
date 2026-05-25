@@ -29,7 +29,6 @@ public class loginController implements Initializable {
     @FXML private VBox loginCard;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
-    @FXML private CheckBox rememberMe;
     @FXML private Hyperlink forgotPasswordLink;
     @FXML private Button loginButton;
     @FXML private Region bioIndicator;

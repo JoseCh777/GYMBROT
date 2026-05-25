@@ -16,7 +16,7 @@ public class ProgresoDAO {
     // ── INSERTAR ──────────────────────────────────────────────────────────
     public boolean insertar(Progreso p) {
         String sql = """
-            INSERT INTO PROGRESO
+            INSERT INTO PROGRESOS
                 (id_cliente, fecha_registro, peso, altura, imc,
                  porcentaje_grasa, masa_muscular, objetivo, observaciones)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -48,7 +48,7 @@ public class ProgresoDAO {
         String sql = """
             SELECT id_progreso, id_cliente, fecha_registro, peso, altura,
                    imc, porcentaje_grasa, masa_muscular, objetivo, observaciones
-            FROM PROGRESO WHERE id_cliente = ? ORDER BY fecha_registro DESC
+            FROM PROGRESOS WHERE id_cliente = ? ORDER BY fecha_registro DESC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {

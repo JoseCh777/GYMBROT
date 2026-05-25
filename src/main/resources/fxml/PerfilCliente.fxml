@@ -18,7 +18,7 @@
 <StackPane style="-fx-background-color: rgba(12,14,17,0.95);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.PerfilClienteController">
 
     <!-- Modal principal -->
-    <VBox maxHeight="860" maxWidth="1000" style="-fx-background-color: rgba(26,29,33,0.75);                  -fx-background-radius: 24;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 24;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.15), 28, 0, 0, 0);">
+    <VBox maxHeight="688" maxWidth="912" style="-fx-background-color: rgba(26,29,33,0.75);                  -fx-background-radius: 24;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 24;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.15), 28, 0, 0, 0);">
 
         <!-- ── SCROLL para todo el contenido ── -->
         <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;" VBox.vgrow="ALWAYS">

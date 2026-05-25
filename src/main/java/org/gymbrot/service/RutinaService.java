@@ -8,6 +8,9 @@ import org.gymbrot.dao.RutinaEjercicioDAO;
 import org.gymbrot.model.Rutina;
 import org.gymbrot.model.Ejercicio;
 import org.gymbrot.model.RutinaEjercicio;
+import org.gymbrot.util.DatabaseConnection;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -119,6 +122,51 @@ public class RutinaService {
             System.out.println("✓ Rutina '" + rutina.getNombre() + "' creada exitosamente.");
         }
         return resultado;
+    }
+
+    /**
+     * Crea una rutina completa con sus ejercicios en una sola transacción.
+     * @param rutina Rutina a crear.
+     * @param idsEjercicios Lista de IDs de ejercicios a incluir.
+     * @return true si se creó exitosamente.
+     */
+    public boolean crearRutinaCompleta(Rutina rutina, List<Integer> idsEjercicios) {
+        String sql = "{call PKG_GYMBROT.SP_CREAR_RUTINA_COMPLETA(?,?,?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, rutina.getIdInstructor());
+            cs.setString(2, rutina.getIdCliente());
+            cs.setString(3, rutina.getNombre());
+            cs.setString(4, rutina.getDescripcion());
+            if (rutina.getFechaFin() != null) {
+                cs.setDate(5, Date.valueOf(rutina.getFechaFin()));
+            } else {
+                cs.setNull(5, Types.DATE);
+            }
+            cs.setString(6, rutina.getDiasSemana());
+            cs.setString(7, rutina.getObjetivo());
+
+            if (idsEjercicios != null && !idsEjercicios.isEmpty()) {
+                Array array = conn.createArrayOf("NUMBER", idsEjercicios.toArray());
+                cs.setArray(8, array);
+            } else {
+                cs.setNull(8, Types.ARRAY);
+            }
+
+            cs.registerOutParameter(9, Types.INTEGER);
+            cs.registerOutParameter(10, Types.VARCHAR);
+            cs.execute();
+
+            int codigo = cs.getInt(9);
+            String mensaje = cs.getString(10);
+            System.out.println(mensaje);
+            return codigo == 1;
+
+        } catch (SQLException e) {
+            System.err.println("Error en crearRutinaCompleta: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
