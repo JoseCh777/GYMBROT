@@ -12,12 +12,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.gymbrot.service.ChatbotService;
+import org.gymbrot.model.MensajeGymbrot;
 import org.gymbrot.model.SesionGymbrot;
+import org.gymbrot.service.ChatbotService;
+import org.gymbrot.util.ChatbotSession;
 
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class GymbroAIController {
 
@@ -34,20 +37,42 @@ public class GymbroAIController {
 
     private final ChatbotService chatbotService = new ChatbotService();
     private SesionGymbrot sesionActual;
-    private String idClienteActual = "123456"; // ← cambiar por el cliente logueado
+    private String idClienteActual = "123456";
 
     @FXML
     public void initialize() {
         configurarAnimacionesNav();
         setNavActivo(navAI);
 
-        // Iniciar sesión del chatbot
-        sesionActual = chatbotService.iniciarSesion(idClienteActual);
-        System.out.println("Sesión GymBrot iniciada: " + sesionActual.getIdSesion());
+        ChatbotSession session = ChatbotSession.getInstance();
 
-        // Scroll al fondo cuando cambia el contenido
+        if (!session.tieneSesionActiva()) {
+            sesionActual = chatbotService.iniciarSesion(idClienteActual);
+            session.setSesionActual(sesionActual);
+            session.setIdCliente(idClienteActual);
+            System.out.println("Nueva sesión GymBrot: " + sesionActual.getIdSesion());
+        } else {
+            sesionActual = session.getSesionActual();
+            idClienteActual = session.getIdCliente();
+            System.out.println("Sesión GymBrot restaurada: " + sesionActual.getIdSesion());
+            cargarHistorialEnUI();
+        }
+
         vboxMensajes.heightProperty().addListener((obs, oldVal, newVal) ->
                 scrollChat.setVvalue(1.0));
+    }
+
+    // ── CARGAR HISTORIAL EN UI ────────────────────────────────────────────
+    private void cargarHistorialEnUI() {
+        List<MensajeGymbrot> historial = chatbotService.obtenerHistorial(sesionActual.getIdSesion());
+        if (historial == null || historial.isEmpty()) return;
+        for (MensajeGymbrot msg : historial) {
+            if (msg.getRemitente().equals("CLIENTE")) {
+                agregarBurbujaUsuario(msg.getContenido());
+            } else {
+                agregarBurbujaBot(msg.getContenido());
+            }
+        }
     }
 
     // ── ENVIAR MENSAJE ────────────────────────────────────────────────────
@@ -56,23 +81,18 @@ public class GymbroAIController {
         String texto = txtMensaje.getText().trim();
         if (texto.isEmpty()) return;
 
-        // Mostrar burbuja del usuario
         agregarBurbujaUsuario(texto);
         txtMensaje.clear();
 
-        // Mostrar indicador de escritura
         HBox typing = crearIndicadorEscritura();
         vboxMensajes.getChildren().add(typing);
 
-        // Llamar al chatbot en hilo separado para no bloquear la UI
         new Thread(() -> {
             String respuesta = chatbotService.procesarMensaje(
                     sesionActual.getIdSesion(), texto, idClienteActual);
 
             Platform.runLater(() -> {
-                // Quitar indicador de escritura
                 vboxMensajes.getChildren().remove(typing);
-                // Mostrar respuesta del bot
                 agregarBurbujaBot(respuesta);
             });
         }).start();
@@ -117,7 +137,6 @@ public class GymbroAIController {
         HBox hbox = new HBox(12);
         hbox.setAlignment(Pos.TOP_LEFT);
 
-        // Avatar
         HBox avatar = new HBox();
         avatar.setAlignment(Pos.CENTER);
         avatar.setPrefWidth(36);
@@ -134,7 +153,6 @@ public class GymbroAIController {
                         "-fx-font-weight: 900; -fx-text-fill: #D4FF00;");
         avatar.getChildren().add(g);
 
-        // Contenido
         VBox burbuja = new VBox(6);
         burbuja.setMaxWidth(700);
 
@@ -226,6 +244,7 @@ public class GymbroAIController {
     private void handleLogout() {
         if (sesionActual != null) {
             chatbotService.cerrarSesion(sesionActual.getIdSesion());
+            ChatbotSession.getInstance().setSesionActual(null);
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
@@ -314,12 +333,14 @@ public class GymbroAIController {
         }
     }
 
-    // ── SETTER para recibir el cliente logueado desde el Dashboard ────────
     public void setIdCliente(String idCliente) {
         this.idClienteActual = idCliente;
-        if (sesionActual != null) {
-            chatbotService.cerrarSesion(sesionActual.getIdSesion());
+        ChatbotSession session = ChatbotSession.getInstance();
+        if (!session.tieneSesionActiva()) {
+            if (sesionActual != null) chatbotService.cerrarSesion(sesionActual.getIdSesion());
+            sesionActual = chatbotService.iniciarSesion(idCliente);
+            session.setSesionActual(sesionActual);
+            session.setIdCliente(idCliente);
         }
-        sesionActual = chatbotService.iniciarSesion(idCliente);
     }
 }

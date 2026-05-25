@@ -226,14 +226,16 @@ public class ChatbotService {
                     && !textoLower.contains("agend")
                     && !textoLower.contains("reserv");
             if (!correosDetectados.isEmpty() && pidioInfoGeneral) {
+
+
                 String planesContexto = consultaService.buscarInfoRelevante("planes membresia precio");
-                String instructoresContexto = consultaService.buscarInfoRelevante("instructor");
                 String contenidoCorreo = "<h2>¡Bienvenido a GYMBROT Valledupar!</h2>" +
-                    "<p>Aquí está la información actualizada de nuestro gimnasio:</p>" +
-                    "<pre style='font-family:Arial;'>" +
-                    planesContexto + "\n" + instructoresContexto +
-                    "</pre>" +
-                    "<p>¡Te esperamos en GYMBROT!</p>";
+                        "<p>Aquí está la información actualizada de nuestro gimnasio:</p>" +
+                        "<pre style='font-family:Arial;'>" +
+                        planesContexto +
+                        "</pre>" +
+                        "<p>Para consultar disponibilidad de instructores, escríbenos por el chat.</p>" +
+                        "<p>¡Te esperamos en GYMBROT!</p>";
                 for (String correo : correosDetectados) {
                     emailService.enviarCorreo(correo, "Información GYMBROT", contenidoCorreo);
                     System.out.println("Correo enviado a: " + correo);
@@ -346,7 +348,7 @@ public class ChatbotService {
     private LocalTime extraerHoraDeTexto(String texto) {
         String textoLower = texto.toLowerCase();
 
-        // ✅ Detecta: 10am, 10 am, 10:00, 10:00am, 10:00 am
+        //  Detecta: 10am, 10 am, 10:00, 10:00am, 10:00 am
         java.util.regex.Pattern horaPattern = java.util.regex.Pattern.compile(
             "(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
         java.util.regex.Matcher horaMatcher = horaPattern.matcher(textoLower);
@@ -359,7 +361,7 @@ public class ChatbotService {
             return LocalTime.of(h, min);
         }
 
-        // ✅ Detecta formato 24h: 15:00, 08:30
+        // Detecta formato 24h: 15:00, 08:30
         java.util.regex.Pattern hora24Pattern = java.util.regex.Pattern.compile(
             "\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
         java.util.regex.Matcher hora24Matcher = hora24Pattern.matcher(textoLower);

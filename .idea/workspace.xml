@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;feat: conectar chatbot con interfaz GymbroAI&quot;&#10;git push origin backend/Daniel">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/ChatbotSession.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GymbroAIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GymbroAIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/loginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/UsuarioDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +49,13 @@
   </component>
   <component name="EmbeddingIndexingInfo">
     <option name="cachedIndexableFilesCount" value="166" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -98,6 +105,9 @@
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1,
@@ -395,7 +405,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779648792411</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="git add .&#10;git commit -m &quot;feat: conectar chatbot con interfaz GymbroAI&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779665440779</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1779665440780</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
