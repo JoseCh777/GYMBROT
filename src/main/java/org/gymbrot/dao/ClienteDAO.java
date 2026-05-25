@@ -23,8 +23,15 @@ public class ClienteDAO {
 
             pstmt.setString(1, cliente.getNumeroIdentificacion());
             pstmt.setString(2, cliente.getDireccion());
-            pstmt.setDate(3, Date.valueOf(cliente.getFechaNacimiento()));
 
+            // CORRECCIÓN: manejar null en fecha_nacimiento
+            if (cliente.getFechaNacimiento() != null) {
+                pstmt.setDate(3, Date.valueOf(cliente.getFechaNacimiento()));
+            } else {
+                pstmt.setNull(3, Types.DATE);
+            }
+
+            // CORRECCIÓN: manejar null en huella_dactilar
             if (cliente.getHuellaDactilar() != null) {
                 pstmt.setBytes(4, cliente.getHuellaDactilar());
             } else {
@@ -48,8 +55,15 @@ public class ClienteDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, cliente.getDireccion());
-            pstmt.setDate(2, Date.valueOf(cliente.getFechaNacimiento()));
 
+            // CORRECCIÓN: manejar null en fecha_nacimiento
+            if (cliente.getFechaNacimiento() != null) {
+                pstmt.setDate(2, Date.valueOf(cliente.getFechaNacimiento()));
+            } else {
+                pstmt.setNull(2, Types.DATE);
+            }
+
+            // CORRECCIÓN: manejar null en huella_dactilar
             if (cliente.getHuellaDactilar() != null) {
                 pstmt.setBytes(3, cliente.getHuellaDactilar());
             } else {
@@ -167,7 +181,7 @@ public class ClienteDAO {
                 "FROM CLIENTES c " +
                 "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
                 "WHERE c.huella_dactilar IS NOT NULL " +
-                "AND u.estado = 'activo'";
+                "AND u.estado = 'ACTIVO'";
 
         try (Connection conn = getConexion();
              Statement stmt = conn.createStatement();

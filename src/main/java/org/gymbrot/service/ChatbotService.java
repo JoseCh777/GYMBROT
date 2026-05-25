@@ -3,6 +3,11 @@ package org.gymbrot.service;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,6 +70,12 @@ public class ChatbotService {
                 || textoLower.contains("nuevo cliente") || textoLower.contains("agregar cliente")) {
 
             contextoExtra = procesarCrearCliente(texto, historial);
+
+            // ── CREAR RUTINA ─────────────────────────────────────────────────
+        } else if (textoLower.contains("crear rutina") || textoLower.contains("crea rutina")
+                || textoLower.contains("generar rutina") || textoLower.contains("nueva rutina")) {
+
+            contextoExtra = procesarCrearRutina(texto, historial, idAdmin);
 
             // ── CONSULTAR CLIENTE ─────────────────────────────────────────────
         } else if ((textoLower.contains("consultar cliente") || textoLower.contains("buscar cliente")
@@ -188,10 +199,10 @@ public class ChatbotService {
                             "Cita agendada - GYMBROT",
                             "<h2>¡Cita agendada!</h2>" +
                                     "<table style='border-collapse:collapse;'>" +
-                                    "<tr><td><b>ID:</b></td><td>#" + idCitaCreada + "</td></tr>" +
-                                    "<tr><td><b>Instructor:</b></td><td>" + nombreInst + "</td></tr>" +
-                                    "<tr><td><b>Fecha:</b></td><td>" + fechaFmt + "</td></tr>" +
-                                    "<tr><td><b>Hora:</b></td><td>" + horaFmt + "</td></tr>" +
+                                    "<tr><td><b>ID:</b>NonNuller匹配" + idCitaCreada + "NonNuller匹配" +
+                                    "<tr><td><b>Instructor:</b>NonNuller匹配" + nombreInst + "NonNuller匹配" +
+                                    "<tr>。<b>Fecha:</b>NonNuller匹配" + fechaFmt + "NonNuller匹配" +
+                                    "<tr>。<b>Hora:</b>NonNuller匹配" + horaFmt + "NonNuller匹配" +
                                     "</table><p>¡Te esperamos en GYMBROT!</p>");
                 }
 
@@ -357,11 +368,136 @@ public class ChatbotService {
     }
 
     // ═════════════════════════════════════════════════════════════════════
+    //  CREAR RUTINA
+    // ═════════════════════════════════════════════════════════════════════
+    private String procesarCrearRutina(String texto, List<MensajeGymbrot> historial, String idAdmin) {
+        System.out.println("[procesarCrearRutina] Iniciando...");
+
+        // Extraer ID del cliente
+        String idCliente = extraerIdCliente(texto);
+        if (idCliente == null) {
+            return " [SISTEMA: No se encontró el ID del cliente. Pídele al administrador que indique el ID.]";
+        }
+
+        System.out.println("[procesarCrearRutina] Cliente ID: " + idCliente);
+
+        // Verificar que el cliente existe
+        Cliente cliente = clienteDAO.buscarPorId(idCliente);
+        if (cliente == null) {
+            return " [SISTEMA: No existe un cliente con ID " + idCliente + ". Informa al administrador.]";
+        }
+
+        // Extraer objetivo de la rutina
+        String objetivo = extraerObjetivoRutina(texto);
+        if (objetivo == null) objetivo = "mejorar condición física";
+
+        // Extraer días de la semana
+        String diasSemana = extraerDiasSemanaRutina(texto);
+        if (diasSemana == null) diasSemana = "Lunes, Miércoles, Viernes";
+
+        System.out.println("[procesarCrearRutina] Objetivo: " + objetivo);
+        System.out.println("[procesarCrearRutina] Días: " + diasSemana);
+
+        // Generar rutina con IA
+        String prompt = "Crea una rutina de ejercicios semanal para un cliente de gimnasio con objetivo: " + objetivo +
+                ". Los días de entrenamiento son: " + diasSemana +
+                ". Incluye series y repeticiones para cada ejercicio. Da solo la rutina, sin explicaciones adicionales.";
+
+        String rutinaGenerada = groqService.enviarMensaje(prompt, historial);
+        System.out.println("[procesarCrearRutina] Rutina generada por IA");
+
+        // Crear objeto Rutina
+        Rutina rutina = new Rutina();
+        rutina.setIdCliente(idCliente);
+        rutina.setIdInstructor("INS001");
+        rutina.setNombre("Rutina - " + objetivo);
+        rutina.setDescripcion(rutinaGenerada);
+        rutina.setFechaCreacion(LocalDate.now());
+        rutina.setDiasSemana(diasSemana);
+        rutina.setObjetivo(objetivo);
+        rutina.setFechaFin(null);
+
+        // Guardar en tabla RUTINAS
+        int idRutina = insertarRutinaYRetornarId(rutina);
+        System.out.println("[procesarCrearRutina] ID Rutina: " + idRutina);
+
+        if (idRutina > 0) {
+            // Enviar notificaciones al cliente
+            notifService.enviarSmsDirecto(
+                    "GYMBROT: Se ha creado una nueva rutina para ti. Objetivo: " + objetivo +
+                            ". Consulta tu correo para más detalles.");
+
+            if (cliente.getCorreo() != null) {
+                emailService.enviarCorreo(cliente.getCorreo(),
+                        "Nueva rutina - GYMBROT",
+                        "<h2>¡Nueva rutina asignada!</h2>" +
+                                "<p>Hola <b>" + cliente.getNombre() + "</b>,</p>" +
+                                "<p>Se ha creado una nueva rutina para ti con el objetivo: <b>" + objetivo + "</b></p>" +
+                                "<p>Días de entrenamiento: " + diasSemana + "</p>" +
+                                "<pre style='background:#f4f4f4;padding:10px;'>" + rutinaGenerada + "</pre>" +
+                                "<p>¡A entrenar! 💪</p>");
+            }
+
+            return " [SISTEMA: Rutina creada exitosamente para el cliente " + cliente.getNombre() +
+                    " (ID: " + idCliente + "). ID de rutina: #" + idRutina +
+                    ". Objetivo: " + objetivo + ". Días: " + diasSemana +
+                    ". SMS y correo enviados al cliente.]";
+        } else {
+            return " [SISTEMA: No se pudo guardar la rutina en la base de datos. Informa al administrador.]";
+        }
+    }
+
+    private int insertarRutinaYRetornarId(Rutina rutina) {
+        String sql = "INSERT INTO RUTINAS (id_instructor, id_cliente, nombre, descripcion, fecha_creacion, fecha_fin, dias_semana, objetivo) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(sql, new String[]{"id_rutina"})) {
+
+            ps.setString(1, rutina.getIdInstructor());
+            ps.setString(2, rutina.getIdCliente());
+            ps.setString(3, rutina.getNombre());
+            ps.setString(4, rutina.getDescripcion());
+            ps.setDate(5, Date.valueOf(rutina.getFechaCreacion()));
+            ps.setDate(6, rutina.getFechaFin() != null ? Date.valueOf(rutina.getFechaFin()) : null);
+            ps.setString(7, rutina.getDiasSemana());
+            ps.setString(8, rutina.getObjetivo());
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[insertarRutinaYRetornarId] Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private String extraerObjetivoRutina(String texto) {
+        Pattern p = Pattern.compile("objetivo[:\\s]+([\\w\\s]+?)(?:,|\\.|$)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return m.group(1).trim();
+
+        if (texto.toLowerCase().contains("masa muscular")) return "ganar masa muscular";
+        if (texto.toLowerCase().contains("perder peso")) return "perder peso";
+        if (texto.toLowerCase().contains("definición")) return "definición muscular";
+        if (texto.toLowerCase().contains("resistencia")) return "mejorar resistencia";
+        return null;
+    }
+
+    private String extraerDiasSemanaRutina(String texto) {
+        Pattern p = Pattern.compile("dias[:\\s]+([\\w\\s,]+?)(?:,|\\.|$)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return m.group(1).trim();
+        return null;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
     //  MODIFICAR CLIENTE
-    //  Actualiza USUARIOS (datos personales) y CLIENTES (dirección/nacimiento).
-    //  Solo modifica los campos que el administrador proporciona; los demás
-    //  conservan el valor actual de la BD. Guarda ambas tablas en la misma
-    //  operación y registra cada cambio en los logs de debug.
     // ═════════════════════════════════════════════════════════════════════
     private String procesarModificarCliente(String texto, List<MensajeGymbrot> historial) {
 
@@ -422,7 +558,6 @@ public class ChatbotService {
         }
 
         // ── 6. Aplicar cambios sobre los datos actuales (merge) ───────────
-        //      Se usa el valor nuevo si viene; de lo contrario, se conserva el actual.
         StringBuilder cambiosLog = new StringBuilder();
 
         if (nuevoNombre != null && !nuevoNombre.equalsIgnoreCase(clienteActual.getNombre())) {
@@ -575,10 +710,6 @@ public class ChatbotService {
         }
 
         // ── Insertar en CLIENTES ──────────────────────────────────────────
-        // CORRECCIÓN CRÍTICA: fecha_nacimiento puede ser null.
-        // En el DAO original se hacía Date.valueOf(null) → NullPointerException
-        // que tumbaba el insert silenciosamente. Ahora se pasa null de forma segura
-        // usando el método corregido insertarCliente() que usa setNull cuando es null.
         Cliente cliente = new Cliente();
         cliente.setNumeroIdentificacion(id);
         cliente.setDireccion(direccion != null ? direccion : "");
@@ -590,7 +721,6 @@ public class ChatbotService {
         System.out.println("[procesarCrearCliente] CLIENTE insertado=" + clienteCreado);
 
         if (!clienteCreado) {
-            // Rollback manual: eliminar el usuario ya insertado
             usuarioDAO.eliminar(id);
             System.out.println("[procesarCrearCliente] Rollback: USUARIO " + id + " eliminado.");
             return " [SISTEMA: Error al insertar en la tabla CLIENTES. " +
@@ -618,9 +748,6 @@ public class ChatbotService {
 
     // ═════════════════════════════════════════════════════════════════════
     //  INSERTAR CLIENTE SEGURO
-    //  Reemplaza el ClienteDAO.insertar() que hace Date.valueOf(null)
-    //  cuando fechaNacimiento es null → NullPointerException silenciosa.
-    //  Este método usa setNull(Types.DATE) en ese caso.
     // ═════════════════════════════════════════════════════════════════════
     private boolean insertarClienteSeguro(Cliente cliente) {
         String sql = "INSERT INTO CLIENTES (numero_identificacion, direccion, " +
@@ -632,14 +759,12 @@ public class ChatbotService {
             pstmt.setString(1, cliente.getNumeroIdentificacion());
             pstmt.setString(2, cliente.getDireccion());
 
-            // CORRECCIÓN: null seguro para fecha_nacimiento
             if (cliente.getFechaNacimiento() != null) {
                 pstmt.setDate(3, java.sql.Date.valueOf(cliente.getFechaNacimiento()));
             } else {
                 pstmt.setNull(3, java.sql.Types.DATE);
             }
 
-            // null seguro para huella_dactilar
             if (cliente.getHuellaDactilar() != null) {
                 pstmt.setBytes(4, cliente.getHuellaDactilar());
             } else {
@@ -754,7 +879,6 @@ public class ChatbotService {
     //  EXTRACTORES DE DATOS
     // ═════════════════════════════════════════════════════════════════════
 
-    // ── EXTRAER NOMBRE ────────────────────────────────────────────────────
     private String extraerNombre(String texto, List<MensajeGymbrot> historial) {
         Pattern p = Pattern.compile(
                 "nombre[:\\s]+([\\p{L}]+(?:\\s+[\\p{L}]+)?)",
@@ -772,7 +896,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER APELLIDOS ─────────────────────────────────────────────────
     private String extraerApellidos(String texto, List<MensajeGymbrot> historial) {
         Pattern p = Pattern.compile(
                 "apellidos?[:\\s]+([\\p{L}]+(?:\\s+[\\p{L}]+)?)",
@@ -790,7 +913,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── CAPITALIZAR ───────────────────────────────────────────────────────
     private String capitalizar(String texto) {
         if (texto == null || texto.isEmpty()) return texto;
         String[] palabras = texto.split("\\s+");
@@ -805,34 +927,6 @@ public class ChatbotService {
         return sb.toString().trim();
     }
 
-    // ── EXTRAER DATO GENÉRICO ─────────────────────────────────────────────
-    private String extraerDato(String texto, List<MensajeGymbrot> historial, String campo) {
-        String valor = extraerDatoDeTexto(texto, campo);
-        if (valor != null) return valor;
-        if (historial != null) {
-            for (int i = historial.size() - 1; i >= 0; i--) {
-                MensajeGymbrot msg = historial.get(i);
-                if (msg.getRemitente().equals("CLIENTE")) {
-                    valor = extraerDatoDeTexto(msg.getContenido(), campo);
-                    if (valor != null) return valor;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String extraerDatoDeTexto(String texto, String campo) {
-        Pattern p = Pattern.compile(
-                campo + "[:\\s]+([\\p{L}\\s]+?)(?:,|\\.|$)",
-                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
-        Matcher m = p.matcher(texto);
-        if (m.find()) return m.group(1).trim();
-        return null;
-    }
-
-    // ── EXTRAER DIRECCIÓN (con/sin tilde, múltiples formatos) ────────────
-    // extraerDato() genérico falla con "dirección" (tilde) y con valores que
-    // contienen números (#10-20, etc). Este método lo resuelve específicamente.
     private String extraerDireccion(String texto, List<MensajeGymbrot> historial) {
         String valor = extraerDireccionDeTexto(texto);
         if (valor != null) return valor;
@@ -849,8 +943,6 @@ public class ChatbotService {
     }
 
     private String extraerDireccionDeTexto(String texto) {
-        // Acepta: "dirección:", "direccion:", "dir:" seguido de cualquier texto
-        // hasta coma, punto o fin de línea. Permite números, #, -, espacios.
         Pattern p = Pattern.compile(
                 "(?:direcci[oó]n|dir)[:\\s]+([\\p{L}\\d\\s#\\-\\.]+?)(?:,|\\.|$)",
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
@@ -862,7 +954,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER CORREO ────────────────────────────────────────────────────
     private String extraerCorreo(String texto, List<MensajeGymbrot> historial) {
         Pattern p = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
         Matcher m = p.matcher(texto);
@@ -876,7 +967,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER TELÉFONO (colombiano: 10 dígitos empezando en 3) ─────────
     private String extraerTelefono(String texto, List<MensajeGymbrot> historial) {
         // Prioridad 1: con etiqueta explícita
         Pattern pEtiqueta = Pattern.compile(
@@ -892,8 +982,9 @@ public class ChatbotService {
 
         if (historial != null) {
             for (int i = historial.size() - 1; i >= 0; i--) {
-                if (historial.get(i).getRemitente().equals("CLIENTE")) {
-                    Matcher mh = p.matcher(historial.get(i).getContenido());
+                MensajeGymbrot msg = historial.get(i);
+                if (msg.getRemitente().equals("CLIENTE")) {
+                    Matcher mh = p.matcher(msg.getContenido());
                     if (mh.find()) return mh.group();
                 }
             }
@@ -901,21 +992,17 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER ID CLIENTE ────────────────────────────────────────────────
     private String extraerIdCliente(String texto) {
-        // Prioridad 1: etiqueta explícita
         Pattern p1 = Pattern.compile(
                 "(?:id|cedula|cédula|identificacion|identificación)[:\\s]+(\\d{4,12})",
                 Pattern.CASE_INSENSITIVE);
         Matcher m1 = p1.matcher(texto);
         if (m1.find()) return m1.group(1);
 
-        // Prioridad 2: "cliente 123456"
         Pattern p2 = Pattern.compile("cliente\\s+(\\d{4,12})", Pattern.CASE_INSENSITIVE);
         Matcher m2 = p2.matcher(texto.toLowerCase());
         if (m2.find()) return m2.group(1);
 
-        // Prioridad 3: número solo, descartando teléfonos colombianos (10 dígitos que empiecen en 3)
         Pattern p3 = Pattern.compile("\\b(\\d{6,12})\\b");
         Matcher m3 = p3.matcher(texto);
         while (m3.find()) {
@@ -926,7 +1013,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER ID DE CITA ────────────────────────────────────────────────
     private int extraerIdCita(String texto) {
         Pattern p = Pattern.compile("#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
         Matcher m = p.matcher(texto.toLowerCase());
@@ -938,7 +1024,6 @@ public class ChatbotService {
         return -1;
     }
 
-    // ── EXTRAER HORA ──────────────────────────────────────────────────────
     private LocalTime extraerHora(String texto, List<MensajeGymbrot> historial) {
         LocalTime hora = extraerHoraDeTexto(texto);
         if (hora != null) return hora;
@@ -955,18 +1040,16 @@ public class ChatbotService {
     }
 
     private LocalTime extraerHoraDeTexto(String texto) {
-        // Formato 12h: "10am", "2:30pm"
         Pattern p12 = Pattern.compile("(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
         Matcher m12 = p12.matcher(texto.toLowerCase());
         if (m12.find()) {
             int h = Integer.parseInt(m12.group(1));
             String ampm = m12.group(3);
             if (ampm.equals("pm") && h != 12) h += 12;
-            if (ampm.equals("am") && h == 12) h  = 0;
+            if (ampm.equals("am") && h == 12) h = 0;
             int min = m12.group(2) != null ? Integer.parseInt(m12.group(2)) : 0;
             return LocalTime.of(h, min);
         }
-        // Formato 24h: "14:30"
         Pattern p24 = Pattern.compile("\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
         Matcher m24 = p24.matcher(texto.toLowerCase());
         if (m24.find())
@@ -976,7 +1059,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── EXTRAER FECHA ─────────────────────────────────────────────────────
     private LocalDate extraerFecha(String texto, List<MensajeGymbrot> historial) {
         LocalDate fecha = extraerFechaDeTexto(texto);
         if (fecha != null) return fecha;
@@ -993,17 +1075,11 @@ public class ChatbotService {
     }
 
     private LocalDate extraerFechaDeTexto(String texto) {
-        String t      = texto.toLowerCase();
+        String t = texto.toLowerCase();
         LocalDate hoy = LocalDate.now();
-        // CORRECCIÓN: dow va de 1 (lunes) a 7 (domingo)
-        // La lógica original siempre saltaba a la semana siguiente
-        // aunque el día todavía no hubiera pasado.
-        // Ahora: si el día de la semana pedido ya pasó esta semana → siguiente semana,
-        //        si todavía no ha pasado → esta misma semana.
-        int dow = hoy.getDayOfWeek().getValue();
 
-        if (t.contains("hoy"))                                return hoy;
-        if (t.contains("mañana") || t.contains("manana"))    return hoy.plusDays(1);
+        if (t.contains("hoy")) return hoy;
+        if (t.contains("mañana") || t.contains("manana")) return hoy.plusDays(1);
 
         if (t.contains("lunes")) {
             LocalDate candidato = hoy.with(java.time.DayOfWeek.MONDAY);
@@ -1034,7 +1110,6 @@ public class ChatbotService {
             return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
         }
 
-        // Formato dd/MM/yyyy o dd-MM-yyyy
         Pattern pFecha = Pattern.compile("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})");
         Matcher mFecha = pFecha.matcher(t);
         if (mFecha.find()) {
@@ -1048,7 +1123,6 @@ public class ChatbotService {
         return null;
     }
 
-    // ── OBTENER NOMBRE DEL INSTRUCTOR ─────────────────────────────────────
     private String obtenerNombreInstructor(String idInstructor) {
         for (Instructor inst : instructorDAO.listarTodos()) {
             if (inst.getNumeroIdentificacion().equals(idInstructor))
@@ -1057,12 +1131,10 @@ public class ChatbotService {
         return idInstructor;
     }
 
-    // ── CERRAR SESIÓN ─────────────────────────────────────────────────────
     public void cerrarSesion(int idSesion) {
         sesionDAO.cerrarSesion(idSesion);
     }
 
-    // ── OBTENER HISTORIAL ─────────────────────────────────────────────────
     public List<MensajeGymbrot> obtenerHistorial(int idSesion) {
         return mensajeDAO.listarPorSesion(idSesion);
     }
