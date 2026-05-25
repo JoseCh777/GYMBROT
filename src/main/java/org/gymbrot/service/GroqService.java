@@ -106,7 +106,7 @@ public class GroqService {
                     .append(mensajeUsuario.replace("\"", "'").replace("\n", " "))
                     .append("\"}");
 
-            String body = "{\"model\": \"" + MODEL + "\", \"messages\": [" + mensajes + "], \"max_tokens\": 800}";
+            String body = "{\"model\": \"" + MODEL + "\", \"messages\": [" + mensajes + "], \"max_tokens\": 2000}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_URL))
@@ -116,9 +116,13 @@ public class GroqService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("=== GROQ RESPONSE ===");
+            System.out.println(response.body());
+            System.out.println("=====================");
+
             JsonNode json = mapper.readTree(response.body());
             JsonNode choices = json.get("choices");
-            if (choices == null || choices.size() == 0) return "Sin respuesta del bot.";
+            if (choices == null || choices.isEmpty()) return "Sin respuesta del bot.";
             return choices.get(0).get("message").get("content").asText();
 
         } catch (Exception e) {

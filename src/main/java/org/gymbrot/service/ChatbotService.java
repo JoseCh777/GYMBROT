@@ -150,6 +150,15 @@ public class ChatbotService {
                         "pero no indicó el ID. Pídele el número de identificación.]";
             }
 
+            // ── MODIFICAR CLIENTE ─────────────────────────────────────────────
+        } else if ((textoLower.contains("modificar cliente") || textoLower.contains("actualizar cliente")
+                || textoLower.contains("editar cliente") || textoLower.contains("cambiar datos del cliente")
+                || textoLower.contains("cambiar datos de cliente") || textoLower.contains("actualizar datos del cliente")
+                || textoLower.contains("actualizar datos de cliente") || textoLower.contains("editar datos del cliente"))
+                && !textoLower.contains("crear") && !textoLower.contains("registrar")) {
+
+            contextoExtra = procesarModificarCliente(texto, historial);
+
             // ── CREAR CITA ────────────────────────────────────────────────────
         } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
                 || textoLower.contains("agendar") || textoLower.contains("programa")
@@ -348,6 +357,157 @@ public class ChatbotService {
     }
 
     // ═════════════════════════════════════════════════════════════════════
+    //  MODIFICAR CLIENTE
+    //  Actualiza USUARIOS (datos personales) y CLIENTES (dirección/nacimiento).
+    //  Solo modifica los campos que el administrador proporciona; los demás
+    //  conservan el valor actual de la BD. Guarda ambas tablas en la misma
+    //  operación y registra cada cambio en los logs de debug.
+    // ═════════════════════════════════════════════════════════════════════
+    private String procesarModificarCliente(String texto, List<MensajeGymbrot> historial) {
+
+        // ── 1. Identificar al cliente ─────────────────────────────────────
+        String id = extraerIdCliente(texto);
+        if (id == null && historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                MensajeGymbrot msg = historial.get(i);
+                if (msg.getRemitente().equals("CLIENTE")) {
+                    id = extraerIdCliente(msg.getContenido());
+                    if (id != null) break;
+                }
+            }
+        }
+        if (id == null) {
+            return " [SISTEMA: El administrador quiere modificar un cliente pero no indicó el ID. " +
+                    "Pídele el número de identificación del cliente a modificar.]";
+        }
+
+        // ── 2. Verificar que el cliente exista ────────────────────────────
+        Cliente clienteActual = clienteDAO.buscarPorId(id);
+        if (clienteActual == null) {
+            return " [SISTEMA: No existe ningún cliente con ID " + id +
+                    ". Verifica el número de identificación e inténtalo de nuevo.]";
+        }
+
+        System.out.println("[procesarModificarCliente] Modificando cliente id=" + id);
+
+        // ── 3. Extraer campos nuevos (solo los que vienen en el mensaje) ──
+        String nuevoNombre    = extraerNombre(texto, historial);
+        String nuevosApellidos= extraerApellidos(texto, historial);
+        String nuevoCorreo    = extraerCorreo(texto, historial);
+        String nuevoTelefono  = extraerTelefono(texto, historial);
+        String nuevaDireccion = extraerDireccion(texto, historial);
+        LocalDate nuevaFechaNac = extraerFecha(texto, historial);
+
+        System.out.println("[procesarModificarCliente] Nuevos datos recibidos — " +
+                "nombre=" + nuevoNombre + " | apellidos=" + nuevosApellidos +
+                " | correo=" + nuevoCorreo + " | telefono=" + nuevoTelefono +
+                " | direccion=" + nuevaDireccion + " | fechaNac=" + nuevaFechaNac);
+
+        // ── 4. Validar que al menos un campo fue proporcionado ────────────
+        if (nuevoNombre == null && nuevosApellidos == null && nuevoCorreo == null
+                && nuevoTelefono == null && nuevaDireccion == null && nuevaFechaNac == null) {
+            return " [SISTEMA: El administrador quiere modificar el cliente " + id +
+                    " pero no indicó qué campos cambiar. Pídele que especifique: " +
+                    "nombre, apellidos, correo, teléfono, dirección o fecha de nacimiento.]";
+        }
+
+        // ── 5. Validar duplicado de correo si se quiere cambiar ───────────
+        if (nuevoCorreo != null && !nuevoCorreo.equalsIgnoreCase(clienteActual.getCorreo())) {
+            Usuario existente = usuarioDAO.buscarPorCorreo(nuevoCorreo);
+            if (existente != null && !existente.getNumeroIdentificacion().equals(id)) {
+                return " [SISTEMA: El correo " + nuevoCorreo +
+                        " ya está registrado por otro usuario. " +
+                        "No se puede asignar. Informa al administrador.]";
+            }
+        }
+
+        // ── 6. Aplicar cambios sobre los datos actuales (merge) ───────────
+        //      Se usa el valor nuevo si viene; de lo contrario, se conserva el actual.
+        StringBuilder cambiosLog = new StringBuilder();
+
+        if (nuevoNombre != null && !nuevoNombre.equalsIgnoreCase(clienteActual.getNombre())) {
+            cambiosLog.append("nombre: ").append(clienteActual.getNombre())
+                    .append(" → ").append(nuevoNombre).append(" | ");
+            clienteActual.setNombre(nuevoNombre);
+        }
+        if (nuevosApellidos != null && !nuevosApellidos.equalsIgnoreCase(clienteActual.getApellidos())) {
+            cambiosLog.append("apellidos: ").append(clienteActual.getApellidos())
+                    .append(" → ").append(nuevosApellidos).append(" | ");
+            clienteActual.setApellidos(nuevosApellidos);
+        }
+        if (nuevoCorreo != null && !nuevoCorreo.equalsIgnoreCase(clienteActual.getCorreo())) {
+            cambiosLog.append("correo: ").append(clienteActual.getCorreo())
+                    .append(" → ").append(nuevoCorreo).append(" | ");
+            clienteActual.setCorreo(nuevoCorreo);
+        }
+        if (nuevoTelefono != null && !nuevoTelefono.equals(clienteActual.getTelefono())) {
+            cambiosLog.append("telefono: ").append(clienteActual.getTelefono())
+                    .append(" → ").append(nuevoTelefono).append(" | ");
+            clienteActual.setTelefono(nuevoTelefono);
+        }
+        if (nuevaDireccion != null && !nuevaDireccion.equalsIgnoreCase(clienteActual.getDireccion())) {
+            cambiosLog.append("direccion: ").append(clienteActual.getDireccion())
+                    .append(" → ").append(nuevaDireccion).append(" | ");
+            clienteActual.setDireccion(nuevaDireccion);
+        }
+        if (nuevaFechaNac != null && !nuevaFechaNac.equals(clienteActual.getFechaNacimiento())) {
+            cambiosLog.append("fechaNacimiento: ").append(clienteActual.getFechaNacimiento())
+                    .append(" → ").append(nuevaFechaNac).append(" | ");
+            clienteActual.setFechaNacimiento(nuevaFechaNac);
+        }
+
+        if (cambiosLog.length() == 0) {
+            return " [SISTEMA: El cliente " + id +
+                    " ya tiene los mismos datos que se intentaron asignar. No se realizó ningún cambio.]";
+        }
+
+        System.out.println("[procesarModificarCliente] Cambios a aplicar: " + cambiosLog);
+
+        // ── 7. Persistir en USUARIOS ──────────────────────────────────────
+        boolean usuarioActualizado = usuarioDAO.actualizar(clienteActual);
+        System.out.println("[procesarModificarCliente] USUARIOS actualizado=" + usuarioActualizado);
+
+        if (!usuarioActualizado) {
+            return " [SISTEMA: Error al actualizar la tabla USUARIOS para el cliente " + id +
+                    ". Revisa los logs del servidor. No se guardó ningún cambio.]";
+        }
+
+        // ── 8. Persistir en CLIENTES (dirección y fecha de nacimiento) ────
+        boolean clienteActualizado = clienteDAO.actualizar(clienteActual);
+        System.out.println("[procesarModificarCliente] CLIENTES actualizado=" + clienteActualizado);
+
+        if (!clienteActualizado) {
+            return " [SISTEMA: USUARIOS fue actualizado correctamente, pero hubo un error " +
+                    "al actualizar la tabla CLIENTES para el cliente " + id +
+                    ". Revisa los logs del servidor.]";
+        }
+
+        // ── 9. Notificar al cliente sobre la actualización ────────────────
+        notifService.enviarSmsDirecto(
+                "GYMBROT: Hola " + clienteActual.getNombre() +
+                        ", tus datos han sido actualizados en el sistema. " +
+                        "Si no realizaste este cambio, contáctanos.");
+
+        if (clienteActual.getCorreo() != null) {
+            emailService.enviarCorreo(
+                    clienteActual.getCorreo(),
+                    "Datos actualizados - GYMBROT",
+                    "<h2>Actualización de datos</h2>" +
+                            "<p>Hola <b>" + clienteActual.getNombre() + " " +
+                            clienteActual.getApellidos() + "</b>,</p>" +
+                            "<p>Tus datos en GYMBROT han sido actualizados exitosamente.</p>" +
+                            "<p>Si no reconoces este cambio, comunícate con nosotros de inmediato.</p>" +
+                            "<p><b>GYMBROT Valledupar</b></p>");
+        }
+
+        String cambiosResumen = cambiosLog.toString().replaceAll(" \\| $", "");
+        return " [SISTEMA: Cliente " + id + " (" + clienteActual.getNombre() + " " +
+                clienteActual.getApellidos() + ") modificado exitosamente en USUARIOS y CLIENTES. " +
+                "Cambios aplicados: " + cambiosResumen + ". " +
+                "SMS y correo de notificación enviados. Confirma al administrador todos los cambios.]";
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
     //  CREAR CLIENTE — corregido: fecha_nacimiento nullable + logs de debug
     // ═════════════════════════════════════════════════════════════════════
     private String procesarCrearCliente(String texto, List<MensajeGymbrot> historial) {
@@ -358,7 +518,7 @@ public class ChatbotService {
         String id        = extraerIdCliente(texto);
         String correo    = extraerCorreo(texto, historial);
         String telefono  = extraerTelefono(texto, historial);
-        String direccion = extraerDato(texto, historial, "direccion");
+        String direccion = extraerDireccion(texto, historial);
 
         // ── Log de extracción para diagnóstico ────────────────────────────
         System.out.println("[procesarCrearCliente] nombre="    + nombre
@@ -667,6 +827,38 @@ public class ChatbotService {
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
         Matcher m = p.matcher(texto);
         if (m.find()) return m.group(1).trim();
+        return null;
+    }
+
+    // ── EXTRAER DIRECCIÓN (con/sin tilde, múltiples formatos) ────────────
+    // extraerDato() genérico falla con "dirección" (tilde) y con valores que
+    // contienen números (#10-20, etc). Este método lo resuelve específicamente.
+    private String extraerDireccion(String texto, List<MensajeGymbrot> historial) {
+        String valor = extraerDireccionDeTexto(texto);
+        if (valor != null) return valor;
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                MensajeGymbrot msg = historial.get(i);
+                if (msg.getRemitente().equals("CLIENTE")) {
+                    valor = extraerDireccionDeTexto(msg.getContenido());
+                    if (valor != null) return valor;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extraerDireccionDeTexto(String texto) {
+        // Acepta: "dirección:", "direccion:", "dir:" seguido de cualquier texto
+        // hasta coma, punto o fin de línea. Permite números, #, -, espacios.
+        Pattern p = Pattern.compile(
+                "(?:direcci[oó]n|dir)[:\\s]+([\\p{L}\\d\\s#\\-\\.]+?)(?:,|\\.|$)",
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher m = p.matcher(texto);
+        if (m.find()) {
+            String val = m.group(1).trim();
+            return val.isEmpty() ? null : val;
+        }
         return null;
     }
 
