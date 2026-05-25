@@ -69,7 +69,8 @@ public class GestionClientesController implements Initializable {
 
     // ─── Toolbar ───────────────────────────────────────────────────────────
     @FXML private TextField searchField;
-    @FXML private Button btnValidarHuella;
+    @FXML private Button btnValidarEntrada;
+    @FXML private Button btnValidarSalida;
     @FXML private Button btnAgregarCliente;
 
     // ─── Tabla ─────────────────────────────────────────────────────────────
@@ -454,6 +455,7 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarLogAccesos() {
+        logAccesos.getChildren().clear();
         java.time.LocalDate hoy = java.time.LocalDate.now();
         List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(hoy);
         int max = Math.min(ingresos.size(), 5);
@@ -555,7 +557,8 @@ public class GestionClientesController implements Initializable {
 
     private void configurarAnimacionesBotones() {
         agregarHoverActivo(btnAgregarCliente);
-        agregarHoverInactivo(btnValidarHuella);
+        agregarHoverInactivo(btnValidarEntrada);
+        agregarHoverInactivo(btnValidarSalida);
         agregarHoverInactivo(btnOptimizarFlujo);
     }
 
@@ -689,7 +692,7 @@ public class GestionClientesController implements Initializable {
     }
 
     @FXML
-    private void handleValidarHuella() {
+    private void handleValidarEntrada() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistroEntrada.fxml"));
             Parent overlay = loader.load();
@@ -708,6 +711,31 @@ public class GestionClientesController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             mostrarError("Error", "No se pudo abrir Registro de Entrada");
+        }
+    }
+
+    @FXML
+    private void handleValidarSalida() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistroEntrada.fxml"));
+            Parent overlay = loader.load();
+            RegistroEntradaController ctrl = loader.getController();
+
+            ctrl.setModo("SALIDA");
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir Registro de Salida");
         }
     }
 

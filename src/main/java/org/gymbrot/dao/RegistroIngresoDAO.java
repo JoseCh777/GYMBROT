@@ -48,6 +48,13 @@ public class RegistroIngresoDAO {
             return false;
         }
     }
+    // ── REGISTRAR SALIDA POR CLIENTE (busca la entrada activa) ────────────
+    public boolean registrarSalidaPorCliente(String idCliente) {
+        RegistroIngreso activo = buscarActivoPorCliente(idCliente);
+        if (activo == null) return false;
+        return registrarSalida(activo.getIdIngreso());
+    }
+
     // ── LISTAR POR CLIENTE ────────────────────────────────────────────────
     public List<RegistroIngreso> listarPorCliente(String idCliente) {
         List<RegistroIngreso> lista = new ArrayList<>();
@@ -85,6 +92,25 @@ public class RegistroIngresoDAO {
         }
         return lista;
     }
+    // ── BUSCAR ENTRADA ACTIVA (sin salida) POR CLIENTE ────────────────────
+    public RegistroIngreso buscarActivoPorCliente(String idCliente) {
+        String sql = """
+                SELECT * FROM REGISTROS_INGRESOS
+                WHERE id_cliente = ? AND hora_salida IS NULL
+                ORDER BY fecha DESC, hora_entrada DESC
+                FETCH FIRST 1 ROW ONLY
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar entrada activa: " + e.getMessage());
+        }
+        return null;
+    }
+
     // ── CONTAR INGRESOS MES ───────────────────────────────────────────────
     public int contarIngresosMes() {
         String sql = """

@@ -22,12 +22,15 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.dao.RegistroIngresoDAO;
+import org.gymbrot.model.RegistroIngreso;
 import org.gymbrot.service.AuthService;
 import org.gymbrot.controller.PerfilClienteController;
 
 public class RegistroEntradaController implements Initializable {
 
     @FXML private Button btnCancelar;
+    @FXML private Label lblTitulo;
 
     @FXML private Button tabBiometrico;
     @FXML private Button tabManual;
@@ -53,6 +56,8 @@ public class RegistroEntradaController implements Initializable {
     private Parent overlayRoot;
     private HuellaService huellaService;
     private boolean verificando = false;
+    private final RegistroIngresoDAO ingresoDAO = new RegistroIngresoDAO();
+    private String modo = "ENTRADA";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -75,6 +80,15 @@ public class RegistroEntradaController implements Initializable {
         configurarAnimaciones();
         iniciarScanLine();
         sectionManual.setTranslateX(60);
+        aplicarModo();
+    }
+
+    private void aplicarModo() {
+        if ("SALIDA".equals(modo)) {
+            lblTitulo.setText("REGISTRO DE SALIDA");
+            btnValidarIngreso.setText("VALIDAR SALIDA");
+            lblEstadoScan.setText("ESPERANDO SCAN PARA SALIDA...");
+        }
     }
 
     private void configurarAnimaciones() {
@@ -174,8 +188,14 @@ public class RegistroEntradaController implements Initializable {
                 Platform.runLater(() -> {
                     pbScan.setProgress(1);
                     dotBioScan.setStyle("-fx-fill: #22c55e;");
-                    lblEstadoScan.setText("BIENVENIDO " + cliente.getNombre());
                     verificando = false;
+                    if ("SALIDA".equals(modo)) {
+                        lblEstadoScan.setText("HASTA LUEGO " + cliente.getNombre());
+                        ingresoDAO.registrarSalidaPorCliente(cliente.getNumeroIdentificacion());
+                    } else {
+                        lblEstadoScan.setText("BIENVENIDO " + cliente.getNombre());
+                        registrarEntrada(cliente, "HUELLA");
+                    }
                     PerfilClienteController.abrirConCliente(cliente, wrapperStack, overlayRoot);
                 });
             }
@@ -266,9 +286,29 @@ public class RegistroEntradaController implements Initializable {
             return;
         }
 
+        if ("SALIDA".equals(modo)) {
+            ingresoDAO.registrarSalidaPorCliente(cliente.getNumeroIdentificacion());
+        } else {
+            registrarEntrada(cliente, "MANUAL");
+        }
         PerfilClienteController.abrirConCliente(cliente, wrapperStack, overlayRoot);
     }
 
+
+    private void registrarEntrada(Cliente cliente, String metodo) {
+        RegistroIngreso ri = new RegistroIngreso();
+        ri.setIdCliente(cliente.getNumeroIdentificacion());
+        ri.setFecha(java.time.LocalDate.now());
+        ri.setHoraEntrada(java.time.LocalDateTime.now());
+        ri.setMetodoVerificacion(metodo);
+        ri.setEstadoVerificacion("APROBADO");
+        ingresoDAO.registrarEntrada(ri);
+    }
+
+    public void setModo(String modo) {
+        this.modo = modo;
+        aplicarModo();
+    }
 
     public void setWrapperStack(StackPane wrapper, Parent overlayRoot) {
         this.wrapperStack = wrapper;

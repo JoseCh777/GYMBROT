@@ -25,7 +25,7 @@
 
             <VBox spacing="2" HBox.hgrow="ALWAYS">
                 <HBox.margin><Insets left="12" /></HBox.margin>
-                <Label prefHeight="64.0" prefWidth="281.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                               -fx-text-fill: white;" text="REGISTRO DE ENTRADA" />
+                <Label fx:id="lblTitulo" prefHeight="64.0" prefWidth="281.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                               -fx-text-fill: white;" text="REGISTRO DE ENTRADA" />
             </VBox>
         </HBox>
 
