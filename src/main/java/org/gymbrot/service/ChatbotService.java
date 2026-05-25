@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChatbotService {
@@ -27,7 +29,7 @@ public class ChatbotService {
     private final HistorialMembresiaDAO  historialDAO    = new HistorialMembresiaDAO();
     private final RegistroIngresoDAO     ingresoDAO      = new RegistroIngresoDAO();
 
-    // ── INICIAR SESION ────────────────────────────────────────────────────
+    // ── INICIAR SESIÓN ────────────────────────────────────────────────────
     public SesionGymbrot iniciarSesion(String idAdmin) {
         SesionGymbrot sesion = new SesionGymbrot();
         sesion.setIdCliente(idAdmin);
@@ -35,6 +37,11 @@ public class ChatbotService {
         sesion.setHoraInicio(LocalDateTime.now());
         sesion.setContextoActivo("admin");
         int idSesion = sesionDAO.crearSesion(sesion);
+        if (idSesion <= 0) {
+            System.err.println("[ChatbotService] ERROR: No se pudo crear sesión para admin '"
+                    + idAdmin + "'. Verifica que el ID exista en CLIENTES " +
+                    "(FK: SESIONES_GYMBROT.id_cliente → CLIENTES).");
+        }
         sesion.setIdSesion(idSesion);
         return sesion;
     }
@@ -50,12 +57,12 @@ public class ChatbotService {
         mensajeDAO.insertar(msgUsuario);
 
         List<MensajeGymbrot> historial = mensajeDAO.listarPorSesion(idSesion);
-        String textoLower  = texto.toLowerCase();
+        String textoLower    = texto.toLowerCase();
         String contextoExtra = "";
 
         // ── CREAR CLIENTE ─────────────────────────────────────────────────
-        if ((textoLower.contains("crear cliente") || textoLower.contains("registrar cliente")
-                || textoLower.contains("nuevo cliente") || textoLower.contains("agregar cliente"))) {
+        if (textoLower.contains("crear cliente") || textoLower.contains("registrar cliente")
+                || textoLower.contains("nuevo cliente") || textoLower.contains("agregar cliente")) {
 
             contextoExtra = procesarCrearCliente(texto, historial);
 
@@ -77,7 +84,8 @@ public class ChatbotService {
                 info.append(String.format("Estado: %s\n", c.getEstado()));
                 info.append(String.format("Dirección: %s\n", c.getDireccion()));
                 if (c.getFechaNacimiento() != null)
-                    info.append(String.format("Fecha nacimiento: %s\n", c.getFechaNacimiento().format(fmt)));
+                    info.append(String.format("Fecha nacimiento: %s\n",
+                            c.getFechaNacimiento().format(fmt)));
 
                 // Membresía activa
                 List<Membresia> activas = membresiaDAO.listarPorEstado("ACTIVA");
@@ -89,7 +97,8 @@ public class ChatbotService {
                         .findFirst()
                         .ifPresentOrElse(
                                 m -> info.append(String.format("Membresía activa: %s | Vence: %s\n",
-                                        m.getTipoMembresia(), m.getFechaVencimiento().format(fmt))),
+                                        m.getTipoMembresia(),
+                                        m.getFechaVencimiento().format(fmt))),
                                 () -> info.append("Sin membresía activa.\n"));
 
                 // Últimas citas
@@ -124,17 +133,15 @@ public class ChatbotService {
             if (idCliente != null) {
                 Usuario usuario = usuarioDAO.buscarPorId(idCliente);
                 if (usuario != null) {
-                    String nuevoEstado = (textoLower.contains("activar")) ? "ACTIVO" : "INACTIVO";
+                    String nuevoEstado = textoLower.contains("activar") ? "ACTIVO" : "INACTIVO";
                     if (textoLower.contains("suspender")) nuevoEstado = "SUSPENDIDO";
                     usuario.setEstado(nuevoEstado);
                     boolean ok = usuarioDAO.actualizar(usuario);
-                    if (ok) {
-                        contextoExtra = " [SISTEMA: Cliente " + idCliente + " actualizado a estado " +
-                                nuevoEstado + " exitosamente. Confirma al administrador.]";
-                    } else {
-                        contextoExtra = " [SISTEMA: No se pudo actualizar el estado del cliente " +
-                                idCliente + ". Informa al administrador.]";
-                    }
+                    contextoExtra = ok
+                            ? " [SISTEMA: Cliente " + idCliente + " actualizado a estado " +
+                              nuevoEstado + " exitosamente. Confirma al administrador.]"
+                            : " [SISTEMA: No se pudo actualizar el estado del cliente " +
+                              idCliente + ". Informa al administrador.]";
                 } else {
                     contextoExtra = " [SISTEMA: No existe ningún usuario con ID " + idCliente + ".]";
                 }
@@ -163,11 +170,13 @@ public class ChatbotService {
 
                 notifService.enviarSmsDirecto(
                         "GYMBROT: Cita #" + idCitaCreada + " creada.\n" +
-                                "Instructor: " + nombreInst + " | Fecha: " + fechaFmt + " | Hora: " + horaFmt);
+                                "Instructor: " + nombreInst + " | Fecha: " + fechaFmt +
+                                " | Hora: " + horaFmt);
 
                 Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
                 if (cliente != null && cliente.getCorreo() != null) {
-                    emailService.enviarCorreo(cliente.getCorreo(), "Cita agendada - GYMBROT",
+                    emailService.enviarCorreo(cliente.getCorreo(),
+                            "Cita agendada - GYMBROT",
                             "<h2>¡Cita agendada!</h2>" +
                                     "<table style='border-collapse:collapse;'>" +
                                     "<tr><td><b>ID:</b></td><td>#" + idCitaCreada + "</td></tr>" +
@@ -178,11 +187,12 @@ public class ChatbotService {
                 }
 
                 contextoExtra = " [SISTEMA: Cita #" + idCitaCreada + " creada exitosamente. " +
-                        "Instructor: " + nombreInst + " | Fecha: " + fechaFmt + " | Hora: " + horaFmt + ". " +
+                        "Instructor: " + nombreInst + " | Fecha: " + fechaFmt +
+                        " | Hora: " + horaFmt + ". " +
                         "SMS y correo enviados al cliente. Confirma todos los detalles al administrador.]";
             } else {
-                contextoExtra = " [SISTEMA: No se pudo crear la cita. Motivo: " + mensajeError + ". " +
-                        "Informa al administrador con este motivo exacto y pídele que corrija los datos.]";
+                contextoExtra = " [SISTEMA: No se pudo crear la cita. Motivo: " + mensajeError +
+                        ". Informa al administrador con este motivo exacto y pídele que corrija los datos.]";
             }
 
             // ── CANCELAR CITA ─────────────────────────────────────────────────
@@ -196,8 +206,10 @@ public class ChatbotService {
                     boolean cancelada = citaService.cancelarCita(idCita);
                     if (cancelada) {
                         String nombreInst = obtenerNombreInstructor(cita.getIdInstructor());
-                        String fechaFmt   = cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        String horaFmt    = cita.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
+                        String fechaFmt   = cita.getFecha()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        String horaFmt    = cita.getHora()
+                                .format(DateTimeFormatter.ofPattern("hh:mm a"));
 
                         notifService.enviarSmsDirecto(
                                 "GYMBROT: Tu cita #" + idCita + " del " + fechaFmt +
@@ -205,18 +217,19 @@ public class ChatbotService {
 
                         Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
                         if (cliente != null && cliente.getCorreo() != null) {
-                            emailService.enviarCorreo(cliente.getCorreo(), "Cita cancelada - GYMBROT",
+                            emailService.enviarCorreo(cliente.getCorreo(),
+                                    "Cita cancelada - GYMBROT",
                                     "<h2>Cita cancelada</h2>" +
                                             "<p>Tu cita <b>#" + idCita + "</b> con " + nombreInst +
-                                            " el " + fechaFmt + " a las " + horaFmt + " fue cancelada.</p>" +
-                                            "<p>Contáctanos para reagendar.</p>");
+                                            " el " + fechaFmt + " a las " + horaFmt +
+                                            " fue cancelada.</p><p>Contáctanos para reagendar.</p>");
                         }
 
                         contextoExtra = " [SISTEMA: Cita #" + idCita + " cancelada exitosamente. " +
                                 "SMS y correo enviados al cliente. Confirma al administrador.]";
                     } else {
-                        contextoExtra = " [SISTEMA: No se pudo cancelar la cita #" + idCita + ". " +
-                                "Puede que ya esté cancelada. Informa al administrador.]";
+                        contextoExtra = " [SISTEMA: No se pudo cancelar la cita #" + idCita +
+                                ". Puede que ya esté cancelada. Informa al administrador.]";
                     }
                 } else {
                     contextoExtra = " [SISTEMA: No existe la cita #" + idCita + ".]";
@@ -254,8 +267,8 @@ public class ChatbotService {
 
             LocalDate hoy = LocalDate.now();
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            List<Membresia> vencidas = membresiaDAO.listarVencidas();
-            List<Membresia> activas  = membresiaDAO.listarPorEstado("ACTIVA");
+            List<Membresia> vencidas  = membresiaDAO.listarVencidas();
+            List<Membresia> activas   = membresiaDAO.listarPorEstado("ACTIVA");
             List<Membresia> porVencer = activas.stream()
                     .filter(m -> !m.getFechaVencimiento().isAfter(hoy.plusDays(7)))
                     .collect(Collectors.toList());
@@ -276,22 +289,26 @@ public class ChatbotService {
                 for (Membresia m : porVencer) {
                     HistorialMembresia h = historialDAO.buscarPorMembresia(m.getIdMembresia());
                     String idCliente = h != null ? h.getIdCliente() : "N/A";
-                    long dias = java.time.temporal.ChronoUnit.DAYS.between(hoy, m.getFechaVencimiento());
-                    lista.append(String.format("- #%d | Cliente: %s | Tipo: %s | Vence: %s | En %d días\n",
+                    long dias = java.time.temporal.ChronoUnit.DAYS
+                            .between(hoy, m.getFechaVencimiento());
+                    lista.append(String.format(
+                            "- #%d | Cliente: %s | Tipo: %s | Vence: %s | En %d días\n",
                             m.getIdMembresia(), idCliente, m.getTipoMembresia(),
                             m.getFechaVencimiento().format(fmt), dias));
                     if (dias == 7 || dias == 3 || dias == 1) {
                         Cliente cliente = clienteDAO.buscarPorId(idCliente);
                         if (cliente != null) {
-                            notifService.enviarSmsDirecto("GYMBROT: Tu membresía " +
-                                    m.getTipoMembresia() + " vence el " +
-                                    m.getFechaVencimiento().format(fmt) + ". Renuévala pronto.");
+                            notifService.enviarSmsDirecto(
+                                    "GYMBROT: Tu membresía " + m.getTipoMembresia() +
+                                            " vence el " + m.getFechaVencimiento().format(fmt) +
+                                            ". Renuévala pronto.");
                             if (cliente.getCorreo() != null) {
                                 emailService.enviarCorreo(cliente.getCorreo(),
                                         "Tu membresía vence pronto - GYMBROT",
-                                        "<h2>Recordatorio</h2><p>Hola <b>" + cliente.getNombre() +
-                                                "</b>, tu membresía <b>" + m.getTipoMembresia() +
-                                                "</b> vence el <b>" + m.getFechaVencimiento().format(fmt) +
+                                        "<h2>Recordatorio</h2><p>Hola <b>" +
+                                                cliente.getNombre() + "</b>, tu membresía <b>" +
+                                                m.getTipoMembresia() + "</b> vence el <b>" +
+                                                m.getFechaVencimiento().format(fmt) +
                                                 "</b> (en " + dias + " días).</p>");
                             }
                         }
@@ -301,7 +318,8 @@ public class ChatbotService {
             if (vencidas.isEmpty() && porVencer.isEmpty())
                 lista.append("No hay membresías vencidas ni por vencer en los próximos 7 días.\n");
 
-            contextoExtra = " [SISTEMA: " + lista + "Muéstraselas al administrador de forma organizada.]";
+            contextoExtra = " [SISTEMA: " + lista +
+                    "Muéstraselas al administrador de forma organizada.]";
 
             // ── ESTADÍSTICAS ──────────────────────────────────────────────────
         } else if (textoLower.contains("estadística") || textoLower.contains("estadistica")
@@ -315,10 +333,10 @@ public class ChatbotService {
             }
         }
 
-        // 2. Llamar a Groq
+        // ── Llamar a Groq ─────────────────────────────────────────────────
         String respuesta = groqService.enviarMensaje(texto + contextoExtra, historial);
 
-        // 3. Guardar respuesta
+        // ── Guardar respuesta ─────────────────────────────────────────────
         MensajeGymbrot msgBot = new MensajeGymbrot();
         msgBot.setIdSesion(idSesion);
         msgBot.setRemitente("BOT");
@@ -329,65 +347,102 @@ public class ChatbotService {
         return respuesta;
     }
 
-    // ── PROCESAR CREAR CLIENTE ────────────────────────────────────────────
+    // ═════════════════════════════════════════════════════════════════════
+    //  CREAR CLIENTE — corregido: fecha_nacimiento nullable + logs de debug
+    // ═════════════════════════════════════════════════════════════════════
     private String procesarCrearCliente(String texto, List<MensajeGymbrot> historial) {
-        // Extraer datos del mensaje y del historial
-        String nombre     = extraerDato(texto, historial, "nombre");
-        String apellidos  = extraerDato(texto, historial, "apellidos");
-        String id         = extraerIdCliente(texto);
-        String correo     = extraerCorreo(texto, historial);
-        String telefono   = extraerTelefono(texto, historial);
-        String direccion  = extraerDato(texto, historial, "direccion");
 
-        // Validar datos mínimos
+        // ── Extraer datos ─────────────────────────────────────────────────
+        String nombre    = extraerNombre(texto, historial);
+        String apellidos = extraerApellidos(texto, historial);
+        String id        = extraerIdCliente(texto);
+        String correo    = extraerCorreo(texto, historial);
+        String telefono  = extraerTelefono(texto, historial);
+        String direccion = extraerDato(texto, historial, "direccion");
+
+        // ── Log de extracción para diagnóstico ────────────────────────────
+        System.out.println("[procesarCrearCliente] nombre="    + nombre
+                + " | apellidos=" + apellidos
+                + " | id="        + id
+                + " | correo="    + correo
+                + " | telefono="  + telefono
+                + " | direccion=" + direccion);
+
+        // ── Validar mínimos ───────────────────────────────────────────────
         if (nombre == null || id == null || correo == null) {
             StringBuilder faltantes = new StringBuilder("Faltan datos para crear el cliente: ");
-            if (nombre == null)   faltantes.append("nombre, ");
-            if (id == null)       faltantes.append("número de identificación, ");
-            if (correo == null)   faltantes.append("correo, ");
+            if (nombre == null)  faltantes.append("nombre, ");
+            if (id == null)      faltantes.append("número de identificación, ");
+            if (correo == null)  faltantes.append("correo electrónico, ");
             return " [SISTEMA: " + faltantes.toString().replaceAll(", $", "") +
                     ". Pídele al administrador que los proporcione.]";
         }
 
-        // Verificar duplicado
+        // ── Evitar duplicado por ID ───────────────────────────────────────
         if (usuarioDAO.buscarPorId(id) != null) {
             return " [SISTEMA: Ya existe un usuario con ID " + id +
                     ". No se puede crear duplicado. Informa al administrador.]";
         }
 
-        // Crear usuario
+        // ── Evitar duplicado por correo ───────────────────────────────────
+        if (usuarioDAO.buscarPorCorreo(correo) != null) {
+            return " [SISTEMA: Ya existe un usuario con el correo " + correo +
+                    ". No se puede crear duplicado. Informa al administrador.]";
+        }
+
+        // ── Insertar en USUARIOS ──────────────────────────────────────────
         Usuario usuario = new Usuario();
         usuario.setNumeroIdentificacion(id);
         usuario.setTipoIdentificacion("CC");
         usuario.setNombre(nombre);
         usuario.setApellidos(apellidos != null ? apellidos : "");
-        usuario.setTelefono(telefono != null ? telefono : "");
+        usuario.setTelefono(telefono   != null ? telefono  : "");
         usuario.setCorreo(correo);
-        usuario.setContrasenaHash(id); // contraseña temporal = ID
+        usuario.setContrasenaHash(id);   // contraseña temporal = número de ID
+        usuario.setFotoUrl(null);
         usuario.setEstado("ACTIVO");
         usuario.setFechaRegistro(LocalDate.now());
         usuario.setTipoUsuario("CLIENTE");
 
+        System.out.println("[procesarCrearCliente] Intentando insertar USUARIO id=" + id);
         boolean usuarioCreado = usuarioDAO.insertar(usuario);
+        System.out.println("[procesarCrearCliente] USUARIO insertado=" + usuarioCreado);
+
         if (!usuarioCreado) {
-            return " [SISTEMA: Error al crear el usuario en la base de datos. Informa al administrador.]";
+            return " [SISTEMA: Error al insertar en la tabla USUARIOS. " +
+                    "Revisa los logs del servidor para ver el código ORA-xxxxx. " +
+                    "Informa al administrador.]";
         }
 
-        // Crear cliente
+        // ── Insertar en CLIENTES ──────────────────────────────────────────
+        // CORRECCIÓN CRÍTICA: fecha_nacimiento puede ser null.
+        // En el DAO original se hacía Date.valueOf(null) → NullPointerException
+        // que tumbaba el insert silenciosamente. Ahora se pasa null de forma segura
+        // usando el método corregido insertarCliente() que usa setNull cuando es null.
         Cliente cliente = new Cliente();
         cliente.setNumeroIdentificacion(id);
         cliente.setDireccion(direccion != null ? direccion : "");
-        cliente.setFechaNacimiento(LocalDate.of(2000, 1, 1)); // fecha por defecto
+        cliente.setFechaNacimiento(null);   // opcional; se actualiza después
+        cliente.setHuellaDactilar(null);    // se registra en dispositivo biométrico
 
-        boolean clienteCreado = clienteDAO.insertar(cliente);
+        System.out.println("[procesarCrearCliente] Intentando insertar CLIENTE id=" + id);
+        boolean clienteCreado = insertarClienteSeguro(cliente);
+        System.out.println("[procesarCrearCliente] CLIENTE insertado=" + clienteCreado);
+
         if (!clienteCreado) {
-            return " [SISTEMA: Error al crear el cliente en la base de datos. Informa al administrador.]";
+            // Rollback manual: eliminar el usuario ya insertado
+            usuarioDAO.eliminar(id);
+            System.out.println("[procesarCrearCliente] Rollback: USUARIO " + id + " eliminado.");
+            return " [SISTEMA: Error al insertar en la tabla CLIENTES. " +
+                    "El registro en USUARIOS fue revertido automáticamente. " +
+                    "Revisa los logs del servidor. Informa al administrador.]";
         }
 
-        // SMS y correo de bienvenida
+        // ── Notificaciones de bienvenida ──────────────────────────────────
         notifService.enviarSmsDirecto(
-                "¡Bienvenido a GYMBROT, " + nombre + "! Tu cuenta ha sido creada exitosamente. " +
+                "¡Bienvenido a GYMBROT, " + nombre + "! Tu cuenta fue creada exitosamente. " +
                         "Tu contraseña temporal es tu número de identificación.");
+
         emailService.enviarCorreo(correo, "Bienvenido a GYMBROT",
                 "<h2>¡Bienvenido a GYMBROT Valledupar!</h2>" +
                         "<p>Hola <b>" + nombre + "</b>, tu cuenta ha sido creada exitosamente.</p>" +
@@ -395,12 +450,202 @@ public class ChatbotService {
                         "<p>Te recomendamos cambiarla al ingresar por primera vez.</p>" +
                         "<p>¡Te esperamos en GYMBROT!</p>");
 
-        return " [SISTEMA: Cliente " + nombre + " (ID: " + id + ") creado exitosamente. " +
+        return " [SISTEMA: Cliente " + nombre + " " + (apellidos != null ? apellidos : "") +
+                " (ID: " + id + ") creado exitosamente en USUARIOS y CLIENTES. " +
                 "SMS y correo de bienvenida enviados a " + correo + ". " +
                 "Contraseña temporal: número de identificación. Confirma al administrador.]";
     }
 
-    // ── EXTRAER DATO GENÉRICO DEL TEXTO O HISTORIAL ───────────────────────
+    // ═════════════════════════════════════════════════════════════════════
+    //  INSERTAR CLIENTE SEGURO
+    //  Reemplaza el ClienteDAO.insertar() que hace Date.valueOf(null)
+    //  cuando fechaNacimiento es null → NullPointerException silenciosa.
+    //  Este método usa setNull(Types.DATE) en ese caso.
+    // ═════════════════════════════════════════════════════════════════════
+    private boolean insertarClienteSeguro(Cliente cliente) {
+        String sql = "INSERT INTO CLIENTES (numero_identificacion, direccion, " +
+                "fecha_nacimiento, huella_dactilar) VALUES (?, ?, ?, ?)";
+
+        try (java.sql.Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, cliente.getNumeroIdentificacion());
+            pstmt.setString(2, cliente.getDireccion());
+
+            // CORRECCIÓN: null seguro para fecha_nacimiento
+            if (cliente.getFechaNacimiento() != null) {
+                pstmt.setDate(3, java.sql.Date.valueOf(cliente.getFechaNacimiento()));
+            } else {
+                pstmt.setNull(3, java.sql.Types.DATE);
+            }
+
+            // null seguro para huella_dactilar
+            if (cliente.getHuellaDactilar() != null) {
+                pstmt.setBytes(4, cliente.getHuellaDactilar());
+            } else {
+                pstmt.setNull(4, java.sql.Types.BLOB);
+            }
+
+            int filas = pstmt.executeUpdate();
+            System.out.println("[insertarClienteSeguro] filas afectadas=" + filas);
+            return filas > 0;
+
+        } catch (java.sql.SQLException e) {
+            System.err.println("[insertarClienteSeguro] ERROR SQL: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    //  AGENDAR CITA DESDE ADMIN
+    // ═════════════════════════════════════════════════════════════════════
+    private String[] agendarCitaAdmin(String texto, List<MensajeGymbrot> historial) {
+        try {
+            List<Instructor> instructores = instructorDAO.listarTodos();
+
+            String idInstructor  = null;
+            String disponibilidad = "";
+
+            for (Instructor i : instructores) {
+                if (texto.toLowerCase().contains(i.getNombre().toLowerCase())) {
+                    idInstructor  = i.getNumeroIdentificacion();
+                    disponibilidad = i.getDisponibilidad();
+                    break;
+                }
+            }
+            if (idInstructor == null && historial != null) {
+                outer:
+                for (int i = historial.size() - 1; i >= 0; i--) {
+                    MensajeGymbrot msg = historial.get(i);
+                    if (msg.getRemitente().equals("CLIENTE")) {
+                        for (Instructor inst : instructores) {
+                            if (msg.getContenido().toLowerCase()
+                                    .contains(inst.getNombre().toLowerCase())) {
+                                idInstructor  = inst.getNumeroIdentificacion();
+                                disponibilidad = inst.getDisponibilidad();
+                                break outer;
+                            }
+                        }
+                    }
+                }
+            }
+            if (idInstructor == null)
+                return new String[]{"-1",
+                        "No se encontró el instructor. Indica el nombre del instructor."};
+
+            String idCliente = extraerIdCliente(texto);
+            if (idCliente == null && historial != null) {
+                for (int i = historial.size() - 1; i >= 0; i--) {
+                    MensajeGymbrot msg = historial.get(i);
+                    if (msg.getRemitente().equals("CLIENTE")) {
+                        idCliente = extraerIdCliente(msg.getContenido());
+                        if (idCliente != null) break;
+                    }
+                }
+            }
+            if (idCliente == null)
+                return new String[]{"-1",
+                        "No se encontró el ID del cliente. Indica el número de identificación."};
+
+            if (clienteDAO.buscarPorId(idCliente) == null)
+                return new String[]{"-1",
+                        "El cliente con ID " + idCliente + " no existe en la base de datos."};
+
+            LocalDate fecha = extraerFecha(texto, historial);
+            if (fecha == null)
+                return new String[]{"-1",
+                        "No se encontró la fecha. Indica el día (ejemplo: lunes, martes)."};
+
+            LocalTime hora = extraerHora(texto, historial);
+            if (hora == null)
+                return new String[]{"-1",
+                        "No se encontró la hora. Indica la hora (ejemplo: 10am, 2pm)."};
+
+            Cita cita = new Cita();
+            cita.setIdCliente(idCliente);
+            cita.setIdInstructor(idInstructor);
+            cita.setFecha(fecha);
+            cita.setHora(hora);
+            cita.setTipoCita("CONSULTA");
+            cita.setNotas("Cita creada por administrador desde GYMBROT AI");
+
+            int idCita = citaService.programarCitaAdminYRetornarId(cita);
+
+            if (idCita > 0)   return new String[]{String.valueOf(idCita), ""};
+            if (idCita == -7) return new String[]{"-1",
+                    "El instructor no trabaja ese día. Su disponibilidad es: " +
+                            disponibilidad + ". Indica un día válido."};
+            if (idCita == -8) return new String[]{"-1",
+                    "La hora está fuera del horario del instructor. Su disponibilidad es: " +
+                            disponibilidad + ". Indica una hora válida."};
+            if (idCita == -9) return new String[]{"-1",
+                    "El instructor ya tiene una cita en ese horario. Indica otra hora."};
+            return new String[]{"-1", "No se pudo crear la cita. Verifica los datos."};
+
+        } catch (Exception e) {
+            System.err.println("[agendarCitaAdmin] EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
+            return new String[]{"-1", "Error interno: " + e.getMessage()};
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    //  EXTRACTORES DE DATOS
+    // ═════════════════════════════════════════════════════════════════════
+
+    // ── EXTRAER NOMBRE ────────────────────────────────────────────────────
+    private String extraerNombre(String texto, List<MensajeGymbrot> historial) {
+        Pattern p = Pattern.compile(
+                "nombre[:\\s]+([\\p{L}]+(?:\\s+[\\p{L}]+)?)",
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return capitalizar(m.group(1).trim());
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                if (historial.get(i).getRemitente().equals("CLIENTE")) {
+                    Matcher mh = p.matcher(historial.get(i).getContenido());
+                    if (mh.find()) return capitalizar(mh.group(1).trim());
+                }
+            }
+        }
+        return null;
+    }
+
+    // ── EXTRAER APELLIDOS ─────────────────────────────────────────────────
+    private String extraerApellidos(String texto, List<MensajeGymbrot> historial) {
+        Pattern p = Pattern.compile(
+                "apellidos?[:\\s]+([\\p{L}]+(?:\\s+[\\p{L}]+)?)",
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return capitalizar(m.group(1).trim());
+        if (historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                if (historial.get(i).getRemitente().equals("CLIENTE")) {
+                    Matcher mh = p.matcher(historial.get(i).getContenido());
+                    if (mh.find()) return capitalizar(mh.group(1).trim());
+                }
+            }
+        }
+        return null;
+    }
+
+    // ── CAPITALIZAR ───────────────────────────────────────────────────────
+    private String capitalizar(String texto) {
+        if (texto == null || texto.isEmpty()) return texto;
+        String[] palabras = texto.split("\\s+");
+        StringBuilder sb = new StringBuilder();
+        for (String palabra : palabras) {
+            if (!palabra.isEmpty()) {
+                sb.append(Character.toUpperCase(palabra.charAt(0)))
+                        .append(palabra.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    // ── EXTRAER DATO GENÉRICO ─────────────────────────────────────────────
     private String extraerDato(String texto, List<MensajeGymbrot> historial, String campo) {
         String valor = extraerDatoDeTexto(texto, campo);
         if (valor != null) return valor;
@@ -417,156 +662,88 @@ public class ChatbotService {
     }
 
     private String extraerDatoDeTexto(String texto, String campo) {
-        String t = texto.toLowerCase();
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                campo + "[:\\s]+([\\w\\s]+?)(?:,|\\.|$)", java.util.regex.Pattern.CASE_INSENSITIVE);
-        java.util.regex.Matcher m = p.matcher(t);
+        Pattern p = Pattern.compile(
+                campo + "[:\\s]+([\\p{L}\\s]+?)(?:,|\\.|$)",
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher m = p.matcher(texto);
         if (m.find()) return m.group(1).trim();
         return null;
     }
 
     // ── EXTRAER CORREO ────────────────────────────────────────────────────
     private String extraerCorreo(String texto, List<MensajeGymbrot> historial) {
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-        java.util.regex.Matcher m = p.matcher(texto);
+        Pattern p = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+        Matcher m = p.matcher(texto);
         if (m.find()) return m.group();
         if (historial != null) {
             for (int i = historial.size() - 1; i >= 0; i--) {
-                java.util.regex.Matcher mh = p.matcher(historial.get(i).getContenido());
+                Matcher mh = p.matcher(historial.get(i).getContenido());
                 if (mh.find()) return mh.group();
             }
         }
         return null;
     }
 
-    // ── EXTRAER TELÉFONO ──────────────────────────────────────────────────
+    // ── EXTRAER TELÉFONO (colombiano: 10 dígitos empezando en 3) ─────────
     private String extraerTelefono(String texto, List<MensajeGymbrot> historial) {
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\b3[0-9]{9}\\b");
-        java.util.regex.Matcher m = p.matcher(texto);
+        // Prioridad 1: con etiqueta explícita
+        Pattern pEtiqueta = Pattern.compile(
+                "(?:tel[eé]fono|tel|celular|cel)[:\\s]+(3\\d{9})",
+                Pattern.CASE_INSENSITIVE);
+        Matcher mE = pEtiqueta.matcher(texto);
+        if (mE.find()) return mE.group(1);
+
+        // Prioridad 2: número solo de 10 dígitos empezando en 3
+        Pattern p = Pattern.compile("\\b(3[0-9]{9})\\b");
+        Matcher m = p.matcher(texto);
         if (m.find()) return m.group();
+
         if (historial != null) {
             for (int i = historial.size() - 1; i >= 0; i--) {
-                java.util.regex.Matcher mh = p.matcher(historial.get(i).getContenido());
-                if (mh.find()) return mh.group();
+                if (historial.get(i).getRemitente().equals("CLIENTE")) {
+                    Matcher mh = p.matcher(historial.get(i).getContenido());
+                    if (mh.find()) return mh.group();
+                }
             }
         }
         return null;
-    }
-
-    // ── AGENDAR CITA DESDE ADMIN ──────────────────────────────────────────
-    private String[] agendarCitaAdmin(String texto, List<MensajeGymbrot> historial) {
-        try {
-            List<Instructor> instructores = instructorDAO.listarTodos();
-
-            String idInstructor = null;
-            String disponibilidad = "";
-            for (Instructor i : instructores) {
-                if (texto.toLowerCase().contains(i.getNombre().toLowerCase())) {
-                    idInstructor = i.getNumeroIdentificacion();
-                    disponibilidad = i.getDisponibilidad();
-                    System.out.println("Instructor encontrado: " + i.getNombre() + " | ID: " + idInstructor);
-                    break;
-                }
-            }
-            if (idInstructor == null && historial != null) {
-                for (int i = historial.size() - 1; i >= 0; i--) {
-                    MensajeGymbrot msg = historial.get(i);
-                    if (msg.getRemitente().equals("CLIENTE")) {
-                        for (Instructor inst : instructores) {
-                            if (msg.getContenido().toLowerCase().contains(inst.getNombre().toLowerCase())) {
-                                idInstructor = inst.getNumeroIdentificacion();
-                                disponibilidad = inst.getDisponibilidad();
-                                break;
-                            }
-                        }
-                    }
-                    if (idInstructor != null) break;
-                }
-            }
-            if (idInstructor == null)
-                return new String[]{"-1", "No se encontró el instructor. Indica el nombre del instructor."};
-
-            String idCliente = extraerIdCliente(texto);
-            if (idCliente == null && historial != null) {
-                for (int i = historial.size() - 1; i >= 0; i--) {
-                    MensajeGymbrot msg = historial.get(i);
-                    if (msg.getRemitente().equals("CLIENTE")) {
-                        idCliente = extraerIdCliente(msg.getContenido());
-                        if (idCliente != null) break;
-                    }
-                }
-            }
-            if (idCliente == null)
-                return new String[]{"-1", "No se encontró el ID del cliente. Indica el número de identificación."};
-
-            Cliente cliente = clienteDAO.buscarPorId(idCliente);
-            if (cliente == null)
-                return new String[]{"-1", "El cliente con ID " + idCliente + " no existe en la base de datos."};
-
-            LocalDate fecha = extraerFecha(texto, historial);
-            if (fecha == null)
-                return new String[]{"-1", "No se encontró la fecha. Indica el día (ejemplo: lunes, martes)."};
-
-            LocalTime hora = extraerHora(texto, historial);
-            if (hora == null)
-                return new String[]{"-1", "No se encontró la hora. Indica la hora (ejemplo: 10am, 2pm)."};
-
-            Cita cita = new Cita();
-            cita.setIdCliente(idCliente);
-            cita.setIdInstructor(idInstructor);
-            cita.setFecha(fecha);
-            cita.setHora(hora);
-            cita.setTipoCita("CONSULTA");
-            cita.setNotas("Cita creada por administrador desde GYMBROT AI");
-
-            int idCita = citaService.programarCitaAdminYRetornarId(cita);
-
-            if (idCita > 0) return new String[]{String.valueOf(idCita), ""};
-            else if (idCita == -7) return new String[]{"-1",
-                    "El instructor no trabaja ese día. Su disponibilidad es: " + disponibilidad + ". Indica un día válido."};
-            else if (idCita == -8) return new String[]{"-1",
-                    "La hora está fuera del horario del instructor. Su disponibilidad es: " + disponibilidad + ". Indica una hora válida."};
-            else if (idCita == -9) return new String[]{"-1",
-                    "El instructor ya tiene una cita en ese horario. Indica otra hora."};
-            else return new String[]{"-1", "No se pudo crear la cita. Verifica los datos."};
-
-        } catch (Exception e) {
-            System.err.println("ADMIN CITA EXCEPTION: " + e.getMessage());
-            return new String[]{"-1", "Error interno: " + e.getMessage()};
-        }
     }
 
     // ── EXTRAER ID CLIENTE ────────────────────────────────────────────────
     private String extraerIdCliente(String texto) {
-        java.util.regex.Pattern p1 = java.util.regex.Pattern.compile("cliente\\s+(\\d{4,12})");
-        java.util.regex.Matcher m1 = p1.matcher(texto.toLowerCase());
+        // Prioridad 1: etiqueta explícita
+        Pattern p1 = Pattern.compile(
+                "(?:id|cedula|cédula|identificacion|identificación)[:\\s]+(\\d{4,12})",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m1 = p1.matcher(texto);
         if (m1.find()) return m1.group(1);
-        java.util.regex.Pattern p2 = java.util.regex.Pattern.compile("\\b(\\d{6,12})\\b");
-        java.util.regex.Matcher m2 = p2.matcher(texto);
+
+        // Prioridad 2: "cliente 123456"
+        Pattern p2 = Pattern.compile("cliente\\s+(\\d{4,12})", Pattern.CASE_INSENSITIVE);
+        Matcher m2 = p2.matcher(texto.toLowerCase());
         if (m2.find()) return m2.group(1);
+
+        // Prioridad 3: número solo, descartando teléfonos colombianos (10 dígitos que empiecen en 3)
+        Pattern p3 = Pattern.compile("\\b(\\d{6,12})\\b");
+        Matcher m3 = p3.matcher(texto);
+        while (m3.find()) {
+            String candidato = m3.group(1);
+            if (candidato.length() == 10 && candidato.startsWith("3")) continue;
+            return candidato;
+        }
         return null;
     }
 
     // ── EXTRAER ID DE CITA ────────────────────────────────────────────────
     private int extraerIdCita(String texto) {
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                "#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
-        java.util.regex.Matcher m = p.matcher(texto.toLowerCase());
+        Pattern p = Pattern.compile("#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
+        Matcher m = p.matcher(texto.toLowerCase());
         if (m.find()) {
             for (int i = 1; i <= m.groupCount(); i++) {
                 if (m.group(i) != null) return Integer.parseInt(m.group(i));
             }
         }
         return -1;
-    }
-
-    // ── OBTENER NOMBRE DEL INSTRUCTOR ─────────────────────────────────────
-    private String obtenerNombreInstructor(String idInstructor) {
-        for (Instructor inst : instructorDAO.listarTodos()) {
-            if (inst.getNumeroIdentificacion().equals(idInstructor)) return inst.getNombre();
-        }
-        return idInstructor;
     }
 
     // ── EXTRAER HORA ──────────────────────────────────────────────────────
@@ -586,22 +763,24 @@ public class ChatbotService {
     }
 
     private LocalTime extraerHoraDeTexto(String texto) {
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
-                "(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
-        java.util.regex.Matcher m = p.matcher(texto.toLowerCase());
-        if (m.find()) {
-            int h = Integer.parseInt(m.group(1));
-            String ampm = m.group(3);
+        // Formato 12h: "10am", "2:30pm"
+        Pattern p12 = Pattern.compile("(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)");
+        Matcher m12 = p12.matcher(texto.toLowerCase());
+        if (m12.find()) {
+            int h = Integer.parseInt(m12.group(1));
+            String ampm = m12.group(3);
             if (ampm.equals("pm") && h != 12) h += 12;
-            if (ampm.equals("am") && h == 12) h = 0;
-            int min = m.group(2) != null ? Integer.parseInt(m.group(2)) : 0;
+            if (ampm.equals("am") && h == 12) h  = 0;
+            int min = m12.group(2) != null ? Integer.parseInt(m12.group(2)) : 0;
             return LocalTime.of(h, min);
         }
-        java.util.regex.Pattern p24 = java.util.regex.Pattern.compile(
-                "\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
-        java.util.regex.Matcher m24 = p24.matcher(texto.toLowerCase());
-        if (m24.find()) return LocalTime.of(
-                Integer.parseInt(m24.group(1)), Integer.parseInt(m24.group(2)));
+        // Formato 24h: "14:30"
+        Pattern p24 = Pattern.compile("\\b([01]?\\d|2[0-3]):([0-5]\\d)\\b");
+        Matcher m24 = p24.matcher(texto.toLowerCase());
+        if (m24.find())
+            return LocalTime.of(
+                    Integer.parseInt(m24.group(1)),
+                    Integer.parseInt(m24.group(2)));
         return null;
     }
 
@@ -622,26 +801,71 @@ public class ChatbotService {
     }
 
     private LocalDate extraerFechaDeTexto(String texto) {
-        String t = texto.toLowerCase();
+        String t      = texto.toLowerCase();
         LocalDate hoy = LocalDate.now();
-        if (t.contains("hoy"))    return hoy;
-        if (t.contains("mañana") || t.contains("manana")) return hoy.plusDays(1);
-        if (t.contains("lunes"))
-            return hoy.with(java.time.DayOfWeek.MONDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 1 ? 1 : 0);
-        if (t.contains("martes"))
-            return hoy.with(java.time.DayOfWeek.TUESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 2 ? 1 : 0);
-        if (t.contains("miércoles") || t.contains("miercoles"))
-            return hoy.with(java.time.DayOfWeek.WEDNESDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 3 ? 1 : 0);
-        if (t.contains("jueves"))
-            return hoy.with(java.time.DayOfWeek.THURSDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 4 ? 1 : 0);
-        if (t.contains("viernes"))
-            return hoy.with(java.time.DayOfWeek.FRIDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 5 ? 1 : 0);
-        if (t.contains("sábado") || t.contains("sabado"))
-            return hoy.with(java.time.DayOfWeek.SATURDAY).plusWeeks(hoy.getDayOfWeek().getValue() >= 6 ? 1 : 0);
+        // CORRECCIÓN: dow va de 1 (lunes) a 7 (domingo)
+        // La lógica original siempre saltaba a la semana siguiente
+        // aunque el día todavía no hubiera pasado.
+        // Ahora: si el día de la semana pedido ya pasó esta semana → siguiente semana,
+        //        si todavía no ha pasado → esta misma semana.
+        int dow = hoy.getDayOfWeek().getValue();
+
+        if (t.contains("hoy"))                                return hoy;
+        if (t.contains("mañana") || t.contains("manana"))    return hoy.plusDays(1);
+
+        if (t.contains("lunes")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.MONDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("martes")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.TUESDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("miércoles") || t.contains("miercoles")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.WEDNESDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("jueves")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.THURSDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("viernes")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.FRIDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("sábado") || t.contains("sabado")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.SATURDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+        if (t.contains("domingo")) {
+            LocalDate candidato = hoy.with(java.time.DayOfWeek.SUNDAY);
+            return candidato.isBefore(hoy) ? candidato.plusWeeks(1) : candidato;
+        }
+
+        // Formato dd/MM/yyyy o dd-MM-yyyy
+        Pattern pFecha = Pattern.compile("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})");
+        Matcher mFecha = pFecha.matcher(t);
+        if (mFecha.find()) {
+            try {
+                return LocalDate.of(
+                        Integer.parseInt(mFecha.group(3)),
+                        Integer.parseInt(mFecha.group(2)),
+                        Integer.parseInt(mFecha.group(1)));
+            } catch (Exception ignored) {}
+        }
         return null;
     }
 
-    // ── CERRAR SESION ─────────────────────────────────────────────────────
+    // ── OBTENER NOMBRE DEL INSTRUCTOR ─────────────────────────────────────
+    private String obtenerNombreInstructor(String idInstructor) {
+        for (Instructor inst : instructorDAO.listarTodos()) {
+            if (inst.getNumeroIdentificacion().equals(idInstructor))
+                return inst.getNombre();
+        }
+        return idInstructor;
+    }
+
+    // ── CERRAR SESIÓN ─────────────────────────────────────────────────────
     public void cerrarSesion(int idSesion) {
         sesionDAO.cerrarSesion(idSesion);
     }
