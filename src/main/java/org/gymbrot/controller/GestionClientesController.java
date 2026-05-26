@@ -291,11 +291,10 @@ public class GestionClientesController implements Initializable {
                 super.updateItem(estado, empty);
                 if (empty || estado == null) { setGraphic(null); return; }
 
-                boolean activo = estado.equalsIgnoreCase("ACTIVO");
-                Label lbl = new Label(activo ? "Entrada Segura" : "Membresia Vencida");
+                Label lbl = new Label(estado.equalsIgnoreCase("ACTIVO") ? "INGRESO SEGURO" : "SIN INGRESO");
                 lbl.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
                         "-fx-font-weight: 700; -fx-text-fill: " +
-                        (activo ? "#D4FF00" : "#ffb4ab") + ";");
+                        (estado.equalsIgnoreCase("ACTIVO") ? "#D4FF00" : "#ffb4ab") + ";");
 
                 HBox wrapper = new HBox(lbl);
                 wrapper.setAlignment(Pos.CENTER);
@@ -414,7 +413,11 @@ public class GestionClientesController implements Initializable {
             String nombreCompleto = c.getNombre() + " " + (c.getApellidos() != null ? c.getApellidos() : "");
             String correo = c.getCorreo() != null ? c.getCorreo() : "";
             String telefono = c.getTelefono() != null ? c.getTelefono() : "";
-            String estado = c.getEstado() != null ? c.getEstado() : "ACTIVO";
+            String estado = "SIN INGRESO";
+            if ("ACTIVO".equalsIgnoreCase(c.getEstado())) {
+                var hm = historialMembresiaDAO.buscarActiva(c.getNumeroIdentificacion());
+                if (hm != null) estado = "ACTIVO";
+            }
             String categoria = "Adulto";
             if (c.getFechaNacimiento() != null) {
                 int edad = java.time.Period.between(c.getFechaNacimiento(), java.time.LocalDate.now()).getYears();

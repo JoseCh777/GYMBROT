@@ -72,14 +72,15 @@ public class MembresiaDAO {
         return null;
     }
 
-    public int insertarYRetornarId(Membresia m) {
+    public int insertarYRetornarId(Membresia m) throws SQLException {
         String sql = """
             INSERT INTO MEMBRESIAS
                 (id_plan, tipo_membresia, modalidad_pago, valor,
                  fecha_inicio, fecha_vencimiento, estado)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
-        try (PreparedStatement ps = getConexion().prepareStatement(sql, new String[]{"id_membresia"})) {
+        Connection conn = getConexion();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, m.getIdPlan());
             ps.setString(2, m.getTipoMembresia());
             ps.setString(3, m.getModalidadPago());
@@ -88,18 +89,26 @@ public class MembresiaDAO {
             ps.setDate(6, Date.valueOf(m.getFechaVencimiento()));
             ps.setString(7, m.getEstado());
             ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) return rs.getInt(1);
-            }
         } catch (SQLException e) {
             System.err.println("Error al insertar membresía: " + e.getMessage());
+            return -1;
+        }
+        // Consultar el ID recién generado (Oracle identity column)
+        try (PreparedStatement ps = conn.prepareStatement("SELECT MAX(id_membresia) FROM MEMBRESIAS");
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                System.out.println("Membresia insertada con ID: " + id);
+                return id;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener ID de membresía: " + e.getMessage());
         }
         return -1;
     }
 
     public boolean membresiaPlan(int idPlan) {
-    String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'activa'";
+    String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'ACTIVA'";
     try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
         ps.setInt(1, idPlan);
         ResultSet rs = ps.executeQuery();
@@ -114,7 +123,7 @@ public class MembresiaDAO {
         List<Membresia> lista = new ArrayList<>();
         String sql = """
                 SELECT * FROM MEMBRESIAS
-                WHERE fecha_vencimiento < SYSDATE AND estado != 'vencida'
+                WHERE fecha_vencimiento < SYSDATE AND estado != 'VENCIDA'
                 ORDER BY fecha_vencimiento
                 """;
         try (PreparedStatement ps = getConexion().prepareStatement(sql);

@@ -288,15 +288,17 @@
    ══════════════════════════════════════════════════════════════════ */
 
 .tooltip {
-    -fx-background-color: #282a2d;
-    -fx-background-radius: 6;
-    -fx-border-color: #333538;
+    -fx-background-color: #1a1d21;
+    -fx-background-radius: 8;
+    -fx-border-color: #D4FF00;
     -fx-border-width: 1;
-    -fx-border-radius: 6;
-    -fx-text-fill: #e2e2e6;
-    -fx-font-family: 'Inter';
-    -fx-font-size: 12px;
-    -fx-padding: 6 10 6 10;
+    -fx-border-radius: 8;
+    -fx-text-fill: #D4FF00;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 8 14 8 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 8, 0, 0, 2);
 }
 
 

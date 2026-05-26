@@ -12,9 +12,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.dao.PlanMembresiaDAO;
 import org.gymbrot.model.PlanMembresia;
 
@@ -26,6 +28,7 @@ import java.util.ResourceBundle;
 public class GestionMembresiasController implements Initializable {
 
     // ── SideNav ──────────────────────────────────────────────
+    @FXML private VBox sideNav;
     @FXML private Button navDashboard;
     @FXML private Button navClientes;
     @FXML private Button navInstructores;
@@ -63,20 +66,27 @@ public class GestionMembresiasController implements Initializable {
     @FXML private TableColumn<FilaComparativa, String> colPlata;
     @FXML private TableColumn<FilaComparativa, String> colOro;
 
+    // ── Historial de Pagos ───────────────────────────────────
+    @FXML private TableView<FilaPago> tablaHistorialPagos;
+    @FXML private TableColumn<FilaPago, String> colHPCliente;
+    @FXML private TableColumn<FilaPago, String> colHPPlan;
+    @FXML private TableColumn<FilaPago, String> colHPMonto;
+    @FXML private TableColumn<FilaPago, String> colHPMetodo;
+    @FXML private TableColumn<FilaPago, String> colHPFecha;
+    @FXML private TableColumn<FilaPago, String> colHPEstado;
+    @FXML private TableColumn<FilaPago, String> colHPReferencia;
+
     // ── DAOs ─────────────────────────────────────────────────
     private final PlanMembresiaDAO planDAO = new PlanMembresiaDAO();
+    private final PagoDAO pagoDAO = new PagoDAO();
 
     // ── Estado interno ───────────────────────────────────────
     private enum Duracion { MENSUAL, SEMESTRAL, ANUAL }
     private Duracion duracionActual = Duracion.ANUAL;
 
-    private PlanMembresia planBronce;
-    private PlanMembresia planPlata;
-    private PlanMembresia planOro;
-
-    // Descuentos
-    private static final double DESC_SEMESTRAL = 0.10;
-    private static final double DESC_ANUAL     = 0.20;
+    private PlanMembresia planSilver;
+    private PlanMembresia planGold;
+    private PlanMembresia planBlack;
 
     // Estilos nav
     private static final String STYLE_NAV_ACTIVO =
@@ -107,14 +117,16 @@ public class GestionMembresiasController implements Initializable {
         configurarAnimacionesBotones();
         configurarTablaComparativa();
         actualizarPrecios();
+        configurarTablaHistorial();
+        cargarHistorialPagos();
     }
 
     private void cargarPlanes() {
         List<PlanMembresia> planes = planDAO.listarTodos();
         if (planes.size() >= 3) {
-            planBronce = planes.get(0);
-            planPlata  = planes.get(1);
-            planOro    = planes.get(2);
+            planSilver = planes.get(0);
+            planGold   = planes.get(1);
+            planBlack  = planes.get(2);
         }
     }
 
@@ -186,21 +198,17 @@ public class GestionMembresiasController implements Initializable {
 
     @FXML
     private void handleSeleccionarBronce(ActionEvent event) {
-        String nombre = planBronce != null ? planBronce.getNombre() : "Bronce";
-        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
+        if (planSilver != null) abrirPagoMembresia(planSilver, duracionActual);
     }
 
     @FXML
     private void handleSeleccionarPlata(ActionEvent event) {
-        String nombre = planPlata != null ? planPlata.getNombre() : "Plata";
-        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
-        // TODO: abrir formulario de inscripcion con plan = PLATA
+        if (planBlack != null) abrirPagoMembresia(planBlack, duracionActual);
     }
 
     @FXML
     private void handleSeleccionarOro(ActionEvent event) {
-        String nombre = planOro != null ? planOro.getNombre() : "Oro";
-        mostrarInfo("Plan seleccionado", nombre + " - Duración: " + duracionActual);
+        if (planGold != null) abrirPagoMembresia(planGold, duracionActual);
     }
 
     // ══ Banner AI ════════════════════════════════════════════
@@ -210,52 +218,76 @@ public class GestionMembresiasController implements Initializable {
         navegarA("/fxml/GymbroAI.fxml", event);
     }
 
+    // ══ Overlay PagoMembresia ═════════════════════════════════
+
+    private void abrirPagoMembresia(PlanMembresia plan, Duracion duracion) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PagoMembresia.fxml"));
+            Parent overlay = loader.load();
+            PagoMembresiaController ctrl = loader.getController();
+
+            double precio = switch (duracion) {
+                case MENSUAL   -> plan.getPrecioMensual();
+                case SEMESTRAL -> plan.getPrecioSemestral();
+                case ANUAL     -> plan.getPrecioAnual();
+            };
+            String modalidad = duracion.name();
+            ctrl.setPlan(plan, modalidad, precio);
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir el formulario de pago");
+        }
+    }
+
     // ══ Logica de precios ════════════════════════════════════
 
     private void actualizarPrecios() {
-        double factor = switch (duracionActual) {
-            case MENSUAL   -> 1.0;
-            case SEMESTRAL -> 1.0 - DESC_SEMESTRAL;
-            case ANUAL     -> 1.0 - DESC_ANUAL;
-        };
+        if (planSilver == null || planGold == null || planBlack == null) return;
 
-        if (planBronce == null || planPlata == null || planOro == null) return;
-
+        // Silver
         double precioBase = switch (duracionActual) {
-            case MENSUAL   -> planBronce.getPrecioMensual();
-            case SEMESTRAL -> planBronce.getPrecioSemestral() / 6;
-            case ANUAL     -> planBronce.getPrecioAnual() / 12;
+            case MENSUAL   -> planSilver.getPrecioMensual();
+            case SEMESTRAL -> planSilver.getPrecioSemestral() / 6;
+            case ANUAL     -> planSilver.getPrecioAnual() / 12;
         };
-        int precioBronce = (int) Math.round(precioBase);
+        lblPrecioBronce.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionBronce.setText(textoFacturacion(planSilver, "Facturado"));
 
+        // Gold
         precioBase = switch (duracionActual) {
-            case MENSUAL   -> planPlata.getPrecioMensual();
-            case SEMESTRAL -> planPlata.getPrecioSemestral() / 6;
-            case ANUAL     -> planPlata.getPrecioAnual() / 12;
+            case MENSUAL   -> planGold.getPrecioMensual();
+            case SEMESTRAL -> planGold.getPrecioSemestral() / 6;
+            case ANUAL     -> planGold.getPrecioAnual() / 12;
         };
-        int precioPlata = (int) Math.round(precioBase * factor);
+        lblPrecioOro.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionOro.setText(textoFacturacion(planGold, "Mejor Valor: Facturado"));
 
+        // Black
         precioBase = switch (duracionActual) {
-            case MENSUAL   -> planOro.getPrecioMensual();
-            case SEMESTRAL -> planOro.getPrecioSemestral() / 6;
-            case ANUAL     -> planOro.getPrecioAnual() / 12;
+            case MENSUAL   -> planBlack.getPrecioMensual();
+            case SEMESTRAL -> planBlack.getPrecioSemestral() / 6;
+            case ANUAL     -> planBlack.getPrecioAnual() / 12;
         };
-        int precioOro = (int) Math.round(precioBase * factor);
-
-        lblPrecioBronce.setText(String.valueOf(precioBronce));
-        lblPrecioPlata.setText(String.valueOf(precioPlata));
-        lblPrecioOro.setText(String.valueOf(precioOro));
-
-        lblFacturacionBronce.setText(textoFacturacion(precioBronce, "Facturado"));
-        lblFacturacionPlata.setText(textoFacturacion(precioPlata, "Facturado"));
-        lblFacturacionOro.setText(textoFacturacion(precioOro, "Mejor Valor: Facturado"));
+        lblPrecioPlata.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionPlata.setText(textoFacturacion(planBlack, "Facturado"));
     }
 
-    private String textoFacturacion(int precioMensual, String prefijo) {
+    private String textoFacturacion(PlanMembresia plan, String prefijo) {
         return switch (duracionActual) {
             case MENSUAL   -> prefijo + " mensualmente";
-            case SEMESTRAL -> prefijo + " semestralmente a USD " + (precioMensual * 6) + "/semestre";
-            case ANUAL     -> prefijo + " anualmente a USD " + (precioMensual * 12) + "/año";
+            case SEMESTRAL -> prefijo + " semestralmente a $" + (int) plan.getPrecioSemestral() + "/semestre";
+            case ANUAL     -> prefijo + " anualmente a $" + (int) plan.getPrecioAnual() + "/año";
         };
     }
 
@@ -308,13 +340,13 @@ public class GestionMembresiasController implements Initializable {
         });
 
         ObservableList<FilaComparativa> filas = FXCollections.observableArrayList();
-        if (planBronce != null && planPlata != null && planOro != null) {
-            String[] bronceBeneficios = planBronce.getBeneficios() != null
-                    ? planBronce.getBeneficios().split(" - ") : new String[]{planBronce.getDescripcion() != null ? planBronce.getDescripcion() : "Incluido"};
-            String[] plataBeneficios  = planPlata.getBeneficios() != null
-                    ? planPlata.getBeneficios().split(" - ") : new String[]{planPlata.getDescripcion() != null ? planPlata.getDescripcion() : "Incluido"};
-            String[] oroBeneficios    = planOro.getBeneficios() != null
-                    ? planOro.getBeneficios().split(" - ") : new String[]{planOro.getDescripcion() != null ? planOro.getDescripcion() : "Incluido"};
+        if (planSilver != null && planGold != null && planBlack != null) {
+            String[] bronceBeneficios = planSilver.getBeneficios() != null
+                    ? planSilver.getBeneficios().split(" - ") : new String[]{planSilver.getDescripcion() != null ? planSilver.getDescripcion() : "Incluido"};
+            String[] plataBeneficios  = planBlack.getBeneficios() != null
+                    ? planBlack.getBeneficios().split(" - ") : new String[]{planBlack.getDescripcion() != null ? planBlack.getDescripcion() : "Incluido"};
+            String[] oroBeneficios    = planGold.getBeneficios() != null
+                    ? planGold.getBeneficios().split(" - ") : new String[]{planGold.getDescripcion() != null ? planGold.getDescripcion() : "Incluido"};
 
             int maxRows = Math.max(bronceBeneficios.length, Math.max(plataBeneficios.length, oroBeneficios.length));
             for (int i = 0; i < maxRows; i++) {
@@ -326,6 +358,67 @@ public class GestionMembresiasController implements Initializable {
             }
         }
         tablaComparativa.setItems(filas);
+    }
+
+    // ══ Historial de Pagos ═══════════════════════════════════════
+
+    private void configurarTablaHistorial() {
+        tablaHistorialPagos.widthProperty().addListener((obs, old, w) -> {
+            if (w.doubleValue() > 0) {
+                var header = tablaHistorialPagos.lookup(".column-header-background");
+                if (header != null) header.setStyle("-fx-background-color: #121417;");
+                var headers = tablaHistorialPagos.lookupAll(".column-header");
+                for (var h : headers) {
+                    h.setStyle("-fx-background-color: #121417; -fx-border-color: #1f2125;");
+                }
+            }
+        });
+        colHPCliente.setCellValueFactory(d  -> new SimpleStringProperty(d.getValue().cliente()));
+        colHPPlan.setCellValueFactory(d     -> new SimpleStringProperty(d.getValue().plan()));
+        colHPMonto.setCellValueFactory(d    -> new SimpleStringProperty("$" + d.getValue().monto()));
+        colHPMetodo.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().metodo()));
+        colHPFecha.setCellValueFactory(d    -> new SimpleStringProperty(d.getValue().fecha()));
+        colHPEstado.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().estado()));
+        colHPReferencia.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().referencia()));
+
+        TableColumn<FilaPago, String>[] cols = new TableColumn[]{
+                colHPCliente, colHPPlan, colHPMonto, colHPMetodo, colHPFecha, colHPEstado, colHPReferencia
+        };
+        for (var col : cols) {
+            col.setCellFactory(c -> new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) { setText(null); return; }
+                    setText(item);
+                    String estilo = "-fx-background-color: transparent; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-padding: 8 12 8 12;";
+                    if ("EXITOSO".equals(item)) {
+                        setStyle(estilo + "-fx-text-fill: #D4FF00; -fx-font-weight: 700;");
+                    } else if ("PENDIENTE".equals(item)) {
+                        setStyle(estilo + "-fx-text-fill: #fbbf24; -fx-font-weight: 700;");
+                    } else {
+                        setStyle(estilo + "-fx-text-fill: #d1d5db;");
+                    }
+                }
+            });
+        }
+    }
+
+    private void cargarHistorialPagos() {
+        List<PagoDAO.PagoConCliente> pagos = pagoDAO.listarTodosConCliente();
+        ObservableList<FilaPago> items = FXCollections.observableArrayList();
+        for (PagoDAO.PagoConCliente p : pagos) {
+            items.add(new FilaPago(
+                    p.clienteNombre() + " " + p.clienteApellidos(),
+                    p.planNombre(),
+                    String.format("%.0f", p.valor()),
+                    p.metodoPago(),
+                    p.fechaPago(),
+                    p.estadoPago(),
+                    p.referencia() != null ? p.referencia() : ""
+            ));
+        }
+        tablaHistorialPagos.setItems(items);
     }
 
     // ══ Animaciones de navegacion ═════════════════════════════════
@@ -538,6 +631,14 @@ public class GestionMembresiasController implements Initializable {
         alert.showAndWait();
     }
 
+    private void mostrarError(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
     // ══ Record interno para la tabla ═════════════════════════
 
     public record FilaComparativa(
@@ -545,5 +646,15 @@ public class GestionMembresiasController implements Initializable {
             String bronce,
             String plata,
             String oro
+    ) {}
+
+    public record FilaPago(
+            String cliente,
+            String plan,
+            String monto,
+            String metodo,
+            String fecha,
+            String estado,
+            String referencia
     ) {}
 }

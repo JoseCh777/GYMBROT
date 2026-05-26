@@ -5,32 +5,37 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.ProcesarPagoController">
+<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.PagoMembresiaController">
 
     <VBox maxHeight="730" maxWidth="680" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1; -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">
 
-        <HBox alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: transparent;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
-            <padding><Insets left="24" right="24" /></padding>
+        <HBox alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 12 12 0 0;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets bottom="0" left="24" right="24" top="0" /></padding>
 
-            <VBox spacing="2" HBox.hgrow="ALWAYS">
-                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                               -fx-text-fill: white;" text="PROCESAR PAGO" />
-                <Label fx:id="lblTransactionId" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TXN-0000" />
-            </VBox>
+            <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                <image><Image url="@../images/fitness_center.png" /></image>
+            </ImageView>
+
+            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px; -fx-font-weight: 700;                           -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;">
+                PROCESAR PAGO
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS" />
 
             <Button fx:id="btnCerrar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 20;                            -fx-cursor: hand; -fx-padding: 6 6 6 6;">
                 <graphic>
@@ -52,9 +57,11 @@
                     </columnConstraints>
 
                     <VBox spacing="8" GridPane.columnIndex="0">
-                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SELECCIONAR CLIENTE" />
-                        <ComboBox fx:id="cmbCliente" maxWidth="Infinity" prefHeight="44" promptText="Seleccione un cliente..."
-                                  style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;" />
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BUSCAR CLIENTE" />
+                        <TextField fx:id="txtBuscarCliente" prefHeight="44" promptText="Escriba nombre o identificacion..." style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;">
+                            <padding><Insets left="12" right="12" /></padding>
+                        </TextField>
+                        <ListView fx:id="lvClientes" maxHeight="150" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px;" visible="false" />
                     </VBox>
 
                     <VBox spacing="8" GridPane.columnIndex="1">
@@ -70,6 +77,9 @@
                             </HBox>
                         </VBox>
                     </VBox>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
                 <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
@@ -85,7 +95,9 @@
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MONTO A PAGAR" />
                         <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="0" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8;">
                             <Label fx:id="lblMoneda" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;" />
-                            <TextField fx:id="txtMonto" HBox.hgrow="ALWAYS" prefHeight="44" promptText="0.00" text="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #D4FF00;" />
+                            <TextField fx:id="txtMonto" prefHeight="44" promptText="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #D4FF00; -fx-prompt-text-fill: #D4FF00;">
+                                <padding><Insets left="4" right="12" /></padding>
+                            </TextField>
                         </HBox>
                     </VBox>
 
@@ -98,41 +110,26 @@
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA DE PAGO" />
                         <DatePicker fx:id="dpFechaPago" maxWidth="Infinity" prefHeight="44" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px;" />
                     </VBox>
-                </GridPane>
-
-                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
-
-                <GridPane hgap="20" vgap="0">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
-                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
-                    </columnConstraints>
-
-                    <VBox spacing="8" GridPane.columnIndex="0">
-                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO DEL PAGO" />
-                        <HBox spacing="12" prefHeight="44" alignment="CENTER_LEFT">
-                            <RadioButton fx:id="rbCompletado" text="COMPLETADO" selected="true" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;">
-                                <toggleGroup>
-                                    <ToggleGroup fx:id="tgEstado" />
-                                </toggleGroup>
-                            </RadioButton>
-                            <RadioButton fx:id="rbPendiente" text="PENDIENTE" toggleGroup="$tgEstado" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;" />
-                        </HBox>
-                    </VBox>
-
-                    <VBox spacing="8" GridPane.columnIndex="1">
-                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REFERENCIA" />
-                        <TextField fx:id="txtReferencia" prefHeight="44" promptText="ej. VISA-8892" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;">
-                            <padding><Insets left="12" right="12" /></padding>
-                        </TextField>
-                    </VBox>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
                 <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
 
                 <VBox spacing="8">
+                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REFERENCIA" />
+
+                    <TextField fx:id="txtReferencia" prefHeight="44" promptText="VISA-XXXXX" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;">
+                        <padding><Insets left="12" right="12" /></padding>
+                    </TextField>
+                </VBox>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
+
+                <VBox spacing="8">
                     <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="OBSERVACIONES" />
-                    <TextArea fx:id="txtObservaciones" prefHeight="72" promptText="Notas adicionales..." wrapText="true" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;">
+                    <TextArea fx:id="txtObservaciones" prefHeight="72" promptText="Notas adicionales..." style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white; -fx-control-inner-background: #121417;" wrapText="true">
                         <padding><Insets bottom="10" left="12" right="12" top="10" /></padding>
                     </TextArea>
                 </VBox>

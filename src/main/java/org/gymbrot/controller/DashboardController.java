@@ -239,14 +239,16 @@ public class DashboardController implements Initializable {
         LocalDate hoy = LocalDate.now();
         for (int i = 6; i >= 0; i--) {
             LocalDate dia = hoy.minusDays(i);
+            int diaSemana = dia.getDayOfWeek().getValue() - 1; // 0=LUN, 6=DOM
             List<RegistroIngreso> ingresos = registroIngresoDAO.listarPorFecha(dia);
-            asistencia[6 - i] = ingresos.size();
+            asistencia[diaSemana] = ingresos.size();
         }
         actualizarBarrasAsistencia(asistencia);
     }
 
     private void actualizarBarrasAsistencia(int[] valores) {
         Region[] barras = {barLun, barMar, barMie, barJue, barVie, barSab, barDom};
+        String[] diasSemana = {"LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"};
         double maxValor = 0;
         for (int v : valores) if (v > maxValor) maxValor = v;
         double alturaMax = 200.0;
@@ -267,8 +269,10 @@ public class DashboardController implements Initializable {
             ft.setDelay(Duration.millis(i * 60));
             ft.play();
 
-            // Tooltip con número de ingresos
-            Tooltip.install(barras[i], new Tooltip(valores[i] + " ingresos"));
+            // Tooltip con número de ingresos — instalado en el VBox padre (target más ancho)
+            Tooltip t = new Tooltip(diasSemana[i] + " — " + valores[i] + " ingresos");
+            t.setShowDelay(Duration.millis(200));
+            Tooltip.install(barras[i].getParent(), t);
 
             // Hover sobre cada barra
             final int    idx        = i;
@@ -341,6 +345,8 @@ public class DashboardController implements Initializable {
 
     private void actualizarBarrasHorasPico(int[] valores) {
         Region[] barras = {h06, h07, h08, h09, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19, h20, h21};
+        String[] horas = {"06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00",
+                          "14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00"};
         double maxValor = 0;
         for (int v : valores) if (v > maxValor) maxValor = v;
 
@@ -367,8 +373,10 @@ public class DashboardController implements Initializable {
             ft.setDelay(Duration.millis(i * 40));
             ft.play();
 
-            // Tooltip con número de ingresos
-            Tooltip.install(barras[i], new Tooltip(valores[i] + " ingresos"));
+            // Tooltip con número de ingresos por hora
+            Tooltip t = new Tooltip(horas[i] + " — " + valores[i] + " ingresos");
+            t.setShowDelay(Duration.millis(200));
+            Tooltip.install(barras[i], t);
 
             // Hover sobre cada barra del histograma
             final String colorFinal = color;

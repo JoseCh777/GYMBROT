@@ -82,6 +82,54 @@ public class PagoDAO {
         return lista;
     }
 
+    // ── LISTAR TODOS CON CLIENTE (JOIN) ────────────────────────────────────
+    public record PagoConCliente(
+        int idPago,
+        String clienteNombre,
+        String clienteApellidos,
+        String planNombre,
+        String modalidad,
+        double valor,
+        String metodoPago,
+        String estadoPago,
+        String fechaPago,
+        String referencia
+    ) {}
+
+    public List<PagoConCliente> listarTodosConCliente() {
+        List<PagoConCliente> lista = new ArrayList<>();
+        String sql = """
+            SELECT p.id_pago, u.nombre, u.apellidos, pm.nombre AS plan_nombre,
+                   m.modalidad_pago, p.valor, p.metodo_pago, p.estado_pago,
+                   p.fecha_pago, p.referencia_transaccion
+            FROM PAGOS p
+            JOIN HISTORIAL_MEMBRESIAS hm ON hm.id_membresia = p.id_membresia
+            JOIN MEMBRESIAS m ON m.id_membresia = p.id_membresia
+            JOIN PLANES_MEMBRESIAS pm ON pm.id_plan = m.id_plan
+            JOIN USUARIOS u ON u.numero_identificacion = p.id_cliente
+            ORDER BY p.fecha_pago DESC
+            """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new PagoConCliente(
+                    rs.getInt("id_pago"),
+                    rs.getString("nombre"),
+                    rs.getString("apellidos"),
+                    rs.getString("plan_nombre"),
+                    rs.getString("modalidad_pago"),
+                    rs.getDouble("valor"),
+                    rs.getString("metodo_pago"),
+                    rs.getString("estado_pago"),
+                    rs.getDate("fecha_pago") != null ? rs.getDate("fecha_pago").toLocalDate().toString() : "",
+                    rs.getString("referencia_transaccion")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar pagos con cliente: " + e.getMessage());
+        }
+        return lista;
+    }
     // ── LISTAR POR MEMBRESIA ──────────────────────────────────────────────
     public List<Pago> listarPorMembresia(int idMembresia) {
         List<Pago> lista = new ArrayList<>();

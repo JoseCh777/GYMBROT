@@ -53,8 +53,11 @@ public class HistorialMembresiaDAO {
     // ── BUSCAR ACTIVA POR CLIENTE ─────────────────────────────────────────
     public HistorialMembresia buscarActiva(String idCliente) {
         String sql = """
-                SELECT * FROM HISTORIAL_MEMBRESIAS
-                WHERE id_cliente = ? AND activa = 1
+                SELECT hm.* FROM HISTORIAL_MEMBRESIAS hm
+                JOIN MEMBRESIAS m ON m.id_membresia = hm.id_membresia
+                WHERE hm.id_cliente = ? AND hm.activa = 1
+                  AND m.estado = 'ACTIVA'
+                  AND m.fecha_vencimiento >= TRUNC(SYSDATE)
                 """;
         try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
             ps.setString(1, idCliente);
@@ -96,6 +99,23 @@ public class HistorialMembresiaDAO {
         } catch (SQLException e) {
             System.err.println("Error al desactivar historial: " + e.getMessage());
             return false;
+        }
+    }
+
+    public void desactivarPorCliente(String idCliente) {
+        String sql = """
+                UPDATE HISTORIAL_MEMBRESIAS
+                SET activa = 0, fecha_fin = SYSDATE
+                WHERE id_cliente = ? AND activa = 1
+                """;
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int updated = ps.executeUpdate();
+            if (updated > 0) {
+                System.out.println("Membresia anterior desactivada para cliente: " + idCliente);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar membresia anterior: " + e.getMessage());
         }
     }
     // ── MAPEAR ResultSet → HistorialMembresia ─────────────────────────────

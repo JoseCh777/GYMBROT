@@ -158,6 +158,10 @@ public class loginController implements Initializable {
         Usuario user = dao.buscarPorNombreOCorreo(usuario);
 
         if (user != null && verificarContrasena(contrasena, user.getContrasenaHash())) {
+            if (!"ADMINISTRADOR".equals(user.getTipoUsuario())) {
+                mostrarError("Acceso denegado", "Solo los administradores pueden iniciar sesion en el sistema.");
+                return;
+            }
             navegarA("/fxml/Dashboard.fxml");
         } else {
             mostrarError("Credenciales invalidas", "Usuario o contrasena incorrectos.");

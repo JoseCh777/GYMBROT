@@ -15,17 +15,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import org.gymbrot.controller.PerfilClienteController;
+import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.dao.HistorialMembresiaDAO;
+import org.gymbrot.dao.RegistroIngresoDAO;
 import org.gymbrot.model.Cliente;
+import org.gymbrot.model.RegistroIngreso;
+import org.gymbrot.service.AuthService;
 import org.gymbrot.service.HuellaService;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import org.gymbrot.dao.ClienteDAO;
-import org.gymbrot.dao.RegistroIngresoDAO;
-import org.gymbrot.model.RegistroIngreso;
-import org.gymbrot.service.AuthService;
-import org.gymbrot.controller.PerfilClienteController;
 
 public class RegistroEntradaController implements Initializable {
 
@@ -56,6 +56,7 @@ public class RegistroEntradaController implements Initializable {
     private HuellaService huellaService;
     private boolean verificando = false;
     private final RegistroIngresoDAO ingresoDAO = new RegistroIngresoDAO();
+    private final HistorialMembresiaDAO historialMembresiaDAO = new HistorialMembresiaDAO();
     private String modo = "ENTRADA";
 
     @Override
@@ -185,6 +186,10 @@ public class RegistroEntradaController implements Initializable {
             @Override
             public void onIdentificado(Cliente cliente) {
                 Platform.runLater(() -> {
+                    if (!tieneMembresiaActiva(cliente)) {
+                        programarReintento();
+                        return;
+                    }
                     pbScan.setProgress(1);
                     dotBioScan.setStyle("-fx-fill: #22c55e;");
                     verificando = false;
@@ -207,6 +212,7 @@ public class RegistroEntradaController implements Initializable {
                     lblEstadoScan.setText("HUELLA NO RECONOCIDA");
                     mostrarAlerta("Acceso Denegado", "La huella no coincide con ningun socio registrado.");
                     verificando = false;
+                    programarReintento();
                 });
             }
 
@@ -216,9 +222,19 @@ public class RegistroEntradaController implements Initializable {
                     pbScan.setProgress(0);
                     lblEstadoScan.setText("ERROR: " + error);
                     verificando = false;
+                    programarReintento();
                 });
             }
         });
+    }
+
+    private void programarReintento() {
+        new Timeline(new KeyFrame(Duration.millis(500), e -> {
+            if (usandoBiometrico && huellaService.lectorActivo()) {
+                lblEstadoScan.setText("PREPARANDO...");
+                iniciarVerificacion();
+            }
+        })).play();
     }
 
     private void slideTo(VBox salir, VBox entrar, boolean haciaBiometrico) {
@@ -285,6 +301,8 @@ public class RegistroEntradaController implements Initializable {
             return;
         }
 
+        if (!tieneMembresiaActiva(cliente)) return;
+
         if ("SALIDA".equals(modo)) {
             ingresoDAO.registrarSalidaPorCliente(cliente.getNumeroIdentificacion());
         } else {
@@ -293,6 +311,21 @@ public class RegistroEntradaController implements Initializable {
         PerfilClienteController.abrirConCliente(cliente, wrapperStack, overlayRoot);
     }
 
+
+    private boolean tieneMembresiaActiva(Cliente cliente) {
+        if (historialMembresiaDAO.buscarActiva(cliente.getNumeroIdentificacion()) == null) {
+            mostrarAlerta("Acceso Denegado",
+                    "El cliente " + cliente.getNombre() + " " + cliente.getApellidos()
+                            + " no tiene una membresia activa.\n"
+                            + "Debe adquirir o renovar su membresia para ingresar.");
+            pbScan.setProgress(0);
+            dotBioScan.setStyle("-fx-fill: #ef4444;");
+            lblEstadoScan.setText("MEMBRESIA INACTIVA");
+            verificando = false;
+            return false;
+        }
+        return true;
+    }
 
     private void registrarEntrada(Cliente cliente, String metodo) {
         RegistroIngreso ri = new RegistroIngreso();

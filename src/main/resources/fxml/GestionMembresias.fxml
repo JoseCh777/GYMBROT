@@ -95,14 +95,13 @@
                 <!-- ── SECCION 2: Cards de planes ── -->
                 <HBox alignment="BOTTOM_CENTER" spacing="20">
 
-                    <!-- Card: Bronce -->
+                    <!-- Card: Silver -->
                     <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
                         <VBox spacing="4">
                             <VBox.margin><Insets bottom="20" /></VBox.margin>
-                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NIVEL 01" />
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="Bronce" />
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="SILVER" />
                         </VBox>
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
@@ -111,7 +110,7 @@
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionBronce" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente a USD 588/año">
+                        <Label fx:id="lblFacturacionBronce" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -138,20 +137,19 @@
                         <Button fx:id="btnSeleccionarBronce" maxWidth="Infinity" onAction="#handleSeleccionarBronce" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
-                    <!-- Card: Oro Elite (destacada) -->
+                    <!-- Card: Gold (destacada - mejor opcion) -->
                     <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.15), 30, 0, 0, 0);" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
                         <!-- Badge -->
                         <HBox alignment="CENTER">
                             <VBox.margin><Insets bottom="16" /></VBox.margin>
-                            <Label style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: black; -fx-padding: 4 12 4 12;" text="MAS COMPETITIVO" />
+                            <Label style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: black; -fx-padding: 4 12 4 12;" text="MEJOR OPCION" />
                         </HBox>
 
                         <VBox spacing="4">
                             <VBox.margin><Insets bottom="20" /></VBox.margin>
-                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="NIVEL 03 — RECOMENDADO" />
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="Oro Elite" />
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="GOLD" />
                         </VBox>
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
@@ -160,7 +158,7 @@
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionOro" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #D4FF00;" text="Mejor Valor: Facturado anualmente a USD 1,548/año">
+                        <Label fx:id="lblFacturacionOro" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #D4FF00;" text="Mejor Valor: Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -188,17 +186,16 @@
                             </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarOro" maxWidth="Infinity" onAction="#handleSeleccionarOro" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #121417; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.3), 15, 0, 0, 0);" text="INICIAR ENTRENAMIENTO ELITE" />
+                        <Button fx:id="btnSeleccionarOro" maxWidth="Infinity" onAction="#handleSeleccionarOro" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #121417; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.3), 15, 0, 0, 0);" text="SELECCIONAR PLAN" />
                     </VBox>
 
-                    <!-- Card: Plata -->
+                    <!-- Card: Black -->
                     <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
 
                         <VBox spacing="4">
                             <VBox.margin><Insets bottom="20" /></VBox.margin>
-                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NIVEL 02" />
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="Plata" />
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="BLACK" />
                         </VBox>
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
@@ -207,7 +204,7 @@
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionPlata" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente a USD 1,068/año">
+                        <Label fx:id="lblFacturacionPlata" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -243,14 +240,31 @@
                     <TableView fx:id="tablaComparativa" prefHeight="260" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
                         <columns>
                             <TableColumn fx:id="colBeneficio" prefWidth="380" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARACTERISTICAS Y BENEFICIOS" />
-                            <TableColumn fx:id="colBronce" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BRONCE" />
-                            <TableColumn fx:id="colPlata" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PLATA" />
-                            <TableColumn fx:id="colOro" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="ORO ELITE" />
+                            <TableColumn fx:id="colBronce" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SILVER" />
+                            <TableColumn fx:id="colOro" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="GOLD" />
+                            <TableColumn fx:id="colPlata" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BLACK" />
                         </columns>
                     </TableView>
                 </VBox>
 
-                <!-- ── SECCION 4: Banner Gymbrot AI ── -->
+                <!-- ── SECCION 4: Historial de Pagos ── -->
+                <VBox spacing="16">
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Historial de Pagos" />
+
+                    <TableView fx:id="tablaHistorialPagos" prefHeight="280" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
+                        <columns>
+                            <TableColumn fx:id="colHPCliente" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
+                            <TableColumn fx:id="colHPPlan" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PLAN" />
+                            <TableColumn fx:id="colHPMonto" prefWidth="100" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MONTO" />
+                            <TableColumn fx:id="colHPMetodo" prefWidth="140" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="METODO" />
+                            <TableColumn fx:id="colHPFecha" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
+                            <TableColumn fx:id="colHPEstado" prefWidth="100" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
+                            <TableColumn fx:id="colHPReferencia" prefWidth="150" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REFERENCIA" />
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- ── SECCION 5: Banner Gymbrot AI ── -->
                 <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #0a3a40; -fx-border-width: 1; -fx-border-radius: 16;">
                     <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 

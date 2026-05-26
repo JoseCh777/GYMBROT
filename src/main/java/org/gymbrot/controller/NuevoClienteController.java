@@ -601,6 +601,8 @@ public class NuevoClienteController implements Initializable {
             clienteEditando.setFechaNacimiento(dateFechaNacimiento.getValue());
             if (archivoFotoSeleccionado != null)
                 clienteEditando.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+            if (templateBytesCapturado != null)
+                clienteEditando.setHuellaDactilar(templateBytesCapturado);
 
             Usuario usuario = usuarioDAO.buscarPorId(clienteEditando.getNumeroIdentificacion());
             if (usuario != null) {
