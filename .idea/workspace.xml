@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: quitar subtitulo 'Sistema Gestion de Gimnasio' de correos&quot;&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -468,7 +467,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779754548018</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779755210834</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1779755210834</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -486,7 +493,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;" />
     <MESSAGE value="&quot;feat: Agregar iconos en GestionClientes.fxml" />
     <MESSAGE value="&quot;feat: Agregar iconos en algunos.fxml" />
     <MESSAGE value="&quot;feat: Crear Nuevoinstructor.fxml y su controller&quot;" />
@@ -511,7 +517,8 @@
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: GYMBROT ADMIN - chatbot administrativo con estadísticas, citas y membresías&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: implementar creación y guardado de rutinas en BD, corrección de null en fechas, y mejora de extractores de datos&#10;&#10;- Agregado método procesarCrearRutina() para generar rutinas con IA y guardarlas en RUTINAS&#10;- Agregado insertarRutinaYRetornarId() para persistir rutinas&#10;- Corregido ClienteDAO.actualizar() para manejar null en fecha_nacimiento y huella_dactilar&#10;- Corregido ClienteDAO.insertar() para manejar null en fecha_nacimiento&#10;- Agregados extractores: extraerObjetivoRutina(), extraerDiasSemanaRutina()&#10;- Corregidos extraerCorreo() y extraerTelefono() para usar MensajeGymbrot correctamente&#10;- Corregido extraerIdCliente() para soportar IDs de 4-12 dígitos&#10;- Mejorado extraerFecha() con lógica correcta de días de semana&#10;- Agregado insertarClienteSeguro() para evitar NullPointerException&#10;&#10;Rutina #21 creada exitosamente para cliente 999888 con instructor INS001 (Pedro)&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: quitar subtitulo 'Sistema Gestion de Gimnasio' de correos&quot;&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: quitar subtitulo 'Sistema Gestion de Gimnasio' de correos&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
