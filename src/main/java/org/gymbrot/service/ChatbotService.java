@@ -189,21 +189,39 @@ public class ChatbotService {
                 String horaFmt    = cita.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
 
                 notifService.enviarSmsDirecto(
-                        "GYMBROT: Cita #" + idCitaCreada + " creada.\n" +
+                        "GYMBROT: Cita #" + idCitaCreada + " creada. " +
                                 "Instructor: " + nombreInst + " | Fecha: " + fechaFmt +
                                 " | Hora: " + horaFmt);
 
                 Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
                 if (cliente != null && cliente.getCorreo() != null) {
+                    String nombreLimpio = cliente.getNombre().split(" ")[0];
                     emailService.enviarCorreo(cliente.getCorreo(),
                             "Cita agendada - GYMBROT",
-                            "<h2>¡Cita agendada!</h2>" +
-                                    "<table style='border-collapse:collapse;'>" +
-                                    "<tr><td><b>ID:</b>NonNuller匹配" + idCitaCreada + "NonNuller匹配" +
-                                    "<tr><td><b>Instructor:</b>NonNuller匹配" + nombreInst + "NonNuller匹配" +
-                                    "<tr>。<b>Fecha:</b>NonNuller匹配" + fechaFmt + "NonNuller匹配" +
-                                    "<tr>。<b>Hora:</b>NonNuller匹配" + horaFmt + "NonNuller匹配" +
-                                    "</table><p>¡Te esperamos en GYMBROT!</p>");
+                            "<html>" +
+                                    "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                                    "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                                    "<div style='background: #00b4d8; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                                    "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                                    "</div>" +
+                                    "<div style='padding: 20px;'>" +
+                                    "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
+                                    "<p>Tu cita ha sido agendada exitosamente.</p>" +
+                                    "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + nombreInst + "</td></tr>" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fechaFmt + "</td></tr>" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + horaFmt + "</td></tr>" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCitaCreada + "</td></tr>" +
+                                    "</table>" +
+                                    "<p>Recuerda llegar 10 minutos antes.</p>" +
+                                    "<p>Te esperamos en GYMBROT.</p>" +
+                                    "</div>" +
+                                    "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                                    "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</body>" +
+                                    "</html>");
                 }
 
                 contextoExtra = " [SISTEMA: Cita #" + idCitaCreada + " creada exitosamente. " +
@@ -237,12 +255,32 @@ public class ChatbotService {
 
                         Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
                         if (cliente != null && cliente.getCorreo() != null) {
+                            String nombreLimpio = cliente.getNombre().split(" ")[0];
                             emailService.enviarCorreo(cliente.getCorreo(),
                                     "Cita cancelada - GYMBROT",
-                                    "<h2>Cita cancelada</h2>" +
-                                            "<p>Tu cita <b>#" + idCita + "</b> con " + nombreInst +
-                                            " el " + fechaFmt + " a las " + horaFmt +
-                                            " fue cancelada.</p><p>Contáctanos para reagendar.</p>");
+                                    "<html>" +
+                                            "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                                            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                                            "<div style='background: #ff6b6b; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                                            "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                                            "</div>" +
+                                            "<div style='padding: 20px;'>" +
+                                            "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
+                                            "<p>Tu cita ha sido cancelada exitosamente.</p>" +
+                                            "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + nombreInst + "</td></tr>" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fechaFmt + "</td></tr>" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + horaFmt + "</td></tr>" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCita + "</td></tr>" +
+                                            "</table>" +
+                                            "<p>Contáctanos para reagendar una nueva cita.</p>" +
+                                            "</div>" +
+                                            "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                                            "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                                            "</div>" +
+                                            "</div>" +
+                                            "</body>" +
+                                            "</html>");
                         }
 
                         contextoExtra = " [SISTEMA: Cita #" + idCita + " cancelada exitosamente. " +
@@ -318,18 +356,35 @@ public class ChatbotService {
                     if (dias == 7 || dias == 3 || dias == 1) {
                         Cliente cliente = clienteDAO.buscarPorId(idCliente);
                         if (cliente != null) {
+                            String nombreLimpio = cliente.getNombre().split(" ")[0];
                             notifService.enviarSmsDirecto(
-                                    "GYMBROT: Tu membresía " + m.getTipoMembresia() +
-                                            " vence el " + m.getFechaVencimiento().format(fmt) +
+                                    "GYMBROT: Hola " + nombreLimpio + ", tu membresía " +
+                                            m.getTipoMembresia() + " vence el " +
+                                            m.getFechaVencimiento().format(fmt) +
                                             ". Renuévala pronto.");
                             if (cliente.getCorreo() != null) {
                                 emailService.enviarCorreo(cliente.getCorreo(),
-                                        "Tu membresía vence pronto - GYMBROT",
-                                        "<h2>Recordatorio</h2><p>Hola <b>" +
-                                                cliente.getNombre() + "</b>, tu membresía <b>" +
-                                                m.getTipoMembresia() + "</b> vence el <b>" +
-                                                m.getFechaVencimiento().format(fmt) +
-                                                "</b> (en " + dias + " días).</p>");
+                                        "Tu membresía está por vencer - GYMBROT",
+                                        "<html>" +
+                                                "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                                                "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                                                "<div style='background: #ffaa00; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                                                "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                                                "</div>" +
+                                                "<div style='padding: 20px;'>" +
+                                                "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
+                                                "<p>Te recordamos que tu membresía <strong>" + m.getTipoMembresia() +
+                                                "</strong> vence en <strong>" + dias + " días</strong>.</p>" +
+                                                "<p><strong>Fecha de vencimiento:</strong> " + m.getFechaVencimiento().format(fmt) + "</p>" +
+                                                "<p>Renueva ahora y sigue entrenando sin interrupciones.</p>" +
+                                                "<p>Contáctanos para más información.</p>" +
+                                                "</div>" +
+                                                "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                                                "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                                                "</div>" +
+                                                "</div>" +
+                                                "</body>" +
+                                                "</html>");
                             }
                         }
                     }
@@ -373,7 +428,6 @@ public class ChatbotService {
     private String procesarCrearRutina(String texto, List<MensajeGymbrot> historial, String idAdmin) {
         System.out.println("[procesarCrearRutina] Iniciando...");
 
-        // Extraer ID del cliente
         String idCliente = extraerIdCliente(texto);
         if (idCliente == null) {
             return " [SISTEMA: No se encontró el ID del cliente. Pídele al administrador que indique el ID.]";
@@ -381,24 +435,20 @@ public class ChatbotService {
 
         System.out.println("[procesarCrearRutina] Cliente ID: " + idCliente);
 
-        // Verificar que el cliente existe
         Cliente cliente = clienteDAO.buscarPorId(idCliente);
         if (cliente == null) {
             return " [SISTEMA: No existe un cliente con ID " + idCliente + ". Informa al administrador.]";
         }
 
-        // Extraer objetivo de la rutina
         String objetivo = extraerObjetivoRutina(texto);
         if (objetivo == null) objetivo = "mejorar condición física";
 
-        // Extraer días de la semana
         String diasSemana = extraerDiasSemanaRutina(texto);
         if (diasSemana == null) diasSemana = "Lunes, Miércoles, Viernes";
 
         System.out.println("[procesarCrearRutina] Objetivo: " + objetivo);
         System.out.println("[procesarCrearRutina] Días: " + diasSemana);
 
-        // Generar rutina con IA
         String prompt = "Crea una rutina de ejercicios semanal para un cliente de gimnasio con objetivo: " + objetivo +
                 ". Los días de entrenamiento son: " + diasSemana +
                 ". Incluye series y repeticiones para cada ejercicio. Da solo la rutina, sin explicaciones adicionales.";
@@ -406,7 +456,6 @@ public class ChatbotService {
         String rutinaGenerada = groqService.enviarMensaje(prompt, historial);
         System.out.println("[procesarCrearRutina] Rutina generada por IA");
 
-        // Crear objeto Rutina
         Rutina rutina = new Rutina();
         rutina.setIdCliente(idCliente);
         rutina.setIdInstructor("INS001");
@@ -417,28 +466,50 @@ public class ChatbotService {
         rutina.setObjetivo(objetivo);
         rutina.setFechaFin(null);
 
-        // Guardar en tabla RUTINAS
         int idRutina = insertarRutinaYRetornarId(rutina);
         System.out.println("[procesarCrearRutina] ID Rutina: " + idRutina);
 
         if (idRutina > 0) {
-            // Enviar notificaciones al cliente
+            String nombreLimpio = cliente.getNombre().split(" ")[0];
+
             notifService.enviarSmsDirecto(
-                    "GYMBROT: Se ha creado una nueva rutina para ti. Objetivo: " + objetivo +
-                            ". Consulta tu correo para más detalles.");
+                    "GYMBROT: Hola " + nombreLimpio + "! Se ha creado una nueva rutina para ti. " +
+                            "Objetivo: " + objetivo + ". Días: " + diasSemana + ". " +
+                            "Consulta tu correo para más detalles.");
 
             if (cliente.getCorreo() != null) {
                 emailService.enviarCorreo(cliente.getCorreo(),
-                        "Nueva rutina - GYMBROT",
-                        "<h2>¡Nueva rutina asignada!</h2>" +
-                                "<p>Hola <b>" + cliente.getNombre() + "</b>,</p>" +
-                                "<p>Se ha creado una nueva rutina para ti con el objetivo: <b>" + objetivo + "</b></p>" +
-                                "<p>Días de entrenamiento: " + diasSemana + "</p>" +
-                                "<pre style='background:#f4f4f4;padding:10px;'>" + rutinaGenerada + "</pre>" +
-                                "<p>¡A entrenar! 💪</p>");
+                        "Nueva rutina asignada - GYMBROT",
+                        "<html>" +
+                                "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                                "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                                "<div style='background: #00b4d8; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                                "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                                "</div>" +
+                                "<div style='padding: 20px;'>" +
+                                "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
+                                "<p>Tu instructor <strong>Pedro</strong> ha creado una nueva rutina personalizada para ti.</p>" +
+                                "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Objetivo:</strong></td><td style='padding: 8px;'>" + objetivo + "</td></tr>" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Días de entrenamiento:</strong></td><td style='padding: 8px;'>" + diasSemana + "</td></tr>" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>Pedro</td></tr>" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de rutina:</strong></td><td style='padding: 8px;'>#" + idRutina + "</td></tr>" +
+                                "</table>" +
+                                "<div style='background: #f4f4f4; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; margin: 15px 0;'>" +
+                                rutinaGenerada.replace("\n", "<br>") +
+                                "</div>" +
+                                "<p style='margin-top: 20px;'>¡A entrenar! Recuerda mantener una buena hidratación y alimentación.</p>" +
+                                "<p>¿Tienes dudas? Comunícate con tu instructor o responde este correo.</p>" +
+                                "</div>" +
+                                "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                                "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                                "</div>" +
+                                "</div>" +
+                                "</body>" +
+                                "</html>");
             }
 
-            return " [SISTEMA: Rutina creada exitosamente para el cliente " + cliente.getNombre() +
+            return " [SISTEMA: Rutina creada exitosamente para el cliente " + nombreLimpio +
                     " (ID: " + idCliente + "). ID de rutina: #" + idRutina +
                     ". Objetivo: " + objetivo + ". Días: " + diasSemana +
                     ". SMS y correo enviados al cliente.]";
@@ -501,7 +572,6 @@ public class ChatbotService {
     // ═════════════════════════════════════════════════════════════════════
     private String procesarModificarCliente(String texto, List<MensajeGymbrot> historial) {
 
-        // ── 1. Identificar al cliente ─────────────────────────────────────
         String id = extraerIdCliente(texto);
         if (id == null && historial != null) {
             for (int i = historial.size() - 1; i >= 0; i--) {
@@ -517,7 +587,6 @@ public class ChatbotService {
                     "Pídele el número de identificación del cliente a modificar.]";
         }
 
-        // ── 2. Verificar que el cliente exista ────────────────────────────
         Cliente clienteActual = clienteDAO.buscarPorId(id);
         if (clienteActual == null) {
             return " [SISTEMA: No existe ningún cliente con ID " + id +
@@ -526,7 +595,6 @@ public class ChatbotService {
 
         System.out.println("[procesarModificarCliente] Modificando cliente id=" + id);
 
-        // ── 3. Extraer campos nuevos (solo los que vienen en el mensaje) ──
         String nuevoNombre    = extraerNombre(texto, historial);
         String nuevosApellidos= extraerApellidos(texto, historial);
         String nuevoCorreo    = extraerCorreo(texto, historial);
@@ -539,7 +607,6 @@ public class ChatbotService {
                 " | correo=" + nuevoCorreo + " | telefono=" + nuevoTelefono +
                 " | direccion=" + nuevaDireccion + " | fechaNac=" + nuevaFechaNac);
 
-        // ── 4. Validar que al menos un campo fue proporcionado ────────────
         if (nuevoNombre == null && nuevosApellidos == null && nuevoCorreo == null
                 && nuevoTelefono == null && nuevaDireccion == null && nuevaFechaNac == null) {
             return " [SISTEMA: El administrador quiere modificar el cliente " + id +
@@ -547,7 +614,6 @@ public class ChatbotService {
                     "nombre, apellidos, correo, teléfono, dirección o fecha de nacimiento.]";
         }
 
-        // ── 5. Validar duplicado de correo si se quiere cambiar ───────────
         if (nuevoCorreo != null && !nuevoCorreo.equalsIgnoreCase(clienteActual.getCorreo())) {
             Usuario existente = usuarioDAO.buscarPorCorreo(nuevoCorreo);
             if (existente != null && !existente.getNumeroIdentificacion().equals(id)) {
@@ -557,7 +623,6 @@ public class ChatbotService {
             }
         }
 
-        // ── 6. Aplicar cambios sobre los datos actuales (merge) ───────────
         StringBuilder cambiosLog = new StringBuilder();
 
         if (nuevoNombre != null && !nuevoNombre.equalsIgnoreCase(clienteActual.getNombre())) {
@@ -598,7 +663,6 @@ public class ChatbotService {
 
         System.out.println("[procesarModificarCliente] Cambios a aplicar: " + cambiosLog);
 
-        // ── 7. Persistir en USUARIOS ──────────────────────────────────────
         boolean usuarioActualizado = usuarioDAO.actualizar(clienteActual);
         System.out.println("[procesarModificarCliente] USUARIOS actualizado=" + usuarioActualizado);
 
@@ -607,7 +671,6 @@ public class ChatbotService {
                     ". Revisa los logs del servidor. No se guardó ningún cambio.]";
         }
 
-        // ── 8. Persistir en CLIENTES (dirección y fecha de nacimiento) ────
         boolean clienteActualizado = clienteDAO.actualizar(clienteActual);
         System.out.println("[procesarModificarCliente] CLIENTES actualizado=" + clienteActualizado);
 
@@ -617,9 +680,9 @@ public class ChatbotService {
                     ". Revisa los logs del servidor.]";
         }
 
-        // ── 9. Notificar al cliente sobre la actualización ────────────────
+        String nombreLimpio = clienteActual.getNombre().split(" ")[0];
         notifService.enviarSmsDirecto(
-                "GYMBROT: Hola " + clienteActual.getNombre() +
+                "GYMBROT: Hola " + nombreLimpio +
                         ", tus datos han sido actualizados en el sistema. " +
                         "Si no realizaste este cambio, contáctanos.");
 
@@ -627,12 +690,23 @@ public class ChatbotService {
             emailService.enviarCorreo(
                     clienteActual.getCorreo(),
                     "Datos actualizados - GYMBROT",
-                    "<h2>Actualización de datos</h2>" +
-                            "<p>Hola <b>" + clienteActual.getNombre() + " " +
-                            clienteActual.getApellidos() + "</b>,</p>" +
+                    "<html>" +
+                            "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                            "<div style='background: #00b4d8; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                            "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                            "</div>" +
+                            "<div style='padding: 20px;'>" +
+                            "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
                             "<p>Tus datos en GYMBROT han sido actualizados exitosamente.</p>" +
                             "<p>Si no reconoces este cambio, comunícate con nosotros de inmediato.</p>" +
-                            "<p><b>GYMBROT Valledupar</b></p>");
+                            "</div>" +
+                            "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                            "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                            "</div>" +
+                            "</div>" +
+                            "</body>" +
+                            "</html>");
         }
 
         String cambiosResumen = cambiosLog.toString().replaceAll(" \\| $", "");
@@ -643,11 +717,10 @@ public class ChatbotService {
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    //  CREAR CLIENTE — corregido: fecha_nacimiento nullable + logs de debug
+    //  CREAR CLIENTE
     // ═════════════════════════════════════════════════════════════════════
     private String procesarCrearCliente(String texto, List<MensajeGymbrot> historial) {
 
-        // ── Extraer datos ─────────────────────────────────────────────────
         String nombre    = extraerNombre(texto, historial);
         String apellidos = extraerApellidos(texto, historial);
         String id        = extraerIdCliente(texto);
@@ -655,7 +728,6 @@ public class ChatbotService {
         String telefono  = extraerTelefono(texto, historial);
         String direccion = extraerDireccion(texto, historial);
 
-        // ── Log de extracción para diagnóstico ────────────────────────────
         System.out.println("[procesarCrearCliente] nombre="    + nombre
                 + " | apellidos=" + apellidos
                 + " | id="        + id
@@ -663,7 +735,6 @@ public class ChatbotService {
                 + " | telefono="  + telefono
                 + " | direccion=" + direccion);
 
-        // ── Validar mínimos ───────────────────────────────────────────────
         if (nombre == null || id == null || correo == null) {
             StringBuilder faltantes = new StringBuilder("Faltan datos para crear el cliente: ");
             if (nombre == null)  faltantes.append("nombre, ");
@@ -673,19 +744,16 @@ public class ChatbotService {
                     ". Pídele al administrador que los proporcione.]";
         }
 
-        // ── Evitar duplicado por ID ───────────────────────────────────────
         if (usuarioDAO.buscarPorId(id) != null) {
             return " [SISTEMA: Ya existe un usuario con ID " + id +
                     ". No se puede crear duplicado. Informa al administrador.]";
         }
 
-        // ── Evitar duplicado por correo ───────────────────────────────────
         if (usuarioDAO.buscarPorCorreo(correo) != null) {
             return " [SISTEMA: Ya existe un usuario con el correo " + correo +
                     ". No se puede crear duplicado. Informa al administrador.]";
         }
 
-        // ── Insertar en USUARIOS ──────────────────────────────────────────
         Usuario usuario = new Usuario();
         usuario.setNumeroIdentificacion(id);
         usuario.setTipoIdentificacion("CC");
@@ -693,7 +761,7 @@ public class ChatbotService {
         usuario.setApellidos(apellidos != null ? apellidos : "");
         usuario.setTelefono(telefono   != null ? telefono  : "");
         usuario.setCorreo(correo);
-        usuario.setContrasenaHash(id);   // contraseña temporal = número de ID
+        usuario.setContrasenaHash(id);
         usuario.setFotoUrl(null);
         usuario.setEstado("ACTIVO");
         usuario.setFechaRegistro(LocalDate.now());
@@ -705,16 +773,14 @@ public class ChatbotService {
 
         if (!usuarioCreado) {
             return " [SISTEMA: Error al insertar en la tabla USUARIOS. " +
-                    "Revisa los logs del servidor para ver el código ORA-xxxxx. " +
-                    "Informa al administrador.]";
+                    "Revisa los logs del servidor. Informa al administrador.]";
         }
 
-        // ── Insertar en CLIENTES ──────────────────────────────────────────
         Cliente cliente = new Cliente();
         cliente.setNumeroIdentificacion(id);
         cliente.setDireccion(direccion != null ? direccion : "");
-        cliente.setFechaNacimiento(null);   // opcional; se actualiza después
-        cliente.setHuellaDactilar(null);    // se registra en dispositivo biométrico
+        cliente.setFechaNacimiento(null);
+        cliente.setHuellaDactilar(null);
 
         System.out.println("[procesarCrearCliente] Intentando insertar CLIENTE id=" + id);
         boolean clienteCreado = insertarClienteSeguro(cliente);
@@ -728,19 +794,46 @@ public class ChatbotService {
                     "Revisa los logs del servidor. Informa al administrador.]";
         }
 
-        // ── Notificaciones de bienvenida ──────────────────────────────────
+        String nombreLimpio = nombre.split(" ")[0];
+
         notifService.enviarSmsDirecto(
-                "¡Bienvenido a GYMBROT, " + nombre + "! Tu cuenta fue creada exitosamente. " +
-                        "Tu contraseña temporal es tu número de identificación.");
+                "GYMBROT: Hola " + nombreLimpio + "! Tu cuenta ha sido creada exitosamente. " +
+                        "Usuario: " + correo + " - Contraseña temporal: " + id + ". " +
+                        "Guarda tus credenciales para futuras validaciones.");
 
         emailService.enviarCorreo(correo, "Bienvenido a GYMBROT",
-                "<h2>¡Bienvenido a GYMBROT Valledupar!</h2>" +
-                        "<p>Hola <b>" + nombre + "</b>, tu cuenta ha sido creada exitosamente.</p>" +
-                        "<p>Tu contraseña temporal es tu número de identificación: <b>" + id + "</b></p>" +
-                        "<p>Te recomendamos cambiarla al ingresar por primera vez.</p>" +
-                        "<p>¡Te esperamos en GYMBROT!</p>");
+                "<html>" +
+                        "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
+                        "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>" +
+                        "<div style='background: #00b4d8; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;'>" +
+                        "<h2 style='margin: 0;'>GYMBROT</h2>" +
+                        "</div>" +
+                        "<div style='padding: 20px;'>" +
+                        "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
+                        "<p>Tu cuenta ha sido creada exitosamente en el sistema GYMBROT.</p>" +
+                        "<h3 style='margin: 20px 0 10px;'>Tus credenciales de acceso:</h3>" +
+                        "<table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>" +
+                        "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Usuario:</strong><td>" +
+                        "<td style='padding: 8px;'>" + correo + "</td>" +
+                        "</tr>" +
+                        "<tr>" +
+                        "<td style='padding: 8px; background: #f4f4f4;'><strong>Contraseña temporal:</strong></td>" +
+                        "<td style='padding: 8px;'><strong>" + id + "</strong></td>" +
+                        "</tr>" +
+                        "</table>" +
+                        "<p style='margin-top: 20px;'><strong>Recomendación:</strong> Cambia tu contraseña al ingresar por primera vez.</p>" +
+                        "<p>Para agendar citas, consultar horarios o resolver dudas, comunícate con nuestro equipo de atención al cliente.</p>" +
+                        "<p style='margin-top: 20px;'>Atentamente,</p>" +
+                        "<p><strong>GYMBROT Valledupar</strong></p>" +
+                        "</div>" +
+                        "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
+                        "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p>" +
+                        "</div>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>");
 
-        return " [SISTEMA: Cliente " + nombre + " " + (apellidos != null ? apellidos : "") +
+        return " [SISTEMA: Cliente " + nombreLimpio + " " + (apellidos != null ? apellidos : "") +
                 " (ID: " + id + ") creado exitosamente en USUARIOS y CLIENTES. " +
                 "SMS y correo de bienvenida enviados a " + correo + ". " +
                 "Contraseña temporal: número de identificación. Confirma al administrador.]";
@@ -968,14 +1061,12 @@ public class ChatbotService {
     }
 
     private String extraerTelefono(String texto, List<MensajeGymbrot> historial) {
-        // Prioridad 1: con etiqueta explícita
         Pattern pEtiqueta = Pattern.compile(
                 "(?:tel[eé]fono|tel|celular|cel)[:\\s]+(3\\d{9})",
                 Pattern.CASE_INSENSITIVE);
         Matcher mE = pEtiqueta.matcher(texto);
         if (mE.find()) return mE.group(1);
 
-        // Prioridad 2: número solo de 10 dígitos empezando en 3
         Pattern p = Pattern.compile("\\b(3[0-9]{9})\\b");
         Matcher m = p.matcher(texto);
         if (m.find()) return m.group();
