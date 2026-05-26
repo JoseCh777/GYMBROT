@@ -17,7 +17,7 @@
 
 <!-- Overlay: fondo semitransparente sobre la vista anterior -->
 
-<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.DirectorioEjerciciosController">
+<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.DirectorioEjerciciosController">
 
     <!-- Modal principal -->
     <VBox maxHeight="590" maxWidth="880" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">

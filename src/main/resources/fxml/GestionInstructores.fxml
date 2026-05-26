@@ -107,7 +107,7 @@
                 <HBox spacing="20">
 
                     <!-- Card: Total Instructores -->
-                    <VBox prefHeight="162.0" prefWidth="229.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                    <VBox prefHeight="162.0" prefWidth="337.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                         <HBox alignment="CENTER_LEFT">
                             <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL INSTRUCTORES" HBox.hgrow="ALWAYS" />

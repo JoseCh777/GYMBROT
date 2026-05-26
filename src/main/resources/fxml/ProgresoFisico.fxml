@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.ProgresoFisicoController">
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.ProgresoFisicoController">
 
     <!-- ═══ LEFT: SideNav ═══ -->
     <left>

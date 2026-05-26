@@ -58,6 +58,9 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Label lblFacturacionSilver;
     @FXML private Label lblFacturacionBlack;
     @FXML private Label lblFacturacionGold;
+    @FXML private Label lblPeriodoSilver;
+    @FXML private Label lblPeriodoBlack;
+    @FXML private Label lblPeriodoGold;
 
     // ── Tabla comparativa ────────────────────────────────────
     @FXML private TableView<FilaComparativa> tablaComparativa;
@@ -255,31 +258,40 @@ public class GestionMembresiasController implements Initializable {
     private void actualizarPrecios() {
         if (planSilver == null || planGold == null || planBlack == null) return;
 
+        String periodo = switch (duracionActual) {
+            case MENSUAL   -> "/mes";
+            case SEMESTRAL -> "/semestre";
+            case ANUAL     -> "/año";
+        };
+
         // Silver
         double precioBase = switch (duracionActual) {
             case MENSUAL   -> planSilver.getPrecioMensual();
-            case SEMESTRAL -> planSilver.getPrecioSemestral() / 6;
-            case ANUAL     -> planSilver.getPrecioAnual() / 12;
+            case SEMESTRAL -> planSilver.getPrecioSemestral();
+            case ANUAL     -> planSilver.getPrecioAnual();
         };
         lblPrecioSilver.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPeriodoSilver.setText(periodo);
         lblFacturacionSilver.setText(textoFacturacion(planSilver, "Facturado"));
 
         // Gold
         precioBase = switch (duracionActual) {
             case MENSUAL   -> planGold.getPrecioMensual();
-            case SEMESTRAL -> planGold.getPrecioSemestral() / 6;
-            case ANUAL     -> planGold.getPrecioAnual() / 12;
+            case SEMESTRAL -> planGold.getPrecioSemestral();
+            case ANUAL     -> planGold.getPrecioAnual();
         };
         lblPrecioGold.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPeriodoGold.setText(periodo);
         lblFacturacionGold.setText(textoFacturacion(planGold, "Mejor Valor: Facturado"));
 
         // Black
         precioBase = switch (duracionActual) {
             case MENSUAL   -> planBlack.getPrecioMensual();
-            case SEMESTRAL -> planBlack.getPrecioSemestral() / 6;
-            case ANUAL     -> planBlack.getPrecioAnual() / 12;
+            case SEMESTRAL -> planBlack.getPrecioSemestral();
+            case ANUAL     -> planBlack.getPrecioAnual();
         };
         lblPrecioBlack.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPeriodoBlack.setText(periodo);
         lblFacturacionBlack.setText(textoFacturacion(planBlack, "Facturado"));
     }
 
@@ -328,8 +340,8 @@ public class GestionMembresiasController implements Initializable {
                 }
             });
         }
-        // Columna Gold resaltada
-        colGold.setCellFactory(c -> new TableCell<>() {
+        // Columna Black resaltada (plan mas caro)
+        colBlack.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -437,8 +449,8 @@ public class GestionMembresiasController implements Initializable {
 
         // Botones de seleccion de plan
         agregarHoverBorde(btnSeleccionarSilver);
-        agregarHoverBorde(btnSeleccionarBlack);
-        agregarHoverActivo(btnSeleccionarGold);
+        agregarHoverBorde(btnSeleccionarGold);
+        agregarHoverActivo(btnSeleccionarBlack);
 
         // Boton AI
         agregarHoverBordeAI(btnChatearAI);

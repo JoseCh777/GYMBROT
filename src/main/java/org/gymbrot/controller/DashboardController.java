@@ -210,9 +210,7 @@ public class DashboardController implements Initializable {
     }
 
     private String formatearDinero(double valor) {
-        if (valor >= 1_000_000) return String.format("$%.1fM", valor / 1_000_000);
-        if (valor >= 1_000)     return String.format("$%.1fk", valor / 1_000);
-        return String.format("$%.0f", valor);
+        return String.format("$%,.0f", valor);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -372,7 +370,7 @@ public class DashboardController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  ANIMACIÓN PUNTO EN VIVO — idéntica a GestionClientes
+    //  ANIMACIÓN PUNTO EN VIVO
     // ═══════════════════════════════════════════════════════════════════════
 
     private void iniciarAnimacionPuntoVivo() {
@@ -464,7 +462,6 @@ public class DashboardController implements Initializable {
     //  HANDLERS — ACCIONES RÁPIDAS
     // ═══════════════════════════════════════════════════════════════════════
 
-    @FXML private void handleVerRegistro()     {  }
     @FXML private void handleAgregarMiembro()  { navegarA("/fxml/NuevoCliente.fxml"); }
     @FXML private void handleExportarInforme() {  }
 

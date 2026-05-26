@@ -144,7 +144,7 @@
                         <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                       -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INGRESOS ESTE MES" />
                         <HBox alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="70.0">
-                            <Label fx:id="lblIngresos" prefHeight="70.0" prefWidth="211.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblIngresos" prefHeight="70.0" prefWidth="402.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                           -fx-font-weight: 800; -fx-text-fill: white;" text="0" HBox.hgrow="ALWAYS" />
                             <Label fx:id="lblIngresosStatus" prefHeight="68.0" prefWidth="87.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="Cargando..." />
                         </HBox>
                         <HBox prefHeight="18.0" prefWidth="100.0" />
@@ -206,7 +206,7 @@
                     <VBox minWidth="260" prefHeight="400.0" prefWidth="331.0" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;" text="Demografia en Vivo" />
+                        <Label prefHeight="83.0" prefWidth="194.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;" text="Demografia en Vivo" />
 
                         <!-- Adulto -->
                         <HBox alignment="CENTER_LEFT" spacing="16" VBox.vgrow="ALWAYS">
@@ -238,7 +238,7 @@
 
                         <!-- Adulto Mayor -->
                         <HBox alignment="CENTER_LEFT" spacing="16">
-                            <VBox alignment="CENTER" prefHeight="56" prefWidth="56" style="-fx-background-color: #252729; -fx-background-radius: 28;                                          -fx-border-color: #aaaaaa; -fx-border-width: 3; -fx-border-radius: 28;">
+                            <VBox alignment="CENTER" prefHeight="56.0" prefWidth="56.0" style="-fx-background-color: #252729; -fx-background-radius: 28;                                          -fx-border-color: #aaaaaa; -fx-border-width: 3; -fx-border-radius: 28;">
                                 <Label fx:id="lblPctSenior" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="0%" />
                             </VBox>
                             <VBox HBox.hgrow="ALWAYS">
@@ -250,9 +250,7 @@
                             </VBox>
                         </HBox>
 
-                        <Region VBox.vgrow="ALWAYS" />
-
-                        <Button maxWidth="Infinity" onAction="#handleVerRegistro" prefHeight="44" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                        -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="Ver Registro Detallado" />
+                        <Region prefHeight="20.0" prefWidth="282.0" VBox.vgrow="ALWAYS" />
                     </VBox>
 
                 </HBox>

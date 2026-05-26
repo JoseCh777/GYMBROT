@@ -56,7 +56,7 @@ public class DashboardService {
                 "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) < 18 THEN 1 END) as menores, " +
                 "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) BETWEEN 18 AND 64 THEN 1 END) as adultos, " +
                 "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) >= 65 THEN 1 END) as adultos_mayores " +
-                "FROM CLIENTES c JOIN USUARIOS u ON u.numero_identificacion = c.id_cliente " +
+                "FROM CLIENTES c JOIN USUARIOS u ON u.numero_identificacion = c.numero_identificacion " +
                 "WHERE u.estado = 'ACTIVO'";
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

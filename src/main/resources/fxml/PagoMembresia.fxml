@@ -71,7 +71,7 @@
                             <HBox alignment="CENTER_LEFT" spacing="8" VBox.vgrow="ALWAYS">
                                 <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="★" />
                                 <VBox spacing="1">
-                                    <Label fx:id="lblPlanNombre" style="-fx-font-family: 'Lexend'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white;" text="---" />
+                                    <Label fx:id="lblPlanNombre" prefHeight="24.0" prefWidth="15.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white;" text="---" />
                                     <Label fx:id="lblPlanModalidad" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="---" />
                                 </VBox>
                             </HBox>
