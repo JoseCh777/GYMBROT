@@ -24,6 +24,9 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -391,7 +394,7 @@ public class GestionClientesController implements Initializable {
                 setText(null);
                 setStyle("-fx-background-color: transparent; -fx-padding: 8 12 8 12;");
             }
-        });
+            });
 
         // Estilo de filas alternas
         tablaClientes.setRowFactory(tv -> {
@@ -793,7 +796,7 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml");}
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
-    @FXML private void handleNavProgreso()     { }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
 
     @FXML
     private void handleLogout() {

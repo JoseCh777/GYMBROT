@@ -622,7 +622,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private void handleNavInstructores() { }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
-    @FXML private void handleNavProgreso()     { }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
 
     @FXML
     private void handleLogout() {

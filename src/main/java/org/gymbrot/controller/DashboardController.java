@@ -15,11 +15,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
+import org.gymbrot.service.DashboardService;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -79,10 +79,9 @@ public class DashboardController implements Initializable {
     @FXML private Region h12, h13, h14, h15, h16, h17;
     @FXML private Region h18, h19, h20, h21;
 
-    // ─── DAOs ──────────────────────────────────────────────────────────────
-    private final ClienteDAO clienteDAO = new ClienteDAO();
+    // ─── DAOs / Services ────────────────────────────────────────────────────
     private final RegistroIngresoDAO registroIngresoDAO = new RegistroIngresoDAO();
-    private final PagoDAO pagoDAO = new PagoDAO();
+    private final DashboardService dashboardService = new DashboardService();
 
     // ─── Constantes ────────────────────────────────────────────────────────
     private static final String COLOR_ACTIVO   = "#D4FF00";
@@ -199,27 +198,13 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarMetricas() {
-        List<Cliente> clientes = clienteDAO.listarTodos();
-        int totalActive = 0;
-        for (Cliente c : clientes) {
-            if ("ACTIVO".equalsIgnoreCase(c.getEstado())) totalActive++;
-        }
+        int totalActive = dashboardService.contarMiembrosActivos();
         lblTotalMiembros.setText(String.valueOf(totalActive));
 
-        LocalDate hoy = LocalDate.now();
-        List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
-        long activosAhora = ingresosHoy.stream().filter(r -> r.getHoraSalida() == null).count();
+        int activosAhora = dashboardService.contarActivosHoy();
         lblActivosAhora.setText(String.valueOf(activosAhora));
 
-        double ingresosMes = 0;
-        List<org.gymbrot.model.Pago> pagos = pagoDAO.listarTodos();
-        LocalDate inicioMes = hoy.withDayOfMonth(1);
-        for (var pago : pagos) {
-            if (pago.getFechaPago() != null && !pago.getFechaPago().isBefore(inicioMes)
-                    && "EXITOSO".equalsIgnoreCase(pago.getEstadoPago())) {
-                ingresosMes += pago.getValor();
-            }
-        }
+        double ingresosMes = dashboardService.ingresosMesActual();
         lblIngresos.setText(formatearDinero(ingresosMes));
         lblIngresosStatus.setVisible(false);
     }
@@ -305,16 +290,8 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void cargarDemografia() {
-        LocalDate hoy = LocalDate.now();
-        List<Cliente> clientes = clienteDAO.listarTodos();
-        int menores = 0, adultos = 0, adultosMayores = 0;
-        for (Cliente c : clientes) {
-            if (c.getFechaNacimiento() == null) continue;
-            int edad = (int) ChronoUnit.YEARS.between(c.getFechaNacimiento(), hoy);
-            if (edad < 18)          menores++;
-            else if (edad < 65)     adultos++;
-            else                    adultosMayores++;
-        }
+        int[] data = dashboardService.cargarDemografia();
+        int menores = data[0], adultos = data[1], adultosMayores = data[2];
         int total = menores + adultos + adultosMayores;
         if (total == 0) total = 1;
 
@@ -470,7 +447,7 @@ public class DashboardController implements Initializable {
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
-    @FXML private void handleNavProgreso()     {  }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
 
     @FXML
     private void handleLogout() {

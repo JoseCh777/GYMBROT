@@ -26,6 +26,7 @@ import org.gymbrot.model.RegistroIngreso;
 import org.gymbrot.service.HuellaService;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
@@ -68,6 +69,7 @@ public class PerfilClienteController implements Initializable {
     // ─── Botones ──────────────────────────────────────────────────────────
     @FXML private Button btnCerrar;
     @FXML private Button btnEditarPerfil;
+    @FXML private Button btnVerProgreso;
 
     // ─── Overlay ──────────────────────────────────────────────────────────
     private StackPane wrapperStack;
@@ -295,6 +297,23 @@ public class PerfilClienteController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleVerProgreso() {
+        if (wrapperStack != null && overlayRoot != null) {
+            wrapperStack.getChildren().remove(overlayRoot);
+        }
+        ProgresoFisicoController.pendingClienteId = cliente.getNumeroIdentificacion();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ProgresoFisico.fxml"));
+            Stage stage = (Stage) btnCerrar.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  HANDLERS - TABLA
     // ═══════════════════════════════════════════════════════════════════════
     //  PUENTE CON VERIFICACIÓN — abrir desde biometrico o manual
     // ═══════════════════════════════════════════════════════════════════════

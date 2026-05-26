@@ -44,27 +44,27 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Button btnAnual;
 
     // ── Botones de plan ───────────────────────────────────────
-    @FXML private Button btnSeleccionarBronce;
-    @FXML private Button btnSeleccionarPlata;
-    @FXML private Button btnSeleccionarOro;
+    @FXML private Button btnSeleccionarSilver;
+    @FXML private Button btnSeleccionarGold;
+    @FXML private Button btnSeleccionarBlack;
 
     // ── Banner AI ─────────────────────────────────────────────
     @FXML private Button btnChatearAI;
 
     // ── Labels de precio ─────────────────────────────────────
-    @FXML private Label lblPrecioBronce;
-    @FXML private Label lblPrecioPlata;
-    @FXML private Label lblPrecioOro;
-    @FXML private Label lblFacturacionBronce;
-    @FXML private Label lblFacturacionPlata;
-    @FXML private Label lblFacturacionOro;
+    @FXML private Label lblPrecioSilver;
+    @FXML private Label lblPrecioBlack;
+    @FXML private Label lblPrecioGold;
+    @FXML private Label lblFacturacionSilver;
+    @FXML private Label lblFacturacionBlack;
+    @FXML private Label lblFacturacionGold;
 
     // ── Tabla comparativa ────────────────────────────────────
     @FXML private TableView<FilaComparativa> tablaComparativa;
     @FXML private TableColumn<FilaComparativa, String> colBeneficio;
-    @FXML private TableColumn<FilaComparativa, String> colBronce;
-    @FXML private TableColumn<FilaComparativa, String> colPlata;
-    @FXML private TableColumn<FilaComparativa, String> colOro;
+    @FXML private TableColumn<FilaComparativa, String> colSilver;
+    @FXML private TableColumn<FilaComparativa, String> colBlack;
+    @FXML private TableColumn<FilaComparativa, String> colGold;
 
     // ── Historial de Pagos ───────────────────────────────────
     @FXML private TableView<FilaPago> tablaHistorialPagos;
@@ -158,7 +158,7 @@ public class GestionMembresiasController implements Initializable {
     }
 
     @FXML
-    private void handleNavProgreso(ActionEvent event) { }
+    private void handleNavProgreso(ActionEvent event) { navegarA("/fxml/ProgresoFisico.fxml", event); }
 
     @FXML
     private void handleLogout(ActionEvent event) {
@@ -197,17 +197,17 @@ public class GestionMembresiasController implements Initializable {
     // ══ Seleccion de plan ═════════════════════════════════════
 
     @FXML
-    private void handleSeleccionarBronce(ActionEvent event) {
+    private void handleSeleccionarSilver(ActionEvent event) {
         if (planSilver != null) abrirPagoMembresia(planSilver, duracionActual);
     }
 
     @FXML
-    private void handleSeleccionarPlata(ActionEvent event) {
+    private void handleSeleccionarBlack(ActionEvent event) {
         if (planBlack != null) abrirPagoMembresia(planBlack, duracionActual);
     }
 
     @FXML
-    private void handleSeleccionarOro(ActionEvent event) {
+    private void handleSeleccionarGold(ActionEvent event) {
         if (planGold != null) abrirPagoMembresia(planGold, duracionActual);
     }
 
@@ -261,8 +261,8 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planSilver.getPrecioSemestral() / 6;
             case ANUAL     -> planSilver.getPrecioAnual() / 12;
         };
-        lblPrecioBronce.setText(String.valueOf((int) Math.round(precioBase)));
-        lblFacturacionBronce.setText(textoFacturacion(planSilver, "Facturado"));
+        lblPrecioSilver.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionSilver.setText(textoFacturacion(planSilver, "Facturado"));
 
         // Gold
         precioBase = switch (duracionActual) {
@@ -270,8 +270,8 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planGold.getPrecioSemestral() / 6;
             case ANUAL     -> planGold.getPrecioAnual() / 12;
         };
-        lblPrecioOro.setText(String.valueOf((int) Math.round(precioBase)));
-        lblFacturacionOro.setText(textoFacturacion(planGold, "Mejor Valor: Facturado"));
+        lblPrecioGold.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionGold.setText(textoFacturacion(planGold, "Mejor Valor: Facturado"));
 
         // Black
         precioBase = switch (duracionActual) {
@@ -279,8 +279,8 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planBlack.getPrecioSemestral() / 6;
             case ANUAL     -> planBlack.getPrecioAnual() / 12;
         };
-        lblPrecioPlata.setText(String.valueOf((int) Math.round(precioBase)));
-        lblFacturacionPlata.setText(textoFacturacion(planBlack, "Facturado"));
+        lblPrecioBlack.setText(String.valueOf((int) Math.round(precioBase)));
+        lblFacturacionBlack.setText(textoFacturacion(planBlack, "Facturado"));
     }
 
     private String textoFacturacion(PlanMembresia plan, String prefijo) {
@@ -312,11 +312,11 @@ public class GestionMembresiasController implements Initializable {
         });
 
         colBeneficio.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().beneficio()));
-        colBronce.setCellValueFactory(data    -> new SimpleStringProperty(data.getValue().bronce()));
-        colPlata.setCellValueFactory(data     -> new SimpleStringProperty(data.getValue().plata()));
-        colOro.setCellValueFactory(data       -> new SimpleStringProperty(data.getValue().oro()));
+        colSilver.setCellValueFactory(data    -> new SimpleStringProperty(data.getValue().silver()));
+        colBlack.setCellValueFactory(data     -> new SimpleStringProperty(data.getValue().black()));
+        colGold.setCellValueFactory(data       -> new SimpleStringProperty(data.getValue().gold()));
 
-        TableColumn<FilaComparativa, String>[] cols = new TableColumn[]{colBeneficio, colBronce, colPlata, colOro};
+        TableColumn<FilaComparativa, String>[] cols = new TableColumn[]{colBeneficio, colSilver, colBlack, colGold};
         for (TableColumn<FilaComparativa, String> col : cols) {
             col.setCellFactory(c -> new TableCell<>() {
                 @Override
@@ -328,8 +328,8 @@ public class GestionMembresiasController implements Initializable {
                 }
             });
         }
-        // Columna Oro resaltada
-        colOro.setCellFactory(c -> new TableCell<>() {
+        // Columna Gold resaltada
+        colGold.setCellFactory(c -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -341,18 +341,18 @@ public class GestionMembresiasController implements Initializable {
 
         ObservableList<FilaComparativa> filas = FXCollections.observableArrayList();
         if (planSilver != null && planGold != null && planBlack != null) {
-            String[] bronceBeneficios = planSilver.getBeneficios() != null
+            String[] silverBeneficios = planSilver.getBeneficios() != null
                     ? planSilver.getBeneficios().split(" - ") : new String[]{planSilver.getDescripcion() != null ? planSilver.getDescripcion() : "Incluido"};
-            String[] plataBeneficios  = planBlack.getBeneficios() != null
+            String[] blackBeneficios  = planBlack.getBeneficios() != null
                     ? planBlack.getBeneficios().split(" - ") : new String[]{planBlack.getDescripcion() != null ? planBlack.getDescripcion() : "Incluido"};
-            String[] oroBeneficios    = planGold.getBeneficios() != null
+            String[] goldBeneficios    = planGold.getBeneficios() != null
                     ? planGold.getBeneficios().split(" - ") : new String[]{planGold.getDescripcion() != null ? planGold.getDescripcion() : "Incluido"};
 
-            int maxRows = Math.max(bronceBeneficios.length, Math.max(plataBeneficios.length, oroBeneficios.length));
+            int maxRows = Math.max(silverBeneficios.length, Math.max(blackBeneficios.length, goldBeneficios.length));
             for (int i = 0; i < maxRows; i++) {
-                String b = i < bronceBeneficios.length ? bronceBeneficios[i] : "—";
-                String p = i < plataBeneficios.length  ? plataBeneficios[i]  : "—";
-                String o = i < oroBeneficios.length    ? oroBeneficios[i]    : "—";
+                String b = i < silverBeneficios.length ? silverBeneficios[i] : "—";
+                String p = i < blackBeneficios.length  ? blackBeneficios[i]  : "—";
+                String o = i < goldBeneficios.length    ? goldBeneficios[i]    : "—";
                 String nombreBeneficio = Character.toUpperCase(b.charAt(0)) + b.substring(1);
                 filas.add(new FilaComparativa(nombreBeneficio, b, p, o));
             }
@@ -436,9 +436,9 @@ public class GestionMembresiasController implements Initializable {
         agregarHoverTransparente(btnAnual);
 
         // Botones de seleccion de plan
-        agregarHoverBorde(btnSeleccionarBronce);
-        agregarHoverBorde(btnSeleccionarPlata);
-        agregarHoverActivo(btnSeleccionarOro);
+        agregarHoverBorde(btnSeleccionarSilver);
+        agregarHoverBorde(btnSeleccionarBlack);
+        agregarHoverActivo(btnSeleccionarGold);
 
         // Boton AI
         agregarHoverBordeAI(btnChatearAI);
@@ -643,9 +643,9 @@ public class GestionMembresiasController implements Initializable {
 
     public record FilaComparativa(
             String beneficio,
-            String bronce,
-            String plata,
-            String oro
+            String silver,
+            String black,
+            String gold
     ) {}
 
     public record FilaPago(

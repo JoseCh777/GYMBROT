@@ -69,7 +69,7 @@ public class ProgresoDAO {
         String sql = """
             SELECT id_progreso, id_cliente, fecha_registro, peso, altura,
                    imc, porcentaje_grasa, masa_muscular, objetivo, observaciones
-            FROM PROGRESO WHERE id_cliente = ?
+            FROM PROGRESOS WHERE id_cliente = ?
             ORDER BY fecha_registro DESC FETCH FIRST 1 ROWS ONLY
             """;
         try (Connection conn = getConexion();

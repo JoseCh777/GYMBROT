@@ -106,11 +106,11 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioBronce" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="49" />
+                            <Label fx:id="lblPrecioSilver" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="49" />
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionBronce" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
+                        <Label fx:id="lblFacturacionSilver" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -134,7 +134,7 @@
                             </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarBronce" maxWidth="Infinity" onAction="#handleSeleccionarBronce" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarSilver" maxWidth="Infinity" onAction="#handleSeleccionarSilver" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
                     <!-- Card: Gold (destacada - mejor opcion) -->
@@ -154,11 +154,11 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioOro" style="-fx-font-family: 'Lexend'; -fx-font-size: 64px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="129" />
+                            <Label fx:id="lblPrecioGold" style="-fx-font-family: 'Lexend'; -fx-font-size: 64px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="129" />
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionOro" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #D4FF00;" text="Mejor Valor: Facturado anualmente">
+                        <Label fx:id="lblFacturacionGold" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #D4FF00;" text="Mejor Valor: Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -186,7 +186,7 @@
                             </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarOro" maxWidth="Infinity" onAction="#handleSeleccionarOro" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #121417; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.3), 15, 0, 0, 0);" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarGold" maxWidth="Infinity" onAction="#handleSeleccionarGold" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #121417; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.3), 15, 0, 0, 0);" text="SELECCIONAR PLAN" />
                     </VBox>
 
                     <!-- Card: Black -->
@@ -200,11 +200,11 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioPlata" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="89" />
+                            <Label fx:id="lblPrecioBlack" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="89" />
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
-                        <Label fx:id="lblFacturacionPlata" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
+                        <Label fx:id="lblFacturacionBlack" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
@@ -228,7 +228,7 @@
                             </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarPlata" maxWidth="Infinity" onAction="#handleSeleccionarPlata" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarBlack" maxWidth="Infinity" onAction="#handleSeleccionarBlack" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
                 </HBox>
@@ -240,9 +240,9 @@
                     <TableView fx:id="tablaComparativa" prefHeight="260" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
                         <columns>
                             <TableColumn fx:id="colBeneficio" prefWidth="380" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARACTERISTICAS Y BENEFICIOS" />
-                            <TableColumn fx:id="colBronce" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SILVER" />
-                            <TableColumn fx:id="colOro" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="GOLD" />
-                            <TableColumn fx:id="colPlata" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BLACK" />
+                            <TableColumn fx:id="colSilver" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SILVER" />
+                            <TableColumn fx:id="colGold" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="GOLD" />
+                            <TableColumn fx:id="colBlack" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BLACK" />
                         </columns>
                     </TableView>
                 </VBox>

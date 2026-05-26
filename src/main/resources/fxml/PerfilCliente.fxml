@@ -46,6 +46,7 @@
                         <!-- Botones de accion -->
                         <HBox alignment="BOTTOM_CENTER" spacing="12">
                             <Button fx:id="btnEditarPerfil" onAction="#handleEditarPerfil" style="-fx-background-color: #24282d; -fx-background-radius: 8;                                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                            -fx-font-weight: 700; -fx-text-fill: white;                                            -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                            -fx-border-radius: 8; -fx-cursor: hand;                                            -fx-padding: 10 20 10 20;" text="Editar Perfil" />
+                            <Button fx:id="btnVerProgreso" onAction="#handleVerProgreso" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                            -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                            -fx-border-color: #D4FF00; -fx-border-width: 1;                                            -fx-border-radius: 8; -fx-cursor: hand;                                            -fx-padding: 10 20 10 20;" text="Progreso Fisico" />
                         </HBox>
 
                         <!-- Boton cerrar -->

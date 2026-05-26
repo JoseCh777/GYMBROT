@@ -228,7 +228,7 @@
                             <TableColumn fx:id="colEstado" prefWidth="160" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
 
                             <!-- Columna: Acciones -->
-                            <TableColumn fx:id="colAcciones" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
+                            <TableColumn fx:id="colAcciones" prefWidth="180" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
                         </columns>
                     </TableView>
 
