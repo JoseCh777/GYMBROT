@@ -77,6 +77,13 @@ public class ChatbotService {
 
             contextoExtra = procesarCrearRutina(texto, historial, idAdmin);
 
+            // ── ELIMINAR CLIENTE ─────────────────────────────────────────────
+        } else if ((textoLower.contains("eliminar cliente") || textoLower.contains("borrar cliente")
+                || textoLower.contains("remover cliente") || textoLower.contains("eliminar usuario"))
+                && (extraerIdCliente(texto) != null || extraerCorreo(texto, historial) != null)) {
+
+            contextoExtra = procesarEliminarCliente(texto, historial);
+
             // ── CONSULTAR CLIENTE ─────────────────────────────────────────────
         } else if ((textoLower.contains("consultar cliente") || textoLower.contains("buscar cliente")
                 || textoLower.contains("información del cliente") || textoLower.contains("info del cliente")
@@ -208,10 +215,10 @@ public class ChatbotService {
                                     "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
                                     "<p>Tu cita ha sido agendada exitosamente.</p>" +
                                     "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + nombreInst + "</td></tr>" +
-                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fechaFmt + "</td></tr>" +
-                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + horaFmt + "</td></tr>" +
-                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCitaCreada + "</td></tr>" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + nombreInst + "NonNuller匹配" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong>NonNuller匹配<td style='padding: 8px;'>" + fechaFmt + "NonNuller匹配" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong>NonNuller匹配<td style='padding: 8px;'>" + horaFmt + "NonNuller匹配" +
+                                    "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idCitaCreada + "NonNuller匹配" +
                                     "</table>" +
                                     "<p>Recuerda llegar 10 minutos antes.</p>" +
                                     "<p>Te esperamos en GYMBROT.</p>" +
@@ -268,10 +275,10 @@ public class ChatbotService {
                                             "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
                                             "<p>Tu cita ha sido cancelada exitosamente.</p>" +
                                             "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + nombreInst + "</td></tr>" +
-                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fechaFmt + "</td></tr>" +
-                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + horaFmt + "</td></tr>" +
-                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCita + "</td></tr>" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong>NonNuller匹配<td style='padding: 8px;'>" + nombreInst + "NonNuller匹配" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong>NonNuller匹配<td style='padding: 8px;'>" + fechaFmt + "NonNuller匹配" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong>NonNuller匹配<td style='padding: 8px;'>" + horaFmt + "NonNuller匹配" +
+                                            "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idCita + "NonNuller匹配" +
                                             "</table>" +
                                             "<p>Contáctanos para reagendar una nueva cita.</p>" +
                                             "</div>" +
@@ -423,6 +430,74 @@ public class ChatbotService {
     }
 
     // ═════════════════════════════════════════════════════════════════════
+    //  ELIMINAR CLIENTE
+    // ═════════════════════════════════════════════════════════════════════
+    private String procesarEliminarCliente(String texto, List<MensajeGymbrot> historial) {
+
+        // Intentar obtener ID o correo
+        String idCliente = extraerIdCliente(texto);
+        String correoCliente = null;
+
+        if (idCliente == null) {
+            correoCliente = extraerCorreo(texto, historial);
+            if (correoCliente == null) {
+                return " [SISTEMA: No se encontró el ID o correo del cliente a eliminar. " +
+                        "Pídele al administrador que indique el ID o correo.]";
+            }
+
+            // Buscar cliente por correo
+            Usuario usuario = usuarioDAO.buscarPorCorreo(correoCliente);
+            if (usuario == null) {
+                return " [SISTEMA: No existe un cliente con correo " + correoCliente + "]";
+            }
+            idCliente = usuario.getNumeroIdentificacion();
+        }
+
+        // Verificar que el cliente existe
+        Cliente cliente = clienteDAO.buscarPorId(idCliente);
+        if (cliente == null) {
+            return " [SISTEMA: No existe un cliente con ID " + idCliente + "]";
+        }
+
+        String nombreCliente = cliente.getNombre();
+        String correoClienteEliminar = cliente.getCorreo();
+
+        // Verificar que no sea el administrador actual
+        if (idCliente.equals("ADMIN002") || idCliente.equals("TEST001")) {
+            return " [SISTEMA: No se puede eliminar la cuenta de administrador principal.]";
+        }
+
+        try {
+            System.out.println("[procesarEliminarCliente] Eliminando cliente ID: " + idCliente);
+
+            // 1. Eliminar citas del cliente
+            boolean citasEliminadas = citaDAO.eliminarPorCliente(idCliente);
+            System.out.println("[procesarEliminarCliente] Citas eliminadas: " + citasEliminadas);
+
+            // 2. Eliminar de CLIENTES
+            boolean eliminadoCliente = clienteDAO.eliminar(idCliente);
+            System.out.println("[procesarEliminarCliente] CLIENTES eliminado: " + eliminadoCliente);
+
+            // 3. Eliminar de USUARIOS
+            boolean eliminadoUsuario = usuarioDAO.eliminar(idCliente);
+            System.out.println("[procesarEliminarCliente] USUARIOS eliminado: " + eliminadoUsuario);
+
+            if (eliminadoCliente && eliminadoUsuario) {
+                return " [SISTEMA: Cliente " + nombreCliente + " (ID: " + idCliente +
+                        ", Correo: " + correoClienteEliminar + ") eliminado exitosamente del sistema.]";
+            } else {
+                return " [SISTEMA: Error al eliminar el cliente " + idCliente +
+                        ". Revisa los logs del servidor.]";
+            }
+
+        } catch (Exception e) {
+            System.err.println("[procesarEliminarCliente] ERROR: " + e.getMessage());
+            e.printStackTrace();
+            return " [SISTEMA: Error al eliminar el cliente. Motivo: " + e.getMessage() + "]";
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
     //  CREAR RUTINA
     // ═════════════════════════════════════════════════════════════════════
     private String procesarCrearRutina(String texto, List<MensajeGymbrot> historial, String idAdmin) {
@@ -490,10 +565,10 @@ public class ChatbotService {
                                 "<p>Hola <strong>" + nombreLimpio + "</strong>,</p>" +
                                 "<p>Tu instructor <strong>Pedro</strong> ha creado una nueva rutina personalizada para ti.</p>" +
                                 "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Objetivo:</strong></td><td style='padding: 8px;'>" + objetivo + "</td></tr>" +
-                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Días de entrenamiento:</strong></td><td style='padding: 8px;'>" + diasSemana + "</td></tr>" +
-                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>Pedro</td></tr>" +
-                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de rutina:</strong></td><td style='padding: 8px;'>#" + idRutina + "</td></tr>" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Objetivo:</strong>NonNuller匹配<td style='padding: 8px;'>" + objetivo + "NonNuller匹配" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Días de entrenamiento:</strong>NonNuller匹配<td style='padding: 8px;'>" + diasSemana + "NonNuller匹配" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong>NonNuller匹配<td style='padding: 8px;'>PedroNonNuller匹配" +
+                                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de rutina:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idRutina + "NonNuller匹配" +
                                 "</table>" +
                                 "<div style='background: #f4f4f4; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; margin: 15px 0;'>" +
                                 rutinaGenerada.replace("\n", "<br>") +
@@ -813,14 +888,14 @@ public class ChatbotService {
                         "<p>Tu cuenta ha sido creada exitosamente en el sistema GYMBROT.</p>" +
                         "<h3 style='margin: 20px 0 10px;'>Tus credenciales de acceso:</h3>" +
                         "<table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>" +
-                        "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Usuario:</strong><td>" +
-                        "<td style='padding: 8px;'>" + correo + "</td>" +
+                        "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Usuario:</strong>NonNuller匹配" +
+                        "<td style='padding: 8px;'>" + correo + "NonNuller匹配" +
                         "</tr>" +
                         "<tr>" +
-                        "<td style='padding: 8px; background: #f4f4f4;'><strong>Contraseña temporal:</strong></td>" +
-                        "<td style='padding: 8px;'><strong>" + id + "</strong></td>" +
+                        "<td style='padding: 8px; background: #f4f4f4;'><strong>Contraseña temporal:</strong>NonNuller匹配" +
+                        "<td style='padding: 8px;'><strong>" + id + "</strong>NonNuller匹配" +
                         "</tr>" +
-                        "</table>" +
+                        "</td>" +
                         "<p style='margin-top: 20px;'><strong>Recomendación:</strong> Cambia tu contraseña al ingresar por primera vez.</p>" +
                         "<p>Para agendar citas, consultar horarios o resolver dudas, comunícate con nuestro equipo de atención al cliente.</p>" +
                         "<p style='margin-top: 20px;'>Atentamente,</p>" +

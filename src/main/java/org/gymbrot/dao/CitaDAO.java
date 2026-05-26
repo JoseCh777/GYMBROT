@@ -116,6 +116,21 @@ public class CitaDAO {
         }
     }
 
+    // ── ELIMINAR POR CLIENTE ──────────────────────────────────────────────
+    public boolean eliminarPorCliente(String idCliente) {
+        String sql = "DELETE FROM CITAS WHERE id_cliente = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, idCliente);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar citas por cliente: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     public Cita buscarPorId(int id) {
         String sql = """
