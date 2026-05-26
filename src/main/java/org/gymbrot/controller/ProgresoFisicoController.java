@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.dao.ProgresoDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Progreso;
 import org.gymbrot.service.ProgresoService;
@@ -68,6 +69,7 @@ public class    ProgresoFisicoController implements Initializable {
     @FXML private Button btnFiltrarHistorial, btnAnterior, btnSiguiente, btnPag1, btnPag2, btnPag3;
 
     private ClienteDAO clienteDAO;
+    private ProgresoDAO progresoDAO;
     private ProgresoService progresoService;
 
     private String idCliente;
@@ -81,6 +83,7 @@ public class    ProgresoFisicoController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         clienteDAO = new ClienteDAO();
+        progresoDAO = new ProgresoDAO();
         progresoService = new ProgresoService();
 
         configurarTabla();
@@ -242,7 +245,28 @@ public class    ProgresoFisicoController implements Initializable {
                 new javafx.beans.property.SimpleStringProperty(
                         d.getValue().getMasaMuscular() > 0
                                 ? String.format("%.1f kg", d.getValue().getMasaMuscular()) : "--"));
-        colAcciones.setCellValueFactory(d -> null);
+        colAcciones.setCellFactory(col -> new TableCell<>() {
+            private final Button btnEliminar = new Button("ELIMINAR");
+            {
+                btnEliminar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
+                        "-fx-border-color: #ef4444; -fx-border-width: 1; -fx-border-radius: 6;" +
+                        "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                        "-fx-text-fill: #ef4444; -fx-cursor: hand; -fx-padding: 4 14 4 14;");
+                btnEliminar.setOnAction(e -> {
+                    Progreso p = getTableView().getItems().get(getIndex());
+                    boolean ok = progresoDAO.desactivar(p.getIdProgreso());
+                    if (ok) {
+                        cargarHistorial();
+                        cargarChart();
+                    }
+                });
+            }
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btnEliminar);
+            }
+        });
     }
 
     private void cargarHistorial() {

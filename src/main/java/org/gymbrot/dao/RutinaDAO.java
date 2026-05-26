@@ -69,6 +69,21 @@ public class RutinaDAO {
         }
     }
 
+    // ── DESACTIVAR ────────────────────────────────────────────────────────
+    public boolean desactivar(int id) {
+        String sql = "UPDATE RUTINAS SET estado = 'INACTIVO' WHERE id_rutina = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar rutina: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ── ELIMINAR ──────────────────────────────────────────────────────────
     public boolean eliminar(int id) {
         String sql = "DELETE FROM RUTINAS WHERE id_rutina = ?";
@@ -90,7 +105,7 @@ public class RutinaDAO {
         String sql = """
             SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
                    fecha_creacion, fecha_fin, dias_semana, objetivo
-            FROM RUTINAS ORDER BY fecha_creacion DESC
+            FROM RUTINAS WHERE estado = 'ACTIVO' ORDER BY fecha_creacion DESC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -110,7 +125,7 @@ public class RutinaDAO {
         String sql = """
             SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
                    fecha_creacion, fecha_fin, dias_semana, objetivo
-            FROM RUTINAS WHERE id_cliente = ? ORDER BY fecha_creacion DESC
+            FROM RUTINAS WHERE id_cliente = ? AND estado = 'ACTIVO' ORDER BY fecha_creacion DESC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -132,7 +147,7 @@ public class RutinaDAO {
         String sql = """
             SELECT id_rutina, id_instructor, id_cliente, nombre, descripcion,
                    fecha_creacion, fecha_fin, dias_semana, objetivo
-            FROM RUTINAS WHERE id_instructor = ? ORDER BY fecha_creacion DESC
+            FROM RUTINAS WHERE id_instructor = ? AND estado = 'ACTIVO' ORDER BY fecha_creacion DESC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {

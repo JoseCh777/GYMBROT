@@ -105,10 +105,18 @@ public class DirectorioRutinasController implements Initializable {
         List<Rutina> lista = rutinaDAO.listarTodas();
         todasLasRutinas.clear();
         for (Rutina r : lista) {
+            int idRutina = r.getIdRutina();
             String prog = r.getDiasSemana() != null ? r.getDiasSemana() : "";
             String obj = r.getObjetivo() != null ? r.getObjetivo() : "";
             todasLasRutinas.add(new RutinaRow(
-                    r.getNombre(), obj, instructorNombre(r.getIdInstructor()), prog));
+                    idRutina, r.getNombre(), obj, instructorNombre(r.getIdInstructor()), prog,
+                    () -> {
+                        boolean ok = rutinaDAO.desactivar(idRutina);
+                        if (ok) {
+                            todasLasRutinas.removeIf(row -> row.idRutina == idRutina);
+                            aplicarFiltro();
+                        }
+                    }));
         }
         rutinasFiltradas = new FilteredList<>(todasLasRutinas, p -> true);
     }
@@ -225,13 +233,15 @@ public class DirectorioRutinasController implements Initializable {
     }
 
     public static class RutinaRow {
+        private final int idRutina;
         private final SimpleStringProperty nombre;
         private final SimpleStringProperty objetivo;
         private final SimpleStringProperty instructor;
         private final SimpleStringProperty programacion;
         private final Button btnEliminar;
 
-        public RutinaRow(String nombre, String objetivo, String instructor, String programacion) {
+        public RutinaRow(int idRutina, String nombre, String objetivo, String instructor, String programacion, Runnable onEliminar) {
+            this.idRutina = idRutina;
             this.nombre = new SimpleStringProperty(nombre);
             this.objetivo = new SimpleStringProperty(objetivo);
             this.instructor = new SimpleStringProperty(instructor);
@@ -242,6 +252,9 @@ public class DirectorioRutinasController implements Initializable {
                     "-fx-border-color: #ef4444; -fx-border-width: 1; -fx-border-radius: 6;" +
                     "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
                     "-fx-text-fill: #ef4444; -fx-cursor: hand; -fx-padding: 4 14 4 14;");
+            this.btnEliminar.setOnAction(e -> {
+                if (onEliminar != null) onEliminar.run();
+            });
         }
 
         public String getNombre() { return nombre.get(); }

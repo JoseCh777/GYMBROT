@@ -65,6 +65,18 @@ public class ClienteDAO {
             return false;
         }
     }
+    public boolean desactivar(String numeroIdentificacion) {
+        String sql = "UPDATE USUARIOS SET estado = 'INACTIVO' WHERE numero_identificacion = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, numeroIdentificacion);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error desactivar cliente: " + e.getMessage());
+            return false;
+        }
+    }
+
     public boolean eliminar(String numeroIdentificacion) {
         String sql = "DELETE FROM CLIENTES WHERE numero_identificacion = ?";
 
@@ -141,6 +153,7 @@ public class ClienteDAO {
                 "u.fecha_registro, u.tipo_usuario " +
                 "FROM CLIENTES c " +
                 "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+                "WHERE u.estado = 'ACTIVO' " +
                 "ORDER BY u.fecha_registro DESC";
 
         try (Statement stmt = conn.createStatement();

@@ -601,14 +601,18 @@ public class GestionInstructoresController implements Initializable {
 
     private void handleEliminarInstructor(String id, String nombre) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Eliminar a " + nombre + "?", ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmar eliminacion");
+                "Desactivar a " + nombre + "?", ButtonType.YES, ButtonType.NO);
+        confirm.setTitle("Confirmar desactivacion");
         confirm.setHeaderText(null);
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
-                instructorDAO.eliminar(id);
-                cargarDatosMock();
-                aplicarFiltro();
+                boolean ok = instructorDAO.desactivar(id);
+                if (ok) {
+                    cargarDatosMock();
+                    aplicarFiltro();
+                } else {
+                    mostrarError("Error", "No se pudo desactivar el instructor.");
+                }
             }
         });
     }

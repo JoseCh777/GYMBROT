@@ -21,6 +21,7 @@ import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Especialidad;
 import org.gymbrot.model.Instructor;
+import org.gymbrot.service.InstructorService;
 
 import java.io.File;
 import java.io.IOException;
@@ -496,7 +497,7 @@ public class NuevoInstructorController implements Initializable {
                     idEspecialidad, obtenerDiasSeleccionados() + "|" + (cmbHorario.getValue() != null ? cmbHorario.getValue().replaceAll("\\s*\\(.*\\)", "") : ""), dateFechaContratacion.getValue()
             );
 
-            boolean guardado = instructorDAO.insertar(instructor);
+            boolean guardado = new InstructorService().registrarInstructor(instructor, instructor);
             if (guardado) {
                 btnGuardar.setText("GUARDADO \u2713");
                 btnGuardar.setStyle(

@@ -109,11 +109,19 @@ public class DirectorioEjerciciosController implements Initializable {
         List<Ejercicio> lista = ejercicioDAO.listarTodos();
         todosLosEjercicios.clear();
         for (Ejercicio e : lista) {
+            int idEjercicio = e.getIdEjercicio();
             String nivel = e.getNivel() != null ? e.getNivel().substring(0, 1).toUpperCase()
                     + e.getNivel().substring(1).toLowerCase() : "";
             String desc = e.getDescripcion() != null ? e.getDescripcion() : "";
             todosLosEjercicios.add(new EjercicioRow(
-                    e.getNombre(), e.getGrupoMuscular(), nivel, desc));
+                    idEjercicio, e.getNombre(), e.getGrupoMuscular(), nivel, desc,
+                    () -> {
+                        boolean ok = ejercicioDAO.desactivar(idEjercicio);
+                        if (ok) {
+                            todosLosEjercicios.removeIf(row -> row.idEjercicio == idEjercicio);
+                            aplicarFiltro();
+                        }
+                    }));
         }
         ejerciciosFiltrados = new FilteredList<>(todosLosEjercicios, p -> true);
     }
@@ -232,13 +240,15 @@ public class DirectorioEjerciciosController implements Initializable {
     }
 
     public static class EjercicioRow {
+        private final int idEjercicio;
         private final SimpleStringProperty nombre;
         private final SimpleStringProperty grupoMuscular;
         private final SimpleStringProperty nivel;
         private final SimpleStringProperty descripcion;
         private final Button btnEliminar;
 
-        public EjercicioRow(String nombre, String grupoMuscular, String nivel, String descripcion) {
+        public EjercicioRow(int idEjercicio, String nombre, String grupoMuscular, String nivel, String descripcion, Runnable onEliminar) {
+            this.idEjercicio = idEjercicio;
             this.nombre = new SimpleStringProperty(nombre);
             this.grupoMuscular = new SimpleStringProperty(grupoMuscular);
             this.nivel = new SimpleStringProperty(nivel);
@@ -249,6 +259,9 @@ public class DirectorioEjerciciosController implements Initializable {
                     "-fx-border-color: #ef4444; -fx-border-width: 1; -fx-border-radius: 6;" +
                     "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
                     "-fx-text-fill: #ef4444; -fx-cursor: hand; -fx-padding: 4 14 4 14;");
+            this.btnEliminar.setOnAction(e -> {
+                if (onEliminar != null) onEliminar.run();
+            });
         }
 
         public String getNombre() { return nombre.get(); }

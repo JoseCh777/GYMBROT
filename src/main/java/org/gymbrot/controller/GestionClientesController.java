@@ -702,15 +702,19 @@ public class GestionClientesController implements Initializable {
 
     private void handleEliminarCliente(ClienteRow row) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Eliminar a " + row.getNombre() + "?",
+                "Desactivar a " + row.getNombre() + "?",
                 ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmar eliminacion");
+        confirm.setTitle("Confirmar desactivacion");
         confirm.setHeaderText(null);
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
-                // TODO: clienteDAO.eliminar(row.getId());
-                todosLosClientes.remove(row);
-                actualizarLabelRegistros();
+                boolean ok = clienteDAO.desactivar(row.getId());
+                if (ok) {
+                    todosLosClientes.remove(row);
+                    actualizarLabelRegistros();
+                } else {
+                    mostrarError("Error", "No se pudo desactivar el cliente.");
+                }
             }
         });
     }

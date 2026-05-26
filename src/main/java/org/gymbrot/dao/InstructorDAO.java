@@ -64,6 +64,17 @@ public class InstructorDAO {
         }
     }
 
+    public boolean desactivar(String numeroIdentificacion) {
+        String sql = "UPDATE USUARIOS SET estado = 'INACTIVO' WHERE numero_identificacion = ?";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setString(1, numeroIdentificacion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error desactivar instructor: " + e.getMessage());
+            return false;
+        }
+    }
+
     public boolean eliminar(String numeroIdentificacion) {
 
         String sql = "DELETE FROM INSTRUCTORES WHERE numero_identificacion = ?";
@@ -136,6 +147,7 @@ public class InstructorDAO {
                 "FROM INSTRUCTORES i " +
                 "INNER JOIN USUARIOS u " +
                 "ON i.numero_identificacion = u.numero_identificacion " +
+                "WHERE u.estado = 'ACTIVO' " +
                 "ORDER BY u.nombre";
 
         try (PreparedStatement ps = getConexion().prepareStatement(sql);

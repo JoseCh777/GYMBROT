@@ -71,6 +71,21 @@ public class EjercicioDAO {
         }
     }
 
+    // ── DESACTIVAR ────────────────────────────────────────────────────────
+    public boolean desactivar(int id) {
+        String sql = "UPDATE EJERCICIOS SET estado = 'INACTIVO' WHERE id_ejercicio = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar ejercicio: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ── ELIMINAR ──────────────────────────────────────────────────────────
     public boolean eliminar(int id) {
         String sql = "DELETE FROM EJERCICIOS WHERE id_ejercicio = ?";
@@ -92,7 +107,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS ORDER BY nombre
+            FROM EJERCICIOS WHERE estado = 'ACTIVO' ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -133,7 +148,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS WHERE grupo_muscular = ? ORDER BY nombre
+            FROM EJERCICIOS WHERE grupo_muscular = ? AND estado = 'ACTIVO' ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -155,7 +170,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS WHERE nivel = ? ORDER BY nombre
+            FROM EJERCICIOS WHERE nivel = ? AND estado = 'ACTIVO' ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {

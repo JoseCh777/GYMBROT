@@ -6,14 +6,22 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static final String URL      = "jdbc:oracle:thin:@localhost:1521/XEPDB1";
-    private static final String USER     = "gymbrot";
-    private static final String PASSWORD = "gymbrot123";
+    private static final String URL      = getEnvOrThrow("GYMBROT_DB_URL");
+    private static final String USER     = getEnvOrThrow("GYMBROT_DB_USER");
+    private static final String PASSWORD = getEnvOrThrow("GYMBROT_DB_PASS");
 
     private static Connection instance = null;
     private static boolean conexionReportada = false;
 
     private DatabaseConnection() {}
+
+    private static String getEnvOrThrow(String key) {
+        String val = System.getenv(key);
+        if (val == null || val.isBlank()) {
+            throw new RuntimeException("Variable de entorno faltante: " + key);
+        }
+        return val;
+    }
 
     public static Connection getInstance() throws SQLException {
         try {
