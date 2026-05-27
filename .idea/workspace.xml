@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,6 +128,7 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
@@ -491,7 +494,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779853402317</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779855581994</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1779855581994</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -509,7 +520,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;feat: Crear Nuevoinstructor.fxml y su controller&quot;" />
     <MESSAGE value="&quot;feat: agregar efectos en dashvoard&quot;" />
     <MESSAGE value="&quot;feat: Quitar boton de configuracion&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructor.fxml&quot;" />
@@ -534,7 +544,8 @@
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: renovacion de membresia y mejoras en notificaciones&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

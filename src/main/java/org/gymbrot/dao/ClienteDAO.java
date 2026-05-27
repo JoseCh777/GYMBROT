@@ -23,21 +23,18 @@ public class ClienteDAO {
 
             pstmt.setString(1, cliente.getNumeroIdentificacion());
 
-            // CORRECCIÓN: manejar null en dirección
             if (cliente.getDireccion() != null && !cliente.getDireccion().isEmpty()) {
                 pstmt.setString(2, cliente.getDireccion());
             } else {
                 pstmt.setNull(2, Types.VARCHAR);
             }
 
-            // CORRECCIÓN: manejar null en fecha_nacimiento
             if (cliente.getFechaNacimiento() != null) {
                 pstmt.setDate(3, Date.valueOf(cliente.getFechaNacimiento()));
             } else {
                 pstmt.setNull(3, Types.DATE);
             }
 
-            // CORRECCIÓN: manejar null en huella_dactilar
             if (cliente.getHuellaDactilar() != null) {
                 pstmt.setBytes(4, cliente.getHuellaDactilar());
             } else {
@@ -60,21 +57,18 @@ public class ClienteDAO {
         try (Connection conn = getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // CORRECCIÓN: manejar null en dirección
             if (cliente.getDireccion() != null) {
                 pstmt.setString(1, cliente.getDireccion());
             } else {
                 pstmt.setNull(1, Types.VARCHAR);
             }
 
-            // CORRECCIÓN: manejar null en fecha_nacimiento
             if (cliente.getFechaNacimiento() != null) {
                 pstmt.setDate(2, Date.valueOf(cliente.getFechaNacimiento()));
             } else {
                 pstmt.setNull(2, Types.DATE);
             }
 
-            // CORRECCIÓN: manejar null en huella_dactilar
             if (cliente.getHuellaDactilar() != null) {
                 pstmt.setBytes(3, cliente.getHuellaDactilar());
             } else {
@@ -109,12 +103,14 @@ public class ClienteDAO {
 
     // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     public Cliente buscarPorId(String numeroIdentificacion) {
-        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
-                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
-                "u.fecha_registro, u.tipo_usuario " +
-                "FROM CLIENTES c " +
-                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
-                "WHERE c.numero_identificacion = ?";
+        String sql = "SELECT u.numero_identificacion, u.tipo_identificacion, u.nombre, " +
+                "u.apellidos, u.telefono, u.correo, u.contrasena_hash, u.foto_url, " +
+                "u.estado, u.fecha_registro, u.tipo_usuario, " +
+                "c.direccion, c.fecha_nacimiento, c.huella_dactilar " +
+                "FROM USUARIOS u " +
+                "LEFT JOIN CLIENTES c ON u.numero_identificacion = c.numero_identificacion " +
+                "WHERE u.tipo_usuario = 'CLIENTE' " +
+                "AND u.numero_identificacion = ?";
 
         try (Connection conn = getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -133,13 +129,17 @@ public class ClienteDAO {
     }
 
     // ── LISTAR TODOS ──────────────────────────────────────────────────────
+    // LEFT JOIN: devuelve todos los usuarios CLIENTE aunque no tengan
+    // fila en CLIENTES (c.* será null en ese caso, mapearCliente lo maneja).
     public List<Cliente> listarTodos() {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
-                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
-                "u.fecha_registro, u.tipo_usuario " +
-                "FROM CLIENTES c " +
-                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+        String sql = "SELECT u.numero_identificacion, u.tipo_identificacion, u.nombre, " +
+                "u.apellidos, u.telefono, u.correo, u.contrasena_hash, u.foto_url, " +
+                "u.estado, u.fecha_registro, u.tipo_usuario, " +
+                "c.direccion, c.fecha_nacimiento, c.huella_dactilar " +
+                "FROM USUARIOS u " +
+                "LEFT JOIN CLIENTES c ON u.numero_identificacion = c.numero_identificacion " +
+                "WHERE u.tipo_usuario = 'CLIENTE' " +
                 "ORDER BY u.fecha_registro DESC";
 
         try (Connection conn = getConexion();
@@ -157,14 +157,17 @@ public class ClienteDAO {
     }
 
     // ── BUSCAR POR ESTADO ─────────────────────────────────────────────────
+    // LEFT JOIN: devuelve clientes con ese estado aunque no tengan fila en CLIENTES.
     public List<Cliente> buscarPorEstado(String estado) {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
-                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
-                "u.fecha_registro, u.tipo_usuario " +
-                "FROM CLIENTES c " +
-                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
-                "WHERE u.estado = ? " +
+        String sql = "SELECT u.numero_identificacion, u.tipo_identificacion, u.nombre, " +
+                "u.apellidos, u.telefono, u.correo, u.contrasena_hash, u.foto_url, " +
+                "u.estado, u.fecha_registro, u.tipo_usuario, " +
+                "c.direccion, c.fecha_nacimiento, c.huella_dactilar " +
+                "FROM USUARIOS u " +
+                "LEFT JOIN CLIENTES c ON u.numero_identificacion = c.numero_identificacion " +
+                "WHERE u.tipo_usuario = 'CLIENTE' " +
+                "AND u.estado = ? " +
                 "ORDER BY u.fecha_registro DESC";
 
         try (Connection conn = getConexion();
@@ -184,13 +187,16 @@ public class ClienteDAO {
     }
 
     // ── OBTENER TEMPLATES HUELLA ──────────────────────────────────────────
+    // Aquí el INNER JOIN sigue siendo correcto: solo interesan clientes
+    // que SÍ tienen huella guardada en CLIENTES.
     public List<Cliente> obtenerTemplatesHuella() {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT c.*, u.tipo_identificacion, u.nombre, u.apellidos, " +
-                "u.telefono, u.correo, u.contrasena_hash, u.foto_url, u.estado, " +
-                "u.fecha_registro, u.tipo_usuario " +
-                "FROM CLIENTES c " +
-                "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
+        String sql = "SELECT u.numero_identificacion, u.tipo_identificacion, u.nombre, " +
+                "u.apellidos, u.telefono, u.correo, u.contrasena_hash, u.foto_url, " +
+                "u.estado, u.fecha_registro, u.tipo_usuario, " +
+                "c.direccion, c.fecha_nacimiento, c.huella_dactilar " +
+                "FROM USUARIOS u " +
+                "INNER JOIN CLIENTES c ON u.numero_identificacion = c.numero_identificacion " +
                 "WHERE c.huella_dactilar IS NOT NULL " +
                 "AND u.estado = 'ACTIVO'";
 
@@ -212,7 +218,7 @@ public class ClienteDAO {
     private Cliente mapearCliente(ResultSet rs) throws SQLException {
         Cliente cliente = new Cliente();
 
-        // Datos de Usuario (herencia)
+        // Datos de Usuario
         cliente.setNumeroIdentificacion(rs.getString("numero_identificacion"));
         cliente.setTipoIdentificacion(rs.getString("tipo_identificacion"));
         cliente.setNombre(rs.getString("nombre"));
@@ -230,7 +236,7 @@ public class ClienteDAO {
 
         cliente.setTipoUsuario(rs.getString("tipo_usuario"));
 
-        // Datos específicos de Cliente
+        // Datos específicos de Cliente (pueden ser null si no hay fila en CLIENTES)
         cliente.setDireccion(rs.getString("direccion"));
 
         Date fechaNac = rs.getDate("fecha_nacimiento");

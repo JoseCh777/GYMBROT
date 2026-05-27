@@ -178,16 +178,17 @@ public class ConsultaGymbrotService {
                 && !preguntaLower.contains("estadistica") && !preguntaLower.contains("estadística")) {
             List<Cliente> clientes = clienteDAO.listarTodos();
             if (!clientes.isEmpty()) {
-                contexto.append(String.format("CLIENTES REGISTRADOS (%d):\n", clientes.size()));
-                clientes.stream().limit(10).forEach(c ->
-                        contexto.append(String.format("- %s %s | ID: %s | Estado: %s | Correo: %s\n",
-                                c.getNombre(), c.getApellidos(),
-                                c.getNumeroIdentificacion(), c.getEstado(), c.getCorreo())));
-                if (clientes.size() > 10)
-                    contexto.append(String.format("... y %d más.\n", clientes.size() - 10));
+                contexto.append("=== LISTA COMPLETA DE CLIENTES ===\n");
+                contexto.append(String.format("Total: %d clientes\n\n", clientes.size()));
+                int contador = 1;
+                for (Cliente c : clientes) {
+                    contexto.append(String.format("%d. %s %s | ID: %s | Estado: %s\n",
+                            contador++, c.getNombre(), c.getApellidos(),
+                            c.getNumeroIdentificacion(), c.getEstado()));
+                }
+                contexto.append("\n=== FIN DE LA LISTA ===");
             }
         }
-
         // ── PLANES Y MEMBRESÍAS ───────────────────────────────────────────
         if (preguntaLower.contains("plan") || preguntaLower.contains("precio")
                 || preguntaLower.contains("costo") || preguntaLower.contains("valor")) {
