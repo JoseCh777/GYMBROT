@@ -166,6 +166,14 @@ public class ChatbotService {
 
             contextoExtra = procesarModificarCliente(texto, historial);
 
+        } else if ((textoLower.contains("modificar cita") || textoLower.contains("actualizar cita")
+                || textoLower.contains("cambiar cita") || textoLower.contains("editar cita")
+                || textoLower.contains("reprogramar cita") || textoLower.contains("cambiar fecha")
+                || textoLower.contains("cambiar hora") || textoLower.contains("cambiar instructor"))
+                && !textoLower.contains("cancelar") && !textoLower.contains("eliminar")) {
+
+            contextoExtra = procesarModificarCita(texto, historial);
+
         } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
                 || textoLower.contains("agendar") || textoLower.contains("programa")
                 || textoLower.contains("registra"))
@@ -508,6 +516,8 @@ public class ChatbotService {
             eliminarPorClienteSQL("PROGRESOS",           "id_cliente", idCliente);
             eliminarPorClienteSQL("REGISTROS_INGRESOS",  "id_cliente", idCliente);
             eliminarPorClienteSQL("HISTORIAL_MEMBRESIAS","id_cliente", idCliente);
+            // MENSAJES_GYMBROT tiene FK hacia SESIONES_GYMBROT → borrar primero
+            eliminarMensajesPorCliente(idCliente);
             eliminarPorClienteSQL("SESIONES_GYMBROT",    "id_cliente", idCliente);
             LOGGER.info("Tablas secundarias eliminadas para: " + idCliente);
 
@@ -651,6 +661,142 @@ public class ChatbotService {
         Matcher m = p.matcher(texto);
         if (m.find()) return m.group(1).trim();
         return null;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    //  MODIFICAR CITA
+    //  Permite cambiar fecha, hora, instructor y/o notas de una cita PENDIENTE.
+    //  Solo modifica los campos indicados; los demás conservan el valor actual.
+    //  Usa CitaDAO.actualizarEstado() para el estado y CitaDAO.actualizar()
+    //  solo cuando cambian fecha/hora/instructor (campos que requieren UPDATE completo).
+    //  Envía SMS + correo al cliente con los cambios.
+    // ═════════════════════════════════════════════════════════════════════
+    private String procesarModificarCita(String texto, List<MensajeGymbrot> historial) {
+
+        // ── 1. Extraer ID de cita ─────────────────────────────────────────
+        int idCita = extraerIdCita(texto);
+        if (idCita <= 0) {
+            return " [SISTEMA: El administrador quiere modificar una cita pero no indicó el ID. " +
+                    "Pídele el número. Ejemplo: 'modificar cita #462 fecha: 2026-06-10']";
+        }
+
+        // ── 2. Buscar la cita en BD ───────────────────────────────────────
+        Cita cita = citaDAO.buscarPorId(idCita);
+        if (cita == null) {
+            return " [SISTEMA: No existe la cita #" + idCita + ". Verifica el ID.]";
+        }
+        if (!cita.getEstado().equals("PENDIENTE")) {
+            return " [SISTEMA: La cita #" + idCita + " tiene estado " + cita.getEstado() +
+                    ". Solo se pueden modificar citas en estado PENDIENTE.]";
+        }
+
+        LOGGER.info("[procesarModificarCita] Modificando cita id=" + idCita);
+
+        // ── 3. Extraer campos nuevos ──────────────────────────────────────
+        LocalDate nuevaFecha      = extraerFechaCita(texto);
+        LocalTime nuevaHora       = extraerHoraCita(texto);
+        String    nuevoInstructor = extraerInstructorId(texto, historial);
+        String    nuevasNotas     = extraerNotas(texto);
+
+        LOGGER.info("[procesarModificarCita] fecha=" + nuevaFecha + " hora=" + nuevaHora
+                + " instructor=" + nuevoInstructor + " notas=" + nuevasNotas);
+
+        // ── 4. Validar que venga al menos un campo ────────────────────────
+        if (nuevaFecha == null && nuevaHora == null && nuevoInstructor == null && nuevasNotas == null) {
+            return " [SISTEMA: El administrador quiere modificar la cita #" + idCita +
+                    " pero no indicó qué cambiar. Pídele: fecha, hora, instructor o notas.]";
+        }
+
+        // ── 5. Validar fecha futura ───────────────────────────────────────
+        LocalDate fechaFinal = nuevaFecha != null ? nuevaFecha : cita.getFecha();
+        if (nuevaFecha != null && !nuevaFecha.isAfter(LocalDate.now())) {
+            return " [SISTEMA: La nueva fecha " + nuevaFecha +
+                    " debe ser posterior a hoy. Pídele una fecha válida.]";
+        }
+
+        // ── 6. Validar conflicto de horario si cambia fecha/hora/instructor
+        LocalTime horaFinal       = nuevaHora       != null ? nuevaHora       : cita.getHora();
+        String    instructorFinal = nuevoInstructor != null ? nuevoInstructor : cita.getIdInstructor();
+
+        if (nuevaFecha != null || nuevaHora != null || nuevoInstructor != null) {
+            List<Cita> citasInstructor = citaDAO.listarPorInstructor(instructorFinal);
+            for (Cita c : citasInstructor) {
+                if (c.getIdCita() != idCita
+                        && c.getFecha().equals(fechaFinal)
+                        && c.getHora().equals(horaFinal)
+                        && c.getEstado().equals("PENDIENTE")) {
+                    return " [SISTEMA: El instructor " + instructorFinal +
+                            " ya tiene una cita PENDIENTE el " + fechaFinal +
+                            " a las " + horaFinal + ". Elige otro horario.]";
+                }
+            }
+        }
+
+        // ── 7. Aplicar cambios y registrar log ────────────────────────────
+        StringBuilder cambiosLog = new StringBuilder();
+
+        if (nuevaFecha != null && !nuevaFecha.equals(cita.getFecha())) {
+            cambiosLog.append("fecha: ").append(cita.getFecha()).append(" → ").append(nuevaFecha).append(" | ");
+            cita.setFecha(nuevaFecha);
+        }
+        if (nuevaHora != null && !nuevaHora.equals(cita.getHora())) {
+            cambiosLog.append("hora: ").append(cita.getHora()).append(" → ").append(nuevaHora).append(" | ");
+            cita.setHora(nuevaHora);
+        }
+        if (nuevoInstructor != null && !nuevoInstructor.equals(cita.getIdInstructor())) {
+            cambiosLog.append("instructor: ").append(cita.getIdInstructor())
+                    .append(" → ").append(nuevoInstructor).append(" | ");
+            cita.setIdInstructor(nuevoInstructor);
+        }
+        if (nuevasNotas != null && !nuevasNotas.equals(cita.getNotas())) {
+            cambiosLog.append("notas: ").append(cita.getNotas())
+                    .append(" → ").append(nuevasNotas).append(" | ");
+            cita.setNotas(nuevasNotas);
+        }
+
+        if (cambiosLog.isEmpty()) {
+            return " [SISTEMA: La cita #" + idCita +
+                    " ya tiene los mismos valores. No se realizó ningún cambio.]";
+        }
+
+        // ── 8. Persistir en BD ────────────────────────────────────────────
+        boolean actualizado = citaDAO.actualizar(cita);
+        LOGGER.info("[procesarModificarCita] actualizado=" + actualizado);
+
+        if (!actualizado) {
+            return " [SISTEMA: Error al actualizar la cita #" + idCita +
+                    " en la BD. Revisa los logs del servidor.]";
+        }
+
+        // ── 9. Notificar al cliente ───────────────────────────────────────
+        String nombreInst = obtenerNombreInstructor(cita.getIdInstructor());
+        String fechaFmt   = cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String horaFmt    = cita.getHora().format(DateTimeFormatter.ofPattern("hh:mm a"));
+
+        notifService.enviarSmsDirecto(
+                "GYMBROT: Tu cita #" + idCita + " fue modificada. " +
+                        "Nueva fecha: " + fechaFmt + " a las " + horaFmt +
+                        " con " + nombreInst + ".");
+
+        Cliente cliente = clienteDAO.buscarPorId(cita.getIdCliente());
+        if (cliente != null && cliente.getCorreo() != null) {
+            String nombreLimpio = cliente.getNombre().split(" ")[0];
+            emailService.enviarCorreo(
+                    cliente.getCorreo(),
+                    "Cita modificada - GYMBROT",
+                    "<h2>Tu cita ha sido modificada</h2>" +
+                            "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
+                            "<p>Tu cita <b>#" + idCita + "</b> ha sido reprogramada:</p>" +
+                            "<ul><li><b>Fecha:</b> " + fechaFmt + "</li>" +
+                            "<li><b>Hora:</b> " + horaFmt + "</li>" +
+                            "<li><b>Instructor:</b> " + nombreInst + "</li></ul>" +
+                            "<p><b>GYMBROT Valledupar</b></p>");
+        }
+
+        String cambiosResumen = cambiosLog.toString().replaceAll(" \\| $", "");
+        return " [SISTEMA: Cita #" + idCita + " modificada exitosamente. " +
+                "Cambios: " + cambiosResumen + ". " +
+                "SMS y correo enviados al cliente. Confirma los cambios al administrador.]";
     }
 
     private String procesarModificarCliente(String texto, List<MensajeGymbrot> historial) {
@@ -1112,6 +1258,65 @@ public class ChatbotService {
         return null;
     }
 
+    // ── EXTRACTORES ESPECÍFICOS PARA MODIFICAR CITA ──────────────────────
+    // Solo buscan en el texto actual (no en historial) para evitar capturar
+    // datos de la cita original que ya está en BD.
+
+    private LocalDate extraerFechaCita(String texto) {
+        // Prioriza formato explícito fecha: YYYY-MM-DD o DD/MM/YYYY
+        Pattern pExplicito = Pattern.compile(
+                "(?:fecha|nueva\\s+fecha)[:\\s]+([\\d]{4}-[\\d]{2}-[\\d]{2}|[\\d]{2}/[\\d]{2}/[\\d]{4})",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m = pExplicito.matcher(texto);
+        if (m.find()) {
+            try {
+                String val = m.group(1);
+                if (val.contains("-")) return LocalDate.parse(val);
+                String[] p = val.split("/");
+                return LocalDate.of(Integer.parseInt(p[2]), Integer.parseInt(p[1]), Integer.parseInt(p[0]));
+            } catch (Exception ignored) {}
+        }
+        // Si no hay etiqueta explícita, usa el extractor general solo sobre este texto
+        return extraerFechaDeTexto(texto);
+    }
+
+    private LocalTime extraerHoraCita(String texto) {
+        // Prioriza formato etiquetado: hora: 10:00 o hora: 10am
+        Pattern pExplicito = Pattern.compile(
+                "(?:hora|nueva\\s+hora)[:\\s]+(\\S+)",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m = pExplicito.matcher(texto);
+        if (m.find()) {
+            LocalTime t = extraerHoraDeTexto(m.group(1));
+            if (t != null) return t;
+        }
+        return extraerHoraDeTexto(texto);
+    }
+
+    private String extraerInstructorId(String texto, List<MensajeGymbrot> historial) {
+        // Solo acepta IDs con formato real: INS001, INS002, etc.
+        // NO busca en historial para evitar capturar nombres del contexto anterior.
+        Pattern p = Pattern.compile(
+                "(?:instructor|id\\s+instructor)[:\\s]+(INS\\d+)",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return m.group(1).toUpperCase();
+        return null;
+    }
+
+    private String extraerNotas(String texto) {
+        // Busca: notas: texto libre hasta fin de línea o coma
+        Pattern p = Pattern.compile(
+                "(?:notas?|observaciones?)[:\\s]+(.+?)(?:,|\\.|\\n|$)",
+                Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto.trim());
+        if (m.find()) {
+            String val = m.group(1).trim();
+            return val.isEmpty() ? null : val;
+        }
+        return null;
+    }
+
     private int extraerIdCita(String texto) {
         Pattern p = Pattern.compile("#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
         Matcher m = p.matcher(texto.toLowerCase());
@@ -1229,6 +1434,20 @@ public class ChatbotService {
 
     public void cerrarSesion(int idSesion) {
         sesionDAO.cerrarSesion(idSesion);
+    }
+
+    // ── UTILIDAD: Elimina MENSAJES_GYMBROT via subquery de sesiones ───────
+    private void eliminarMensajesPorCliente(String idCliente) {
+        String sql = "DELETE FROM MENSAJES_GYMBROT WHERE id_sesion IN " +
+                "(SELECT id_sesion FROM SESIONES_GYMBROT WHERE id_cliente = ?)";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int filas = ps.executeUpdate();
+            LOGGER.info("[eliminarMensajesPorCliente] filas=" + filas);
+        } catch (SQLException e) {
+            LOGGER.warning("[eliminarMensajesPorCliente] error: " + e.getMessage());
+        }
     }
 
     // ── UTILIDAD: DELETE genérico para tablas sin DAO dedicado ───────────
