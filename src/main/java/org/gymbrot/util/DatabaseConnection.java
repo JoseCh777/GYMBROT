@@ -10,36 +10,23 @@ public class DatabaseConnection {
     private static final String USER     = "gymbrot";
     private static final String PASSWORD = "gymbrot123";
 
-    private static Connection instance = null;
-    private static boolean conexionReportada = false;
-
     private DatabaseConnection() {}
 
+    // Cada llamada devuelve una conexión nueva e independiente.
+    // El llamador la cierra con try-with-resources → autoCommit=true por defecto.
     public static Connection getInstance() throws SQLException {
         try {
-            if (instance == null || instance.isClosed()) {
-                Class.forName("oracle.jdbc.OracleDriver");
-                instance = DriverManager.getConnection(URL, USER, PASSWORD);
-                if (!conexionReportada) {
-                    conexionReportada = true;
-                    System.out.println("Conexión exitosa a GYMBROT DB");
-                }
-            }
+            Class.forName("oracle.jdbc.OracleDriver");
+            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            conn.setAutoCommit(true); // ← CLAVE: cada operación se persiste sola
+            return conn;
         } catch (ClassNotFoundException e) {
             throw new SQLException("Driver Oracle no encontrado: " + e.getMessage(), e);
         }
-        return instance;
     }
 
+    // Mantenemos el método por compatibilidad pero ya no hace falta llamarlo
     public static void cerrarConexion() {
-        try {
-            if (instance != null && !instance.isClosed()) {
-                instance.close();
-                instance = null;
-                System.out.println("Conexión cerrada.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al cerrar: " + e.getMessage());
-        }
+        // Las conexiones se cierran solas con try-with-resources en cada DAO
     }
 }

@@ -233,24 +233,20 @@ public class CitaService {
         return true;
     }
 
-    // ── CANCELAR CITA ─────────────────────────────────────────────────────
     public boolean cancelarCita(int idCita) {
-        if (idCita <= 0) {
-            System.err.println("✗ ID de cita inválido.");
-            return false;
-        }
+        if (idCita <= 0) return false;
+
+        System.out.println("[cancelarCita] Buscando cita id=" + idCita);
         Cita cita = citaDAO.buscarPorId(idCita);
-        if (cita == null) {
-            System.err.println("✗ No se encontró la cita con ID: " + idCita);
-            return false;
-        }
-        if (!cita.getEstado().equals("PENDIENTE")) {
-            System.err.println("✗ Solo se pueden cancelar citas en estado PENDIENTE.");
-            return false;
-        }
-        cita.setEstado("CANCELADA");
+        System.out.println("[cancelarCita] encontrada=" + (cita != null));
+
+        if (cita == null) return false;
+
+        System.out.println("[cancelarCita] estado=" + cita.getEstado());
+        if (!cita.getEstado().equals("PENDIENTE")) return false;
+
         boolean resultado = citaDAO.actualizarEstado(idCita, "CANCELADA");
-        if (resultado) System.out.println("✓ Cita cancelada exitosamente.");
+        System.out.println("[cancelarCita] resultado=" + resultado);
         return resultado;
     }
 

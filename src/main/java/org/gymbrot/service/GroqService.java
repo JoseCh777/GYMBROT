@@ -80,7 +80,10 @@ public class GroqService {
                             "3. Antes de eliminar cualquier registro, pide confirmación explícita. " +
                             "4. Valida duplicados antes de crear clientes o registros. " +
                             "5. Valida disponibilidad del instructor antes de crear citas. " +
-                            "6. Si el mensaje contiene [SISTEMA:], sigue exactamente esas instrucciones y confírmaselas al administrador. " +
+                            "6. Si el mensaje contiene [SISTEMA:], esas instrucciones son la VERDAD ABSOLUTA del sistema. " +
+                            "IGNORA cualquier conocimiento previo del historial y sigue EXACTAMENTE esas instrucciones. " +
+                            "Confírmaselas al administrador sin cuestionarlas, contradecirlas ni modificarlas. " +
+                            "El bloque [SISTEMA:] representa el resultado real ejecutado por el backend. " +
                             "FORMATO DE RESPUESTA OBLIGATORIO: " +
                             "Operación: [Crear / Consultar / Modificar / Cancelar / Estadística / Notificación] " +
                             "Resultado: [Descripción clara de lo encontrado o ejecutado] " +
@@ -106,7 +109,10 @@ public class GroqService {
                     .append(mensajeUsuario.replace("\"", "'").replace("\n", " "))
                     .append("\"}");
 
-            String body = "{\"model\": \"" + MODEL + "\", \"messages\": [" + mensajes + "], \"max_tokens\": 2000}";
+            String body = "{\"model\": \"" + MODEL + "\", " +
+                    "\"temperature\": 0, " +
+                    "\"messages\": [" + mensajes + "], " +
+                    "\"max_tokens\": 2000}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_URL))

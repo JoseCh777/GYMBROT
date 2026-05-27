@@ -1,5 +1,4 @@
 package org.gymbrot.dao;
-
 import org.gymbrot.model.Cita;
 import org.gymbrot.util.DatabaseConnection;
 
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CitaDAO {
-
     private Connection getConexion() throws SQLException {
         return DatabaseConnection.getInstance();
     }
@@ -29,8 +27,7 @@ public class CitaDAO {
             ps.setString(1, c.getIdInstructor());
             ps.setString(2, c.getIdCliente());
             ps.setDate(3, Date.valueOf(c.getFecha()));
-            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
-            ps.setTimestamp(4, Timestamp.valueOf(fechaHora));
+            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.of(c.getFecha(), c.getHora())));
             ps.setString(5, c.getTipoCita());
             ps.setString(6, c.getEstado());
             ps.setString(7, c.getNotas());
@@ -56,8 +53,7 @@ public class CitaDAO {
             ps.setString(1, c.getIdInstructor());
             ps.setString(2, c.getIdCliente());
             ps.setDate(3, Date.valueOf(c.getFecha()));
-            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
-            ps.setTimestamp(4, Timestamp.valueOf(fechaHora));
+            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.of(c.getFecha(), c.getHora())));
             ps.setString(5, c.getTipoCita());
             ps.setString(6, c.getEstado());
             ps.setString(7, c.getNotas());
@@ -73,9 +69,28 @@ public class CitaDAO {
         return -1;
     }
 
-    // ── ACTUALIZAR SOLO ESTADO (para cancelar/completar sin tocar hora) ───
-    // citaDAO.actualizar() reconstruye el Timestamp de hora y puede fallar en
-    // Oracle si la zona horaria difiere. Este método hace solo UPDATE estado.
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
+    public Cita buscarPorId(int id) {
+        String sql = """
+            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
+                   tipo_cita, estado, notas
+            FROM CITAS WHERE id_cita = ?
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapearCita(rs);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar cita: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // ── ACTUALIZAR SOLO ESTADO ────────────────────────────────────────────
     public boolean actualizarEstado(int idCita, String nuevoEstado) {
         String sql = "UPDATE CITAS SET estado = ? WHERE id_cita = ?";
         try (Connection conn = getConexion();
@@ -107,8 +122,7 @@ public class CitaDAO {
 
             ps.setString(1, c.getIdInstructor());
             ps.setDate(2, Date.valueOf(c.getFecha()));
-            LocalDateTime fechaHora = LocalDateTime.of(c.getFecha(), c.getHora());
-            ps.setTimestamp(3, Timestamp.valueOf(fechaHora));
+            ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.of(c.getFecha(), c.getHora())));
             ps.setString(4, c.getTipoCita());
             ps.setString(5, c.getEstado());
             ps.setString(6, c.getNotas());
@@ -137,7 +151,7 @@ public class CitaDAO {
         }
     }
 
-    // ── ELIMINAR TODAS LAS CITAS DE UN CLIENTE ──────────────────────────────
+    // ── ELIMINAR POR CLIENTE ──────────────────────────────────────────────
     public boolean eliminarPorCliente(String idCliente) {
         String sql = "DELETE FROM CITAS WHERE id_cliente = ?";
         try (Connection conn = getConexion();
@@ -152,27 +166,6 @@ public class CitaDAO {
             System.err.println("Error al eliminar citas del cliente: " + e.getMessage());
             return false;
         }
-    }
-
-    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
-    public Cita buscarPorId(int id) {
-        String sql = """
-            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
-                   tipo_cita, estado, notas
-            FROM CITAS WHERE id_cita = ?
-            """;
-        try (Connection conn = getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapearCita(rs);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al buscar cita: " + e.getMessage());
-        }
-        return null;
     }
 
     // ── LISTAR POR CLIENTE ────────────────────────────────────────────────

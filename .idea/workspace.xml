@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/ClienteDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/GroqService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/GroqService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,8 +125,10 @@
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;Application.PruebaChatbot.executor&quot;: &quot;Run&quot;,
     &quot;Application.main.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.GYMBROT [javafx:run].executor&quot;: &quot;Run&quot;,
     &quot;Maven.GYMBROT [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [package].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -502,7 +506,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779855581994</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779914018938</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1779914018938</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -520,7 +532,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;feat: agregar efectos en dashvoard&quot;" />
     <MESSAGE value="&quot;feat: Quitar boton de configuracion&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructor.fxml&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;" />
@@ -545,7 +556,8 @@
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: renovacion de membresia y mejoras en notificaciones&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
