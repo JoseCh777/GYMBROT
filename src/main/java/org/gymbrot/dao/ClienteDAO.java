@@ -22,7 +22,13 @@ public class ClienteDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, cliente.getNumeroIdentificacion());
-            pstmt.setString(2, cliente.getDireccion());
+
+            // CORRECCIÓN: manejar null en dirección
+            if (cliente.getDireccion() != null && !cliente.getDireccion().isEmpty()) {
+                pstmt.setString(2, cliente.getDireccion());
+            } else {
+                pstmt.setNull(2, Types.VARCHAR);
+            }
 
             // CORRECCIÓN: manejar null en fecha_nacimiento
             if (cliente.getFechaNacimiento() != null) {
@@ -54,7 +60,12 @@ public class ClienteDAO {
         try (Connection conn = getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, cliente.getDireccion());
+            // CORRECCIÓN: manejar null en dirección
+            if (cliente.getDireccion() != null) {
+                pstmt.setString(1, cliente.getDireccion());
+            } else {
+                pstmt.setNull(1, Types.VARCHAR);
+            }
 
             // CORRECCIÓN: manejar null en fecha_nacimiento
             if (cliente.getFechaNacimiento() != null) {

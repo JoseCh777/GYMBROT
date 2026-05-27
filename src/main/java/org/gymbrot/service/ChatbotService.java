@@ -4,6 +4,7 @@ import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
 
 import java.sql.Connection;
+import org.gymbrot.util.DatabaseConnection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +37,8 @@ public class ChatbotService {
     private final MembresiaDAO           membresiaDAO    = new MembresiaDAO();
     private final HistorialMembresiaDAO  historialDAO    = new HistorialMembresiaDAO();
     private final RegistroIngresoDAO     ingresoDAO      = new RegistroIngresoDAO();
+    private final RutinaDAO              rutinaDAO       = new RutinaDAO();
+    private final NotificacionDAO        notificacionDAO = new NotificacionDAO();
 
     public SesionGymbrot iniciarSesion(String idAdmin) {
         SesionGymbrot sesion = new SesionGymbrot();
@@ -351,10 +354,10 @@ public class ChatbotService {
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido agendada exitosamente.</p>" +
                 "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + instructor + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fecha + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + hora + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCita + "</td></tr>" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + instructor + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong>NonNuller匹配<td style='padding: 8px;'>" + fecha + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong>NonNuller匹配<td style='padding: 8px;'>" + hora + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idCita + "NonNuller匹配" +
                 "</table>" +
                 "<p>Recuerda llegar 10 minutos antes.</p>" +
                 "<p>Te esperamos en GYMBROT.</p></div>" +
@@ -371,11 +374,11 @@ public class ChatbotService {
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido cancelada exitosamente.</p>" +
                 "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>" + instructor + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong></td><td style='padding: 8px;'>" + fecha + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong></td><td style='padding: 8px;'>" + hora + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong></td><td style='padding: 8px;'>#" + idCita + "</td></tr>" +
-                "</table>" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong>NonNuller匹配<td style='padding: 8px;'>" + instructor + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Fecha:</strong>NonNuller匹配<td style='padding: 8px;'>" + fecha + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Hora:</strong>NonNuller匹配<td style='padding: 8px;'>" + hora + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de cita:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idCita + "NonNuller匹配" +
+                "</tr>" +
                 "<p>Contactanos para reagendar una nueva cita.</p></div>" +
                 "<div style='background: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px;'>" +
                 "<p style='margin: 0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>";
@@ -406,11 +409,11 @@ public class ChatbotService {
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu instructor <strong>Pedro</strong> ha creado una nueva rutina personalizada para ti.</p>" +
                 "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Objetivo:</strong></td><td style='padding: 8px;'>" + objetivo + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Dias de entrenamiento:</strong></td><td style='padding: 8px;'>" + diasSemana + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong></td><td style='padding: 8px;'>Pedro</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de rutina:</strong></td><td style='padding: 8px;'>#" + idRutina + "</td></tr>" +
-                "</table>" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Objetivo:</strong></td><td style='padding: 8px;'>" + objetivo + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Dias de entrenamiento:</strong>NonNuller匹配<td style='padding: 8px;'>" + diasSemana + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Instructor:</strong>NonNuller匹配<td style='padding: 8px;'>PedroNonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>ID de rutina:</strong>NonNuller匹配<td style='padding: 8px;'>#" + idRutina + "NonNuller匹配" +
+                "</td>" +
                 "<div style='background: #f4f4f4; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; margin: 15px 0;'>" +
                 rutinaGenerada.replace("\n", "<br>") + "</div>" +
                 "<p>¡A entrenar! Recuerda mantener una buena hidratacion y alimentacion.</p>" +
@@ -442,9 +445,9 @@ public class ChatbotService {
                 "<p>Tu cuenta ha sido creada exitosamente en el sistema GYMBROT.</p>" +
                 "<h3 style='margin: 20px 0 10px;'>Tus credenciales de acceso:</h3>" +
                 "<table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Usuario:</strong></td><td style='padding: 8px;'>" + correo + "</td></tr>" +
-                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Contrasena temporal:</strong></td><td style='padding: 8px;'><strong>" + id + "</strong></td></tr>" +
-                "</table>" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Usuario:</strong></td><td style='padding: 8px;'>" + correo + "NonNuller匹配" +
+                "<tr><td style='padding: 8px; background: #f4f4f4;'><strong>Contrasena temporal:</strong>NonNuller匹配<td style='padding: 8px;'><strong>" + id + "</strong>NonNuller匹配" +
+                "</td>" +
                 "<p><strong>Recomendacion:</strong> Cambia tu contrasena al ingresar por primera vez.</p>" +
                 "<p>Para agendar citas, consultar horarios o resolver dudas, comunicate con nuestro equipo de atencion al cliente.</p>" +
                 "<p>Atentamente,</p><p><strong>GYMBROT Valledupar</strong></p></div>" +
@@ -486,22 +489,47 @@ public class ChatbotService {
         try {
             LOGGER.info("Eliminando cliente ID: " + idCliente);
 
-            boolean citasEliminadas = citaDAO.eliminarPorCliente(idCliente);
-            LOGGER.info("Citas eliminadas: " + citasEliminadas);
+            // ── Paso 1: Eliminar tablas hijas (orden: de más específica a menos) ──
+            // Oracle lanza ORA-02292 si existen registros hijos con FK activa.
 
+            // RUTINA_EJERCICIOS tiene FK hacia RUTINAS (no hacia CLIENTES directo)
+            eliminarRutinaEjerciciosPorCliente(idCliente);
+            rutinaDAO.eliminarPorCliente(idCliente);
+            LOGGER.info("RUTINAS eliminadas para: " + idCliente);
+
+            notificacionDAO.eliminarPorCliente(idCliente);
+            LOGGER.info("NOTIFICACIONES eliminadas para: " + idCliente);
+
+            citaDAO.eliminarPorCliente(idCliente);
+            LOGGER.info("CITAS eliminadas para: " + idCliente);
+
+            // Tablas sin DAO dedicado → SQL directo
+            eliminarPorClienteSQL("PAGOS",               "id_cliente", idCliente);
+            eliminarPorClienteSQL("PROGRESOS",           "id_cliente", idCliente);
+            eliminarPorClienteSQL("REGISTROS_INGRESOS",  "id_cliente", idCliente);
+            eliminarPorClienteSQL("HISTORIAL_MEMBRESIAS","id_cliente", idCliente);
+            eliminarPorClienteSQL("SESIONES_GYMBROT",    "id_cliente", idCliente);
+            LOGGER.info("Tablas secundarias eliminadas para: " + idCliente);
+
+            // ── Paso 2: Eliminar CLIENTES ──────────────────────────────────
             boolean eliminadoCliente = clienteDAO.eliminar(idCliente);
             LOGGER.info("CLIENTES eliminado: " + eliminadoCliente);
+            if (!eliminadoCliente) {
+                return " [SISTEMA: Error al eliminar CLIENTES para ID " + idCliente +
+                        ". Revisa los logs (posible FK no cubierta).]";
+            }
 
+            // ── Paso 3: Eliminar USUARIOS ──────────────────────────────────
             boolean eliminadoUsuario = usuarioDAO.eliminar(idCliente);
             LOGGER.info("USUARIOS eliminado: " + eliminadoUsuario);
-
-            if (eliminadoCliente && eliminadoUsuario) {
-                return " [SISTEMA: Cliente " + nombreCliente + " (ID: " + idCliente +
-                        ", Correo: " + correoClienteEliminar + ") eliminado exitosamente del sistema.]";
-            } else {
-                return " [SISTEMA: Error al eliminar el cliente " + idCliente +
-                        ". Revisa los logs del servidor.]";
+            if (!eliminadoUsuario) {
+                return " [SISTEMA: CLIENTES eliminado pero error al eliminar USUARIOS para ID " +
+                        idCliente + ". Revisa los logs.]";
             }
+
+            return " [SISTEMA: Cliente " + nombreCliente + " (ID: " + idCliente +
+                    ", Correo: " + correoClienteEliminar + ") eliminado exitosamente. " +
+                    "Se eliminaron citas, rutinas, notificaciones y todos sus registros.]";
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al eliminar cliente: " + e.getMessage(), e);
@@ -810,7 +838,7 @@ public class ChatbotService {
 
         Cliente cliente = new Cliente();
         cliente.setNumeroIdentificacion(id);
-        cliente.setDireccion(direccion != null ? direccion : "");
+        cliente.setDireccion(direccion);
         cliente.setFechaNacimiento(null);
         cliente.setHuellaDactilar(null);
 
@@ -1015,9 +1043,13 @@ public class ChatbotService {
     }
 
     private String extraerDireccionDeTexto(String texto) {
-        Pattern p = Pattern.compile("(?:direcci[oó]n|dir)[:\\s]+([\\p{L}\\d\\s#\\-.]+?)(?:,|\\.|$)",
-                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
-        Matcher m = p.matcher(texto);
+        // Captura todo lo que viene después de "dirección:" / "direccion:" / "dir:"
+        // hasta encontrar una coma, punto final, salto de línea o fin del string.
+        // El grupo captura letras, números, espacios, #, -, . (formato Calle 15 #10-20)
+        Pattern p = Pattern.compile(
+                "(?i)(?:direcci[oó]n|direcci[oó]n|dir)\\s*[:\\s]\\s*([A-Za-z0-9áéíóúÁÉÍÓÚñÑ\\s#\\-\\.]+?)(?:\\s*,|\\s*\\.|\\s*\\n|\\s*$)"
+        );
+        Matcher m = p.matcher(texto.trim());
         if (m.find()) {
             String val = m.group(1).trim();
             return val.isEmpty() ? null : val;
@@ -1197,6 +1229,33 @@ public class ChatbotService {
 
     public void cerrarSesion(int idSesion) {
         sesionDAO.cerrarSesion(idSesion);
+    }
+
+    // ── UTILIDAD: DELETE genérico para tablas sin DAO dedicado ───────────
+    private void eliminarPorClienteSQL(String tabla, String columna, String idCliente) {
+        String sql = "DELETE FROM " + tabla + " WHERE " + columna + " = ?";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int filas = ps.executeUpdate();
+            LOGGER.info("[eliminarPorClienteSQL] " + tabla + " filas=" + filas);
+        } catch (SQLException e) {
+            LOGGER.warning("[eliminarPorClienteSQL] " + tabla + ": " + e.getMessage());
+        }
+    }
+
+    // ── UTILIDAD: Elimina RUTINA_EJERCICIOS de las rutinas del cliente ────
+    private void eliminarRutinaEjerciciosPorCliente(String idCliente) {
+        String sql = "DELETE FROM RUTINA_EJERCICIOS WHERE id_rutina IN " +
+                "(SELECT id_rutina FROM RUTINAS WHERE id_cliente = ?)";
+        try (Connection conn = DatabaseConnection.getInstance();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int filas = ps.executeUpdate();
+            LOGGER.info("[eliminarRutinaEjerciciosPorCliente] filas=" + filas);
+        } catch (SQLException e) {
+            LOGGER.warning("[eliminarRutinaEjerciciosPorCliente] error: " + e.getMessage());
+        }
     }
 
     public List<MensajeGymbrot> obtenerHistorial(int idSesion) {

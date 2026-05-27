@@ -105,6 +105,20 @@ public class RutinaDAO {
         }
         return lista;
     }
+    // ── ELIMINAR TODAS LAS RUTINAS DE UN CLIENTE ──────────────────────────────
+    public boolean eliminarPorCliente(String idCliente) {
+        String sql = "DELETE FROM RUTINAS WHERE id_cliente = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int filas = ps.executeUpdate();
+            System.out.println("Rutinas eliminadas del cliente " + idCliente + ": " + filas);
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar rutinas del cliente: " + e.getMessage());
+            return false;
+        }
+    }
 
     // ── BUSCAR POR INSTRUCTOR ─────────────────────────────────────────────
     public List<Rutina> buscarPorInstructor(String idInstructor) {

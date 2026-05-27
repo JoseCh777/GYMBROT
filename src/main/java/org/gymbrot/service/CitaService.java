@@ -249,7 +249,7 @@ public class CitaService {
             return false;
         }
         cita.setEstado("CANCELADA");
-        boolean resultado = citaDAO.actualizar(cita);
+        boolean resultado = citaDAO.actualizarEstado(idCita, "CANCELADA");
         if (resultado) System.out.println("✓ Cita cancelada exitosamente.");
         return resultado;
     }
@@ -270,7 +270,7 @@ public class CitaService {
             return false;
         }
         cita.setEstado("COMPLETADA");
-        boolean resultado = citaDAO.actualizar(cita);
+        boolean resultado = citaDAO.actualizarEstado(idCita, "COMPLETADA");
         if (resultado) System.out.println("✓ Cita completada exitosamente.");
         return resultado;
     }

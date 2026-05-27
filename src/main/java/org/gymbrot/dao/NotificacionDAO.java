@@ -55,6 +55,7 @@ public class NotificacionDAO {
         }
         return lista;
     }
+
     // ── MARCAR ENVIADA ────────────────────────────────────────────────────
     public boolean marcarEnviada(int idNotificacion) {
         String sql = """
@@ -86,6 +87,20 @@ public class NotificacionDAO {
             System.err.println("Error al listar notificaciones pendientes: " + e.getMessage());
         }
         return lista;
+    }
+    // ── ELIMINAR TODAS LAS NOTIFICACIONES DE UN CLIENTE ────────────────────────
+    public boolean eliminarPorCliente(String idCliente) {
+        String sql = "DELETE FROM NOTIFICACIONES WHERE id_cliente = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCliente);
+            int filas = ps.executeUpdate();
+            System.out.println("Notificaciones eliminadas del cliente " + idCliente + ": " + filas);
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar notificaciones del cliente: " + e.getMessage());
+            return false;
+        }
     }
     // ── MAPEAR ResultSet → Notificacion ───────────────────────────────────
     private Notificacion mapear(ResultSet rs) throws SQLException {

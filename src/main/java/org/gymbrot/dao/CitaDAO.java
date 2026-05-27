@@ -73,6 +73,27 @@ public class CitaDAO {
         return -1;
     }
 
+    // ── ACTUALIZAR SOLO ESTADO (para cancelar/completar sin tocar hora) ───
+    // citaDAO.actualizar() reconstruye el Timestamp de hora y puede fallar en
+    // Oracle si la zona horaria difiere. Este método hace solo UPDATE estado.
+    public boolean actualizarEstado(int idCita, String nuevoEstado) {
+        String sql = "UPDATE CITAS SET estado = ? WHERE id_cita = ?";
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, idCita);
+            boolean ok = ps.executeUpdate() > 0;
+            System.out.println("[CitaDAO.actualizarEstado] id=" + idCita
+                    + " estado=" + nuevoEstado + " resultado=" + ok);
+            return ok;
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar estado de cita: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ── ACTUALIZAR ────────────────────────────────────────────────────────
     public boolean actualizar(Cita c) {
         String sql = """
@@ -116,17 +137,19 @@ public class CitaDAO {
         }
     }
 
-    // ── ELIMINAR POR CLIENTE ──────────────────────────────────────────────
+    // ── ELIMINAR TODAS LAS CITAS DE UN CLIENTE ──────────────────────────────
     public boolean eliminarPorCliente(String idCliente) {
         String sql = "DELETE FROM CITAS WHERE id_cliente = ?";
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, idCliente);
-            return ps.executeUpdate() > 0;
+            int filas = ps.executeUpdate();
+            System.out.println("Citas eliminadas del cliente " + idCliente + ": " + filas);
+            return true;
 
         } catch (SQLException e) {
-            System.err.println("Error al eliminar citas por cliente: " + e.getMessage());
+            System.err.println("Error al eliminar citas del cliente: " + e.getMessage());
             return false;
         }
     }
