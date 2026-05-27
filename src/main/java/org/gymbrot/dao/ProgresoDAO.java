@@ -44,7 +44,7 @@ public class ProgresoDAO {
 
     // ── DESACTIVAR ────────────────────────────────────────────────────────
     public boolean desactivar(int id) {
-        String sql = "UPDATE PROGRESOS SET estado = 'INACTIVO' WHERE id_progreso = ?";
+        String sql = "DELETE FROM PROGRESOS WHERE id_progreso = ?";
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -61,7 +61,7 @@ public class ProgresoDAO {
         String sql = """
             SELECT id_progreso, id_cliente, fecha_registro, peso, altura,
                    imc, porcentaje_grasa, masa_muscular, objetivo, observaciones
-            FROM PROGRESOS WHERE id_cliente = ? AND estado = 'ACTIVO' ORDER BY fecha_registro DESC
+            FROM PROGRESOS WHERE id_cliente = ? ORDER BY fecha_registro DESC
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {

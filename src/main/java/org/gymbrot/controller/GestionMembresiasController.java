@@ -35,6 +35,7 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Button navMembresias;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
+    @FXML private Button navCitas;
 
     @FXML private Button btnLogout;
 
@@ -162,6 +163,9 @@ public class GestionMembresiasController implements Initializable {
 
     @FXML
     private void handleNavProgreso(ActionEvent event) { navegarA("/fxml/ProgresoFisico.fxml", event); }
+
+    @FXML
+    private void handleNavCitas(ActionEvent event) { navegarA("/fxml/GestionCitas.fxml", event); }
 
     @FXML
     private void handleLogout(ActionEvent event) {
@@ -436,7 +440,7 @@ public class GestionMembresiasController implements Initializable {
     // ══ Animaciones de navegacion ═════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navProgreso, navAI, btnLogout};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navProgreso, navAI, navCitas, btnLogout};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navMembresias);
     }
@@ -595,7 +599,7 @@ public class GestionMembresiasController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI, btnLogout};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI, btnLogout};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(

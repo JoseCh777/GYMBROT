@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 
 <!-- Overlay -->
@@ -70,6 +71,9 @@
                         <StackPane maxWidth="160" prefHeight="160" prefWidth="160">
                             <StackPane prefHeight="160" prefWidth="160" style="-fx-background-color: #282a2d; -fx-background-radius: 80;                                               -fx-border-color: #D4FF00; -fx-border-width: 4;                                               -fx-border-radius: 80;                                               -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.2), 20, 0, 0, 0);">
                                 <ImageView fx:id="imgFotoPerfil" fitHeight="148" fitWidth="148" preserveRatio="false">
+                                    <clip>
+                                        <Circle centerX="74" centerY="74" radius="74" />
+                                    </clip>
                                     <StackPane.margin><Insets bottom="6" left="6" right="6" top="6" /></StackPane.margin>
                                 </ImageView>
                                 <!-- Placeholder iniciales cuando no hay foto -->

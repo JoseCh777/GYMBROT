@@ -6,6 +6,7 @@ import org.gymbrot.util.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class InstructorDAO {
 
@@ -127,6 +128,10 @@ public class InstructorDAO {
         }
 
         return null;
+    }
+
+    public Optional<Instructor> buscarPorIdString(String numeroIdentificacion) {
+        return Optional.ofNullable(buscarPorId(numeroIdentificacion));
     }
 
     public List<Instructor> listarTodos() {

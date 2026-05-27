@@ -57,6 +57,7 @@ public class GestionClientesController implements Initializable {
     @FXML private Button navMembresias;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
+    @FXML private Button navCitas;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -173,7 +174,6 @@ public class GestionClientesController implements Initializable {
             if ("ACTIVO".equalsIgnoreCase(c.getEstado())) totalActivos++;
         }
         lblTotalClientes.setText(String.valueOf(totalActivos));
-        lblTendenciaClientes.setText(clientes.size() + " registrados");
 
         java.time.LocalDate hoy = java.time.LocalDate.now();
         List<RegistroIngreso> ingresosHoy = registroIngresoDAO.listarPorFecha(hoy);
@@ -181,7 +181,6 @@ public class GestionClientesController implements Initializable {
         lblSesionesActivas.setText(String.valueOf(activosAhora));
 
         lblTasaIngreso.setText(ingresosHoy.size() + " hoy");
-        lblTasaTendencia.setText("—");
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -562,7 +561,7 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navClientes);
     }
@@ -621,7 +620,7 @@ public class GestionClientesController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -801,6 +800,7 @@ public class GestionClientesController implements Initializable {
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
 
     @FXML
     private void handleLogout() {

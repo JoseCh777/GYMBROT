@@ -16,6 +16,7 @@ import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -88,6 +89,9 @@ public class NuevaRutinaController implements Initializable {
         configurarAnimaciones();
         dpInicio.setValue(LocalDate.now());
         dpFin.setValue(LocalDate.now().plusMonths(1));
+        ValidacionUtil.soloNumeros(txtSeries);
+        ValidacionUtil.soloNumeros(txtReps);
+        ValidacionUtil.soloDecimales(txtCarga);
     }
 
     private void configurarComboBoxes() {

@@ -21,7 +21,9 @@ import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Especialidad;
 import org.gymbrot.model.Instructor;
+import org.gymbrot.model.Usuario;
 import org.gymbrot.service.InstructorService;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class NuevoInstructorController implements Initializable {
     @FXML private Button navMembresias;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
+    @FXML private Button navCitas;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -123,7 +126,7 @@ public class NuevoInstructorController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI};
+        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navInstructores);
     }
@@ -175,7 +178,7 @@ public class NuevoInstructorController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -310,6 +313,11 @@ public class NuevoInstructorController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarValidacionEnVivo() {
+        ValidacionUtil.soloNumeros(txtNumeroId);
+        ValidacionUtil.soloLetras(txtNombres);
+        ValidacionUtil.soloLetras(txtApellidos);
+        ValidacionUtil.soloNumeros(txtTelefono);
+
         txtNumeroId.textProperty().addListener((obs, old, val) -> {
             if (val.isBlank()) {
                 txtNumeroId.setStyle(FIELD_NORMAL);
@@ -474,8 +482,18 @@ public class NuevoInstructorController implements Initializable {
             instructorEditando.setDisponibilidad(obtenerDiasSeleccionados() + "|" + (cmbHorario.getValue() != null ? cmbHorario.getValue().replaceAll("\\s*\\(.*\\)", "") : ""));
             instructorEditando.setFechaContratacion(dateFechaContratacion.getValue());
             instructorEditando.setTipoIdentificacion("CC");
+            if (archivoFotoSeleccionado != null) {
+                instructorEditando.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+            }
 
             boolean guardado = instructorDAO.actualizar(instructorEditando);
+            if (guardado && archivoFotoSeleccionado != null) {
+                Usuario usuario = usuarioDAO.buscarPorId(instructorEditando.getNumeroIdentificacion());
+                if (usuario != null) {
+                    usuario.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+                    usuarioDAO.actualizar(usuario);
+                }
+            }
             if (guardado) {
                 btnGuardar.setText("GUARDADO \u2713");
                 btnGuardar.setStyle(
@@ -491,13 +509,21 @@ public class NuevoInstructorController implements Initializable {
                 mostrarError("Error", "No se pudo actualizar el instructor.");
             }
         } else {
+            String rutaFoto = archivoFotoSeleccionado != null ? archivoFotoSeleccionado.getAbsolutePath() : null;
             Instructor instructor = new Instructor(
                     id, "CC", nombre, apellidos, telefono, correo,
-                    "Inst2024*", null, "activo", LocalDate.now(), "instructor",
+                    "Inst2024*", rutaFoto, "activo", LocalDate.now(), "instructor",
                     idEspecialidad, obtenerDiasSeleccionados() + "|" + (cmbHorario.getValue() != null ? cmbHorario.getValue().replaceAll("\\s*\\(.*\\)", "") : ""), dateFechaContratacion.getValue()
             );
 
             boolean guardado = new InstructorService().registrarInstructor(instructor, instructor);
+            if (guardado && rutaFoto != null) {
+                Usuario usuario = usuarioDAO.buscarPorId(id);
+                if (usuario != null) {
+                    usuario.setFotoUrl(rutaFoto);
+                    usuarioDAO.actualizar(usuario);
+                }
+            }
             if (guardado) {
                 btnGuardar.setText("GUARDADO \u2713");
                 btnGuardar.setStyle(
@@ -610,6 +636,7 @@ public class NuevoInstructorController implements Initializable {
     @FXML private void handleNavInstructores() {  }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
 
     @FXML

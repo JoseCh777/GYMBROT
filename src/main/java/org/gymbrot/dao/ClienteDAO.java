@@ -5,16 +5,16 @@ import org.gymbrot.util.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClienteDAO {
 
-    private Connection conn;
-
-    public ClienteDAO() {
+    private Connection getConexion() {
         try {
-            this.conn = DatabaseConnection.getInstance();
+            return DatabaseConnection.getInstance();
         } catch (SQLException e) {
             System.err.println("Error conexión: " + e.getMessage());
+            return null;
         }
     }
 
@@ -22,7 +22,7 @@ public class ClienteDAO {
         String sql = "INSERT INTO CLIENTES (numero_identificacion, direccion, " +
                 "fecha_nacimiento, huella_dactilar) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, cliente.getNumeroIdentificacion());
             pstmt.setString(2, cliente.getDireccion());
             pstmt.setDate(3, Date.valueOf(cliente.getFechaNacimiento()));
@@ -46,7 +46,7 @@ public class ClienteDAO {
         String sql = "UPDATE CLIENTES SET direccion=?, fecha_nacimiento=?, " +
                 "huella_dactilar=? WHERE numero_identificacion=?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, cliente.getDireccion());
             pstmt.setDate(2, Date.valueOf(cliente.getFechaNacimiento()));
 
@@ -68,7 +68,7 @@ public class ClienteDAO {
     public boolean desactivar(String numeroIdentificacion) {
         String sql = "UPDATE USUARIOS SET estado = 'INACTIVO' WHERE numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, numeroIdentificacion);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -80,7 +80,7 @@ public class ClienteDAO {
     public boolean eliminar(String numeroIdentificacion) {
         String sql = "DELETE FROM CLIENTES WHERE numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, numeroIdentificacion);
             return pstmt.executeUpdate() > 0;
 
@@ -98,7 +98,7 @@ public class ClienteDAO {
                 "INNER JOIN USUARIOS u ON c.numero_identificacion = u.numero_identificacion " +
                 "WHERE c.numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, numeroIdentificacion);
             ResultSet rs = pstmt.executeQuery();
 
@@ -109,6 +109,10 @@ public class ClienteDAO {
             System.err.println("Error buscar cliente: " + e.getMessage());
         }
         return null;
+    }
+
+    public Optional<Cliente> buscarPorIdString(String numeroIdentificacion) {
+        return Optional.ofNullable(buscarPorId(numeroIdentificacion));
     }
 
     private Cliente mapearCliente(ResultSet rs) throws SQLException {
@@ -156,7 +160,7 @@ public class ClienteDAO {
                 "WHERE u.estado = 'ACTIVO' " +
                 "ORDER BY u.fecha_registro DESC";
 
-        try (Statement stmt = conn.createStatement();
+        try (Statement stmt = getConexion().createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -179,7 +183,7 @@ public class ClienteDAO {
                 "WHERE u.estado = ? " +
                 "ORDER BY u.fecha_registro DESC";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, estado);
             ResultSet rs = pstmt.executeQuery();
 
@@ -202,7 +206,7 @@ public class ClienteDAO {
                 "WHERE c.huella_dactilar IS NOT NULL " +
                 "AND LOWER(u.estado) = 'activo'";
 
-        try (Statement stmt = conn.createStatement();
+        try (Statement stmt = getConexion().createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {

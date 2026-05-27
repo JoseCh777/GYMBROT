@@ -28,7 +28,7 @@ public class NotificacionService {
         notif.setContenido(plantilla.getCuerpoHtml());
         notif.setEstadoEnvio("PENDIENTE");
         notif.setFechaEnvio(LocalDateTime.now());
-        notif.setOrigen("sistema");
+        notif.setOrigen("SISTEMA");
         notifDAO.insertar(notif);
 
         boolean enviado = false;
@@ -64,7 +64,7 @@ public class NotificacionService {
         List<Notificacion> pendientes = notifDAO.listarPendientes();
         for (Notificacion n : pendientes) {
             boolean enviado = false;
-            if (n.getTipo().equals("email")) {
+            if (n.getTipo().equals("EMAIL")) {
                 enviado = emailService.enviarCorreo(
                         n.getIdCliente(), n.getAsunto(), n.getContenido());
             } else if (n.getTipo().equals("SMS")) {

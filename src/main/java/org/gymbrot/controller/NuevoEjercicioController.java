@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.gymbrot.dao.EjercicioDAO;
 import org.gymbrot.model.Ejercicio;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
 import java.util.List;
@@ -33,11 +34,14 @@ public class NuevoEjercicioController implements Initializable {
     private final EjercicioDAO ejercicioDAO = new EjercicioDAO();
     private StackPane wrapperStack;
     private Parent overlayRoot;
+    private boolean modoEdicion = false;
+    private int idEjercicio;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarComboBoxes();
         configurarAnimaciones();
+        ValidacionUtil.soloLetrasYNumeros(txtNombre);
     }
 
     private void configurarComboBoxes() {
@@ -87,6 +91,16 @@ public class NuevoEjercicioController implements Initializable {
         this.overlayRoot = overlayRoot;
     }
 
+    public void setEjercicio(Ejercicio ejercicio) {
+        this.modoEdicion = true;
+        this.idEjercicio = ejercicio.getIdEjercicio();
+        txtNombre.setText(ejercicio.getNombre());
+        cmbGrupoMuscular.setValue(ejercicio.getGrupoMuscular());
+        cmbNivel.setValue(ejercicio.getNivel());
+        txtDescripcion.setText(ejercicio.getDescripcion());
+        txtRecursoUrl.setText(ejercicio.getRecursoUrl());
+    }
+
     @FXML
     private void handleGuardar() {
         if (txtNombre.getText() == null || txtNombre.getText().trim().isEmpty()) {
@@ -109,12 +123,21 @@ public class NuevoEjercicioController implements Initializable {
         e.setDescripcion(txtDescripcion.getText() != null ? txtDescripcion.getText().trim() : null);
         e.setRecursoUrl(txtRecursoUrl.getText() != null ? txtRecursoUrl.getText().trim() : null);
 
-        boolean guardado = ejercicioDAO.insertar(e);
+        boolean guardado;
+        if (modoEdicion) {
+            e.setIdEjercicio(idEjercicio);
+            guardado = ejercicioDAO.actualizar(e);
+        } else {
+            guardado = ejercicioDAO.insertar(e);
+        }
         if (guardado) {
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setTitle("Ejercicio Guardado");
             info.setHeaderText(null);
-            info.setContentText("Ejercicio \"" + e.getNombre() + "\" guardado exitosamente.");
+            String msg = modoEdicion
+                ? "Ejercicio \"" + e.getNombre() + "\" actualizado exitosamente."
+                : "Ejercicio \"" + e.getNombre() + "\" guardado exitosamente.";
+            info.setContentText(msg);
             info.showAndWait();
             cerrarOverlay();
         } else {

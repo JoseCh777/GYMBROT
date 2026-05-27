@@ -98,7 +98,7 @@ public class EjercicioService {
     }
 
     public boolean actualizar(Ejercicio ejercicio) {
-        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_EJERCICIO(?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_EJERCICIO(?,?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

@@ -51,6 +51,14 @@
                         </ImageView>
                     </graphic>
                 </Button>
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
                 <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
@@ -113,11 +121,10 @@
                             <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL INSTRUCTORES" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <Label fx:id="lblTotalInstructores" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 40px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
-                        <HBox alignment="CENTER_LEFT" spacing="4">
-                            <Label style="-fx-font-size: 12px; -fx-text-fill: #D4FF00;" text="^" />
-                            <Label fx:id="lblTendenciaInstructores" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="0% vs mes anterior" />
-                        </HBox>
-                    </VBox>
+                            <HBox alignment="CENTER_LEFT" spacing="4">
+                                <Label fx:id="lblTendenciaInstructores" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="0 registrados" />
+                            </HBox>
+                        </VBox>
 
                     <!-- Card: Sesiones Hoy -->
                     <VBox prefHeight="162.0" prefWidth="321.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #D4FF00; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">

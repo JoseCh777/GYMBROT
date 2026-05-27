@@ -22,6 +22,10 @@ public class CitaService {
         this.instructorDAO = new InstructorDAO();
     }
 
+    public List<Cita> listarTodas() {
+        return citaDAO.listarTodas();
+    }
+
     public List<Cita> listarPorCliente(String idCliente) {
         if (idCliente == null || idCliente.trim().isEmpty()) return null;
         return citaDAO.listarPorCliente(idCliente);
@@ -80,6 +84,15 @@ public class CitaService {
 
         } catch (SQLException e) {
             System.err.println("Error en cancelarCita: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean actualizarCita(Cita cita) {
+        try {
+            return citaDAO.actualizar(cita);
+        } catch (Exception e) {
+            System.err.println("Error en actualizarCita: " + e.getMessage());
             return false;
         }
     }

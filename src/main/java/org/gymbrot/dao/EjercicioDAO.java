@@ -73,7 +73,7 @@ public class EjercicioDAO {
 
     // ── DESACTIVAR ────────────────────────────────────────────────────────
     public boolean desactivar(int id) {
-        String sql = "UPDATE EJERCICIOS SET estado = 'INACTIVO' WHERE id_ejercicio = ?";
+        String sql = "DELETE FROM EJERCICIOS WHERE id_ejercicio = ?";
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -107,7 +107,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS WHERE estado = 'ACTIVO' ORDER BY nombre
+            FROM EJERCICIOS ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -148,7 +148,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS WHERE grupo_muscular = ? AND estado = 'ACTIVO' ORDER BY nombre
+            FROM EJERCICIOS WHERE grupo_muscular = ? ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -170,7 +170,7 @@ public class EjercicioDAO {
         String sql = """
             SELECT id_ejercicio, nombre, descripcion, grupo_muscular,
                    series, repeticiones, duracion_minutos, nivel, recurso_url
-            FROM EJERCICIOS WHERE nivel = ? AND estado = 'ACTIVO' ORDER BY nombre
+            FROM EJERCICIOS WHERE nivel = ? ORDER BY nombre
             """;
         try (Connection conn = getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {

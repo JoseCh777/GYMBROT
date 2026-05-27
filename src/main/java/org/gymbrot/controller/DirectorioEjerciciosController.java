@@ -6,15 +6,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.gymbrot.dao.EjercicioDAO;
 import org.gymbrot.model.Ejercicio;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -34,7 +38,7 @@ public class DirectorioEjerciciosController implements Initializable {
     @FXML private TableColumn<EjercicioRow, String> colGrupoMuscular;
     @FXML private TableColumn<EjercicioRow, String> colNivel;
     @FXML private TableColumn<EjercicioRow, String> colDescripcion;
-    @FXML private TableColumn<EjercicioRow, Button> colAcciones;
+    @FXML private TableColumn<EjercicioRow, HBox> colAcciones;
 
     @FXML private Label lblContador;
 
@@ -94,7 +98,7 @@ public class DirectorioEjerciciosController implements Initializable {
         colGrupoMuscular.setCellValueFactory(new PropertyValueFactory<>("grupoMuscular"));
         colNivel.setCellValueFactory(new PropertyValueFactory<>("nivel"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        colAcciones.setCellValueFactory(new PropertyValueFactory<>("btnEliminar"));
+        colAcciones.setCellValueFactory(new PropertyValueFactory<>("accionesBox"));
 
         colNombre.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #e2e2e6;");
         colGrupoMuscular.setStyle("-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #e2e2e6;");
@@ -115,6 +119,7 @@ public class DirectorioEjerciciosController implements Initializable {
             String desc = e.getDescripcion() != null ? e.getDescripcion() : "";
             todosLosEjercicios.add(new EjercicioRow(
                     idEjercicio, e.getNombre(), e.getGrupoMuscular(), nivel, desc,
+                    () -> abrirEditarEjercicio(idEjercicio),
                     () -> {
                         boolean ok = ejercicioDAO.desactivar(idEjercicio);
                         if (ok) {
@@ -228,6 +233,31 @@ public class DirectorioEjerciciosController implements Initializable {
         if (paginaActual < totalPaginas) { paginaActual++; renderizarPagina(); actualizarContador(); }
     }
 
+    private void abrirEditarEjercicio(int idEjercicio) {
+        try {
+            Ejercicio ejercicio = ejercicioDAO.buscarPorId(idEjercicio);
+            if (ejercicio == null) return;
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevoEjercicio.fxml"));
+            Parent overlay = loader.load();
+            NuevoEjercicioController ctrl = loader.getController();
+            ctrl.setEjercicio(ejercicio);
+
+            Scene scene = wrapperStack.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane newWrapper = new StackPane();
+            newWrapper.getChildren().add(rootActual);
+            newWrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(newWrapper, overlay);
+
+            scene.setRoot(newWrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void handleCerrar() {
         cerrarOverlay();
@@ -245,14 +275,25 @@ public class DirectorioEjerciciosController implements Initializable {
         private final SimpleStringProperty grupoMuscular;
         private final SimpleStringProperty nivel;
         private final SimpleStringProperty descripcion;
+        private final Button btnEditar;
         private final Button btnEliminar;
+        private final HBox accionesBox;
 
-        public EjercicioRow(int idEjercicio, String nombre, String grupoMuscular, String nivel, String descripcion, Runnable onEliminar) {
+        public EjercicioRow(int idEjercicio, String nombre, String grupoMuscular, String nivel, String descripcion, Runnable onEditar, Runnable onEliminar) {
             this.idEjercicio = idEjercicio;
             this.nombre = new SimpleStringProperty(nombre);
             this.grupoMuscular = new SimpleStringProperty(grupoMuscular);
             this.nivel = new SimpleStringProperty(nivel);
             this.descripcion = new SimpleStringProperty(descripcion);
+
+            this.btnEditar = new Button("EDITAR");
+            this.btnEditar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
+                    "-fx-border-color: #D4FF00; -fx-border-width: 1; -fx-border-radius: 6;" +
+                    "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                    "-fx-text-fill: #D4FF00; -fx-cursor: hand; -fx-padding: 4 14 4 14;");
+            this.btnEditar.setOnAction(e -> {
+                if (onEditar != null) onEditar.run();
+            });
 
             this.btnEliminar = new Button("ELIMINAR");
             this.btnEliminar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
@@ -262,6 +303,10 @@ public class DirectorioEjerciciosController implements Initializable {
             this.btnEliminar.setOnAction(e -> {
                 if (onEliminar != null) onEliminar.run();
             });
+
+            this.accionesBox = new HBox(6);
+            this.accionesBox.setAlignment(javafx.geometry.Pos.CENTER);
+            this.accionesBox.getChildren().addAll(btnEditar, btnEliminar);
         }
 
         public String getNombre() { return nombre.get(); }
@@ -276,6 +321,6 @@ public class DirectorioEjerciciosController implements Initializable {
         public String getDescripcion() { return descripcion.get(); }
         public SimpleStringProperty descripcionProperty() { return descripcion; }
 
-        public Button getBtnEliminar() { return btnEliminar; }
+        public HBox getAccionesBox() { return accionesBox; }
     }
 }

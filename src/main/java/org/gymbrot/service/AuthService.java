@@ -70,7 +70,7 @@ public class AuthService {
         }
 
         // 3. Verificar estado activo
-        if (!usuario.getEstado().equals("activo")) {
+        if (!usuario.getEstado().equals("ACTIVO")) {
             System.err.println("✗ El usuario está " + usuario.getEstado() + ".");
             return null;
         }

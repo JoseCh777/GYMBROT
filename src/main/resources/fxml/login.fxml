@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<StackPane prefHeight="800" prefWidth="1280" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.loginController">
+<StackPane prefHeight="800" prefWidth="1280" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.loginController">
 
     <!-- ═══════════════════════════════════════════
          CAPA 1: Imagen de fondo con overlay
@@ -45,7 +45,7 @@
 
             <Label fx:id="brandTitle" style="-fx-font-family: 'Lexend'; -fx-font-size: 42px; -fx-font-weight: 800; -fx-font-style: italic; -fx-text-fill: #CAF300;" text="GYMBROT" />
 
-            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #8f9378; -fx-letter-spacing: 0.2em;" text="Sistema Gestion de Ginnasio" />
+            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #8f9378; -fx-letter-spacing: 0.2em;" text="Sistema Gestion de Gimnasio" />
         </VBox>
 
         <!-- ── Tarjeta de Login ── -->
@@ -55,11 +55,11 @@
             </padding>
 
             <!-- Encabezado de la tarjeta -->
-            <VBox prefHeight="64.0" prefWidth="221.0" spacing="4">
+            <VBox prefHeight="64.0" prefWidth="416.0" spacing="4">
                 <VBox.margin>
                     <Insets bottom="24" />
                 </VBox.margin>
-                <Label prefHeight="40.0" prefWidth="382.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: white;" text="               Bienvenido" textAlignment="CENTER" />
+                <Label prefHeight="40.0" prefWidth="382.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: white;" text="              Bienvenido" textAlignment="CENTER" />
                 <Label prefHeight="20.0" prefWidth="458.0" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #c5c9ac;" text="                                  Ingrese sus datos" />
             </VBox>
 

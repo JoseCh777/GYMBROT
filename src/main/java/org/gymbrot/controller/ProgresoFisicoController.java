@@ -23,6 +23,7 @@ import org.gymbrot.dao.ProgresoDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Progreso;
 import org.gymbrot.service.ProgresoService;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,36 +38,59 @@ public class    ProgresoFisicoController implements Initializable {
 
     private static final int PAGE_SIZE = 8;
 
-    @FXML private VBox sideNav;
-    @FXML private Button navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI;
+    @FXML
+    private VBox sideNav;
+    @FXML
+    private Button navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI, navCitas;
 
-    @FXML private HBox topBar;
-    @FXML private Button btnExportarReporte, btnVerPrograma;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private Button btnExportarReporte, btnVerPrograma;
 
-    @FXML private ImageView imgMiembro;
-    @FXML private Label lblNombreMiembro, lblIdMiembro, lblPesoActual, lblGrasaActual;
+    @FXML
+    private ImageView imgMiembro;
+    @FXML
+    private Label lblNombreMiembro, lblIdMiembro, lblPesoActual, lblGrasaActual;
 
-    @FXML private TextField txtPeso, txtAltura, txtIMC, txtGrasa, txtMusculo;
-    @FXML private Button btnGuardarProgreso;
+    @FXML
+    private TextField txtPeso, txtAltura, txtIMC, txtGrasa, txtMusculo;
+    @FXML
+    private Button btnGuardarProgreso;
 
-    @FXML private TextField txtBuscarCliente;
-    @FXML private ListView<Cliente> lvClientes;
+    @FXML
+    private TextField txtBuscarCliente;
+    @FXML
+    private ListView<Cliente> lvClientes;
 
-    @FXML private LineChart<String, Number> chartTendencia;
-    @FXML private CategoryAxis ejeX;
-    @FXML private NumberAxis ejeY;
+    @FXML
+    private LineChart<String, Number> chartTendencia;
+    @FXML
+    private CategoryAxis ejeX;
+    @FXML
+    private NumberAxis ejeY;
 
-    @FXML private Label lblDeltaMusculo, lblDeltaGrasa;
+    @FXML
+    private Label lblDeltaMusculo, lblDeltaGrasa;
 
-    @FXML private TableView<Progreso> tablaHistorial;
-    @FXML private TableColumn<Progreso, String> colFecha;
-    @FXML private TableColumn<Progreso, String> colPeso;
-    @FXML private TableColumn<Progreso, String> colIMC;
-    @FXML private TableColumn<Progreso, String> colGrasa;
-    @FXML private TableColumn<Progreso, String> colMusculo;
-    @FXML private TableColumn<Progreso, Void> colAcciones;
-    @FXML private Label lblRegistros;
-    @FXML private Button btnFiltrarHistorial, btnAnterior, btnSiguiente, btnPag1, btnPag2, btnPag3;
+    @FXML
+    private TableView<Progreso> tablaHistorial;
+    @FXML
+    private TableColumn<Progreso, String> colFecha;
+    @FXML
+    private TableColumn<Progreso, String> colPeso;
+    @FXML
+    private TableColumn<Progreso, String> colIMC;
+    @FXML
+    private TableColumn<Progreso, String> colGrasa;
+    @FXML
+    private TableColumn<Progreso, String> colMusculo;
+    @FXML
+    private TableColumn<Progreso, Void> colAcciones;
+    @FXML
+    private Label lblRegistros;
+    @FXML
+    private Button btnFiltrarHistorial, btnAnterior, btnSiguiente, btnPag1, btnPag2, btnPag3;
 
     private ClienteDAO clienteDAO;
     private ProgresoDAO progresoDAO;
@@ -90,8 +114,12 @@ public class    ProgresoFisicoController implements Initializable {
         configurarIMCEnVivo();
         configurarBuscador();
         configurarNavActivo();
+        ValidacionUtil.soloDecimales(txtPeso);
+        ValidacionUtil.soloDecimales(txtAltura);
+        ValidacionUtil.soloDecimales(txtGrasa);
+        ValidacionUtil.soloDecimales(txtMusculo);
 
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navAI};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navProgreso);
 
@@ -247,6 +275,7 @@ public class    ProgresoFisicoController implements Initializable {
                                 ? String.format("%.1f kg", d.getValue().getMasaMuscular()) : "--"));
         colAcciones.setCellFactory(col -> new TableCell<>() {
             private final Button btnEliminar = new Button("ELIMINAR");
+
             {
                 btnEliminar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
                         "-fx-border-color: #ef4444; -fx-border-width: 1; -fx-border-radius: 6;" +
@@ -261,6 +290,7 @@ public class    ProgresoFisicoController implements Initializable {
                     }
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -333,11 +363,30 @@ public class    ProgresoFisicoController implements Initializable {
         actualizarBotonesPagina();
     }
 
-    @FXML private void handlePaginaAnterior() { irAPagina(paginaActual - 1); }
-    @FXML private void handlePaginaSiguiente() { irAPagina(paginaActual + 1); }
-    @FXML private void handlePagina1() { irAPagina(1); }
-    @FXML private void handlePagina2() { irAPagina(2); }
-    @FXML private void handlePagina3() { irAPagina(3); }
+    @FXML
+    private void handlePaginaAnterior() {
+        irAPagina(paginaActual - 1);
+    }
+
+    @FXML
+    private void handlePaginaSiguiente() {
+        irAPagina(paginaActual + 1);
+    }
+
+    @FXML
+    private void handlePagina1() {
+        irAPagina(1);
+    }
+
+    @FXML
+    private void handlePagina2() {
+        irAPagina(2);
+    }
+
+    @FXML
+    private void handlePagina3() {
+        irAPagina(3);
+    }
 
     // ── CHART DE TENDENCIA ─────────────────────────────────────────────────
 
@@ -463,14 +512,18 @@ public class    ProgresoFisicoController implements Initializable {
 
             String grasaStr = txtGrasa.getText().trim();
             if (!grasaStr.isEmpty()) {
-                try { p.setPorcentajeGrasa(Double.parseDouble(grasaStr)); }
-                catch (NumberFormatException ignored) {}
+                try {
+                    p.setPorcentajeGrasa(Double.parseDouble(grasaStr));
+                } catch (NumberFormatException ignored) {
+                }
             }
 
             String musculoStr = txtMusculo.getText().trim();
             if (!musculoStr.isEmpty()) {
-                try { p.setMasaMuscular(Double.parseDouble(musculoStr)); }
-                catch (NumberFormatException ignored) {}
+                try {
+                    p.setMasaMuscular(Double.parseDouble(musculoStr));
+                } catch (NumberFormatException ignored) {
+                }
             }
 
             boolean ok = progresoService.registrarProgreso(p);
@@ -492,9 +545,6 @@ public class    ProgresoFisicoController implements Initializable {
     }
 
     // ── HANDLERS — TOP BAR ─────────────────────────────────────────────────
-
-    @FXML private void handleExportarReporte() {}
-    @FXML private void handleVerPrograma() {}
     @FXML private void handleFiltrarHistorial() {}
 
     // ── HANDLERS — NAV ─────────────────────────────────────────────────────
@@ -505,6 +555,7 @@ public class    ProgresoFisicoController implements Initializable {
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
 
     @FXML
     private void handleLogout() {
@@ -518,7 +569,7 @@ public class    ProgresoFisicoController implements Initializable {
     }
 
     private void configurarNavActivo() {
-        Button[] allNav = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] allNav = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button b : allNav) {
             if (b != navProgreso) {
                 b.setStyle("-fx-background-color: transparent; -fx-background-radius: 8;"

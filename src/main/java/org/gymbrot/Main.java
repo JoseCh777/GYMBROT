@@ -37,6 +37,8 @@ public class Main extends Application {
         stage.setMinWidth(1024);
         stage.setMinHeight(700);
 
+        scene.setFill(javafx.scene.paint.Color.web("#111316"));
+
         try {
             stage.getIcons().addAll(
                     new Image(getClass().getResourceAsStream("/images/logo.png"), 1024, 1024, true, true)

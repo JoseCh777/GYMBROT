@@ -26,6 +26,7 @@ import org.gymbrot.model.Usuario;
 import org.gymbrot.service.AuthService;
 import org.gymbrot.service.HuellaService;
 import org.gymbrot.util.HuellaUtil;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class NuevoClienteController implements Initializable {
     @FXML private Button  navMembresias;
     @FXML private Button  navAI;
     @FXML private Button  navProgreso;
+    @FXML private Button  navCitas;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox   topBar;
@@ -215,7 +217,7 @@ public class NuevoClienteController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] inactivos = {navDashboard, navInstructores, navMembresias, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navClientes);
     }
@@ -267,7 +269,7 @@ public class NuevoClienteController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -331,6 +333,10 @@ public class NuevoClienteController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarValidacionEnVivo() {
+        ValidacionUtil.soloNumeros(txtNumeroDoc);
+        ValidacionUtil.soloLetras(txtNombres);
+        ValidacionUtil.soloLetras(txtApellidos);
+        ValidacionUtil.soloNumeros(txtTelefono);
 
         // Número de documento — solo dígitos
         txtNumeroDoc.textProperty().addListener((obs, old, val) -> {
@@ -610,6 +616,9 @@ public class NuevoClienteController implements Initializable {
                 usuario.setApellidos(clienteEditando.getApellidos());
                 usuario.setCorreo(clienteEditando.getCorreo());
                 usuario.setTelefono(clienteEditando.getTelefono());
+                if (archivoFotoSeleccionado != null) {
+                    usuario.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+                }
                 usuarioDAO.actualizar(usuario);
             }
 
@@ -631,6 +640,9 @@ public class NuevoClienteController implements Initializable {
             u.setFechaRegistro(LocalDate.now());
             u.setTipoUsuario("CLIENTE");
             u.setEstado("ACTIVO");
+            if (archivoFotoSeleccionado != null) {
+                u.setFotoUrl(archivoFotoSeleccionado.getAbsolutePath());
+            }
 
             boolean ok = usuarioDAO.insertar(u);
             if (!ok) {
@@ -806,6 +818,7 @@ public class NuevoClienteController implements Initializable {
     @FXML private void handleNavInstructores() {  }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
 
     @FXML

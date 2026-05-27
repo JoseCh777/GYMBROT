@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
@@ -23,6 +24,7 @@ import javafx.util.Duration;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -38,6 +40,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private Button navMembresias;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
+    @FXML private Button navCitas;
 
     // ─── TopBar ────────────────────────────────────────────────────────────
     @FXML private HBox topBar;
@@ -89,7 +92,7 @@ public class GestionInstructoresController implements Initializable {
     //  MODELO DE TARJETA
     // ═══════════════════════════════════════════════════════════════════════
 
-    public record InstructorCard(String id, String nombre, String especialidad, String badgeStyle) {
+    public record InstructorCard(String id, String nombre, String especialidad, String badgeStyle, String fotoUrl) {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -158,8 +161,10 @@ public class GestionInstructoresController implements Initializable {
             String nombreCompleto = inst.getNombre() + " " + inst.getApellidos();
             String espNombre = nombreEsp.getOrDefault(inst.getIdEspecialidad(), "GENERAL");
 
+            String fotoUrl = inst.getFotoUrl();
+
             todosLosInstructores.add(new InstructorCard(
-                    id, nombreCompleto, espNombre, badgeColor(inst.getIdEspecialidad())
+                    id, nombreCompleto, espNombre, badgeColor(inst.getIdEspecialidad()), fotoUrl
             ));
         }
 
@@ -264,6 +269,12 @@ public class GestionInstructoresController implements Initializable {
         img.setFitHeight(180);
         img.setFitWidth(258);
         img.setPreserveRatio(false);
+        String fotoUrl = inst.fotoUrl();
+        if (fotoUrl != null && !fotoUrl.isEmpty()) {
+            try {
+                img.setImage(new Image(new File(fotoUrl).toURI().toString(), true));
+            } catch (Exception ignored) {}
+        }
         imageStack.getChildren().add(img);
 
         Label badge = new Label(inst.especialidad());
@@ -283,7 +294,7 @@ public class GestionInstructoresController implements Initializable {
         lblNombre.setStyle("-fx-font-family: 'Lexend'; -fx-font-size: 16px;" +
                 "-fx-font-weight: 700; -fx-text-fill: white;");
 
-        Button btnReservar = new Button("RESERVAR SESION");
+        Button btnReservar = new Button("RESERVA CITA");
         btnReservar.setMaxWidth(Double.MAX_VALUE);
         btnReservar.setPrefHeight(36);
         btnReservar.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
@@ -295,6 +306,7 @@ public class GestionInstructoresController implements Initializable {
         shrink.setToX(1.0); shrink.setToY(1.0);
         btnReservar.setOnMouseEntered(e -> grow.playFromStart());
         btnReservar.setOnMouseExited(e -> shrink.playFromStart());
+        btnReservar.setOnAction(e -> handleReservarSesion(inst.id()));
 
         String instId = inst.id();
         Button btnRutina = new Button("VER RUTINA");
@@ -552,6 +564,34 @@ public class GestionInstructoresController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    //  HANDLERS — RESERVAR SESION / CITA
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private void handleReservarSesion(String instructorId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevaCita.fxml"));
+            Parent overlay = loader.load();
+            NuevaCitaController ctrl = loader.getController();
+
+            ctrl.seleccionarInstructor(instructorId);
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir el formulario de cita");
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — TARJETAS INSTRUCTOR (Ver / Editar / Eliminar)
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -627,6 +667,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
 
     @FXML
     private void handleLogout() {
@@ -644,7 +685,7 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI};
+        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navInstructores);
     }
@@ -705,7 +746,7 @@ public class GestionInstructoresController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(

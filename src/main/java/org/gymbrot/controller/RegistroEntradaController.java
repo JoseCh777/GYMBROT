@@ -23,6 +23,7 @@ import org.gymbrot.model.Cliente;
 import org.gymbrot.model.RegistroIngreso;
 import org.gymbrot.service.AuthService;
 import org.gymbrot.service.HuellaService;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -80,6 +81,7 @@ public class RegistroEntradaController implements Initializable {
         configurarAnimaciones();
         iniciarScanLine();
         sectionManual.setTranslateX(60);
+        ValidacionUtil.soloNumeros(txtNumeroId);
         aplicarModo();
     }
 

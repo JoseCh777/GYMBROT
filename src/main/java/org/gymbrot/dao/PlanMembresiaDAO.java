@@ -83,7 +83,7 @@ public class PlanMembresiaDAO {
     // ── LISTAR TODOS ──────────────────────────────────────────────────────
     public List<PlanMembresia> listarTodos() {
         List<PlanMembresia> lista = new ArrayList<>();
-        String sql = "SELECT * FROM PLANES_MEMBRESIAS ORDER BY nombre";
+        String sql = "SELECT * FROM PLANES_MEMBRESIAS ORDER BY id_plan";
         try (PreparedStatement ps = getConexion().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) lista.add(mapear(rs));

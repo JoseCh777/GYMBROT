@@ -151,6 +151,26 @@ public class CitaDAO {
         return lista;
     }
 
+    // ── LISTAR TODAS ───────────────────────────────────────────────────────
+    public List<Cita> listarTodas() {
+        List<Cita> lista = new ArrayList<>();
+        String sql = """
+            SELECT id_cita, id_instructor, id_cliente, fecha, hora,
+                   tipo_cita, estado, notas
+            FROM CITAS ORDER BY fecha DESC, hora DESC
+            """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) lista.add(mapearCita(rs));
+
+        } catch (SQLException e) {
+            System.err.println("Error al listar todas las citas: " + e.getMessage());
+        }
+        return lista;
+    }
+
     // ── LISTAR POR INSTRUCTOR ─────────────────────────────────────────────
     public List<Cita> listarPorInstructor(String idInstructor) {
         List<Cita> lista = new ArrayList<>();

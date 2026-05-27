@@ -17,6 +17,7 @@ import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
 import org.gymbrot.model.Pago;
 import org.gymbrot.model.PlanMembresia;
+import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -63,6 +64,7 @@ public class PagoMembresiaController implements Initializable {
         ));
         dpFechaPago.setValue(LocalDate.now());
         lblMoneda.setText("$");
+        ValidacionUtil.soloDecimales(txtMonto);
         cargarClientes();
         configurarBuscador();
     }

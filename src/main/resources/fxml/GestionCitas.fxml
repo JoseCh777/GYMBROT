@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionCitasController">
+
+    <!-- ═══ LEFT: SideNav ═══ -->
+    <left>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+
+            <VBox spacing="2">
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/dashboard_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/group_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/instructor_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/membresias_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/muscle_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/bot_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            </VBox>
+
+            <Separator opacity="0.1">
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
+            </Separator>
+
+            <VBox spacing="8">
+                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ═══ TOP: TopBar ═══ -->
+    <top>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
+            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700;                           -fx-text-fill: white;" text="Gestion de Citas" HBox.hgrow="ALWAYS" />
+        </HBox>
+    </top>
+
+    <!-- ═══ CENTER: Contenido ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
+            <VBox spacing="24">
+                <padding><Insets bottom="80" left="40" right="40" top="32" /></padding>
+
+                <!-- ── SECCION 1: Stats cards ── -->
+                <HBox spacing="16" HBox.hgrow="ALWAYS">
+                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CITAS HOY" />
+                        <Label fx:id="lblCitasHoy" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
+                    </VBox>
+                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PENDIENTES" />
+                        <Label fx:id="lblPendientes" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
+                    </VBox>
+                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="COMPLETADAS" />
+                        <Label fx:id="lblCompletadas" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
+                    </VBox>
+                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CANCELADAS" />
+                        <Label fx:id="lblCanceladas" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
+                    </VBox>
+                </HBox>
+
+                <!-- ── SECCION 2: Toolbar ── -->
+                <HBox alignment="CENTER_LEFT" spacing="16">
+
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Citas Pendientes">
+                        <HBox.margin><Insets right="8" /></HBox.margin>
+                    </Label>
+
+                    <!-- Buscador -->
+                    <StackPane prefHeight="44" prefWidth="327" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="searchField" prefHeight="44" promptText="Buscar por cliente o instructor..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
+                            <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
+                            <StackPane.margin><Insets left="12" /></StackPane.margin>
+                      <graphic>
+                         <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                               <Image url="@../images/lupa.png" />
+                            </image>
+                         </ImageView>
+                      </graphic>
+                        </Label>
+                    </StackPane>
+
+                    <Button fx:id="btnAgregarCita" onAction="#handleAgregarCita" prefHeight="44" prefWidth="210.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #121417;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Cita">
+                      <graphic>
+                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                               <Image url="@../images/boton-mas.png" />
+                            </image>
+                         </ImageView>
+                      </graphic>
+                    </Button>
+
+                </HBox>
+
+                <!-- ── SECCION 3: Tabla Citas Proximas ── -->
+                <VBox style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                              -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+
+                    <TableView fx:id="tablaCitasProximas" prefHeight="300" style="-fx-background-color: #1a1d21; -fx-control-inner-background: #1a1d21; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colProxCliente" prefWidth="169.6000297665596" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
+                            <TableColumn fx:id="colProxInstructor" prefWidth="177.60006713867188" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INSTRUCTOR" />
+                            <TableColumn fx:id="colProxFecha" prefWidth="139.2000732421875" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
+                            <TableColumn fx:id="colProxHora" prefWidth="114.39996337890625" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA" />
+                            <TableColumn fx:id="colProxTipo" prefWidth="137.60003662109375" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TIPO" />
+                            <TableColumn fx:id="colProxEstado" prefWidth="150.4000244140625" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
+                            <TableColumn fx:id="colProxAcciones" prefWidth="193.60002441406255" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
+                        </columns>
+                    </TableView>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #282a2d; -fx-background-radius: 0 0 12 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1 0 0 0;">
+                        <padding><Insets bottom="12" left="24" right="24" top="12" /></padding>
+                    </HBox>
+                </VBox>
+            <HBox alignment="CENTER_LEFT" spacing="16">
+               <children>
+                  <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Citas Anteriores - Canceladas">
+                     <HBox.margin>
+                        <Insets right="8" />
+                     </HBox.margin>
+                  </Label>
+                  <StackPane prefHeight="44" prefWidth="327" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="searchField1" prefHeight="44" promptText="Buscar por cliente o instructor..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text="." StackPane.alignment="CENTER_LEFT">
+                           <StackPane.margin>
+                              <Insets left="12" />
+                           </StackPane.margin>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Label>
+                     </children>
+                  </StackPane>
+               </children>
+            </HBox>
+
+                <!-- ── SECCION 4: Tabla Citas Anteriores ── -->
+                <VBox prefHeight="299.0" prefWidth="1089.0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                              -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+
+                    <TableView fx:id="tablaCitasAnteriores" prefHeight="250" style="-fx-background-color: #1a1d21; -fx-control-inner-background: #1a1d21; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colAntCliente" prefWidth="229.60001450777054" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
+                            <TableColumn fx:id="colAntInstructor" prefWidth="191.9999542236328" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INSTRUCTOR" />
+                            <TableColumn fx:id="colAntFecha" prefWidth="156.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
+                            <TableColumn fx:id="colAntHora" prefWidth="150.39996337890625" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA" />
+                            <TableColumn fx:id="colAntTipo" prefWidth="156.79998779296875" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TIPO" />
+                            <TableColumn fx:id="colAntEstado" prefWidth="205.599853515625" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
+                        </columns>
+                    </TableView>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #282a2d; -fx-background-radius: 0 0 12 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1 0 0 0;">
+                        <padding><Insets bottom="12" left="24" right="24" top="12" /></padding>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

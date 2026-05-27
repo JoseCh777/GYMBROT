@@ -6,17 +6,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.RutinaDAO;
+import org.gymbrot.dao.RutinaEjercicioDAO;
 import org.gymbrot.model.Instructor;
 import org.gymbrot.model.Rutina;
+import org.gymbrot.model.RutinaEjercicio;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,7 +41,7 @@ public class DirectorioRutinasController implements Initializable {
     @FXML private TableColumn<RutinaRow, String> colObjetivo;
     @FXML private TableColumn<RutinaRow, String> colInstructor;
     @FXML private TableColumn<RutinaRow, String> colProgramacion;
-    @FXML private TableColumn<RutinaRow, Button> colAcciones;
+    @FXML private TableColumn<RutinaRow, HBox> colAcciones;
 
     @FXML private Label lblContador;
 
@@ -84,7 +90,7 @@ public class DirectorioRutinasController implements Initializable {
         colObjetivo.setCellValueFactory(new PropertyValueFactory<>("objetivo"));
         colInstructor.setCellValueFactory(new PropertyValueFactory<>("instructor"));
         colProgramacion.setCellValueFactory(new PropertyValueFactory<>("programacion"));
-        colAcciones.setCellValueFactory(new PropertyValueFactory<>("btnEliminar"));
+        colAcciones.setCellValueFactory(new PropertyValueFactory<>("accionesBox"));
 
         colNombre.setStyle("-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #e2e2e6;");
         colObjetivo.setStyle("-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-text-fill: #e2e2e6;");
@@ -110,6 +116,7 @@ public class DirectorioRutinasController implements Initializable {
             String obj = r.getObjetivo() != null ? r.getObjetivo() : "";
             todasLasRutinas.add(new RutinaRow(
                     idRutina, r.getNombre(), obj, instructorNombre(r.getIdInstructor()), prog,
+                    () -> abrirEditarRutina(idRutina),
                     () -> {
                         boolean ok = rutinaDAO.desactivar(idRutina);
                         if (ok) {
@@ -221,6 +228,35 @@ public class DirectorioRutinasController implements Initializable {
         if (paginaActual < totalPaginas) { paginaActual++; renderizarPagina(); actualizarContador(); }
     }
 
+    private void abrirEditarRutina(int idRutina) {
+        try {
+            Rutina rutina = rutinaDAO.buscarPorId(idRutina);
+            if (rutina == null) return;
+
+            RutinaEjercicioDAO reDAO = new RutinaEjercicioDAO();
+            List<RutinaEjercicio> ejercicios = reDAO.listarPorRutina(idRutina);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NuevaRutina.fxml"));
+            Parent overlay = loader.load();
+            NuevaRutinaController ctrl = loader.getController();
+            ctrl.cargarRutina(rutina, ejercicios);
+            ctrl.setInstructorSeleccionado(rutina.getIdInstructor());
+
+            Scene scene = wrapperStack.getScene();
+            Parent rootActual = scene.getRoot();
+
+            StackPane newWrapper = new StackPane();
+            newWrapper.getChildren().add(rootActual);
+            newWrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(newWrapper, overlay);
+
+            scene.setRoot(newWrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void handleCerrar() {
         cerrarOverlay();
@@ -238,14 +274,25 @@ public class DirectorioRutinasController implements Initializable {
         private final SimpleStringProperty objetivo;
         private final SimpleStringProperty instructor;
         private final SimpleStringProperty programacion;
+        private final Button btnEditar;
         private final Button btnEliminar;
+        private final HBox accionesBox;
 
-        public RutinaRow(int idRutina, String nombre, String objetivo, String instructor, String programacion, Runnable onEliminar) {
+        public RutinaRow(int idRutina, String nombre, String objetivo, String instructor, String programacion, Runnable onEditar, Runnable onEliminar) {
             this.idRutina = idRutina;
             this.nombre = new SimpleStringProperty(nombre);
             this.objetivo = new SimpleStringProperty(objetivo);
             this.instructor = new SimpleStringProperty(instructor);
             this.programacion = new SimpleStringProperty(programacion);
+
+            this.btnEditar = new Button("EDITAR");
+            this.btnEditar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
+                    "-fx-border-color: #D4FF00; -fx-border-width: 1; -fx-border-radius: 6;" +
+                    "-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700;" +
+                    "-fx-text-fill: #D4FF00; -fx-cursor: hand; -fx-padding: 4 14 4 14;");
+            this.btnEditar.setOnAction(e -> {
+                if (onEditar != null) onEditar.run();
+            });
 
             this.btnEliminar = new Button("ELIMINAR");
             this.btnEliminar.setStyle("-fx-background-color: transparent; -fx-background-radius: 6;" +
@@ -255,6 +302,10 @@ public class DirectorioRutinasController implements Initializable {
             this.btnEliminar.setOnAction(e -> {
                 if (onEliminar != null) onEliminar.run();
             });
+
+            this.accionesBox = new HBox(6);
+            this.accionesBox.setAlignment(javafx.geometry.Pos.CENTER);
+            this.accionesBox.getChildren().addAll(btnEditar, btnEliminar);
         }
 
         public String getNombre() { return nombre.get(); }
@@ -269,6 +320,6 @@ public class DirectorioRutinasController implements Initializable {
         public String getProgramacion() { return programacion.get(); }
         public SimpleStringProperty programacionProperty() { return programacion; }
 
-        public Button getBtnEliminar() { return btnEliminar; }
+        public HBox getAccionesBox() { return accionesBox; }
     }
 }

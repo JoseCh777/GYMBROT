@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionClientesController">
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionClientesController">
 
 
     <!-- ═══ LEFT: SideNav ═══ -->
@@ -52,6 +52,14 @@
                   <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/instructor_white.png" />
+                     </image>
+                  </ImageView>
+                </graphic></Button>
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario_white.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -119,10 +127,6 @@
                             <Label prefHeight="16.0" prefWidth="159.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL DE CLIENTES" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <Label fx:id="lblTotalClientes" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 32px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
-                            <HBox alignment="CENTER_LEFT" spacing="12">
-                                <Label fx:id="lblTendenciaClientes" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="0 registrados" />
-                                <Label fx:id="lblTasaTendencia" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;" text="-" />
-                            </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="4" />
                     </VBox>
 
@@ -130,7 +134,7 @@
                     <VBox spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                         <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="22.0">
-                            <Label prefHeight="16.0" prefWidth="142.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SESIONES ACTIVAS" HBox.hgrow="ALWAYS" />
+                            <Label prefHeight="16.0" prefWidth="228.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTES DENTRO DEL GYM" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <Label fx:id="lblSesionesActivas" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 32px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
                         <HBox alignment="CENTER_LEFT" spacing="4">
@@ -155,7 +159,7 @@
                 <!-- ── SECCION 2: Toolbar ── -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
 
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Panel de Control">
+                    <Label prefHeight="40.0" prefWidth="330.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Panel de Control">
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
@@ -176,7 +180,7 @@
                     </StackPane>
 
                     <!-- Boton validar salida -->
-                    <Button fx:id="btnValidarSalida" onAction="#handleValidarSalida" prefHeight="44" prefWidth="179.0" style="-fx-background-color: #2a0a0a; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #ffb4ab;                                    -fx-border-color: #ffb4ab; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="  Validar Salida">
+                    <Button fx:id="btnValidarSalida" onAction="#handleValidarSalida" prefHeight="44" prefWidth="224.0" style="-fx-background-color: #2a0a0a; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #ffb4ab;                                    -fx-border-color: #ffb4ab; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="  Validar Salida">
                   <graphic>
                      <ImageView fitHeight="20.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -186,7 +190,7 @@
                   </graphic></Button>
 
                     <!-- Boton validar entrada -->
-                    <Button fx:id="btnValidarEntrada" onAction="#handleValidarEntrada" prefHeight="44" prefWidth="179.0" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                    -fx-border-color: #bdf4ff; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="  Validar Entrada">
+                    <Button fx:id="btnValidarEntrada" onAction="#handleValidarEntrada" prefHeight="44" prefWidth="230.0" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                    -fx-border-color: #bdf4ff; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="  Validar Entrada">
                   <graphic>
                      <ImageView fitHeight="20.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -212,23 +216,23 @@
 
                     <!-- TableView -->
                     <!-- NOTA: Las columnas se configuran desde el controller con setCellValueFactory -->
-                    <TableView fx:id="tablaClientes" prefHeight="400" style="-fx-background-color: #1a1d21; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tablaClientes" prefHeight="400" style="-fx-background-color: #1a1d21; -fx-control-inner-background: #1a1d21; -fx-border-width: 0;                                       -fx-table-cell-border-color: #1f2125;                                       -fx-font-family: 'Inter'; -fx-font-size: 14px;                                       -fx-text-fill: white;" VBox.vgrow="ALWAYS">
 
                         <columns>
                             <!-- Columna: Identidad (foto + nombre + ID) -->
                             <TableColumn fx:id="colIdentidad" prefWidth="260" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="IDENTIDAD" />
 
                             <!-- Columna: Contacto -->
-                            <TableColumn fx:id="colContacto" prefWidth="220" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CONTACTO" />
+                            <TableColumn fx:id="colContacto" prefWidth="236.800048828125" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CONTACTO" />
 
                             <!-- Columna: Categoria -->
-                            <TableColumn fx:id="colCategoria" prefWidth="180" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CATEGORIA DE EDAD" />
+                            <TableColumn fx:id="colCategoria" prefWidth="200.7999267578125" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CATEGORIA DE EDAD" />
 
                             <!-- Columna: Estado -->
-                            <TableColumn fx:id="colEstado" prefWidth="160" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
+                            <TableColumn fx:id="colEstado" prefWidth="187.20001220703125" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
 
                             <!-- Columna: Acciones -->
-                            <TableColumn fx:id="colAcciones" prefWidth="180" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
+                            <TableColumn fx:id="colAcciones" prefWidth="201.599853515625" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIONES" />
                         </columns>
                     </TableView>
 

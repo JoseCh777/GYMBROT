@@ -52,11 +52,10 @@ public class EspecialidadDAO {
     }
 
     public boolean insertar(Especialidad especialidad) {
-        String sql = "INSERT INTO ESPECIALIDADES (id_especialidad, nombre) VALUES (?, ?)";
+        String sql = "INSERT INTO ESPECIALIDADES (nombre) VALUES (?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, especialidad.getIdEspecialidad());
-            pstmt.setString(2, especialidad.getNombre());
+            pstmt.setString(1, especialidad.getNombre());
 
             return pstmt.executeUpdate() > 0;
 
