@@ -40,7 +40,8 @@ public class NotificacionService {
         }
         return enviado;
     }
-    // ── ENVIAR SMS DIRECTO ────────────────────────────────────────────────
+
+    // ── ENVIAR SMS AL NÚMERO FIJO (admin/notificaciones internas) ─────────
     public void enviarSmsDirecto(String mensaje) {
         try {
             java.io.FileInputStream fis = new java.io.FileInputStream("config.properties");
@@ -55,10 +56,22 @@ public class NotificacionService {
         }
     }
 
+    // ── ENVIAR SMS A UN NÚMERO ESPECÍFICO ─────────────────────────────────
+    public void enviarSmsACliente(String telefono, String mensaje) {
+        if (telefono == null || telefono.isEmpty()) return;
+        try {
+            String numero = telefono.startsWith("+") ? telefono : "+57" + telefono;
+            smsService.enviarSms(numero, mensaje);
+        } catch (Exception e) {
+            System.err.println("Error al enviar SMS al cliente: " + e.getMessage());
+        }
+    }
+
     // ── LISTAR PENDIENTES ─────────────────────────────────────────────────
     public List<Notificacion> listarPendientes() {
         return notifDAO.listarPendientes();
     }
+
     // ── PROCESAR COLA ─────────────────────────────────────────────────────
     public void procesarCola() {
         List<Notificacion> pendientes = notifDAO.listarPendientes();
