@@ -182,9 +182,12 @@ public class ConsultaGymbrotService {
                 contexto.append(String.format("Total: %d clientes\n\n", clientes.size()));
                 int contador = 1;
                 for (Cliente c : clientes) {
-                    contexto.append(String.format("%d. %s %s | ID: %s | Estado: %s\n",
-                            contador++, c.getNombre(), c.getApellidos(),
-                            c.getNumeroIdentificacion(), c.getEstado()));
+                    contexto.append(contador++).append(". ")
+                            .append(c.getNombre()).append(" ").append(c.getApellidos())
+                            .append(" | ID: ").append(c.getNumeroIdentificacion())
+                            .append(" | Correo: ").append(c.getCorreo() != null ? c.getCorreo() : "Sin correo")
+                            .append(" | Estado: ").append(c.getEstado())
+                            .append("\n");
                 }
                 contexto.append("\n=== FIN DE LA LISTA ===");
             }

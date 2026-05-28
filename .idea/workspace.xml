@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/CitaDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/CitaService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/GroqService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/GroqService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ConsultaGymbrotService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -514,7 +510,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779914018938</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779919056415</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1779919056415</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -532,7 +536,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;feat: Quitar boton de configuracion&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructor.fxml&quot;" />
     <MESSAGE value="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;" />
     <MESSAGE value="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;" />
@@ -557,7 +560,8 @@
     <MESSAGE value="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
