@@ -106,7 +106,7 @@ public class UsuarioDAO {
 
     // ── BUSCAR POR CORREO ─────────────────────────────────────────────────
     public Usuario buscarPorCorreo(String correo) {
-        String sql = "SELECT * FROM USUARIOS WHERE correo = ?";
+        String sql = "SELECT * FROM USUARIOS WHERE correo = ? OR numero_identificacion = ? OR UPPER(nombre) = UPPER(?)";
 
         try (Connection conn = getConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

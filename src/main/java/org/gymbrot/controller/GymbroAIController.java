@@ -236,6 +236,7 @@ public class GymbroAIController {
     @FXML private void handleNavDashboard()    { navegarA("/fxml/Dashboard.fxml"); }
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
+    @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
     @FXML private void handleNavProgreso()     { }
     @FXML private void handleNavAI()           { }

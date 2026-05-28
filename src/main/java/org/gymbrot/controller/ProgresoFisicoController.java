@@ -83,6 +83,8 @@ public class    ProgresoFisicoController implements Initializable {
     private TableColumn<Progreso, Void> colAcciones;
     @FXML
     private Label lblRegistros;
+    @FXML
+    private Button btnAnterior, btnSiguiente, btnPag1, btnPag2, btnPag3;
 
     private ClienteDAO clienteDAO;
     private ProgresoDAO progresoDAO;

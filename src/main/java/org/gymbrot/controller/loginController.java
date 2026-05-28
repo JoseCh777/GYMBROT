@@ -31,7 +31,6 @@ public class loginController implements Initializable {
     @FXML private VBox loginCard;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
-    @FXML private Hyperlink forgotPasswordLink;
     @FXML private Button loginButton;
     @FXML private Region bioIndicator;
     @FXML private Label bioStatusLabel;
@@ -124,13 +123,6 @@ public class loginController implements Initializable {
             ScaleTransition r = new ScaleTransition(Duration.millis(80), loginButton);
             r.setToX(1.0); r.setToY(1.0); r.play();
         });
-
-        ScaleTransition fg = new ScaleTransition(Duration.millis(180), forgotPasswordLink);
-        ScaleTransition fs = new ScaleTransition(Duration.millis(180), forgotPasswordLink);
-        fg.setToX(1.03); fg.setToY(1.03);
-        fs.setToX(1.0); fs.setToY(1.0);
-        forgotPasswordLink.setOnMouseEntered(e -> fg.playFromStart());
-        forgotPasswordLink.setOnMouseExited(e -> fs.playFromStart());
     }
 
     private void animarEntrada() {
@@ -184,12 +176,6 @@ public class loginController implements Initializable {
         } catch (Exception e) {
             return contrasenaPlana.equals(hash);
         }
-    }
-
-    @FXML
-    private void btnContrase\u00F1a() {
-        mostrarInfo("Recuperar contrasena",
-                "Contacta al administrador del sistema para restablecer tu contrasena.");
     }
 
     private void navegarA(String rutaFxml) {

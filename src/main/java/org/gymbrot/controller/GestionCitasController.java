@@ -44,7 +44,16 @@ public class GestionCitasController implements Initializable {
     @FXML private HBox topBar;
     @FXML private TextField searchField;
     @FXML private TextField searchField1;
+
     @FXML private Button btnAgregarCita;
+    @FXML private Button navDashboard;
+    @FXML private Button navClientes;
+    @FXML private Button navInstructores;
+    @FXML private Button navMembresias;
+
+    @FXML private Button navAI;
+    @FXML private Button navProgreso;
+    @FXML private Button navCitas;
 
     @FXML private Label lblCitasHoy;
     @FXML private Label lblPendientes;
@@ -83,6 +92,8 @@ public class GestionCitasController implements Initializable {
         configurarBusqueda();
         configurarBusqueda2();
 
+        configurarAnimacionesNav();
+        setNavActivo(navCitas);
         agregarAnimaciones();
     }
 
@@ -436,13 +447,81 @@ public class GestionCitasController implements Initializable {
         AlertaPersonalizada.error(titulo, contenido);
     }
 
+    private void configurarAnimacionesNav() {
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        for (Button btn : inactivos) agregarHoverInactivo(btn);
+        agregarHoverActivo(navCitas);
+    }
+
     private void agregarAnimaciones() {
-        ScaleTransition grow = new ScaleTransition(Duration.millis(160), btnAgregarCita);
-        ScaleTransition shrink = new ScaleTransition(Duration.millis(160), btnAgregarCita);
-        grow.setToX(1.04); grow.setToY(1.04);
+        agregarHoverActivo(btnAgregarCita);
+    }
+
+    private void agregarHoverInactivo(Button btn) {
+        ScaleTransition grow   = new ScaleTransition(Duration.millis(180), btn);
+        ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btn);
+        grow.setToX(1.03);  grow.setToY(1.03);
         shrink.setToX(1.0); shrink.setToY(1.0);
-        btnAgregarCita.setOnMouseEntered(e -> grow.playFromStart());
-        btnAgregarCita.setOnMouseExited(e -> shrink.playFromStart());
+
+        btn.setOnMouseEntered(e -> {
+            grow.playFromStart();
+            btn.setStyle(btn.getStyle()
+                    .replace("-fx-background-color: transparent", "-fx-background-color: #1f2226")
+                    .replace("-fx-text-fill: #9ca3af", "-fx-text-fill: white"));
+        });
+        btn.setOnMouseExited(e -> {
+            shrink.playFromStart();
+            btn.setStyle(btn.getStyle()
+                    .replace("-fx-background-color: #1f2226", "-fx-background-color: transparent")
+                    .replace("-fx-text-fill: white", "-fx-text-fill: #9ca3af"));
+        });
+        btn.setOnMousePressed(e -> {
+            ScaleTransition p = new ScaleTransition(Duration.millis(80), btn);
+            p.setToX(0.96); p.setToY(0.96); p.play();
+        });
+        btn.setOnMouseReleased(e -> {
+            ScaleTransition r = new ScaleTransition(Duration.millis(80), btn);
+            r.setToX(1.0); r.setToY(1.0); r.play();
+        });
+    }
+
+    private void agregarHoverActivo(Button btn) {
+        ScaleTransition grow   = new ScaleTransition(Duration.millis(180), btn);
+        ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btn);
+        grow.setToX(1.03);  grow.setToY(1.03);
+        shrink.setToX(1.0); shrink.setToY(1.0);
+
+        btn.setOnMouseEntered(e  -> grow.playFromStart());
+        btn.setOnMouseExited(e   -> shrink.playFromStart());
+        btn.setOnMousePressed(e  -> {
+            ScaleTransition p = new ScaleTransition(Duration.millis(80), btn);
+            p.setToX(0.97); p.setToY(0.97); p.play();
+        });
+        btn.setOnMouseReleased(e -> {
+            ScaleTransition r = new ScaleTransition(Duration.millis(80), btn);
+            r.setToX(1.0); r.setToY(1.0); r.play();
+        });
+    }
+
+    private void setNavActivo(Button activo) {
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
+        for (Button btn : todos) {
+            if (btn == activo) {
+                btn.setStyle(
+                        "-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;" +
+                                "-fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"
+                );
+                agregarHoverActivo(btn);
+            } else {
+                btn.setStyle(
+                        "-fx-background-color: transparent; -fx-background-radius: 8;" +
+                                "-fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;" +
+                                "-fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;"
+                );
+                agregarHoverInactivo(btn);
+            }
+        }
     }
 
     @FXML private void handleNavDashboard() { navegar("/fxml/Dashboard.fxml"); }
