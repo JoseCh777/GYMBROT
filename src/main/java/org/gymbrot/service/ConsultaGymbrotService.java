@@ -74,7 +74,6 @@ public class ConsultaGymbrotService {
                 if (c.getFechaRegistro() != null)
                     contexto.append(String.format("- Registrado: %s\n", c.getFechaRegistro().format(fmt)));
 
-                // Membresía activa
                 List<Membresia> activas = membresiaDAO.listarPorEstado("ACTIVA");
                 activas.stream()
                         .filter(m -> {
@@ -87,7 +86,6 @@ public class ConsultaGymbrotService {
                                     m.getTipoMembresia(), m.getFechaVencimiento().format(fmt)));
                         }, () -> contexto.append("- Sin membresía activa.\n"));
 
-                // Últimas citas
                 List<Cita> citas = citaDAO.listarPorCliente(idCliente);
                 if (!citas.isEmpty()) {
                     contexto.append(String.format("- Citas registradas: %d\n", citas.size()));
@@ -99,7 +97,6 @@ public class ConsultaGymbrotService {
                     contexto.append("- Sin citas registradas.\n");
                 }
 
-                // Ingresos del mes
                 List<RegistroIngreso> ingresos = ingresoDAO.listarPorCliente(idCliente);
                 long ingresosMes = ingresos.stream()
                         .filter(r -> r.getFecha().getMonth() == LocalDate.now().getMonth()
@@ -107,7 +104,7 @@ public class ConsultaGymbrotService {
                         .count();
                 contexto.append(String.format("- Ingresos este mes: %d\n", ingresosMes));
             } else {
-                contexto.append("No se encontró ningún cliente con ID: " + idCliente + "\n");
+                contexto.append("No se encontró ningún cliente con ID: ").append(idCliente).append("\n");
             }
         }
 
@@ -137,7 +134,6 @@ public class ConsultaGymbrotService {
                             m.getFechaVencimiento().format(fmt)));
                 }
             }
-
             if (!porVencer.isEmpty()) {
                 contexto.append("MEMBRESÍAS POR VENCER (próximos 7 días):\n");
                 for (Membresia m : porVencer) {
@@ -149,27 +145,80 @@ public class ConsultaGymbrotService {
                             m.getFechaVencimiento().format(fmt), dias));
                 }
             }
-
             if (vencidas.isEmpty() && porVencer.isEmpty()) {
                 contexto.append("No hay membresías vencidas ni próximas a vencer.\n");
             }
         }
 
-        // ── CITAS DEL DÍA ─────────────────────────────────────────────────
+        // ── CONSULTA DE CITAS (todas las opciones) ────────────────────────
         if (preguntaLower.contains("cita") || preguntaLower.contains("agenda")
-                || preguntaLower.contains("hoy") || preguntaLower.contains("programadas")) {
-            List<Cita> citasHoy = citaDAO.listarPorFecha(LocalDate.now());
+                || preguntaLower.contains("programadas")) {
+
+            DateTimeFormatter fmt  = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             DateTimeFormatter fmtH = DateTimeFormatter.ofPattern("HH:mm");
-            if (!citasHoy.isEmpty()) {
-                contexto.append(String.format("CITAS HOY (%d):\n", citasHoy.size()));
-                for (Cita c : citasHoy) {
-                    contexto.append(String.format(
-                            "- Cita #%d | Cliente: %s | Instructor: %s | Hora: %s | Estado: %s\n",
-                            c.getIdCita(), c.getIdCliente(), c.getIdInstructor(),
-                            c.getHora().format(fmtH), c.getEstado()));
+            LocalDate hoy = LocalDate.now();
+            List<Cita> citas = null;
+            String etiqueta = "";
+
+            // ── Citas de un cliente específico ────────────────────────────
+            String idClienteCita = extraerIdDeTexto(pregunta);
+            if (idClienteCita != null && !preguntaLower.contains("modificar")
+                    && !preguntaLower.contains("cancelar") && !preguntaLower.contains("crear")) {
+                citas    = citaDAO.listarPorCliente(idClienteCita);
+                etiqueta = "CITAS DEL CLIENTE " + idClienteCita;
+
+                // ── Citas pendientes ──────────────────────────────────────────
+            } else if (preguntaLower.contains("pendiente")) {
+                citas    = citaDAO.listarPorFecha(hoy).stream()
+                        .filter(c -> c.getEstado().equals("PENDIENTE"))
+                        .collect(Collectors.toList());
+                // También traer pendientes de días futuros
+                List<Cita> futuras = new java.util.ArrayList<>();
+                for (int d = 1; d <= 30; d++) {
+                    futuras.addAll(citaDAO.listarPorFecha(hoy.plusDays(d)).stream()
+                            .filter(c -> c.getEstado().equals("PENDIENTE"))
+                            .collect(Collectors.toList()));
+                }
+                citas.addAll(futuras);
+                etiqueta = "CITAS PENDIENTES";
+
+                // ── Citas de esta semana ──────────────────────────────────────
+            } else if (preguntaLower.contains("semana") || preguntaLower.contains("esta semana")) {
+                LocalDate inicioSemana = hoy.with(java.time.DayOfWeek.MONDAY);
+                LocalDate finSemana    = hoy.with(java.time.DayOfWeek.SUNDAY);
+                citas = new java.util.ArrayList<>();
+                for (LocalDate d = inicioSemana; !d.isAfter(finSemana); d = d.plusDays(1)) {
+                    citas.addAll(citaDAO.listarPorFecha(d));
+                }
+                etiqueta = "CITAS DE ESTA SEMANA (" +
+                        inicioSemana.format(fmt) + " al " + finSemana.format(fmt) + ")";
+
+                // ── Citas por fecha específica (día de semana o "3 de junio") ─
+            } else {
+                LocalDate fechaBuscada = extraerFechaConsulta(preguntaLower, hoy);
+                if (fechaBuscada != null) {
+                    citas    = citaDAO.listarPorFecha(fechaBuscada);
+                    etiqueta = "CITAS DEL " + fechaBuscada.format(fmt);
+                } else {
+                    // Por defecto: hoy
+                    citas    = citaDAO.listarPorFecha(hoy);
+                    etiqueta = "CITAS DE HOY (" + hoy.format(fmt) + ")";
+                }
+            }
+
+            if (citas != null && !citas.isEmpty()) {
+                contexto.append(etiqueta).append(" (").append(citas.size()).append("):\n");
+                for (Cita c : citas) {
+                    contexto.append("- Cita #").append(c.getIdCita())
+                            .append(" | Cliente: ").append(c.getIdCliente())
+                            .append(" | Instructor: ").append(c.getIdInstructor())
+                            .append(" | Fecha: ").append(c.getFecha().format(fmt))
+                            .append(" | Hora: ").append(c.getHora().format(fmtH))
+                            .append(" | Estado: ").append(c.getEstado())
+                            .append("\n");
                 }
             } else {
-                contexto.append("No hay citas programadas para hoy.\n");
+                contexto.append("No hay citas para mostrar con los criterios indicados.\n");
             }
         }
 
@@ -192,6 +241,7 @@ public class ConsultaGymbrotService {
                 contexto.append("\n=== FIN DE LA LISTA ===");
             }
         }
+
         // ── PLANES Y MEMBRESÍAS ───────────────────────────────────────────
         if (preguntaLower.contains("plan") || preguntaLower.contains("precio")
                 || preguntaLower.contains("costo") || preguntaLower.contains("valor")) {
@@ -261,6 +311,52 @@ public class ConsultaGymbrotService {
         }
 
         return contexto.toString();
+    }
+
+    // ── EXTRAER FECHA DE CONSULTA ─────────────────────────────────────────
+    // Solo para consultas, no modifica historial
+    private LocalDate extraerFechaConsulta(String t, LocalDate hoy) {
+        if (t.contains("hoy"))                                         return hoy;
+        if (t.contains("mañana") || t.contains("manana"))             return hoy.plusDays(1);
+        if (t.contains("lunes"))    { LocalDate c = hoy.with(java.time.DayOfWeek.MONDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("martes"))   { LocalDate c = hoy.with(java.time.DayOfWeek.TUESDAY);   return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("miércoles") || t.contains("miercoles")) { LocalDate c = hoy.with(java.time.DayOfWeek.WEDNESDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("jueves"))   { LocalDate c = hoy.with(java.time.DayOfWeek.THURSDAY);  return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("viernes"))  { LocalDate c = hoy.with(java.time.DayOfWeek.FRIDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("sábado") || t.contains("sabado"))   { LocalDate c = hoy.with(java.time.DayOfWeek.SATURDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("domingo"))  { LocalDate c = hoy.with(java.time.DayOfWeek.SUNDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+
+        // "3 de junio", "15 de mayo", etc.
+        String[] meses = {"enero","febrero","marzo","abril","mayo","junio",
+                "julio","agosto","septiembre","octubre","noviembre","diciembre"};
+        for (int i = 0; i < meses.length; i++) {
+            if (t.contains(meses[i])) {
+                java.util.regex.Pattern p = java.util.regex.Pattern.compile("(\\d{1,2})\\s+de\\s+" + meses[i]);
+                java.util.regex.Matcher m = p.matcher(t);
+                if (m.find()) {
+                    try {
+                        int dia  = Integer.parseInt(m.group(1));
+                        int mes  = i + 1;
+                        int anio = hoy.getYear();
+                        LocalDate fecha = LocalDate.of(anio, mes, dia);
+                        if (fecha.isBefore(hoy)) fecha = fecha.plusYears(1);
+                        return fecha;
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        // DD/MM/YYYY
+        java.util.regex.Pattern pFecha = java.util.regex.Pattern.compile("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})");
+        java.util.regex.Matcher mFecha = pFecha.matcher(t);
+        if (mFecha.find()) {
+            try {
+                return LocalDate.of(Integer.parseInt(mFecha.group(3)),
+                        Integer.parseInt(mFecha.group(2)),
+                        Integer.parseInt(mFecha.group(1)));
+            } catch (Exception ignored) {}
+        }
+        return null;
     }
 
     // ── EXTRAER ID NUMÉRICO DE UN TEXTO ──────────────────────────────────
