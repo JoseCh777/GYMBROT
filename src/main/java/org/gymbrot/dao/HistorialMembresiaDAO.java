@@ -72,10 +72,13 @@ public class HistorialMembresiaDAO {
 
     public HistorialMembresia buscarPorMembresia(int idMembresia) {
         String sql = """
-            SELECT * FROM HISTORIAL_MEMBRESIAS
-            WHERE id_membresia = ? AND activa = 1
-            """;
-        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+        SELECT * FROM HISTORIAL_MEMBRESIAS
+        WHERE id_membresia = ?
+        ORDER BY id_historial DESC
+        FETCH FIRST 1 ROWS ONLY
+        """;
+        try (Connection conn = getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idMembresia);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapear(rs);

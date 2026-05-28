@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: buscarPorMembresia retorna historial sin filtrar por activa&quot;&#10;git push origin backend/Daniel" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotChats">
+    <option name="panelChat">
+      <chat>
+        <option name="activeSessionId" value="f49e29c8-62bc-4bf6-ba2d-02000a8ebc41" />
+        <option name="sessions">
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="0fbea07b-1ede-4643-b4cc-e35efa0d2191" />
+            <option name="modeId" value="Ask" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="f49e29c8-62bc-4bf6-ba2d-02000a8ebc41" />
+            <option name="modeId" value="Ask" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+        </option>
+        <option name="type" value="PANEL" />
+      </chat>
+    </option>
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/ASUS/Documents/UPC/5' Semestre/GYMBROT" value="3DpNi3Gc7XQgBO4xFfPNzuFv03Z" />
+      <entry key="_C:/Users/ASUS/Documents/UPC/Proyectos/GYMBROT" value="3E0tZNMRx6miwgmepW73jQPBRpY" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="166" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/backend" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;JoseCh777&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/frontend" />
+                    <option name="lastUsedInstant" value="1779197345" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/backend" />
+                    <option name="lastUsedInstant" value="1779197262" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JoseCh777/GYMBROT.git&quot;,
+    &quot;accountId&quot;: &quot;38a822cc-aad7-428a-805b-5c76fa1dbd9a&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3DpNi3Gc7XQgBO4xFfPNzuFv03Z" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PruebaChatbot.executor&quot;: &quot;Run&quot;,
+    &quot;Application.main.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [javafx:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [package].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend/Daniel&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Daniel/GYMBROT&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Application.main">
+    <configuration name="PruebaChatbot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.gymbrot.PruebaChatbot" />
+      <module name="GYMBROT" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.gymbrot.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="main" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="org.gymbrot.Main" />
+      <module name="GYMBROT" />
+      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-controls\21\javafx-controls-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-fxml\21\javafx-fxml-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-base\21\javafx-base-21-win.jar;C:\Users\Daniel\.m2\repository\org\openjfx\javafx-graphics\21\javafx-graphics-21-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GYMBROT [javafx:run]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="javafx:run" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.main" />
+      <item itemvalue="Application.PruebaChatbot" />
+      <item itemvalue="Maven.GYMBROT [javafx:run]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.PruebaChatbot" />
+        <item itemvalue="Application.PruebaChatbot" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.32098.37" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="" />
+      <created>1778975175354</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778975175354</updated>
+    </task>
+    <task id="LOCAL-00001" summary="&quot;feat: Quitar proximamentes&quot;">
+      <option name="closed" value="true" />
+      <created>1779198831541</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198831541</updated>
+    </task>
+    <task id="LOCAL-00002" summary="&quot;feat: Quitar proximamentes en GestionClientesController&quot;">
+      <option name="closed" value="true" />
+      <created>1779198895801</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198895801</updated>
+    </task>
+    <task id="LOCAL-00003" summary="&quot;feat: Quitar proximamentes en NuevoClienteController&quot;">
+      <option name="closed" value="true" />
+      <created>1779198974650</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779198974650</updated>
+    </task>
+    <task id="LOCAL-00004" summary="&quot;feat: Agregar efecto de huella en NuevoCliente.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779237470056</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779237470056</updated>
+    </task>
+    <task id="LOCAL-00005" summary="&quot;feat: Agregar iconos en GestionClientes.fxml">
+      <option name="closed" value="true" />
+      <created>1779242594220</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1779242594220</updated>
+    </task>
+    <task id="LOCAL-00006" summary="&quot;feat: Agregar iconos en algunos.fxml">
+      <option name="closed" value="true" />
+      <created>1779243378683</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1779243378683</updated>
+    </task>
+    <task id="LOCAL-00007" summary="&quot;feat: Crear Nuevoinstructor.fxml y su controller&quot;">
+      <option name="closed" value="true" />
+      <created>1779243669193</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1779243669193</updated>
+    </task>
+    <task id="LOCAL-00008" summary="&quot;feat: agregar efectos en dashvoard&quot;">
+      <option name="closed" value="true" />
+      <created>1779318694303</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1779318694303</updated>
+    </task>
+    <task id="LOCAL-00009" summary="&quot;feat: Quitar boton de configuracion&quot;">
+      <option name="closed" value="true" />
+      <created>1779319320048</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1779319320048</updated>
+    </task>
+    <task id="LOCAL-00010" summary="&quot;feat: Quitar boton de configuracion&quot;">
+      <option name="closed" value="true" />
+      <created>1779319452938</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1779319452938</updated>
+    </task>
+    <task id="LOCAL-00011" summary="&quot;feat: Crear GestionInstructor.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779321597080</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1779321597080</updated>
+    </task>
+    <task id="LOCAL-00012" summary="&quot;feat: Crear GestionInstructorController y conexion a la vista&quot;">
+      <option name="closed" value="true" />
+      <created>1779322031377</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1779322031377</updated>
+    </task>
+    <task id="LOCAL-00013" summary="&quot;feat: Conexion entre la vista de GestionInstructores.fxml y NuevoInstructor.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779322991868</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1779322991868</updated>
+    </task>
+    <task id="LOCAL-00014" summary="&quot;feat: Agregar efectos al pasar el cursor por los botones&quot;">
+      <option name="closed" value="true" />
+      <created>1779323338439</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1779323338439</updated>
+    </task>
+    <task id="LOCAL-00015" summary="&quot;feat: crear GestionMembresias.fxml&quot;">
+      <option name="closed" value="true" />
+      <created>1779331731188</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1779331731188</updated>
+    </task>
+    <task id="LOCAL-00016" summary="&quot;feat: crear GestionMembresiasController&quot;">
+      <option name="closed" value="true" />
+      <created>1779331975195</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1779331975195</updated>
+    </task>
+    <task id="LOCAL-00017" summary="&quot;feat: Navegacion hacia GestionMembresias&quot;">
+      <option name="closed" value="true" />
+      <created>1779332010118</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1779332010118</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png">
+      <option name="closed" value="true" />
+      <created>1779391108184</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1779391108184</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png">
+      <option name="closed" value="true" />
+      <created>1779391114050</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1779391114050</updated>
+    </task>
+    <task id="LOCAL-00020" summary="&quot;feat: actualizar la conexion a la BD&quot;">
+      <option name="closed" value="true" />
+      <created>1779391851676</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1779391851676</updated>
+    </task>
+    <task id="LOCAL-00021" summary="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;">
+      <option name="closed" value="true" />
+      <created>1779393484452</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1779393484452</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Merge branch 'feature/biometria' into feature/backend&#10;&#10;# Conflicts:&#10;#&#9;pom.xml">
+      <option name="closed" value="true" />
+      <created>1779648792411</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1779648792411</updated>
+    </task>
+    <task id="LOCAL-00023" summary="git add .&#10;git commit -m &quot;feat: conectar chatbot con interfaz GymbroAI&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779665440779</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1779665440780</updated>
+    </task>
+    <task id="LOCAL-00024" summary="git add .&#10;git commit -m &quot;feat: persistir sesión chatbot al navegar entre pantallas&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779668144727</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1779668144727</updated>
+    </task>
+    <task id="LOCAL-00025" summary="git add .&#10;git commit -m &quot;feat: ConsultaGymbrotService - estadísticas de clientes, membresías y citas&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779685930488</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1779685930489</updated>
+    </task>
+    <task id="LOCAL-00026" summary="git add .&#10;git commit -m &quot;feat: ChatbotService admin - gestión de clientes, citas y membresías&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779719755578</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1779719755578</updated>
+    </task>
+    <task id="LOCAL-00027" summary="git add .&#10;git commit -m &quot;fix: chatbot ahora puede crear clientes reales en BD - corregido manejo de null en fecha_nacimiento&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779723676108</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1779723676108</updated>
+    </task>
+    <task id="LOCAL-00028" summary="git add .&#10;git commit -m &quot;feat: GYMBROT ADMIN - chatbot administrativo con estadísticas, citas y membresías&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779738893039</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1779738893039</updated>
+    </task>
+    <task id="LOCAL-00029" summary="git add .&#10;git commit -m &quot;feat: implementar creación y guardado de rutinas en BD, corrección de null en fechas, y mejora de extractores de datos&#10;&#10;- Agregado método procesarCrearRutina() para generar rutinas con IA y guardarlas en RUTINAS&#10;- Agregado insertarRutinaYRetornarId() para persistir rutinas&#10;- Corregido ClienteDAO.actualizar() para manejar null en fecha_nacimiento y huella_dactilar&#10;- Corregido ClienteDAO.insertar() para manejar null en fecha_nacimiento&#10;- Agregados extractores: extraerObjetivoRutina(), extraerDiasSemanaRutina()&#10;- Corregidos extraerCorreo() y extraerTelefono() para usar MensajeGymbrot correctamente&#10;- Corregido extraerIdCliente() para soportar IDs de 4-12 dígitos&#10;- Mejorado extraerFecha() con lógica correcta de días de semana&#10;- Agregado insertarClienteSeguro() para evitar NullPointerException&#10;&#10;Rutina #21 creada exitosamente para cliente 999888 con instructor INS001 (Pedro)&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779751452918</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1779751452918</updated>
+    </task>
+    <task id="LOCAL-00030" summary="git add .&#10;git commit -m &quot;fix: quitar subtitulo 'Sistema Gestion de Gimnasio' de correos&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779754548018</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1779754548018</updated>
+    </task>
+    <task id="LOCAL-00031" summary="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779755210834</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1779755210834</updated>
+    </task>
+    <task id="LOCAL-00032" summary="git add .&#10;git commit -m &quot;feat: renovacion de membresia y mejoras en notificaciones&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779756864277</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1779756864277</updated>
+    </task>
+    <task id="LOCAL-00033" summary="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779853402317</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1779853402317</updated>
+    </task>
+    <task id="LOCAL-00034" summary="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779855581994</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1779855581994</updated>
+    </task>
+    <task id="LOCAL-00035" summary="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779914018938</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1779914018938</updated>
+    </task>
+    <task id="LOCAL-00036" summary="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779919056415</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1779919056415</updated>
+    </task>
+    <task id="LOCAL-00037" summary="git add .&#10;git commit -m &quot;fix: corregir listado clientes sin telefono y Remover telefono del listado de clientes en chatbot&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779933401607</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1779933401607</updated>
+    </task>
+    <task id="LOCAL-00038" summary="git add .&#10;git commit -m &quot;fix: mejorar extraccion de fechas y listado de clientes&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779934261617</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1779934261617</updated>
+    </task>
+    <task id="LOCAL-00039" summary="git add .&#10;git commit -m &quot;feat: consulta de citas con multiples filtros&#10;&#10;- Citas por fecha especifica (DD/MM/YYYY, 3 de junio, martes)&#10;- Citas de esta semana&#10;- Citas por cliente especifico&#10;- Citas pendientes (hoy + proximos 30 dias)&#10;- Por defecto muestra citas de hoy&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779934804161</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1779934804161</updated>
+    </task>
+    <task id="LOCAL-00040" summary="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779935356393</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1779935356393</updated>
+    </task>
+    <task id="LOCAL-00041" summary="git add .&#10;git commit -m &quot;fix: buscarPorMembresia retorna historial sin filtrar por activa&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779936064386</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1779936064386</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;feat: crear GestionMembresiasController&quot;" />
+    <MESSAGE value="&quot;feat: Navegacion hacia GestionMembresias&quot;" />
+    <MESSAGE value="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png" />
+    <MESSAGE value="&quot;feat: actualizar la conexion a la BD&quot;" />
+    <MESSAGE value="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;" />
+    <MESSAGE value="Merge branch 'feature/biometria' into feature/backend&#10;&#10;# Conflicts:&#10;#&#9;pom.xml" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: conectar chatbot con interfaz GymbroAI&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: persistir sesión chatbot al navegar entre pantallas&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: ConsultaGymbrotService - estadísticas de clientes, membresías y citas&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: ChatbotService admin - gestión de clientes, citas y membresías&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: chatbot ahora puede crear clientes reales en BD - corregido manejo de null en fecha_nacimiento&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: GYMBROT ADMIN - chatbot administrativo con estadísticas, citas y membresías&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: implementar creación y guardado de rutinas en BD, corrección de null en fechas, y mejora de extractores de datos&#10;&#10;- Agregado método procesarCrearRutina() para generar rutinas con IA y guardarlas en RUTINAS&#10;- Agregado insertarRutinaYRetornarId() para persistir rutinas&#10;- Corregido ClienteDAO.actualizar() para manejar null en fecha_nacimiento y huella_dactilar&#10;- Corregido ClienteDAO.insertar() para manejar null en fecha_nacimiento&#10;- Agregados extractores: extraerObjetivoRutina(), extraerDiasSemanaRutina()&#10;- Corregidos extraerCorreo() y extraerTelefono() para usar MensajeGymbrot correctamente&#10;- Corregido extraerIdCliente() para soportar IDs de 4-12 dígitos&#10;- Mejorado extraerFecha() con lógica correcta de días de semana&#10;- Agregado insertarClienteSeguro() para evitar NullPointerException&#10;&#10;Rutina #21 creada exitosamente para cliente 999888 con instructor INS001 (Pedro)&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: quitar subtitulo 'Sistema Gestion de Gimnasio' de correos&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: agregar eliminacion de clientes desde chatbot por ID o correo&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: renovacion de membresia y mejoras en notificaciones&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m ```&#10;              fix: eliminar cliente con cascada completa de FK en Oracle&#10;              ```&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: extractor instructor por ID + cascada MENSAJES_GYMBROT al eliminar cliente&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: ClienteDAO LEFT JOIN para listar todos los clientes&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: AGREGUE EL METODO MODIFICAR CITA y MODIFIQUE EL METODO CANCELAR CITA&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: corregir listado clientes sin telefono y Remover telefono del listado de clientes en chatbot&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: mejorar extraccion de fechas y listado de clientes&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;feat: consulta de citas con multiples filtros&#10;&#10;- Citas por fecha especifica (DD/MM/YYYY, 3 de junio, martes)&#10;- Citas de esta semana&#10;- Citas por cliente especifico&#10;- Citas pendientes (hoy + proximos 30 dias)&#10;- Por defecto muestra citas de hoy&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: buscarPorMembresia retorna historial sin filtrar por activa&quot;&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: buscarPorMembresia retorna historial sin filtrar por activa&quot;&#10;git push origin backend/Daniel" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/gymbrot/util/SessionManager.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

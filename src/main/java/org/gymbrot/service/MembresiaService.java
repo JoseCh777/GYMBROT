@@ -6,9 +6,7 @@ import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
 import org.gymbrot.model.Pago;
-import org.gymbrot.util.DatabaseConnection;
 
-import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -27,31 +25,60 @@ public class MembresiaService {
         this.notifService = new NotificacionService();
     }
 
+    // ── CREAR MEMBRESÍA ───────────────────────────────────────────────────
     public boolean crearMembresia(Membresia membresia, String idCliente) {
-        String sql = "{call PKG_GYMBROT.SP_RENOVAR_MEMBRESIA(?,?,?,?,?,?,?)}";
-        try (Connection conn = DatabaseConnection.getInstance();
-             CallableStatement cs = conn.prepareCall(sql)) {
+        try {
+            membresia.setFechaInicio(LocalDate.now());
+            membresia.setEstado("ACTIVA");
 
-            cs.setString(1, idCliente);
-            cs.setInt(2, membresia.getIdPlan());
-            cs.setString(3, membresia.getModalidadPago() != null ? membresia.getModalidadPago().toUpperCase() : "MENSUAL");
-            cs.setString(4, "EFECTIVO");
-            cs.setDouble(5, membresia.getValor());
-            cs.registerOutParameter(6, Types.INTEGER);
-            cs.registerOutParameter(7, Types.VARCHAR);
-            cs.execute();
+            LocalDate fechaVencimiento = calcularFechaVencimiento(
+                    membresia.getFechaInicio(),
+                    membresia.getModalidadPago()
+            );
+            membresia.setFechaVencimiento(fechaVencimiento);
 
-            int codigo = cs.getInt(6);
-            String mensaje = cs.getString(7);
-            System.out.println(mensaje);
-            return codigo == 1;
+            int idMembresiaGenerado = membresiaDAO.insertarYRetornarId(membresia);
 
-        } catch (SQLException e) {
+            if (idMembresiaGenerado == -1) {
+                System.err.println("Error al insertar membresía");
+                return false;
+            }
+
+            HistorialMembresia actual = historialDAO.buscarActiva(idCliente);
+            if (actual != null) historialDAO.desactivar(actual.getIdHistorial());
+
+            HistorialMembresia historial = new HistorialMembresia();
+            historial.setIdCliente(idCliente);
+            historial.setIdMembresia(idMembresiaGenerado);
+            historial.setFechaAsignacion(LocalDate.now());
+            historial.setActiva(true);
+
+            if (!historialDAO.insertar(historial)) {
+                System.err.println("Error al crear historial");
+                return false;
+            }
+
+            System.out.println("✓ Membresía creada exitosamente - ID: " + idMembresiaGenerado);
+            return true;
+
+        } catch (Exception e) {
             System.err.println("Error en crearMembresia: " + e.getMessage());
             return false;
         }
     }
 
+    // ── CALCULAR FECHA VENCIMIENTO ────────────────────────────────────────
+    private LocalDate calcularFechaVencimiento(LocalDate fechaInicio, String modalidadPago) {
+        if (modalidadPago == null) return fechaInicio.plusMonths(1);
+        return switch (modalidadPago.toLowerCase()) {
+            case "mensual"   -> fechaInicio.plusMonths(1);
+            case "semestral" -> fechaInicio.plusMonths(6);
+            case "anual"     -> fechaInicio.plusYears(1);
+            default          -> fechaInicio.plusMonths(1);
+        };
+    }
+
+    // ── RENOVAR MEMBRESÍA ─────────────────────────────────────────────────
     public boolean renovarMembresia(int idMembresia, String idCliente, Pago pago) {
         try {
             Membresia membresiaActual = membresiaDAO.buscarPorId(idMembresia);
@@ -95,16 +122,7 @@ public class MembresiaService {
         }
     }
 
-    private LocalDate calcularFechaVencimiento(LocalDate fechaInicio, String modalidadPago) {
-        if (modalidadPago == null) return fechaInicio.plusMonths(1);
-        return switch (modalidadPago.toUpperCase()) {
-            case "MENSUAL" -> fechaInicio.plusMonths(1);
-            case "SEMESTRAL" -> fechaInicio.plusMonths(6);
-            case "ANUAL" -> fechaInicio.plusYears(1);
-            default -> fechaInicio.plusMonths(1);
-        };
-    }
-
+    // ── VERIFICAR VENCIMIENTOS ────────────────────────────────────────────
     public void verificarVencimientos() {
         try {
             List<Membresia> membresias = membresiaDAO.listarPorEstado("ACTIVA");
@@ -114,7 +132,6 @@ public class MembresiaService {
                 long diasRestantes = ChronoUnit.DAYS.between(hoy, membresia.getFechaVencimiento());
                 HistorialMembresia historial = historialDAO.buscarPorMembresia(membresia.getIdMembresia());
                 if (historial == null) continue;
-
                 String idCliente = historial.getIdCliente();
 
                 if (diasRestantes == 7) {
@@ -133,6 +150,7 @@ public class MembresiaService {
         }
     }
 
+    // ── LISTAR VENCIDAS ───────────────────────────────────────────────────
     public List<Membresia> listarVencidas() {
         try {
             return membresiaDAO.listarVencidas();
@@ -141,6 +159,23 @@ public class MembresiaService {
         }
     }
 
+    // ── CALCULAR DÍAS RESTANTES ───────────────────────────────────────────
+    public int calcularDiasRestantes(int idMembresia) {
+        try {
+            Membresia membresia = membresiaDAO.buscarPorId(idMembresia);
+            if (membresia == null) {
+                System.err.println("Membresía no encontrada");
+                return -999;
+            }
+            long dias = ChronoUnit.DAYS.between(LocalDate.now(), membresia.getFechaVencimiento());
+            return (int) dias;
+        } catch (Exception e) {
+            System.err.println("Error en calcularDiasRestantes: " + e.getMessage());
+            return -999;
+        }
+    }
+
+    // ── OBTENER MEMBRESÍA ACTIVA ──────────────────────────────────────────
     public HistorialMembresia obtenerMembresiaActiva(String idCliente) {
         try {
             return historialDAO.buscarActiva(idCliente);
@@ -148,5 +183,4 @@ public class MembresiaService {
             return null;
         }
     }
-
 }

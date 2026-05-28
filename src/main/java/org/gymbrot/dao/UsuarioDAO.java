@@ -8,22 +8,20 @@ import java.util.List;
 
 public class UsuarioDAO {
 
-    private Connection conn;
-
-    public UsuarioDAO() {
-        try {
-            this.conn = DatabaseConnection.getInstance();
-        } catch (SQLException e) {
-            System.err.println("Error conexión: " + e.getMessage());
-        }
+    // ── CONEXIÓN (fresca en cada método, evita ORA-17008) ─────────────────
+    private Connection getConexion() throws SQLException {
+        return DatabaseConnection.getInstance();
     }
 
+    // ── INSERTAR ──────────────────────────────────────────────────────────
     public boolean insertar(Usuario usuario) {
         String sql = "INSERT INTO USUARIOS (numero_identificacion, tipo_identificacion, nombre, " +
                 "apellidos, telefono, correo, contrasena_hash, foto_url, estado, " +
                 "fecha_registro, tipo_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, usuario.getNumeroIdentificacion());
             pstmt.setString(2, usuario.getTipoIdentificacion());
             pstmt.setString(3, usuario.getNombre());
@@ -44,12 +42,15 @@ public class UsuarioDAO {
         }
     }
 
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     public boolean actualizar(Usuario usuario) {
         String sql = "UPDATE USUARIOS SET tipo_identificacion=?, nombre=?, apellidos=?, " +
                 "telefono=?, correo=?, contrasena_hash=?, foto_url=?, estado=?, " +
                 "tipo_usuario=? WHERE numero_identificacion=?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, usuario.getTipoIdentificacion());
             pstmt.setString(2, usuario.getNombre());
             pstmt.setString(3, usuario.getApellidos());
@@ -69,10 +70,13 @@ public class UsuarioDAO {
         }
     }
 
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     public boolean eliminar(String numeroIdentificacion) {
         String sql = "DELETE FROM USUARIOS WHERE numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, numeroIdentificacion);
             return pstmt.executeUpdate() > 0;
 
@@ -82,60 +86,69 @@ public class UsuarioDAO {
         }
     }
 
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     public Usuario buscarPorId(String numeroIdentificacion) {
         String sql = "SELECT * FROM USUARIOS WHERE numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, numeroIdentificacion);
-            ResultSet rs = pstmt.executeQuery();
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            if (rs.next()) {
-                return mapearUsuario(rs);
+            pstmt.setString(1, numeroIdentificacion);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) return mapearUsuario(rs);
             }
+
         } catch (SQLException e) {
             System.err.println("Error buscar por ID: " + e.getMessage());
         }
         return null;
     }
 
+    // ── BUSCAR POR CORREO ─────────────────────────────────────────────────
     public Usuario buscarPorCorreo(String correo) {
         String sql = "SELECT * FROM USUARIOS WHERE correo = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, correo);
-            ResultSet rs = pstmt.executeQuery();
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            if (rs.next()) {
-                return mapearUsuario(rs);
+            pstmt.setString(1, correo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) return mapearUsuario(rs);
             }
+
         } catch (SQLException e) {
             System.err.println("Error buscar por correo: " + e.getMessage());
         }
         return null;
     }
 
-    public Usuario buscarPorNombreOCorreo(String login) {
-        String sql = "SELECT * FROM USUARIOS WHERE (LOWER(nombre) = LOWER(?) OR LOWER(correo) = LOWER(?)) AND estado = 'ACTIVO'";
+    // ── BUSCAR POR NOMBRE O CORREO ────────────────────────────────────────
+    // ✅ Permite login con correo o número de identificación
+    public Usuario buscarPorNombreOCorreo(String valor) {
+        String sql = "SELECT * FROM USUARIOS WHERE correo = ? OR numero_identificacion = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, login);
-            pstmt.setString(2, login);
-            ResultSet rs = pstmt.executeQuery();
+        try (Connection conn = getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            if (rs.next()) {
-                return mapearUsuario(rs);
+            pstmt.setString(1, valor);
+            pstmt.setString(2, valor);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) return mapearUsuario(rs);
             }
+
         } catch (SQLException e) {
-            System.err.println("Error buscar por nombre/correo: " + e.getMessage());
+            System.err.println("Error buscar por nombre o correo: " + e.getMessage());
         }
         return null;
     }
 
+    // ── LISTAR TODOS ──────────────────────────────────────────────────────
     public List<Usuario> listarTodos() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM USUARIOS ORDER BY fecha_registro DESC";
 
-        try (Statement stmt = conn.createStatement();
+        try (Connection conn = getConexion();
+             Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
@@ -148,6 +161,7 @@ public class UsuarioDAO {
         return usuarios;
     }
 
+    // ── MAPEO ─────────────────────────────────────────────────────────────
     private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setNumeroIdentificacion(rs.getString("numero_identificacion"));
