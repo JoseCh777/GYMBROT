@@ -1285,14 +1285,35 @@ public class ChatbotService {
         if (t.contains("hoy")) return hoy;
         if (t.contains("mañana") || t.contains("manana")) return hoy.plusDays(1);
 
-        if (t.contains("lunes")) { LocalDate c = hoy.with(java.time.DayOfWeek.MONDAY);   return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
-        if (t.contains("martes")) { LocalDate c = hoy.with(java.time.DayOfWeek.TUESDAY);  return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("lunes"))    { LocalDate c = hoy.with(java.time.DayOfWeek.MONDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("martes"))   { LocalDate c = hoy.with(java.time.DayOfWeek.TUESDAY);   return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
         if (t.contains("miércoles") || t.contains("miercoles")) { LocalDate c = hoy.with(java.time.DayOfWeek.WEDNESDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
-        if (t.contains("jueves")) { LocalDate c = hoy.with(java.time.DayOfWeek.THURSDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
-        if (t.contains("viernes")) { LocalDate c = hoy.with(java.time.DayOfWeek.FRIDAY);  return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
-        if (t.contains("sábado") || t.contains("sabado")) { LocalDate c = hoy.with(java.time.DayOfWeek.SATURDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
-        if (t.contains("domingo")) { LocalDate c = hoy.with(java.time.DayOfWeek.SUNDAY);  return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("jueves"))   { LocalDate c = hoy.with(java.time.DayOfWeek.THURSDAY);  return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("viernes"))  { LocalDate c = hoy.with(java.time.DayOfWeek.FRIDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("sábado") || t.contains("sabado"))   { LocalDate c = hoy.with(java.time.DayOfWeek.SATURDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
+        if (t.contains("domingo"))  { LocalDate c = hoy.with(java.time.DayOfWeek.SUNDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
 
+        // Reconocer "3 de junio", "15 de mayo", "el 3 de junio", etc.
+        String[] meses = {"enero","febrero","marzo","abril","mayo","junio",
+                "julio","agosto","septiembre","octubre","noviembre","diciembre"};
+        for (int i = 0; i < meses.length; i++) {
+            if (t.contains(meses[i])) {
+                Pattern pMes = Pattern.compile("(\\d{1,2})\\s+de\\s+" + meses[i]);
+                Matcher mMes = pMes.matcher(t);
+                if (mMes.find()) {
+                    try {
+                        int dia  = Integer.parseInt(mMes.group(1));
+                        int mes  = i + 1;
+                        int anio = LocalDate.now().getYear();
+                        LocalDate fecha = LocalDate.of(anio, mes, dia);
+                        if (fecha.isBefore(hoy)) fecha = fecha.plusYears(1);
+                        return fecha;
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        // Reconocer DD/MM/YYYY o DD-MM-YYYY
         Pattern pFecha = Pattern.compile("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})");
         Matcher mFecha = pFecha.matcher(t);
         if (mFecha.find()) {
@@ -1304,7 +1325,6 @@ public class ChatbotService {
         }
         return null;
     }
-
     private String extraerObjetivoRutina(String texto) {
         Pattern p = Pattern.compile("objetivo[:\\s]+([\\w\\s]+?)(?:,|\\.|$)", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(texto);
