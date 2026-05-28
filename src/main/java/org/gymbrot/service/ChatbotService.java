@@ -1338,12 +1338,12 @@ public class ChatbotService {
     }
 
     private String extraerDiasSemanaRutina(String texto) {
-        Pattern p = Pattern.compile("dias[:\\s]+([\\w\\s,]+?)(?:,|\\.|$)", Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(texto);
+        // Busca "dias:" seguido de todo hasta punto o fin de línea
+        Pattern p = Pattern.compile("dias[:\\s]+([\\w\\s,]+?)(?:\\.|$)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto.trim());
         if (m.find()) return m.group(1).trim();
         return null;
     }
-
     private String obtenerNombreInstructor(String idInstructor) {
         for (Instructor inst : instructorDAO.listarTodos()) {
             if (inst.getNumeroIdentificacion().equals(idInstructor))
