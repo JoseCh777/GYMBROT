@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;feat: consulta de citas con multiples filtros&#10;&#10;- Citas por fecha especifica (DD/MM/YYYY, 3 de junio, martes)&#10;- Citas de esta semana&#10;- Citas por cliente especifico&#10;- Citas pendientes (hoy + proximos 30 dias)&#10;- Por defecto muestra citas de hoy&quot;&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/service/ChatbotService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/HistorialMembresiaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/dao/HistorialMembresiaDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -542,7 +542,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779934804161</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel">
+      <option name="closed" value="true" />
+      <created>1779935356393</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1779935356393</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -560,7 +568,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&quot;feat: Agregar efectos al pasar el cursor por los botones&quot;" />
     <MESSAGE value="&quot;feat: crear GestionMembresias.fxml&quot;" />
     <MESSAGE value="&quot;feat: crear GestionMembresiasController&quot;" />
     <MESSAGE value="&quot;feat: Navegacion hacia GestionMembresias&quot;" />
@@ -585,7 +592,8 @@
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: corregir listado clientes sin telefono y Remover telefono del listado de clientes en chatbot&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: mejorar extraccion de fechas y listado de clientes&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: consulta de citas con multiples filtros&#10;&#10;- Citas por fecha especifica (DD/MM/YYYY, 3 de junio, martes)&#10;- Citas de esta semana&#10;- Citas por cliente especifico&#10;- Citas pendientes (hoy + proximos 30 dias)&#10;- Por defecto muestra citas de hoy&quot;&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;feat: consulta de citas con multiples filtros&#10;&#10;- Citas por fecha especifica (DD/MM/YYYY, 3 de junio, martes)&#10;- Citas de esta semana&#10;- Citas por cliente especifico&#10;- Citas pendientes (hoy + proximos 30 dias)&#10;- Por defecto muestra citas de hoy&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel" />
+    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: extraerDiasSemanaRutina captura todos los dias correctamente&#10;&#10;- Remover coma como delimitador en el regex para capturar&#10;  'Lunes, Miercoles, Viernes' completo en lugar de solo 'Lunes'&quot;&#10;git push origin backend/Daniel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
