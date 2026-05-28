@@ -23,6 +23,7 @@ import org.gymbrot.model.Cliente;
 import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
 import org.gymbrot.model.RegistroIngreso;
+import org.gymbrot.Main;
 import org.gymbrot.service.HuellaService;
 
 import java.io.File;
@@ -299,17 +300,11 @@ public class PerfilClienteController implements Initializable {
 
     @FXML
     private void handleVerProgreso() {
+        ProgresoFisicoController.pendingClienteId = cliente.getNumeroIdentificacion();
         if (wrapperStack != null && overlayRoot != null) {
             wrapperStack.getChildren().remove(overlayRoot);
         }
-        ProgresoFisicoController.pendingClienteId = cliente.getNumeroIdentificacion();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ProgresoFisico.fxml"));
-            Stage stage = (Stage) btnCerrar.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Main.navegarA("/fxml/ProgresoFisico.fxml");
     }
 
     // ═══════════════════════════════════════════════════════════════════════

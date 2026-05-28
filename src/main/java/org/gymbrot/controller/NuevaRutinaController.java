@@ -16,6 +16,7 @@ import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
@@ -364,11 +365,7 @@ public class NuevaRutinaController implements Initializable {
         }
 
         if (guardado) {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Rutina Guardada");
-            info.setHeaderText(null);
-            info.setContentText("Rutina \"" + rutina.getNombre() + "\" guardada exitosamente.");
-            info.showAndWait();
+            AlertaPersonalizada.exito("Rutina Guardada", "La rutina se guardo correctamente.");
             cerrarOverlay();
         } else {
             mostrarAlerta("Error al guardar la rutina. Intenta de nuevo.");
@@ -387,11 +384,7 @@ public class NuevaRutinaController implements Initializable {
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validacion");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error("Validacion", mensaje);
     }
 
     public static class EjercicioRow {

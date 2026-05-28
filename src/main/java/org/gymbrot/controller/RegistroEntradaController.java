@@ -23,6 +23,7 @@ import org.gymbrot.model.Cliente;
 import org.gymbrot.model.RegistroIngreso;
 import org.gymbrot.service.AuthService;
 import org.gymbrot.service.HuellaService;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
@@ -364,18 +365,10 @@ public class RegistroEntradaController implements Initializable {
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error("Validacion", mensaje);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 }

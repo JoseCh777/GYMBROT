@@ -159,7 +159,7 @@
                 <!-- ── SECCION 2: Toolbar ── -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
 
-                    <Label prefHeight="40.0" prefWidth="330.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Panel de Control">
+                    <Label prefHeight="40.0" prefWidth="330.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Panel de Control">
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
@@ -200,7 +200,7 @@
                   </graphic></Button>
 
                     <!-- Boton agregar -->
-                    <Button fx:id="btnAgregarCliente" onAction="#handleAgregarCliente" prefHeight="44" prefWidth="247.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #121417;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Nuevo Cliente">
+                    <Button fx:id="btnAgregarCliente" onAction="#handleAgregarCliente" prefHeight="44" prefWidth="240.0" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                    -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;                                    " text="  Agregar Cliente">
                   <graphic>
                      <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -264,7 +264,7 @@
                         <!-- Header monitor -->
                         <HBox alignment="CENTER_LEFT">
                             <VBox HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Monitor de Terminal de Escaneo" />
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px;                                               -fx-font-weight: 600; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Monitor de Terminal de Escaneo" />
                                 <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                               -fx-text-fill: #6b7280;" text="Registro de actividad en tiempo real" />
                             </VBox>
                             <HBox alignment="CENTER" spacing="6">

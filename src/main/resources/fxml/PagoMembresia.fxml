@@ -142,7 +142,7 @@
 
             <Button fx:id="btnCancelar" onAction="#handleCancelar" style="-fx-background-color: transparent; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                            -fx-text-fill: #6b7280; -fx-cursor: hand;" text="CANCELAR" />
 
-            <Button fx:id="btnProcesar" onAction="#handleProcesar" prefHeight="44" prefWidth="180" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                            -fx-text-fill: #111316; -fx-cursor: hand;" text="PROCESAR PAGO" />
+            <Button fx:id="btnProcesar" onAction="#handleProcesar" prefHeight="44" prefWidth="180" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                            -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                            -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESAR PAGO" />
         </HBox>
 
     </VBox>

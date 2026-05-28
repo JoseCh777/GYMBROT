@@ -76,7 +76,7 @@
             <HBox alignment="CENTER_RIGHT" spacing="12" prefHeight="56" style="-fx-border-color: rgba(255,255,255,0.03); -fx-border-width: 1 0 0 0;">
                 <padding><Insets top="12" /></padding>
                 <Button fx:id="btnCancelar" onAction="#handleCerrar" prefHeight="42" prefWidth="140" style="-fx-background-color: transparent; -fx-background-radius: 8;                                 -fx-border-color: #333538; -fx-border-width: 2; -fx-border-radius: 8;                                 -fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 700;                                 -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="Cancelar" />
-                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="42" prefWidth="180" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                 -fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 700;                                 -fx-text-fill: #121417; -fx-cursor: hand;" text="  Agendar Cita">
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="42" prefWidth="180" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                 -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                 -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                 -fx-border-radius: 8; -fx-cursor: hand;" text="  Agendar Cita">
                     <graphic>
                         <ImageView fitHeight="18" fitWidth="18" pickOnBounds="true" preserveRatio="true">
                             <image><Image url="@../images/guardar.png" /></image>

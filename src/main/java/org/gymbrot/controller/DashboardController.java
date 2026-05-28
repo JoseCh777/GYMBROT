@@ -5,14 +5,13 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.util.AlertaPersonalizada;
+import org.gymbrot.Main;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
 import org.gymbrot.service.DashboardService;
@@ -451,34 +450,21 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — ACCIONES RÁPIDAS
     // ═══════════════════════════════════════════════════════════════════════
 
-    @FXML private void handleAgregarMiembro()  { navegarA("/fxml/NuevoCliente.fxml"); }
-    @FXML private void handleExportarInforme() {  }
-
     // ═══════════════════════════════════════════════════════════════════════
     //  UTILIDADES
     // ═══════════════════════════════════════════════════════════════════════
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Main.navegarA(rutaFxml);
     }
 
 }

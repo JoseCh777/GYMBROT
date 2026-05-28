@@ -12,12 +12,12 @@
     El controller TitleBarController maneja drag, minimizar, maximizar y cerrar.
 -->
 
-<HBox fx:id="titleBar" alignment="CENTER_LEFT" prefHeight="36" style="-fx-background-color: #0c0e11;              -fx-border-color: transparent transparent #1f2125 transparent;              -fx-border-width: 1;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.TitleBarController">
+<HBox fx:id="titleBar" alignment="CENTER_LEFT" prefHeight="36" style="-fx-background-color: #121417;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.TitleBarController">
 
-    <padding><Insets left="12" right="8" /></padding>
-
-    <!-- Ícono + nombre -->
-    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 12px;                   -fx-font-weight: 900; -fx-font-style: italic;                   -fx-text-fill: #D4FF00; -fx-letter-spacing: 0.02em;" text="GYMBROT" />
+    <!-- Título de la vista actual (lo actualiza el controller al navegar) -->
+    <Label fx:id="lblTitulo" style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;">
+        <HBox.margin><Insets left="16" /></HBox.margin>
+    </Label>
 
     <!-- Spacer: empuja los botones a la derecha y permite arrastrar -->
     <Region fx:id="dragArea" HBox.hgrow="ALWAYS" />
@@ -26,7 +26,7 @@
     <Button fx:id="btnMinimizar" onAction="#handleMinimizar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 13px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="—" />
 
     <!-- Maximizar / Restaurar -->
-    <Button fx:id="btnMaximizar" onAction="#handleMaximizar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 11px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="[ ]" />
+    <Button fx:id="btnMaximizar" onAction="#handleMaximizar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 11px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="▢" />
 
     <!-- Cerrar -->
     <Button fx:id="btnCerrar" onAction="#handleCerrar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 13px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="✕" />

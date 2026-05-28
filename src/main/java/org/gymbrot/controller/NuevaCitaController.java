@@ -14,6 +14,7 @@ import org.gymbrot.model.Cita;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Instructor;
 import org.gymbrot.service.CitaService;
+import org.gymbrot.util.AlertaPersonalizada;
 
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -346,18 +347,10 @@ public class NuevaCitaController implements Initializable {
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validacion");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error("Validacion", mensaje);
     }
 
     private void mostrarInfo(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Informacion");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info("Informacion", mensaje);
     }
 }

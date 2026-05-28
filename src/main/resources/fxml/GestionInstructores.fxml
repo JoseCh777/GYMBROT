@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionInstructoresController">
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" stylesheets="@../css/gymbrot.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionInstructoresController">
 
     <!-- ═══ LEFT: SideNav ═══ -->
     <left>
@@ -127,7 +127,7 @@
                         </VBox>
 
                     <!-- Card: Sesiones Hoy -->
-                    <VBox prefHeight="162.0" prefWidth="321.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #D4FF00; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                    <VBox prefHeight="162.0" prefWidth="321.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
                         <HBox alignment="CENTER_LEFT">
                             <Label prefHeight="16.0" prefWidth="286.0" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SESIONES HOY" HBox.hgrow="ALWAYS" />
@@ -141,7 +141,7 @@
 
                     <!-- Botones: Nueva Rutina / Nuevo Ejercicio -->
                     <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
-                  <Button fx:id="btnNuevaRutina1" maxWidth="Infinity" onAction="#handleNuevaRutina" prefHeight="44" prefWidth="180.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="NUEVA RUTINA">
+                   <Button fx:id="btnNuevaRutina1" maxWidth="Infinity" onAction="#handleNuevaRutina" prefHeight="44" prefWidth="180.0" styleClass="btn-secondary" text="NUEVA RUTINA">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -150,7 +150,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                         <Button fx:id="btnMostrarRutinas" maxWidth="Infinity" onAction="#handleMostrarRutinas" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="MOSTRAR RUTINAS">
+                         <Button fx:id="btnMostrarRutinas" maxWidth="Infinity" onAction="#handleMostrarRutinas" prefHeight="44" styleClass="btn-secondary" text="MOSTRAR RUTINAS">
                             <graphic>
                                 <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                                     <image><Image url="@../images/papel.png" /></image>
@@ -160,7 +160,7 @@
                     </VBox>
                <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
                   <children>
-                     <Button fx:id="btnNuevoEjercicio1" maxWidth="Infinity" onAction="#handleNuevoEjercicio" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="NUEVO EJERCICIO">
+                      <Button fx:id="btnNuevoEjercicio1" maxWidth="Infinity" onAction="#handleNuevoEjercicio" prefHeight="44" styleClass="btn-secondary" text="NUEVO EJERCICIO">
                         <graphic>
                            <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                               <image>
@@ -169,7 +169,7 @@
                            </ImageView>
                         </graphic>
                      </Button>
-                     <Button fx:id="btnMostrarEjercicios" maxWidth="Infinity" onAction="#handleMostrarEjercicios" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="MOSTRAR EJERCICIOS">
+                      <Button fx:id="btnMostrarEjercicios" maxWidth="Infinity" onAction="#handleMostrarEjercicios" prefHeight="44" styleClass="btn-secondary" text="MOSTRAR EJERCICIOS">
                         <graphic>
                            <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                               <image>
@@ -186,7 +186,7 @@
                 <!-- ── SECCION 2: Toolbar ── -->
                 <HBox alignment="CENTER_LEFT" spacing="12">
 
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Panel de Control">
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Panel de Control">
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
@@ -208,7 +208,7 @@
                     <!-- Filtro por especialidad -->
                     <ComboBox fx:id="cmbFiltroEspecialidad" onAction="#handleFiltroEspecialidad" prefHeight="44" prefWidth="202.0" promptText="Filtrar por especialidad..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;" />
 
-                    <Button fx:id="btnNuevoInstructor" onAction="#handleAgregarInstructor" prefHeight="44" prefWidth="191.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: black; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
+                    <Button fx:id="btnNuevoInstructor" onAction="#handleAgregarInstructor" prefHeight="44" prefWidth="191.0" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;                                    -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
                         <graphic>
                             <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                                 <image><Image url="@../images/add.png" /></image>
@@ -229,14 +229,14 @@
                              Esta es la estructura de cada tarjeta de instructor          -->
 
                         <!-- Card 1 -->
-                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #111316; -fx-background-radius: 12;                                      -fx-border-color: #282a2d; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
 
                             <!-- Imagen + badge especialidad -->
                             <StackPane prefHeight="180" prefWidth="258">
                                 <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
                                 <ImageView fx:id="imgCard1" fitHeight="180" fitWidth="258" preserveRatio="false" />
                                 <!-- Badge -->
-                                <Label alignment="CENTER" style="-fx-background-color: #D4FF00; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: black;                                               -fx-padding: 3 8 3 8;" text="TREN SUPERIOR" StackPane.alignment="TOP_LEFT">
+                                <Label alignment="CENTER" style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                               -fx-padding: 3 8 3 8;" text="TREN SUPERIOR" StackPane.alignment="TOP_LEFT">
                                     <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
                                 </Label>
                             </StackPane>
@@ -244,23 +244,20 @@
                             <!-- Info -->
                             <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Marcus Thorne" />
-                                <HBox alignment="CENTER_LEFT" spacing="6">
-                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="★ 4.9" />
-                                    <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                                   -fx-text-fill: #6b7280;" text="(128 sesiones)" />
-                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
                                 <!-- Tags -->
                                 <HBox spacing="6">
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="FUERZA" />
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="HIPERTROFIA" />
                                 </HBox>
                                 <!-- Botones -->
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="RESERVAR SESION" />
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                                -fx-border-color: #bdf4ff; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
                             </VBox>
                         </VBox>
 
                         <!-- Card 2 -->
-                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #111316; -fx-background-radius: 12;                                      -fx-border-color: #282a2d; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
                             <StackPane prefHeight="180" prefWidth="258">
                                 <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
                                 <ImageView fx:id="imgCard2" fitHeight="180" fitWidth="258" preserveRatio="false" />
@@ -270,21 +267,18 @@
                             </StackPane>
                             <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Elena Rodriguez" />
-                                <HBox alignment="CENTER_LEFT" spacing="6">
-                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="★ 5.0" />
-                                    <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                                   -fx-text-fill: #6b7280;" text="(94 sesiones)" />
-                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
                                 <HBox spacing="6">
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="PIERNAS" />
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="MOVILIDAD" />
                                 </HBox>
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="RESERVAR SESION" />
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                                -fx-border-color: #bdf4ff; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
                             </VBox>
                         </VBox>
 
                         <!-- Card 3 -->
-                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #111316; -fx-background-radius: 12;                                      -fx-border-color: #282a2d; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
                             <StackPane prefHeight="180" prefWidth="258">
                                 <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
                                 <ImageView fx:id="imgCard3" fitHeight="180" fitWidth="258" preserveRatio="false" />
@@ -294,25 +288,22 @@
                             </StackPane>
                             <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
                                 <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Jaxson Vane" />
-                                <HBox alignment="CENTER_LEFT" spacing="6">
-                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="★ 4.8" />
-                                    <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                                   -fx-text-fill: #6b7280;" text="(210 sesiones)" />
-                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
                                 <HBox spacing="6">
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="HIIT" />
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="RESISTENCIA" />
                                 </HBox>
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="RESERVAR SESION" />
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                                -fx-border-color: #bdf4ff; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
                             </VBox>
                         </VBox>
 
                         <!-- Card 4 -->
-                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #111316; -fx-background-radius: 12;                                      -fx-border-color: #282a2d; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
                             <StackPane prefHeight="180" prefWidth="258">
                                 <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
                                 <ImageView fx:id="imgCard4" fitHeight="180" fitWidth="258" preserveRatio="false" />
-                                <Label alignment="CENTER" style="-fx-background-color: #9cf0ff; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #001f24;                                               -fx-padding: 3 8 3 8;" text="NUTRICION" StackPane.alignment="TOP_LEFT">
+                                <Label alignment="CENTER" style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                               -fx-padding: 3 8 3 8;" text="NUTRICION" StackPane.alignment="TOP_LEFT">
                                     <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
                                 </Label>
                             </StackPane>
@@ -326,8 +317,8 @@
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="DIETA" />
                                     <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="SUPLEMENTOS" />
                                 </HBox>
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="RESERVAR SESION" />
-                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                                -fx-border-color: #bdf4ff; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
                             </VBox>
                         </VBox>
 
@@ -353,7 +344,7 @@
                     <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
                     <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: #bdf4ff;" text="Asistente Gymbrot AI" HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: #bdf4ff; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Asistente Gymbrot AI" HBox.hgrow="ALWAYS" />
                         <Button fx:id="btnEmparejamiento" onAction="#handleEmparejamientoIA" prefHeight="40" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                        -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                        -fx-border-color: #bdf4ff; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 6 16 6 16;" text="Ejecutar Emparejamiento con IA" />
                     </HBox>
 

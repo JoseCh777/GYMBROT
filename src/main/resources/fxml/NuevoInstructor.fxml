@@ -110,7 +110,7 @@
             <!-- Botones header -->
             <HBox alignment="CENTER" spacing="12">
                 <Button fx:id="btnCancelar" onAction="#handleCancelar" prefHeight="36" style="-fx-background-color: #1e2023; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="CANCELAR" />
-                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="  GUARDAR NUEVO INSTRUCTOR">
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="  GUARDAR NUEVO INSTRUCTOR">
                <graphic>
                   <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
                      <image>

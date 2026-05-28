@@ -80,12 +80,12 @@ VALUES ('Plan Silver', 'Acceso básico a sala de pesas y cardio',
 INSERT INTO PLANES_MEMBRESIAS (nombre, descripcion, precio_mensual, precio_semestral, precio_anual, beneficios)
 VALUES ('Plan Gold', 'Acceso completo más clases grupales',
     130000, 710000, 1360000,
-    'Acceso total - Clases grupales - Casillero - Toalla');
+    'Acceso sala pesas - Acceso cardio - Casillero básico - Clases grupales - Toalla');
 
 INSERT INTO PLANES_MEMBRESIAS (nombre, descripcion, precio_mensual, precio_semestral, precio_anual, beneficios)
 VALUES ('Plan Black', 'Acceso premium con instructor personal y nutricionista',
     200000, 1100000, 2100000,
-    'Acceso total - Clases grupales - Instructor personal - Nutricionista - Casillero VIP - Toalla - Bebida');
+    'Acceso sala pesas - Acceso cardio - Casillero básico - Clases grupales - Toalla - Instructor personal - Nutricionista - Casillero VIP - Bebida');
 
 -- ── EJERCICIOS ────────────────────────────────────────────────
 INSERT INTO EJERCICIOS (nombre, grupo_muscular, nivel, descripcion, series, repeticiones)

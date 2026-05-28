@@ -155,7 +155,7 @@
 
                 <!-- Boton validar -->
                 <VBox maxWidth="400" spacing="12">
-                    <Button fx:id="btnValidarIngreso" maxWidth="Infinity" onAction="#handleValidarIngreso" prefHeight="52" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 16px; -fx-font-weight: 700; -fx-text-fill: #111316; -fx-cursor: hand;" text="VALIDAR INGRESO" />
+                    <Button fx:id="btnValidarIngreso" maxWidth="Infinity" onAction="#handleValidarIngreso" prefHeight="52" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="VALIDAR INGRESO" />
                 </VBox>
 
             </VBox>

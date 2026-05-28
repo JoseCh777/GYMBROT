@@ -6,36 +6,21 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 
 <StackPane prefHeight="800" prefWidth="1280" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.loginController">
 
-    <!-- ═══════════════════════════════════════════
-         CAPA 1: Imagen de fondo con overlay
-    ═══════════════════════════════════════════ -->
     <StackPane.margin>
         <Insets />
     </StackPane.margin>
 
-    <ImageView fx:id="backgroundImage" fitHeight="800" fitWidth="1280" mouseTransparent="true" opacity="0.2" preserveRatio="false">
-        <image>
-            <Image url="https://lh3.googleusercontent.com/aida-public/AB6AXuDiWoj1jllVuxaWW63dA1L-GiMWA9hjHq8R9STztuB-R3GxlJm80Mmhs19Si_3tqNRuUsKnP6dBDVFUOy2oGL6k7haUA4Iq3ZCX6b-J42iLtopfQlwH85c5k3T0bCTXWssMgwgml-MUYR6M15O_tPu6qOCd_yL3h4q_XhJVi-cx-0ug6ro4deOF60SRirCy3v1jCJCAcoZKaMy0RDmGU1KrCPCJrvRLT9zVfOJPwoD9F5NItHbShyVJUJDfa1R8MC5t1HrPNZBKLiw" />
-        </image>
-    </ImageView>
-
-    <!-- Overlay degradado -->
-    <Rectangle height="800" mouseTransparent="true" opacity="0.85" style="-fx-fill: linear-gradient(to bottom, #111316 0%, transparent 35%, transparent 65%, #111316 100%);" width="1280" />
-
     <!-- ═══════════════════════════════════════════
          CAPA 4: Contenido principal centrado
     ═══════════════════════════════════════════ -->
-    <VBox alignment="CENTER" maxWidth="440" prefWidth="440" spacing="0">
+    <VBox alignment="CENTER" maxWidth="440.0" prefWidth="440.0" spacing="0">
 
         <!-- Header de marca -->
         <VBox alignment="CENTER" spacing="8">
@@ -49,18 +34,18 @@
         </VBox>
 
         <!-- ── Tarjeta de Login ── -->
-        <VBox fx:id="loginCard" spacing="0" style="-fx-background-color: rgba(30,32,35,0.75);                    -fx-background-radius: 12;                    -fx-border-color: rgba(255,255,255,0.05);                    -fx-border-width: 1;                    -fx-border-radius: 12;                    -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.15), 30, 0.3, 0, 0);">
+        <VBox fx:id="loginCard" spacing="0" style="-fx-background-color: #1a1d21;                    -fx-background-radius: 12;                    -fx-border-color: rgba(255,255,255,0.08);                    -fx-border-width: 1;                    -fx-border-radius: 12;                    -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.15), 30, 0.3, 0, 0);">
             <padding>
                 <Insets bottom="32" left="32" right="32" top="32" />
             </padding>
 
             <!-- Encabezado de la tarjeta -->
-            <VBox prefHeight="64.0" prefWidth="416.0" spacing="4">
+            <VBox alignment="CENTER" prefHeight="64.0" prefWidth="416.0" spacing="4">
                 <VBox.margin>
                     <Insets bottom="24" />
                 </VBox.margin>
-                <Label prefHeight="40.0" prefWidth="382.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: white;" text="              Bienvenido" textAlignment="CENTER" />
-                <Label prefHeight="20.0" prefWidth="458.0" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #c5c9ac;" text="                                  Ingrese sus datos" />
+                <Label prefHeight="40.0" prefWidth="169.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: white;" text="Bienvenido" textAlignment="CENTER" />
+                <Label prefHeight="20.0" prefWidth="126.0" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #c5c9ac;" text="Ingrese sus datos" textAlignment="CENTER" />
             </VBox>
 
             <!-- Campo: Usuario -->
@@ -115,7 +100,7 @@
             </HBox>
 
             <!-- Botón Iniciar Sesión -->
-            <Button fx:id="loginButton" maxWidth="Infinity" onAction="#BtnIniciarSecion" prefHeight="56" style="-fx-background-color: #CAF300;                        -fx-background-radius: 12;                        -fx-font-family: 'Lexend';                        -fx-font-size: 18px;                        -fx-font-weight: 700;                        -fx-text-fill: #2a3400;                        -fx-cursor: hand;                        -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.35), 24, 0.4, 0, 6);" text="Iniciar Sesión" />
+            <Button fx:id="loginButton" maxWidth="Infinity" onAction="#BtnIniciarSecion" prefHeight="56" style="-fx-background-color: #CAF300; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: black; -fx-border-width: 0; -fx-border-radius: 8; -fx-cursor: hand;" text="Iniciar Sesión" />
 
         </VBox>
 
@@ -128,15 +113,5 @@
         </VBox>
 
     </VBox>
-
-    <!-- ═══════════════════════════════════════════
-         CAPA 2: Texto decorativo inferior derecho
-    ═══════════════════════════════════════════ -->
-    <Label mouseTransparent="true" opacity="0.04" style="-fx-font-family: 'Lexend'; -fx-font-size: 96px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="GYMBROT">
-        <StackPane.alignment>BOTTOM_RIGHT</StackPane.alignment>
-        <StackPane.margin>
-            <Insets bottom="20" right="20" />
-        </StackPane.margin>
-    </Label>
 
 </StackPane>

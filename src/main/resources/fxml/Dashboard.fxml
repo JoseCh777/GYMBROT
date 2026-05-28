@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
@@ -169,11 +168,11 @@
 
                         <HBox alignment="CENTER_LEFT">
                             <VBox HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                               -fx-font-weight: 600; -fx-text-fill: white;" text="Asistencia Semanal" />
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                               -fx-font-weight: 600; -fx-text-fill: white;                                               -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Asistencia Semanal" />
                             </VBox>
                             <HBox spacing="8">
                                 <Button fx:id="btnDiario" onAction="#handleViewDiario" prefHeight="30" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: white;                                                -fx-border-color: #333538; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="Diario" />
-                                <Button fx:id="btnSemanal" onAction="#handleViewSemanal" prefHeight="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;" text="Semanal" />
+                                <Button fx:id="btnSemanal" onAction="#handleViewSemanal" prefHeight="30" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: black;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="Semanal" />
                             </HBox>
                         </HBox>
                           <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                               -fx-text-fill: #6b7280;" text="Ingresos de miembros - ultimos 7 dias" />
@@ -214,7 +213,7 @@
                     <VBox minWidth="260" prefHeight="400.0" prefWidth="331.0" spacing="20" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
                         <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 
-                        <Label prefHeight="83.0" prefWidth="194.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;" text="Demografia en Vivo" />
+                        <Label prefHeight="82.0" prefWidth="286.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: white;                                       -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Demografia en Vivo" />
 
                         <!-- Adulto -->
                         <HBox alignment="CENTER_LEFT" spacing="16" VBox.vgrow="ALWAYS">
@@ -269,7 +268,7 @@
 
                     <HBox alignment="BOTTOM_LEFT">
                         <VBox HBox.hgrow="ALWAYS">
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="HORAS PICO DE OPERACION" />
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                           -fx-font-weight: 700; -fx-text-fill: white;                                           -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="HORAS PICO DE OPERACION" />
                             <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                           -fx-text-fill: #6b7280;" text="Ocupacion diaria promedio por hora" />
                         </VBox>
                         <HBox alignment="CENTER" spacing="16">
@@ -313,31 +312,7 @@
                 </VBox>
 
                 <!-- SECCION 4: Acciones rapidas -->
-                <HBox spacing="20">
-
-                    <HBox alignment="CENTER_LEFT" onMouseClicked="#handleAgregarMiembro" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
-                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
-                        <StackPane prefHeight="48" prefWidth="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 24;">
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 14px;                                           -fx-font-weight: 900; -fx-text-fill: black;" text="Nuevo" />
-                        </StackPane>
-                        <VBox>
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="Agregar Nuevo Miembro" />
-                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                           -fx-text-fill: #6b7280;" text="Registro rapido de un nuevo atleta en el sistema" />
-                        </VBox>
-                    </HBox>
-
-                    <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                  -fx-cursor: hand;" HBox.hgrow="ALWAYS">
-                        <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
-                        <StackPane prefHeight="48" prefWidth="48" style="-fx-background-color: #bdf4ff; -fx-background-radius: 24;">
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 13px;                                           -fx-font-weight: 900; -fx-text-fill: #00363d;" text="PDF" />
-                        </StackPane>
-                        <VBox>
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 15px;                                           -fx-font-weight: 700; -fx-text-fill: white;" text="Exportar Informe de Rendimiento" />
-                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                           -fx-text-fill: #6b7280;" text="Generar PDF para resumen mensual del negocio" />
-                        </VBox>
-                    </HBox>
-
-                </HBox>
+                <HBox spacing="20" />
 
             </VBox>
         </ScrollPane>

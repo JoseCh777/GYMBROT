@@ -2,6 +2,7 @@ package org.gymbrot.controller;
 
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,12 +15,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import org.gymbrot.Main;
 import org.gymbrot.dao.CitaDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.model.Cita;
@@ -240,13 +244,15 @@ public class GestionCitasController implements Initializable {
         LocalDate hoy = LocalDate.now();
 
         List<Cita> proximas = todas.stream()
-                .filter(c -> {
-                return !c.getFecha().isBefore(hoy);
-                })
+                .filter(c -> !c.getFecha().isBefore(hoy)
+                        && !"CANCELADA".equalsIgnoreCase(c.getEstado())
+                        && !"COMPLETADA".equalsIgnoreCase(c.getEstado()))
                 .collect(Collectors.toList());
 
         List<Cita> anteriores = todas.stream()
-                .filter(c -> c.getFecha().isBefore(hoy))
+                .filter(c -> c.getFecha().isBefore(hoy)
+                        || "CANCELADA".equalsIgnoreCase(c.getEstado())
+                        || "COMPLETADA".equalsIgnoreCase(c.getEstado()))
                 .collect(Collectors.toList());
 
         tablaCitasProximas.setItems(FXCollections.observableArrayList(proximas));
@@ -295,10 +301,14 @@ public class GestionCitasController implements Initializable {
             });
             LocalDate hoy = LocalDate.now();
             List<Cita> prox = filtradas.stream()
-                    .filter(c -> !c.getFecha().isBefore(hoy))
+                    .filter(c -> !c.getFecha().isBefore(hoy)
+                            && !"CANCELADA".equalsIgnoreCase(c.getEstado())
+                            && !"COMPLETADA".equalsIgnoreCase(c.getEstado()))
                     .collect(Collectors.toList());
             List<Cita> ant = filtradas.stream()
-                    .filter(c -> c.getFecha().isBefore(hoy))
+                    .filter(c -> c.getFecha().isBefore(hoy)
+                            || "CANCELADA".equalsIgnoreCase(c.getEstado())
+                            || "COMPLETADA".equalsIgnoreCase(c.getEstado()))
                     .collect(Collectors.toList());
             tablaCitasProximas.setItems(FXCollections.observableArrayList(prox));
             citasAnteriores.setAll(ant);
@@ -351,14 +361,26 @@ public class GestionCitasController implements Initializable {
     }
 
     private void handleVerCita(Cita cita) {
-        mostrarAlerta("Detalles de Cita",
-                "Cliente: " + obtenerNombreCliente(cita.getIdCliente()) + "\n" +
-                "Instructor: " + obtenerNombreInstructor(cita.getIdInstructor()) + "\n" +
-                "Fecha: " + cita.getFecha() + "\n" +
-                "Hora: " + cita.getHora() + "\n" +
-                "Tipo: " + cita.getTipoCita() + "\n" +
-                "Estado: " + cita.getEstado() + "\n" +
-                "Notas: " + (cita.getNotas() != null ? cita.getNotas() : "Sin notas"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PerfilCita.fxml"));
+            Parent overlay = loader.load();
+            PerfilCitaController ctrl = loader.getController();
+
+            Scene scene = sideNav.getScene();
+            Parent rootActual = scene.getRoot();
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(rootActual);
+            wrapper.getChildren().add(overlay);
+
+            ctrl.setWrapperStack(wrapper, overlay);
+            ctrl.setOnClose(this::cargarCitas);
+            ctrl.setCita(cita);
+
+            scene.setRoot(wrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error", "No se pudo abrir la vista de la cita");
+        }
     }
 
     private void handleEditarCita(Cita cita) {
@@ -385,18 +407,13 @@ public class GestionCitasController implements Initializable {
     }
 
     private void handleCancelarCita(Cita cita) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Cancelar Cita");
-        confirm.setHeaderText("Confirmar cancelacion");
-        confirm.setContentText("Desea cancelar la cita con " + obtenerNombreCliente(cita.getIdCliente()) +
-                " para el " + cita.getFecha() + "?");
-        confirm.showAndWait().ifPresent(r -> {
-            if (r == ButtonType.OK) {
-                cita.setEstado("CANCELADA");
-                citaDAO.actualizar(cita);
-                cargarCitas();
-            }
-        });
+        if (AlertaPersonalizada.confirmar("Cancelar Cita",
+                "Desea cancelar la cita con " + obtenerNombreCliente(cita.getIdCliente()) +
+                " para el " + cita.getFecha() + "?")) {
+            cita.setEstado("CANCELADA");
+            citaDAO.actualizar(cita);
+            cargarCitas();
+        }
     }
 
     private String obtenerNombreCliente(String id) {
@@ -412,22 +429,11 @@ public class GestionCitasController implements Initializable {
     }
 
     private void mostrarAlerta(String titulo, String contenido) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, contenido);
     }
 
     private void mostrarError(String titulo, String contenido) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(contenido);
-        DialogPane dp = alert.getDialogPane();
-        dp.setStyle("-fx-background-color: #1a1d21; -fx-font-family: 'Inter';");
-        dp.lookup(".content.label").setStyle("-fx-text-fill: white;");
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, contenido);
     }
 
     private void agregarAnimaciones() {
@@ -448,24 +454,13 @@ public class GestionCitasController implements Initializable {
     @FXML private void handleNavAI() { navegar("/fxml/GymbroAI.fxml"); }
 
     private void navegar(String fxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error", "No se pudo cargar la vista: " + fxml);
-        }
+        Main.navegarA(fxml);
     }
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegar("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegar("/fxml/login.fxml");
+        }
     }
 }

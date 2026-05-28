@@ -3,10 +3,8 @@ package org.gymbrot.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -16,16 +14,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.stage.Stage;
+import org.gymbrot.Main;
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.dao.ProgresoDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Progreso;
 import org.gymbrot.service.ProgresoService;
 import org.gymbrot.util.ValidacionUtil;
-
-import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -45,13 +41,11 @@ public class    ProgresoFisicoController implements Initializable {
 
     @FXML
     private HBox topBar;
-    @FXML
-    private Button btnExportarReporte, btnVerPrograma;
 
     @FXML
     private ImageView imgMiembro;
     @FXML
-    private Label lblNombreMiembro, lblIdMiembro, lblPesoActual, lblGrasaActual;
+    private Label lblNombreMiembro, lblIdMiembro, lblPesoActual, lblGrasaActual, lblInicialesAvatar;
 
     @FXML
     private TextField txtPeso, txtAltura, txtIMC, txtGrasa, txtMusculo;
@@ -89,8 +83,6 @@ public class    ProgresoFisicoController implements Initializable {
     private TableColumn<Progreso, Void> colAcciones;
     @FXML
     private Label lblRegistros;
-    @FXML
-    private Button btnFiltrarHistorial, btnAnterior, btnSiguiente, btnPag1, btnPag2, btnPag3;
 
     private ClienteDAO clienteDAO;
     private ProgresoDAO progresoDAO;
@@ -235,13 +227,21 @@ public class    ProgresoFisicoController implements Initializable {
         lblNombreMiembro.setText(cliente.getNombre() + " " + cliente.getApellidos());
         lblIdMiembro.setText("ID: #" + cliente.getNumeroIdentificacion());
 
-        if (cliente.getFotoUrl() != null && !cliente.getFotoUrl().isEmpty()) {
+        String fotoUrl = cliente.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isBlank()) {
             try {
-                Image img = new Image(cliente.getFotoUrl(), 120, 120, true, true);
-                imgMiembro.setImage(img);
+                Image img = new Image(new java.io.File(fotoUrl).toURI().toString(), false);
+                if (!img.isError()) {
+                    imgMiembro.setImage(img);
+                    lblInicialesAvatar.setVisible(false);
+                } else {
+                    mostrarIniciales();
+                }
             } catch (Exception e) {
-                imgMiembro.setImage(null);
+                mostrarIniciales();
             }
+        } else {
+            mostrarIniciales();
         }
 
         List<Progreso> ultimos = progresoService.listarProgreso(idCliente);
@@ -250,6 +250,17 @@ public class    ProgresoFisicoController implements Initializable {
             lblPesoActual.setText(String.format("%.1f kg", ultimo.getPeso()));
             lblGrasaActual.setText(String.format("%.1f %%", ultimo.getPorcentajeGrasa()));
         }
+    }
+
+    private void mostrarIniciales() {
+        String nombre = cliente.getNombre();
+        String apellido = cliente.getApellidos();
+        String iniciales = "";
+        if (nombre != null && !nombre.isBlank()) iniciales += nombre.charAt(0);
+        if (apellido != null && !apellido.isBlank()) iniciales += apellido.charAt(0);
+        lblInicialesAvatar.setText(iniciales.isBlank() ? "?" : iniciales.toUpperCase());
+        lblInicialesAvatar.setVisible(true);
+        imgMiembro.setImage(null);
     }
 
     // ── HISTORIAL (TABLA + PAGINACIÓN) ─────────────────────────────────────
@@ -416,6 +427,13 @@ public class    ProgresoFisicoController implements Initializable {
 
         chartTendencia.getData().addAll(seriePeso, serieGrasa);
 
+        List<String> ordenCategorias = cronologico.stream()
+                .map(p -> p.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM")))
+                .distinct()
+                .collect(Collectors.toList());
+        ejeX.setAutoRanging(false);
+        ejeX.setCategories(FXCollections.observableArrayList(ordenCategorias));
+
         // Estilo dark para el chart
         chartTendencia.setStyle("-fx-background-color: transparent;");
         chartTendencia.setCreateSymbols(true);
@@ -559,13 +577,9 @@ public class    ProgresoFisicoController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     private void configurarNavActivo() {
@@ -613,19 +627,10 @@ public class    ProgresoFisicoController implements Initializable {
     }
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Main.navegarA(rutaFxml);
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, mensaje, ButtonType.OK);
-        alert.setTitle("Progreso Fisico");
-        alert.setHeaderText(null);
-        alert.showAndWait();
+        AlertaPersonalizada.info("Informacion", mensaje);
     }
 }

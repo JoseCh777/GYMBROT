@@ -21,8 +21,10 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.Main;
 import org.gymbrot.dao.*;
 import org.gymbrot.model.*;
+import org.gymbrot.util.AlertaPersonalizada;
 
 import java.io.File;
 import java.io.IOException;
@@ -140,11 +142,11 @@ public class GestionInstructoresController implements Initializable {
 
     private String badgeColor(int idEsp) {
         return switch (idEsp) {
-            case 1 -> "-fx-background-color: #D4FF00; -fx-text-fill: black;";
-            case 2 -> "-fx-background-color: #00e3fd; -fx-text-fill: #001f24;";
-            case 3 -> "-fx-background-color: #e9ddff; -fx-text-fill: #3c0090;";
-            case 4 -> "-fx-background-color: #9cf0ff; -fx-text-fill: #001f24;";
-            default -> "-fx-background-color: #D4FF00; -fx-text-fill: black;";
+            case 1 -> "-fx-background-color: #1f2226; -fx-text-fill: #9ca3af;";
+            case 2 -> "-fx-background-color: #1f2226; -fx-text-fill: #9ca3af;";
+            case 3 -> "-fx-background-color: #1f2226; -fx-text-fill: #9ca3af;";
+            case 4 -> "-fx-background-color: #1f2226; -fx-text-fill: #9ca3af;";
+            default -> "-fx-background-color: #1f2226; -fx-text-fill: #9ca3af;";
         };
     }
 
@@ -251,8 +253,8 @@ public class GestionInstructoresController implements Initializable {
     private VBox crearTarjeta(InstructorCard inst) {
         VBox card = new VBox(0);
         card.setPrefWidth(258);
-        card.setStyle("-fx-background-color: #111316; -fx-background-radius: 12;" +
-                "-fx-border-color: #282a2d; -fx-border-width: 1; -fx-border-radius: 12; -fx-cursor: hand;");
+        card.setStyle("-fx-background-color: #0c0e11; -fx-background-radius: 12;" +
+                "-fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-cursor: hand;");
 
         // Imagen + badge
         StackPane imageStack = new StackPane();
@@ -297,9 +299,10 @@ public class GestionInstructoresController implements Initializable {
         Button btnReservar = new Button("RESERVA CITA");
         btnReservar.setMaxWidth(Double.MAX_VALUE);
         btnReservar.setPrefHeight(36);
-        btnReservar.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +
+        btnReservar.setStyle("-fx-background-color: #1a1d21; -fx-background-radius: 8;" +
                 "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                "-fx-font-weight: 700; -fx-text-fill: black; -fx-cursor: hand;");
+                "-fx-font-weight: 700; -fx-text-fill: #e2e2e6;" +
+                "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;");
         ScaleTransition grow = new ScaleTransition(Duration.millis(180), btnReservar);
         ScaleTransition shrink = new ScaleTransition(Duration.millis(180), btnReservar);
         grow.setToX(1.03); grow.setToY(1.03);
@@ -312,11 +315,10 @@ public class GestionInstructoresController implements Initializable {
         Button btnRutina = new Button("VER RUTINA");
         btnRutina.setMaxWidth(Double.MAX_VALUE);
         btnRutina.setPrefHeight(36);
-        btnRutina.setStyle("-fx-background-color: rgba(189,244,255,0.15); -fx-background-radius: 8;" +
+        btnRutina.setStyle("-fx-background-color: #1a1d21; -fx-background-radius: 8;" +
                 "-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;" +
-                "-fx-font-weight: 700; -fx-text-fill: #bdf4ff;" +
-                "-fx-border-color: #bdf4ff; -fx-border-width: 1;" +
-                "-fx-border-radius: 8; -fx-cursor: hand;");
+                "-fx-font-weight: 700; -fx-text-fill: #e2e2e6;" +
+                "-fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;");
         ScaleTransition grow2 = new ScaleTransition(Duration.millis(180), btnRutina);
         ScaleTransition shrink2 = new ScaleTransition(Duration.millis(180), btnRutina);
         grow2.setToX(1.03); grow2.setToY(1.03);
@@ -431,8 +433,8 @@ public class GestionInstructoresController implements Initializable {
     private void cargarAIInsight() {
         lblAIInsight.setText(
                 "He analizado los horarios con mayor demanda de instructores. " +
-                "Sugiero emparejar a Marcus Thorne con los clientes de alta intensidad " +
-                "para maximizar la retencion en horario pico."
+                        "Sugiero emparejar a Marcus Thorne con los clientes de alta intensidad " +
+                        "para maximizar la retencion en horario pico."
         );
     }
 
@@ -440,7 +442,7 @@ public class GestionInstructoresController implements Initializable {
     private void handleEmparejamientoIA() {
         mostrarInfo("Emparejamiento con IA",
                 "Ejecutando algoritmo de emparejamiento inteligente...\n" +
-                "Analizando perfiles de clientes e instructores.");
+                        "Analizando perfiles de clientes e instructores.");
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -640,21 +642,15 @@ public class GestionInstructoresController implements Initializable {
     }
 
     private void handleEliminarInstructor(String id, String nombre) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Desactivar a " + nombre + "?", ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmar desactivacion");
-        confirm.setHeaderText(null);
-        confirm.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) {
-                boolean ok = instructorDAO.desactivar(id);
-                if (ok) {
-                    cargarDatosMock();
-                    aplicarFiltro();
-                } else {
-                    mostrarError("Error", "No se pudo desactivar el instructor.");
-                }
+        if (AlertaPersonalizada.confirmar("Confirmar desactivacion", "Desactivar a " + nombre + "?")) {
+            boolean ok = instructorDAO.desactivar(id);
+            if (ok) {
+                cargarDatosMock();
+                aplicarFiltro();
+            } else {
+                mostrarError("Error", "No se pudo desactivar el instructor.");
             }
-        });
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -671,13 +667,9 @@ public class GestionInstructoresController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -771,29 +763,14 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error de navegacion", "No se pudo cargar: " + rutaFxml);
-        }
+        Main.navegarA(rutaFxml);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 }

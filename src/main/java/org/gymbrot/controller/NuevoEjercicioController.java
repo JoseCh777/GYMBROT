@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.gymbrot.dao.EjercicioDAO;
 import org.gymbrot.model.Ejercicio;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
@@ -131,14 +132,7 @@ public class NuevoEjercicioController implements Initializable {
             guardado = ejercicioDAO.insertar(e);
         }
         if (guardado) {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Ejercicio Guardado");
-            info.setHeaderText(null);
-            String msg = modoEdicion
-                ? "Ejercicio \"" + e.getNombre() + "\" actualizado exitosamente."
-                : "Ejercicio \"" + e.getNombre() + "\" guardado exitosamente.";
-            info.setContentText(msg);
-            info.showAndWait();
+            AlertaPersonalizada.exito("Ejercicio Guardado", "El ejercicio se guardo correctamente.");
             cerrarOverlay();
         } else {
             mostrarAlerta("Error al guardar el ejercicio. Intenta de nuevo.");
@@ -157,10 +151,6 @@ public class NuevoEjercicioController implements Initializable {
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validacion");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error("Validacion", mensaje);
     }
 }

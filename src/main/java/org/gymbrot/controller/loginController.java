@@ -13,7 +13,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.Main;
 import org.gymbrot.dao.UsuarioDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.model.Usuario;
 import org.gymbrot.service.HuellaService;
 import org.mindrot.jbcrypt.BCrypt;
@@ -191,29 +193,15 @@ public class loginController implements Initializable {
     }
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error", "No se pudo cargar la vista: " + rutaFxml);
-        }
+        // Usa el navegador global del Main para preservar la TitleBar
+        Main.navegarA(rutaFxml, "Dashboard");
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 }

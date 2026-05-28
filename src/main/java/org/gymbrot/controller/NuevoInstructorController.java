@@ -16,7 +16,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.Main;
 import org.gymbrot.dao.EspecialidadDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Especialidad;
@@ -614,14 +616,9 @@ public class NuevoInstructorController implements Initializable {
                 || !txtNumeroId.getText().isBlank();
 
         if (hayDatos) {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Tienes datos sin guardar. \u00bfDeseas salir de todas formas?",
-                    ButtonType.YES, ButtonType.NO);
-            confirm.setTitle("Cancelar registro");
-            confirm.setHeaderText(null);
-            confirm.showAndWait().ifPresent(btn -> {
-                if (btn == ButtonType.YES) navegarA("/fxml/GestionInstructores.fxml");
-            });
+            if (AlertaPersonalizada.confirmar("Confirmar", "Hay cambios sin guardar. Deseas salir sin guardar?")) {
+                navegarA("/fxml/GestionInstructores.fxml");
+            }
         } else {
             navegarA("/fxml/GestionInstructores.fxml");
         }
@@ -641,13 +638,9 @@ public class NuevoInstructorController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-            "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -655,29 +648,14 @@ public class NuevoInstructorController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error de navegacion", "No se pudo cargar: " + rutaFxml);
-        }
+        Main.navegarA(rutaFxml);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 }

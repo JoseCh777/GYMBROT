@@ -114,7 +114,7 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioSilver" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="49" />
+                            <Label fx:id="lblPrecioSilver" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="49" />
                             <Label fx:id="lblPeriodoSilver" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
@@ -122,27 +122,11 @@
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
-                        <VBox spacing="12">
+                        <VBox fx:id="vbSilverBeneficios" spacing="8">
                             <VBox.margin><Insets bottom="28" /></VBox.margin>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Acceso General al Gimnasio (6AM - 10PM)" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Panel de Rendimiento Estandar" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="1 Revision Mensual con Instructor" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #4b5563;" text="--" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #4b5563;" text="Suite de Recuperacion Biometrica" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarSilver" maxWidth="Infinity" onAction="#handleSeleccionarSilver" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarSilver" maxWidth="Infinity" onAction="#handleSeleccionarSilver" prefHeight="44" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
                     <!-- Card: Black (destacada - mejor opcion) -->
@@ -162,7 +146,7 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioBlack" style="-fx-font-family: 'Lexend'; -fx-font-size: 64px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="200" />
+                            <Label fx:id="lblPrecioBlack" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="200" />
                             <Label fx:id="lblPeriodoBlack" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
@@ -170,31 +154,11 @@
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
-                        <VBox spacing="12">
+                        <VBox fx:id="vbBlackBeneficios" spacing="8">
                             <VBox.margin><Insets bottom="28" /></VBox.margin>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="Acceso Total al Gimnasio (4AM - 12AM)" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="Analitica Avanzada de Salud" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="Clases de Entrenamiento Grupal Semanales" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="Herramientas de Seguimiento Nutricional" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="Instructor Personal y Nutricionista" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarBlack" maxWidth="Infinity" onAction="#handleSeleccionarBlack" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #121417; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.3), 15, 0, 0, 0);" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarBlack" maxWidth="Infinity" onAction="#handleSeleccionarBlack" prefHeight="48" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
                     <!-- Card: Gold -->
@@ -208,7 +172,7 @@
 
                         <HBox alignment="BASELINE_LEFT" spacing="2">
                             <VBox.margin><Insets bottom="4" /></VBox.margin>
-                            <Label fx:id="lblPrecioGold" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="130" />
+                            <Label fx:id="lblPrecioGold" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="130" />
                             <Label fx:id="lblPeriodoGold" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
                         </HBox>
 
@@ -216,31 +180,11 @@
                             <VBox.margin><Insets bottom="24" /></VBox.margin>
                         </Label>
 
-                        <VBox spacing="12">
+                        <VBox fx:id="vbGoldBeneficios" spacing="8">
                             <VBox.margin><Insets bottom="28" /></VBox.margin>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Acceso Prioritario 24/7 en Todo Lugar" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Correccion de Forma por IA en Tiempo Real" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Recuperacion Biometrica y Crioterapia" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Conserje de Rendimiento Personal" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="10">
-                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="OK" />
-                                <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #d1d5db;" text="Pases de Invitado Ilimitados" wrapText="true" HBox.hgrow="ALWAYS" />
-                            </HBox>
                         </VBox>
 
-                        <Button fx:id="btnSeleccionarGold" maxWidth="Infinity" onAction="#handleSeleccionarGold" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                        <Button fx:id="btnSeleccionarGold" maxWidth="Infinity" onAction="#handleSeleccionarGold" prefHeight="44" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
                     </VBox>
 
                 </HBox>
@@ -285,7 +229,7 @@
                     </VBox>
 
                     <VBox spacing="4" HBox.hgrow="ALWAYS">
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: white;" text="¿No estas seguro de que plan se ajusta a tus objetivos?" />
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="¿No estas seguro de que plan se ajusta a tus objetivos?" />
                         <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #6b7280;" text="Pidele a Gymbrot AI que analice tus datos de rendimiento y sugiera el nivel optimo." wrapText="true" />
                     </VBox>
 

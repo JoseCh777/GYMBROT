@@ -19,7 +19,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.gymbrot.Main;
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.model.Cliente;
 import org.gymbrot.model.Usuario;
@@ -702,14 +704,9 @@ public class NuevoClienteController implements Initializable {
                 || !txtNumeroDoc.getText().isBlank();
 
         if (hayDatos) {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Tienes datos sin guardar. ¿Deseas salir de todas formas?",
-                    ButtonType.YES, ButtonType.NO);
-            confirm.setTitle("Cancelar registro");
-            confirm.setHeaderText(null);
-            confirm.showAndWait().ifPresent(btn -> {
-                if (btn == ButtonType.YES) navegarA("/fxml/GestionClientes.fxml");
-            });
+            if (AlertaPersonalizada.confirmar("Confirmar", "Hay cambios sin guardar. Deseas salir sin guardar?")) {
+                navegarA("/fxml/GestionClientes.fxml");
+            }
         } else {
             navegarA("/fxml/GestionClientes.fxml");
         }
@@ -823,13 +820,9 @@ public class NuevoClienteController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "¿Seguro que deseas cerrar sesión?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesión");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -849,27 +842,14 @@ public class NuevoClienteController implements Initializable {
     private void navegarA(String rutaFxml) {
         if (timelineHuella != null) timelineHuella.stop();
         if (timelineLineaEscaneo != null) timelineLineaEscaneo.stop();
-        // Limpiar captura activa si la hay
         if (huellaService.isCapturaActiva()) {
             huellaService.deshabilitarCaptura();
         }
         huellaService.cancelarEnrolamiento();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFxml));
-            Parent root = loader.load();
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error de navegación", "No se pudo cargar: " + rutaFxml);
-        }
+        Main.navegarA(rutaFxml);
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 }

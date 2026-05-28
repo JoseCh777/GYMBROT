@@ -101,8 +101,7 @@
     <top>
         <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
             <padding><Insets left="32" right="32" /></padding>
-
-            <Label prefHeight="30.0" prefWidth="1079.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 700;                           -fx-text-fill: #D4FF00;" text="PROGRESO FISICO" HBox.hgrow="ALWAYS" />
+         <Label prefHeight="27.0" prefWidth="396.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700;                           -fx-text-fill: white;" text="Gestion de Instructores" />
 
             <HBox alignment="CENTER" prefHeight="63.0" prefWidth="507.0" spacing="12" />
         </HBox>
@@ -128,6 +127,8 @@
                                 <Rectangle arcHeight="120" arcWidth="120" height="120" width="120" />
                             </clip>
                         </ImageView>
+                        <!-- Iniciales fallback -->
+                        <Label fx:id="lblInicialesAvatar" mouseTransparent="true" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 36px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="?" />
                         <!-- Badge estado -->
                         <Label style="-fx-background-color: #D4FF00; -fx-background-radius: 4;                                       -fx-font-family: 'Space Grotesk'; -fx-font-size: 9px;                                       -fx-font-weight: 700; -fx-text-fill: black; -fx-padding: 2 6 2 6;" text="ACTIVO" StackPane.alignment="BOTTOM_RIGHT">
                             <StackPane.margin><Insets bottom="2" right="2" /></StackPane.margin>
@@ -171,8 +172,7 @@
 
                         <!-- Título -->
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Label style="-fx-font-size: 16px; -fx-text-fill: #D4FF00;" text="▣" />
-                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                           -fx-text-fill: white;" text="Registrar Datos" />
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                           -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00;                                           -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Registrar Datos" />
                         </HBox>
 
                         <!-- Campo: Peso -->
@@ -208,7 +208,7 @@
                         <Region VBox.vgrow="ALWAYS" />
 
                         <!-- Botón Guardar -->
-                        <Button fx:id="btnGuardarProgreso" maxWidth="Infinity" onAction="#handleGuardarProgreso" prefHeight="48" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                        -fx-text-fill: black; -fx-cursor: hand;" text="GUARDAR PROGRESO" />
+                        <Button fx:id="btnGuardarProgreso" maxWidth="Infinity" onAction="#handleGuardarProgreso" prefHeight="48" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                        -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="GUARDAR PROGRESO" />
                     </VBox>
 
                     <!-- Gráfica de tendencia + mini-stats -->
@@ -217,7 +217,7 @@
 
                         <!-- Header gráfica -->
                         <HBox alignment="CENTER_LEFT">
-                            <Label prefHeight="30.0" prefWidth="461.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                           -fx-text-fill: white;" text="Tendencia de Rendimiento" HBox.hgrow="ALWAYS" />
+                            <Label prefHeight="30.0" prefWidth="461.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                           -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00;                                           -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Tendencia de Rendimiento" HBox.hgrow="ALWAYS" />
                             <!-- Leyenda -->
                             <HBox alignment="CENTER_RIGHT" spacing="16">
                                 <HBox alignment="CENTER" spacing="6">
@@ -263,8 +263,7 @@
 
                     <!-- Header tabla -->
                     <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;                                  -fx-padding: 20 24 20 24;">
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                       -fx-text-fill: white;" text="Historial de Registros" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnFiltrarHistorial" onAction="#handleFiltrarHistorial" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                        -fx-text-fill: #6b7280; -fx-cursor: hand; -fx-padding: 6 14 6 14;                                        -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;" text="FILTRAR" />
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                                       -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00;                                       -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Historial de Registros" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                     <!-- TableView -->

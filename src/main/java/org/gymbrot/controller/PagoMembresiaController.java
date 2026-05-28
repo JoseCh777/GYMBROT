@@ -17,6 +17,7 @@ import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
 import org.gymbrot.model.Pago;
 import org.gymbrot.model.PlanMembresia;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.util.ValidacionUtil;
 
 import java.net.URL;
@@ -147,7 +148,10 @@ public class PagoMembresiaController implements Initializable {
     public void setPlan(PlanMembresia plan, String modalidad, double precio) {
         lblPlanNombre.setText(plan.getNombre());
         lblPlanModalidad.setText("Plan " + modalidad.substring(0, 1) + modalidad.substring(1).toLowerCase());
-        txtMonto.setText(String.format("%.0f", precio));
+        long entero = Math.round(precio);
+        txtMonto.setText(entero >= 1_000_000
+                ? String.format("%,.0f", precio)
+                : String.format("%,d", entero));
         this.planSeleccionado = plan;
         this.modalidadSeleccionada = modalidad;
     }
@@ -245,13 +249,10 @@ public class PagoMembresiaController implements Initializable {
             return;
         }
 
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setTitle("Pago Procesado");
-        info.setHeaderText(null);
-        info.setContentText("Membresia " + planSeleccionado.getNombre()
+        AlertaPersonalizada.exito("Pago Procesado",
+                "Membresia " + planSeleccionado.getNombre()
                 + " activada para " + clienteSeleccionado.getNombre()
                 + " " + clienteSeleccionado.getApellidos() + ".");
-        info.showAndWait();
         cerrarOverlay();
     }
 
@@ -262,10 +263,6 @@ public class PagoMembresiaController implements Initializable {
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validacion");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error("Validacion", mensaje);
     }
 }

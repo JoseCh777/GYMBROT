@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionCitasController">
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" stylesheets="@../css/gymbrot.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionCitasController">
 
     <!-- ═══ LEFT: SideNav ═══ -->
     <left>
@@ -115,7 +115,7 @@
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CITAS HOY" />
                         <Label fx:id="lblCitasHoy" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
                     </VBox>
-                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
+                    <VBox maxWidth="Infinity" prefHeight="100" style="-fx-background-color: #1a1d21; -fx-background-radius: 12; -fx-border-color: transparent #1f2125 #1f2125 #bdf4ff; -fx-border-width: 0 1 1 4; -fx-border-radius: 12; -fx-padding: 16;" HBox.hgrow="ALWAYS">
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PENDIENTES" />
                         <Label fx:id="lblPendientes" style="-fx-font-family: 'Lexend'; -fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: white;" text="0" />
                     </VBox>
@@ -132,7 +132,7 @@
                 <!-- ── SECCION 2: Toolbar ── -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
 
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Citas Pendientes">
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;                                   -fx-border-color: transparent transparent transparent #D4FF00;                                   -fx-border-width: 0 0 0 4;                                   -fx-padding: 0 0 0 12;" text="Citas Pendientes">
                         <HBox.margin><Insets right="8" /></HBox.margin>
                     </Label>
 
@@ -152,7 +152,7 @@
                         </Label>
                     </StackPane>
 
-                    <Button fx:id="btnAgregarCita" onAction="#handleAgregarCita" prefHeight="44" prefWidth="210.0" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700; -fx-text-fill: #121417;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Cita">
+                    <Button fx:id="btnAgregarCita" onAction="#handleAgregarCita" prefHeight="44" prefWidth="210.0" style="-fx-background-color: #1e2a00; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Cita">
                       <graphic>
                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -185,7 +185,7 @@
                 </VBox>
             <HBox alignment="CENTER_LEFT" spacing="16">
                <children>
-                  <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;" text="Citas Anteriores - Canceladas">
+                  <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white;                                   -fx-border-color: transparent transparent transparent #D4FF00;                                   -fx-border-width: 0 0 0 4;                                   -fx-padding: 0 0 0 12;" text="Citas Completadas / Canceladas">
                      <HBox.margin>
                         <Insets right="8" />
                      </HBox.margin>

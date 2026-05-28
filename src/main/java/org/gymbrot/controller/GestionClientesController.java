@@ -30,7 +30,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.gymbrot.Main;
 import org.gymbrot.dao.ClienteDAO;
+import org.gymbrot.util.AlertaPersonalizada;
 import org.gymbrot.dao.RegistroIngresoDAO;
 import org.gymbrot.dao.HistorialMembresiaDAO;
 import org.gymbrot.model.Cliente;
@@ -106,6 +108,7 @@ public class GestionClientesController implements Initializable {
     private ObservableList<ClienteRow> todosLosClientes;
     private FilteredList<ClienteRow> clientesFiltrados;
     private int paginaActual = 1;
+    private int totalPaginas = 1;
     private static final int REGISTROS_POR_PAGINA = 10;
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -431,8 +434,9 @@ public class GestionClientesController implements Initializable {
         }
 
         clientesFiltrados = new FilteredList<>(todosLosClientes, p -> true);
-        tablaClientes.setItems(clientesFiltrados);
-        actualizarLabelRegistros();
+        paginaActual = 1;
+        aplicarPagina();
+        actualizarBotonesPagina();
     }
 
     private void configurarBuscador() {
@@ -444,14 +448,62 @@ public class GestionClientesController implements Initializable {
                         || cliente.getId().toLowerCase().contains(filtro)
                         || cliente.getCorreo().toLowerCase().contains(filtro);
             });
-            actualizarLabelRegistros();
+            paginaActual = 1;
+            aplicarPagina();
+            actualizarBotonesPagina();
         });
     }
 
-    private void actualizarLabelRegistros() {
-        int total     = todosLosClientes.size();
-        int mostrados = clientesFiltrados.size();
-        lblRegistros.setText("Mostrando " + mostrados + " de " + total + " registros");
+    private void aplicarPagina() {
+        int totalFiltrados = clientesFiltrados.size();
+        totalPaginas = (int) Math.ceil((double) totalFiltrados / REGISTROS_POR_PAGINA);
+        if (totalPaginas < 1) totalPaginas = 1;
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        int desde = (paginaActual - 1) * REGISTROS_POR_PAGINA;
+        int hasta = Math.min(desde + REGISTROS_POR_PAGINA, totalFiltrados);
+        List<ClienteRow> pagina;
+        if (desde >= totalFiltrados) {
+            pagina = List.of();
+        } else {
+            pagina = clientesFiltrados.subList(desde, hasta);
+        }
+        tablaClientes.setItems(FXCollections.observableArrayList(pagina));
+
+        actualizarLabelRegistros(desde, hasta, totalFiltrados);
+    }
+
+    private void actualizarBotonesPagina() {
+        btnAnterior.setDisable(paginaActual <= 1);
+        btnSiguiente.setDisable(paginaActual >= totalPaginas);
+
+        Button[] pagBts = {btnPag1, btnPag2, btnPag3};
+        int inicio = Math.max(1, paginaActual - 1);
+        int fin = Math.min(totalPaginas, inicio + 2);
+        if (fin - inicio < 2) inicio = Math.max(1, fin - 2);
+
+        for (int i = 0; i < pagBts.length; i++) {
+            int numPag = inicio + i;
+            if (numPag <= totalPaginas) {
+                pagBts[i].setVisible(true);
+                pagBts[i].setManaged(true);
+                pagBts[i].setText(String.valueOf(numPag));
+                pagBts[i].setStyle(numPag == paginaActual
+                        ? "-fx-background-color: #282a2d; -fx-background-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white; -fx-border-color: #D4FF00; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;"
+                        : "-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8; -fx-cursor: hand;");
+            } else {
+                pagBts[i].setVisible(false);
+                pagBts[i].setManaged(false);
+            }
+        }
+    }
+
+    private void actualizarLabelRegistros(int desde, int hasta, int total) {
+        if (total == 0) {
+            lblRegistros.setText("Mostrando 0 registros");
+            return;
+        }
+        lblRegistros.setText("Mostrando " + (desde + 1) + " - " + hasta + " de " + total + " registros");
     }
 
     private String getIniciales(String nombre) {
@@ -700,22 +752,16 @@ public class GestionClientesController implements Initializable {
     }
 
     private void handleEliminarCliente(ClienteRow row) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Desactivar a " + row.getNombre() + "?",
-                ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Confirmar desactivacion");
-        confirm.setHeaderText(null);
-        confirm.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) {
-                boolean ok = clienteDAO.desactivar(row.getId());
-                if (ok) {
-                    todosLosClientes.remove(row);
-                    actualizarLabelRegistros();
-                } else {
-                    mostrarError("Error", "No se pudo desactivar el cliente.");
-                }
+        if (AlertaPersonalizada.confirmar("Confirmar desactivacion", "Desactivar a " + row.getNombre() + "?")) {
+            boolean ok = clienteDAO.desactivar(row.getId());
+            if (ok) {
+                todosLosClientes.remove(row);
+                aplicarPagina();
+                actualizarBotonesPagina();
+            } else {
+                mostrarError("Error", "No se pudo desactivar el cliente.");
             }
-        });
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -784,11 +830,11 @@ public class GestionClientesController implements Initializable {
     //  HANDLERS — PAGINACION
     // ═══════════════════════════════════════════════════════════════════════
 
-    @FXML private void handlePaginaAnterior() { if (paginaActual > 1) { paginaActual--; cargarDatosMock(); } }
-    @FXML private void handlePagina1() { paginaActual = 1; cargarDatosMock(); }
-    @FXML private void handlePagina2() { paginaActual = 2; cargarDatosMock(); }
-    @FXML private void handlePagina3() { paginaActual = 3; cargarDatosMock(); }
-    @FXML private void handlePaginaSiguiente() { paginaActual++; cargarDatosMock(); }
+    @FXML private void handlePaginaAnterior() { if (paginaActual > 1) { paginaActual--; aplicarPagina(); actualizarBotonesPagina(); } }
+    @FXML private void handlePagina1() { paginaActual = Integer.parseInt(btnPag1.getText()); aplicarPagina(); actualizarBotonesPagina(); }
+    @FXML private void handlePagina2() { paginaActual = Integer.parseInt(btnPag2.getText()); aplicarPagina(); actualizarBotonesPagina(); }
+    @FXML private void handlePagina3() { paginaActual = Integer.parseInt(btnPag3.getText()); aplicarPagina(); actualizarBotonesPagina(); }
+    @FXML private void handlePaginaSiguiente() { paginaActual++; aplicarPagina(); actualizarBotonesPagina(); }
 
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — NAV
@@ -804,13 +850,9 @@ public class GestionClientesController implements Initializable {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Seguro que deseas cerrar sesion?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Cerrar sesion");
-        alert.setHeaderText(null);
-        alert.showAndWait().ifPresent(btn -> {
-            if (btn == ButtonType.YES) navegarA("/fxml/login.fxml");
-        });
+        if (AlertaPersonalizada.confirmar("Cerrar sesion", "Seguro que deseas cerrar sesion?")) {
+            navegarA("/fxml/login.fxml");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -818,29 +860,14 @@ public class GestionClientesController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarInfo("Error de navegacion", "No se pudo cargar: " + rutaFxml);
-        }
+        Main.navegarA(rutaFxml);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 }

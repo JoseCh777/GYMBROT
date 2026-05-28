@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,8 +23,13 @@ import org.gymbrot.model.PlanMembresia;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+
+import org.gymbrot.Main;
+import org.gymbrot.util.AlertaPersonalizada;
 
 public class GestionMembresiasController implements Initializable {
 
@@ -62,6 +68,11 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Label lblPeriodoSilver;
     @FXML private Label lblPeriodoBlack;
     @FXML private Label lblPeriodoGold;
+
+    // ── Beneficios en cards ──────────────────────────────────
+    @FXML private VBox vbSilverBeneficios;
+    @FXML private VBox vbBlackBeneficios;
+    @FXML private VBox vbGoldBeneficios;
 
     // ── Tabla comparativa ────────────────────────────────────
     @FXML private TableView<FilaComparativa> tablaComparativa;
@@ -132,6 +143,43 @@ public class GestionMembresiasController implements Initializable {
             planGold   = planes.get(1);
             planBlack  = planes.get(2);
         }
+        poblarBeneficiosCards();
+    }
+
+    private void poblarBeneficiosCards() {
+        poblarCard(vbSilverBeneficios, planSilver != null ? planSilver.getBeneficios() : null, false);
+        poblarCard(vbBlackBeneficios,  planBlack  != null ? planBlack.getBeneficios()  : null, true);
+        poblarCard(vbGoldBeneficios,   planGold   != null ? planGold.getBeneficios()   : null, false);
+    }
+
+    private void poblarCard(VBox contenedor, String beneficios, boolean destacado) {
+        if (contenedor == null) return;
+        contenedor.getChildren().clear();
+        if (beneficios == null || beneficios.isBlank()) {
+            contenedor.getChildren().add(crearItemBeneficio("Sin beneficios", false, destacado));
+            return;
+        }
+        for (String b : beneficios.split(" - ")) {
+            contenedor.getChildren().add(crearItemBeneficio(b.trim(), true, destacado));
+        }
+    }
+
+    private Node crearItemBeneficio(String texto, boolean incluido, boolean destacado) {
+        Label icono = new Label(incluido ? "OK" : "--");
+        icono.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (incluido ? "#D4FF00" : "#4b5563") + ";");
+
+        Label lbl = new Label(texto);
+        lbl.setWrapText(true);
+        lbl.setStyle(String.format(
+                "-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: %s;",
+                destacado ? "white" : "#d1d5db"
+        ));
+        if (destacado) lbl.setStyle(lbl.getStyle() + "-fx-font-weight: 600;");
+        HBox.setHgrow(lbl, javafx.scene.layout.Priority.ALWAYS);
+
+        HBox fila = new HBox(10, icono, lbl);
+        fila.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        return fila;
     }
 
     // ══ Navegacion ═══════════════════════════════════════════
@@ -259,6 +307,13 @@ public class GestionMembresiasController implements Initializable {
 
     // ══ Logica de precios ════════════════════════════════════
 
+    private String formatPrecio(double precio) {
+        long entero = Math.round(precio);
+        if (entero >= 1_000_000)
+            return String.format("%,.0f", precio);
+        return String.format("%,d", entero);
+    }
+
     private void actualizarPrecios() {
         if (planSilver == null || planGold == null || planBlack == null) return;
 
@@ -274,7 +329,7 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planSilver.getPrecioSemestral();
             case ANUAL     -> planSilver.getPrecioAnual();
         };
-        lblPrecioSilver.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPrecioSilver.setText(formatPrecio(precioBase));
         lblPeriodoSilver.setText(periodo);
         lblFacturacionSilver.setText(textoFacturacion(planSilver, "Facturado"));
 
@@ -284,9 +339,9 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planGold.getPrecioSemestral();
             case ANUAL     -> planGold.getPrecioAnual();
         };
-        lblPrecioGold.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPrecioGold.setText(formatPrecio(precioBase));
         lblPeriodoGold.setText(periodo);
-        lblFacturacionGold.setText(textoFacturacion(planGold, "Mejor Valor: Facturado"));
+        lblFacturacionGold.setText(textoFacturacion(planGold, "Facturado"));
 
         // Black
         precioBase = switch (duracionActual) {
@@ -294,7 +349,7 @@ public class GestionMembresiasController implements Initializable {
             case SEMESTRAL -> planBlack.getPrecioSemestral();
             case ANUAL     -> planBlack.getPrecioAnual();
         };
-        lblPrecioBlack.setText(String.valueOf((int) Math.round(precioBase)));
+        lblPrecioBlack.setText(formatPrecio(precioBase));
         lblPeriodoBlack.setText(periodo);
         lblFacturacionBlack.setText(textoFacturacion(planBlack, "Facturado"));
     }
@@ -302,8 +357,16 @@ public class GestionMembresiasController implements Initializable {
     private String textoFacturacion(PlanMembresia plan, String prefijo) {
         return switch (duracionActual) {
             case MENSUAL   -> prefijo + " mensualmente";
-            case SEMESTRAL -> prefijo + " semestralmente a $" + (int) plan.getPrecioSemestral() + "/semestre";
-            case ANUAL     -> prefijo + " anualmente a $" + (int) plan.getPrecioAnual() + "/año";
+            case SEMESTRAL -> {
+                long semestral = Math.round(plan.getPrecioSemestral());
+                long mensual = Math.round(plan.getPrecioSemestral() / 6);
+                yield prefijo + " semestralmente a $" + formatPrecio(semestral) + " ($" + formatPrecio(mensual) + "/mes)";
+            }
+            case ANUAL -> {
+                long anual = Math.round(plan.getPrecioAnual());
+                long mensual = Math.round(plan.getPrecioAnual() / 12);
+                yield prefijo + " anualmente a $" + formatPrecio(anual) + " ($" + formatPrecio(mensual) + "/mes)";
+            }
         };
     }
 
@@ -357,20 +420,34 @@ public class GestionMembresiasController implements Initializable {
 
         ObservableList<FilaComparativa> filas = FXCollections.observableArrayList();
         if (planSilver != null && planGold != null && planBlack != null) {
-            String[] silverBeneficios = planSilver.getBeneficios() != null
-                    ? planSilver.getBeneficios().split(" - ") : new String[]{planSilver.getDescripcion() != null ? planSilver.getDescripcion() : "Incluido"};
-            String[] blackBeneficios  = planBlack.getBeneficios() != null
-                    ? planBlack.getBeneficios().split(" - ") : new String[]{planBlack.getDescripcion() != null ? planBlack.getDescripcion() : "Incluido"};
-            String[] goldBeneficios    = planGold.getBeneficios() != null
-                    ? planGold.getBeneficios().split(" - ") : new String[]{planGold.getDescripcion() != null ? planGold.getDescripcion() : "Incluido"};
+            Set<String> silverSet = planSilver.getBeneficios() != null
+                    ? Set.of(planSilver.getBeneficios().split(" - ")) : Set.of();
+            Set<String> goldRaw = planGold.getBeneficios() != null
+                    ? Set.of(planGold.getBeneficios().split(" - ")) : Set.of();
+            Set<String> blackRaw = planBlack.getBeneficios() != null
+                    ? Set.of(planBlack.getBeneficios().split(" - ")) : Set.of();
 
-            int maxRows = Math.max(silverBeneficios.length, Math.max(blackBeneficios.length, goldBeneficios.length));
-            for (int i = 0; i < maxRows; i++) {
-                String b = i < silverBeneficios.length ? silverBeneficios[i] : "—";
-                String p = i < blackBeneficios.length  ? blackBeneficios[i]  : "—";
-                String o = i < goldBeneficios.length    ? goldBeneficios[i]    : "—";
-                String nombreBeneficio = Character.toUpperCase(b.charAt(0)) + b.substring(1);
-                filas.add(new FilaComparativa(nombreBeneficio, b, p, o));
+            // Jerarquia: Gold incluye Silver, Black incluye Silver+Gold
+            Set<String> goldSet = new LinkedHashSet<>();
+            goldSet.addAll(silverSet);
+            goldSet.addAll(goldRaw);
+
+            Set<String> blackSet = new LinkedHashSet<>();
+            blackSet.addAll(silverSet);
+            blackSet.addAll(goldRaw);
+            blackSet.addAll(blackRaw);
+
+            Set<String> todos = new LinkedHashSet<>();
+            todos.addAll(silverSet);
+            todos.addAll(goldRaw);
+            todos.addAll(blackRaw);
+
+            for (String beneficio : todos) {
+                String ini = Character.toUpperCase(beneficio.charAt(0)) + beneficio.substring(1);
+                String s = silverSet.contains(beneficio) ? "✓" : "—";
+                String g = goldSet.contains(beneficio)   ? "✓" : "—";
+                String b = blackSet.contains(beneficio)  ? "✓" : "—";
+                filas.add(new FilaComparativa(ini, s, b, g));
             }
         }
         tablaComparativa.setItems(filas);
@@ -629,30 +706,15 @@ public class GestionMembresiasController implements Initializable {
     // ══ Utilidades ═══════════════════════════════════════════
 
     private void navegarA(String fxmlPath, ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) navDashboard.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.err.println("Error al navegar a: " + fxmlPath);
-            e.printStackTrace();
-        }
+        Main.navegarA(fxmlPath);
     }
 
     private void mostrarInfo(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.info(titulo, mensaje);
     }
 
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        AlertaPersonalizada.error(titulo, mensaje);
     }
 
     // ══ Record interno para la tabla ═════════════════════════
