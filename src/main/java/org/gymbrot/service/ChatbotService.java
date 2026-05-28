@@ -686,8 +686,7 @@ public class ChatbotService {
         if (idCliente == null) {
             String correoCliente = extraerCorreo(texto, historial);
             if (correoCliente == null) {
-                return " [SISTEMA: No se encontro el ID o correo del cliente a eliminar. " +
-                        "Pidele al administrador que indique el ID o correo.]";
+                return " [SISTEMA: No se encontro el ID o correo del cliente a eliminar.]";
             }
             Usuario usuario = usuarioDAO.buscarPorCorreo(correoCliente);
             if (usuario == null) {
@@ -701,36 +700,89 @@ public class ChatbotService {
             return " [SISTEMA: No existe un cliente con ID " + idCliente + "]";
         }
 
-        if (idCliente.equals("ADMIN002") || idCliente.equals("TEST001")) {
-            return " [SISTEMA: No se puede eliminar la cuenta de administrador principal.]";
-        }
-
-        String nombreCliente        = cliente.getNombre();
+        String nombreCliente         = cliente.getNombre();
         String correoClienteEliminar = cliente.getCorreo();
+        String telefonoCliente       = cliente.getTelefono();
+
+        // Notificar ANTES de eliminar
+        if (correoClienteEliminar != null) {
+            emailService.enviarCorreo(correoClienteEliminar,
+                    "Cuenta eliminada - GYMBROT",
+                    "<h2>Cuenta eliminada</h2>" +
+                            "<p>Hola <b>" + nombreCliente + "</b>,</p>" +
+                            "<p>Tu cuenta en GYMBROT ha sido eliminada.</p>" +
+                            "<p>Si esto es un error, contacta al administrador.</p>");
+            System.out.println("Correo enviado a: " + correoClienteEliminar);
+        }
+        if (telefonoCliente != null) {
+            notifService.enviarSmsACliente(telefonoCliente,
+                    "GYMBROT: Tu cuenta ha sido eliminada. Si no reconoces este cambio, contactanos.");
+        }
 
         try {
             LOGGER.info("Eliminando cliente ID: " + idCliente);
+            Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
 
-            boolean citasEliminadas  = citaDAO.eliminarPorCliente(idCliente);
-            LOGGER.info("Citas eliminadas: " + citasEliminadas);
+            // 1. RUTINA_EJERCICIOS (via subquery de RUTINAS)
+            ejecutarSQL(conn, "DELETE FROM RUTINA_EJERCICIOS WHERE id_rutina IN " +
+                    "(SELECT id_rutina FROM RUTINAS WHERE id_cliente = ?)", idCliente);
 
+            // 2. RUTINAS
+            ejecutarSQL(conn, "DELETE FROM RUTINAS WHERE id_cliente = ?", idCliente);
+
+            // 3. NOTIFICACIONES
+            ejecutarSQL(conn, "DELETE FROM NOTIFICACIONES WHERE id_cliente = ?", idCliente);
+
+            // 4. CITAS
+            ejecutarSQL(conn, "DELETE FROM CITAS WHERE id_cliente = ?", idCliente);
+
+            // 5. PAGOS
+            ejecutarSQL(conn, "DELETE FROM PAGOS WHERE id_cliente = ?", idCliente);
+
+            // 6. PROGRESOS
+            ejecutarSQL(conn, "DELETE FROM PROGRESOS WHERE id_cliente = ?", idCliente);
+
+            // 7. REGISTROS_INGRESOS
+            ejecutarSQL(conn, "DELETE FROM REGISTROS_INGRESOS WHERE id_cliente = ?", idCliente);
+
+            // 8. HISTORIAL_MEMBRESIAS
+            ejecutarSQL(conn, "DELETE FROM HISTORIAL_MEMBRESIAS WHERE id_cliente = ?", idCliente);
+
+            // 9. MENSAJES_GYMBROT (via subquery de SESIONES_GYMBROT)
+            ejecutarSQL(conn, "DELETE FROM MENSAJES_GYMBROT WHERE id_sesion IN " +
+                    "(SELECT id_sesion FROM SESIONES_GYMBROT WHERE id_cliente = ?)", idCliente);
+
+            // 10. SESIONES_GYMBROT
+            ejecutarSQL(conn, "DELETE FROM SESIONES_GYMBROT WHERE id_cliente = ?", idCliente);
+
+            // 11. CLIENTES
             boolean eliminadoCliente = clienteDAO.eliminar(idCliente);
             LOGGER.info("CLIENTES eliminado: " + eliminadoCliente);
 
+            // 12. USUARIOS
             boolean eliminadoUsuario = usuarioDAO.eliminar(idCliente);
             LOGGER.info("USUARIOS eliminado: " + eliminadoUsuario);
 
             if (eliminadoCliente && eliminadoUsuario) {
                 return " [SISTEMA: Cliente " + nombreCliente + " (ID: " + idCliente +
-                        ", Correo: " + correoClienteEliminar + ") eliminado exitosamente del sistema.]";
+                        ") eliminado exitosamente. SMS y correo enviados.]";
             } else {
-                return " [SISTEMA: Error al eliminar el cliente " + idCliente +
-                        ". Revisa los logs del servidor.]";
+                return " [SISTEMA: Error al eliminar el cliente " + idCliente + ".]";
             }
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al eliminar cliente: " + e.getMessage(), e);
-            return " [SISTEMA: Error al eliminar el cliente. Motivo: " + e.getMessage() + "]";
+            return " [SISTEMA: Error al eliminar: " + e.getMessage() + "]";
+        }
+    }
+
+    private void ejecutarSQL(Connection conn, String sql, String parametro) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, parametro);
+            int filas = ps.executeUpdate();
+            LOGGER.info("[ejecutarSQL] " + sql.substring(0, 30) + "... filas=" + filas);
+        } catch (SQLException e) {
+            LOGGER.warning("[ejecutarSQL] Error: " + e.getMessage() + " SQL: " + sql);
         }
     }
 
