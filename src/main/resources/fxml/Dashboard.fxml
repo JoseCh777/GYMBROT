@@ -100,7 +100,7 @@
             <padding><Insets left="32" right="32" /></padding>
 
             <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700;                           -fx-text-fill: white;" />
-         <Label prefHeight="27.0" prefWidth="399.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: white;" text="Panel de control" />
+         <Label prefHeight="27.0" prefWidth="889.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: white;" text="Panel de control" />
             <Region prefHeight="49.0" prefWidth="1352.0" HBox.hgrow="ALWAYS" />
 
             <HBox alignment="CENTER" spacing="16">

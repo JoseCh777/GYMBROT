@@ -227,13 +227,6 @@
                     <VBox alignment="CENTER" prefHeight="64" prefWidth="64" style="-fx-background-color: #0a2a30; -fx-background-radius: 12;">
                         <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-text-fill: #bdf4ff;" text="AI" />
                     </VBox>
-
-                    <VBox spacing="4" HBox.hgrow="ALWAYS">
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="¿No estas seguro de que plan se ajusta a tus objetivos?" />
-                        <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #6b7280;" text="Pidele a Gymbrot AI que analice tus datos de rendimiento y sugiera el nivel optimo." wrapText="true" />
-                    </VBox>
-
-                    <Button fx:id="btnChatearAI" onAction="#handleChatearAI" prefHeight="44" style="-fx-background-color: #0a2a30; -fx-background-radius: 20; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff; -fx-border-color: #bdf4ff; -fx-border-width: 1; -fx-border-radius: 20; -fx-cursor: hand; -fx-padding: 10 24 10 24;" text="Chatear con Gymbrot" />
                 </HBox>
 
             </VBox>

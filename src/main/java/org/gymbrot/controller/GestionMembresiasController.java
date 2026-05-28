@@ -188,33 +188,26 @@ public class GestionMembresiasController implements Initializable {
     private void handleNavDashboard(ActionEvent event) {
         navegarA("/fxml/Dashboard.fxml", event);
     }
-
     @FXML
     private void handleNavClientes(ActionEvent event) {
         navegarA("/fxml/GestionClientes.fxml", event);
     }
-
     @FXML
     private void handleNavInstructores(ActionEvent event) {
         navegarA("/fxml/GestionInstructores.fxml", event);
     }
-
     @FXML
     private void handleNavMembresias(ActionEvent event) {
-        // Ya estamos en esta vista, no hacer nada
     }
 
     @FXML
     private void handleNavAI(ActionEvent event) {
         navegarA("/fxml/GymbroAI.fxml", event);
     }
-
     @FXML
     private void handleNavProgreso(ActionEvent event) { navegarA("/fxml/ProgresoFisico.fxml", event); }
-
     @FXML
     private void handleNavCitas(ActionEvent event) { navegarA("/fxml/GestionCitas.fxml", event); }
-
     @FXML
     private void handleLogout(ActionEvent event) {
         navegarA("/fxml/login.fxml", event);
@@ -532,9 +525,6 @@ public class GestionMembresiasController implements Initializable {
         agregarHoverBorde(btnSeleccionarSilver);
         agregarHoverBorde(btnSeleccionarGold);
         agregarHoverActivo(btnSeleccionarBlack);
-
-        // Boton AI
-        agregarHoverBordeAI(btnChatearAI);
     }
 
     private void agregarHoverInactivo(Button btn) {

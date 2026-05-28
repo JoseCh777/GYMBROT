@@ -123,7 +123,7 @@ public class TitleBarController {
         boolean max = stage.isMaximized();
         stage.setMaximized(!max);
         // Cambiar ícono del botón según estado
-        btnMaximizar.setText(max ? "▢" : "❐");
+        btnMaximizar.setText(max ? "[ ]" : "❐");
     }
 
     @FXML

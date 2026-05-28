@@ -30,6 +30,7 @@ public class GymbroAIController {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
     @FXML private Button navProgreso;
+    @FXML private Button navCitas;
     @FXML private Button navAI;
     @FXML private ScrollPane scrollChat;
     @FXML private VBox vboxMensajes;
@@ -238,7 +239,7 @@ public class GymbroAIController {
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
     @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
-    @FXML private void handleNavProgreso()     { }
+    @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavAI()           { }
 
     @FXML
@@ -257,18 +258,12 @@ public class GymbroAIController {
     }
 
     private void navegarA(String rutaFxml) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFxml));
-            Stage stage = (Stage) sideNav.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        org.gymbrot.Main.navegarA(rutaFxml);
     }
 
     // ── ANIMACIONES NAV ───────────────────────────────────────────────────
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navAI);
     }
@@ -318,7 +313,7 @@ public class GymbroAIController {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle("-fx-background-color: #D4FF00; -fx-background-radius: 8;" +

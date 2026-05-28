@@ -339,18 +339,6 @@
 
                 </VBox>
 
-                <!-- ── SECCION 4: AI ── -->
-                <VBox minWidth="300" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                              -fx-border-color: #0a3a40; -fx-border-width: 1; -fx-border-radius: 12;">
-                    <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
-
-                    <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: #bdf4ff; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Asistente Gymbrot AI" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnEmparejamiento" onAction="#handleEmparejamientoIA" prefHeight="40" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                        -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                        -fx-border-color: #bdf4ff; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 6 16 6 16;" text="Ejecutar Emparejamiento con IA" />
-                    </HBox>
-
-                    <Label fx:id="lblAIInsight" style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                   -fx-text-fill: #6b7280; -fx-line-spacing: 4;" text="Analizando datos de instructores..." wrapText="true" />
-                </VBox>
-
             </VBox>
         </ScrollPane>
     </center>

@@ -108,7 +108,6 @@ public class GestionInstructoresController implements Initializable {
         cargarStats();
         cargarDatosMock();
         configurarBuscador();
-        cargarAIInsight();
         iniciarAnimacionDotSesiones();
         configurarFiltroEspecialidad();
         configurarAnimacionesBotones();
@@ -426,24 +425,6 @@ public class GestionInstructoresController implements Initializable {
         lblRegistros.setText("Mostrando " + Math.min(total, TARJETAS_POR_PAGINA) + " de " + total + " instructores");
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  AI INSIGHT
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private void cargarAIInsight() {
-        lblAIInsight.setText(
-                "He analizado los horarios con mayor demanda de instructores. " +
-                        "Sugiero emparejar a Marcus Thorne con los clientes de alta intensidad " +
-                        "para maximizar la retencion en horario pico."
-        );
-    }
-
-    @FXML
-    private void handleEmparejamientoIA() {
-        mostrarInfo("Emparejamiento con IA",
-                "Ejecutando algoritmo de emparejamiento inteligente...\n" +
-                        "Analizando perfiles de clientes e instructores.");
-    }
 
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — TOOLBAR
@@ -688,7 +669,6 @@ public class GestionInstructoresController implements Initializable {
         agregarHoverActivo(btnNuevoEjercicio1);
         agregarHoverActivo(btnMostrarRutinas);
         agregarHoverActivo(btnMostrarEjercicios);
-        agregarHoverInactivo(btnEmparejamiento);
     }
 
     private void agregarHoverInactivo(Button btn) {

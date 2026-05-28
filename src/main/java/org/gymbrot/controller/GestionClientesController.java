@@ -161,7 +161,6 @@ public class GestionClientesController implements Initializable {
         cargarDatosMock();
         configurarBuscador();
         cargarLogAccesos();
-        cargarAIInsight();
         iniciarAnimacionScanner();
         configurarAnimacionesBotones();
     }
@@ -583,18 +582,6 @@ public class GestionClientesController implements Initializable {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  AI INSIGHT
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private void cargarAIInsight() {
-        // TODO: conectar con llamada real a Gymbrot AI / SESIONES_GYMBROT
-        lblAIInsight.setText(
-                "He notado un incremento del 15% en el flujo de clientes entre las 18:00 y 20:00. " +
-                        "Sugiero habilitar un segundo terminal de escaneo para evitar cuellos de botella."
-        );
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
     //  ANIMACION PUNTO SCANNER
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -622,7 +609,6 @@ public class GestionClientesController implements Initializable {
         agregarHoverActivo(btnAgregarCliente);
         agregarHoverInactivo(btnValidarEntrada);
         agregarHoverInactivo(btnValidarSalida);
-        agregarHoverInactivo(btnOptimizarFlujo);
     }
 
     private void agregarHoverInactivo(Button btn) {
@@ -821,10 +807,6 @@ public class GestionClientesController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleOptimizarFlujo() {
-        mostrarInfo("Gymbrot AI", "Analizando patrones de flujo para optimizacion...");
-    }
 
     // ═══════════════════════════════════════════════════════════════════════
     //  HANDLERS — PAGINACION

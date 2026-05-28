@@ -278,17 +278,6 @@
 
                     </VBox>
 
-                    <!-- Asistente Gymbrot AI -->
-                    <VBox minWidth="300" prefWidth="320" spacing="16" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #0a3a40; -fx-border-width: 1; -fx-border-radius: 12;">
-                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
-
-                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px;                                       -fx-font-weight: 600; -fx-text-fill: #bdf4ff;" text="Asistente Gymbrot AI" />
-
-                        <Label fx:id="lblAIInsight" style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                       -fx-text-fill: #6b7280; -fx-line-spacing: 4;" text="Analizando datos del gimnasio..." wrapText="true" VBox.vgrow="ALWAYS" />
-
-                        <Button fx:id="btnOptimizarFlujo" maxWidth="Infinity" onAction="#handleOptimizarFlujo" prefHeight="44" style="-fx-background-color: #0a2a30; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                        -fx-font-weight: 700; -fx-text-fill: #bdf4ff;                                        -fx-border-color: #bdf4ff; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="Optimizar Flujo Ahora" />
-                    </VBox>
-
                 </HBox>
 
             </VBox>

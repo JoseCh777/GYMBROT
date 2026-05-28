@@ -76,7 +76,7 @@ public class Main extends Application {
         } catch (Exception e) {
             System.out.println("Icono no encontrado: " + e.getMessage());
         }
-
+        stage.setTitle("GYMBROT");
         stage.show();
     }
 
