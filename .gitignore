@@ -47,3 +47,6 @@ config.properties
 # C# fingerprint capture binary
 /capture/*.exe
 /capture/*.pdb
+
+.idea/
+*.iml
