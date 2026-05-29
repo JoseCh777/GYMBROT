@@ -35,6 +35,7 @@ public class MembresiaDAO {
             return false;
         }
     }
+
     // ── ACTUALIZAR ────────────────────────────────────────────────────────
     public boolean actualizar(Membresia m) {
         String sql = """
@@ -58,6 +59,7 @@ public class MembresiaDAO {
             return false;
         }
     }
+
     // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     public Membresia buscarPorId(int id) {
         String sql = "SELECT * FROM MEMBRESIAS WHERE id_membresia = ?";
@@ -72,6 +74,9 @@ public class MembresiaDAO {
         return null;
     }
 
+    // ── INSERTAR Y RETORNAR ID ────────────────────────────────────────────
+    // FIX: usa getGeneratedKeys() en lugar de SELECT MAX() para obtener
+    // el ID real generado por la secuencia de Oracle, evitando race conditions.
     public int insertarYRetornarId(Membresia m) throws SQLException {
         String sql = """
             INSERT INTO MEMBRESIAS
@@ -79,8 +84,9 @@ public class MembresiaDAO {
                  fecha_inicio, fecha_vencimiento, estado)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
-        Connection conn = getConexion();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = getConexion().prepareStatement(
+                sql, new String[]{"ID_MEMBRESIA"})) {
+
             ps.setInt(1, m.getIdPlan());
             ps.setString(2, m.getTipoMembresia());
             ps.setString(3, m.getModalidadPago());
@@ -89,24 +95,23 @@ public class MembresiaDAO {
             ps.setDate(6, Date.valueOf(m.getFechaVencimiento()));
             ps.setString(7, m.getEstado());
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    System.out.println("Membresía insertada con ID: " + id);
+                    return id;
+                }
+            }
+
         } catch (SQLException e) {
             System.err.println("Error al insertar membresía: " + e.getMessage());
             return -1;
         }
-        // Consultar el ID recién generado (Oracle identity column)
-        try (PreparedStatement ps = conn.prepareStatement("SELECT MAX(id_membresia) FROM MEMBRESIAS");
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                int id = rs.getInt(1);
-                System.out.println("Membresia insertada con ID: " + id);
-                return id;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener ID de membresía: " + e.getMessage());
-        }
         return -1;
     }
 
+    // ── VERIFICAR SI PLAN TIENE MEMBRESÍAS ACTIVAS ────────────────────────
     public boolean membresiaPlan(int idPlan) {
         String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'ACTIVA'";
         try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
@@ -118,6 +123,7 @@ public class MembresiaDAO {
         }
         return false;
     }
+
     // ── LISTAR VENCIDAS ───────────────────────────────────────────────────
     // Filtra SOLO por fecha para no depender del estado guardado en BD,
     // que puede estar desactualizado si el trigger no se disparó.
@@ -168,6 +174,7 @@ public class MembresiaDAO {
         }
         return lista;
     }
+
     // ── MAPEAR ResultSet → Membresia ──────────────────────────────────────
     private Membresia mapear(ResultSet rs) throws SQLException {
         Membresia m = new Membresia();

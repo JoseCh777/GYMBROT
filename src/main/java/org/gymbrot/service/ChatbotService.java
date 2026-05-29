@@ -36,6 +36,7 @@ public class ChatbotService {
     private final MembresiaDAO           membresiaDAO    = new MembresiaDAO();
     private final HistorialMembresiaDAO  historialDAO    = new HistorialMembresiaDAO();
     private final RegistroIngresoDAO     ingresoDAO      = new RegistroIngresoDAO();
+    private final PlanMembresiaDAO       planMembresiaDAO = new PlanMembresiaDAO();
 
     public SesionGymbrot iniciarSesion(String idAdmin) {
         SesionGymbrot sesion = new SesionGymbrot();
@@ -383,6 +384,16 @@ public class ChatbotService {
                 contextoExtra = " [SISTEMA: No hay instructores registrados en la base de datos.]";
             }
 
+        } else if ((textoLower.contains("asignar") || textoLower.contains("asignale")
+                || textoLower.contains("asigna") || textoLower.contains("crear membresia")
+                || textoLower.contains("crea membresia") || textoLower.contains("nueva membresia")
+                || textoLower.contains("activar membresia") || textoLower.contains("registrar membresia")
+                || textoLower.contains("agregar membresia"))
+                && (textoLower.contains("membresia") || textoLower.contains("membresía")
+                || textoLower.contains("plan")) && textoLower.contains("cliente")) {
+
+            contextoExtra = procesarAsignarMembresia(texto, historial);
+
         } else if (textoLower.contains("membres") || textoLower.contains("venc")
                 || textoLower.contains("renovar")) {
 
@@ -463,6 +474,127 @@ public class ChatbotService {
         mensajeDAO.insertar(msgBot);
 
         return respuesta;
+    }
+
+    // ── ASIGNAR MEMBRESÍA ─────────────────────────────────────────────────
+    private String procesarAsignarMembresia(String texto, List<MensajeGymbrot> historial) {
+
+        // 1. Extraer ID cliente
+        String idCliente = extraerIdCliente(texto);
+        if (idCliente == null && historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                if (historial.get(i).getRemitente().equals("CLIENTE")) {
+                    idCliente = extraerIdCliente(historial.get(i).getContenido());
+                    if (idCliente != null) break;
+                }
+            }
+        }
+        if (idCliente == null)
+            return " [SISTEMA: No se encontro el ID del cliente. " +
+                    "Pidele al administrador que indique el numero de identificacion.]";
+
+        Cliente cliente = clienteDAO.buscarPorId(idCliente);
+        if (cliente == null)
+            return " [SISTEMA: No existe un cliente con ID " + idCliente +
+                    ". Verifica el numero de identificacion.]";
+
+        // 2. Detectar plan por nombre en el texto
+        String t = texto.toLowerCase();
+        int idPlan;
+        if (t.contains("elite") || t.contains("premium")) {
+            idPlan = 3;
+        } else if (t.contains("estandar") || t.contains("estandar")
+                || t.contains("standard") || t.contains("medio")) {
+            idPlan = 2;
+        } else {
+            idPlan = 1; // basico por defecto
+        }
+
+        PlanMembresia plan = planMembresiaDAO.buscarPorId(idPlan);
+        if (plan == null)
+            return " [SISTEMA: No se encontro el plan con ID " + idPlan +
+                    " en la base de datos. Verifica los planes disponibles.]";
+
+        // 3. Detectar modalidad
+        String modalidad;
+        if (t.contains("anual")) modalidad = "ANUAL";
+        else if (t.contains("semestral")) modalidad = "SEMESTRAL";
+        else modalidad = "MENSUAL";
+
+        // 4. Calcular valor y dias segun modalidad
+        double valor = switch (modalidad) {
+            case "ANUAL"     -> plan.getPrecioAnual();
+            case "SEMESTRAL" -> plan.getPrecioSemestral();
+            default          -> plan.getPrecioMensual();
+        };
+        int dias = switch (modalidad) {
+            case "ANUAL"     -> 365;
+            case "SEMESTRAL" -> 180;
+            default          -> 30;
+        };
+
+        // 5. Construir y persistir la membresia
+        LocalDate hoy = LocalDate.now();
+        Membresia m = new Membresia();
+        m.setIdPlan(idPlan);
+        m.setTipoMembresia(plan.getNombre());
+        m.setModalidadPago(modalidad);
+        m.setValor(valor);
+        m.setFechaInicio(hoy);
+        m.setFechaVencimiento(hoy.plusDays(dias));
+        m.setEstado("ACTIVA");
+
+        try {
+            int idMembresia = membresiaDAO.insertarYRetornarId(m);
+            if (idMembresia < 0)
+                return " [SISTEMA: Error al insertar la membresia en la base de datos. " +
+                        "Revisa los logs del servidor.]";
+
+            // El trigger TRG_DESACTIVAR_MEMBRESIA_ANTERIOR desactiva la membresía
+            // anterior automáticamente al insertar en HISTORIAL_MEMBRESIAS.
+            // NO llamar desactivarPorCliente() aquí — causa ORA-04091 (tabla mutante).
+            HistorialMembresia h = new HistorialMembresia();
+            h.setIdCliente(idCliente);
+            h.setIdMembresia(idMembresia);
+            h.setFechaAsignacion(hoy);
+            h.setActiva(true);
+
+            if (!historialDAO.insertar(h))
+                return " [SISTEMA: Membresia creada (ID: #" + idMembresia + ") pero no se pudo " +
+                        "asociar al cliente en HISTORIAL_MEMBRESIAS. Revisa los logs.]";
+
+            // Notificaciones
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String nombreLimpio = cliente.getNombre().split(" ")[0];
+            String fechaVence   = hoy.plusDays(dias).format(fmt);
+
+            notifService.enviarSmsDirecto(
+                    "GYMBROT: Hola " + nombreLimpio + "! Tu membresia " +
+                            plan.getNombre() + " ha sido activada. Vence el " + fechaVence + ".");
+
+            if (cliente.getCorreo() != null) {
+                emailService.enviarCorreo(
+                        cliente.getCorreo(),
+                        "Membresia activada - GYMBROT",
+                        generarHtmlMembresia(nombreLimpio, m, dias, fmt));
+            }
+
+            LOGGER.info("[procesarAsignarMembresia] Membresia #" + idMembresia +
+                    " asignada al cliente " + idCliente);
+
+            return " [SISTEMA: Membresia " + plan.getNombre() + " (" + modalidad + ") asignada " +
+                    "exitosamente al cliente " + cliente.getNombre() + " " + cliente.getApellidos() +
+                    " (ID: " + idCliente + "). " +
+                    "ID membresia: #" + idMembresia +
+                    " | Valor: $" + String.format("%,.0f", valor) +
+                    " | Vence: " + fechaVence +
+                    ". SMS y correo enviados. Confirma todos los detalles al administrador.]";
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error en procesarAsignarMembresia: " + e.getMessage(), e);
+            return " [SISTEMA: Error inesperado al asignar membresia: " + e.getMessage() +
+                    ". Revisa los logs del servidor.]";
+        }
     }
 
     // ── MODIFICAR CITA ────────────────────────────────────────────────────
