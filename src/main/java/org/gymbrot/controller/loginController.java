@@ -16,6 +16,7 @@ import javafx.util.Duration;
 import org.gymbrot.Main;
 import org.gymbrot.dao.UsuarioDAO;
 import org.gymbrot.util.AlertaPersonalizada;
+import org.gymbrot.util.SessionManager;
 import org.gymbrot.model.Usuario;
 import org.gymbrot.service.HuellaService;
 import org.mindrot.jbcrypt.BCrypt;
@@ -156,6 +157,7 @@ public class loginController implements Initializable {
                 mostrarError("Acceso denegado", "Solo los administradores pueden iniciar sesion en el sistema.");
                 return;
             }
+            SessionManager.setIdAdminActual(user.getNumeroIdentificacion());
             navegarA("/fxml/Dashboard.fxml");
         } else {
             mostrarError("Credenciales invalidas", "Usuario o contrasena incorrectos.");

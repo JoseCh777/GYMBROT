@@ -16,6 +16,7 @@ import org.gymbrot.model.MensajeGymbrot;
 import org.gymbrot.model.SesionGymbrot;
 import org.gymbrot.service.ChatbotService;
 import org.gymbrot.util.ChatbotSession;
+import org.gymbrot.util.SessionManager;
 
 import java.io.IOException;
 import java.time.LocalTime;
@@ -38,12 +39,16 @@ public class GymbroAIController {
 
     private final ChatbotService chatbotService = new ChatbotService();
     private SesionGymbrot sesionActual;
-    private String idClienteActual = "123456";
+    private String idClienteActual;
 
     @FXML
     public void initialize() {
         configurarAnimacionesNav();
         setNavActivo(navAI);
+
+        if (idClienteActual == null) {
+            idClienteActual = SessionManager.getIdAdminActual();
+        }
 
         ChatbotSession session = ChatbotSession.getInstance();
 
