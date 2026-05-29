@@ -108,6 +108,10 @@ public class NuevoClienteController implements Initializable {
     private HuellaService huellaService;
     private byte[] templateBytesCapturado = null;
 
+    // ─── Overlay (cuando se abre como overlay desde PerfilCliente) ─────────
+    private StackPane wrapperStack;
+    private Parent    overlayRoot;
+
     // ─── Validación ────────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[\\w._%+\\-]+@[\\w.\\-]+\\.[a-zA-Z]{2,}$");
@@ -188,6 +192,11 @@ public class NuevoClienteController implements Initializable {
         txtContrasena.setDisable(true);
         txtContrasena.setPromptText("--- SIN CAMBIOS ---");
         txtContrasena.setStyle(FIELD_NORMAL);
+    }
+
+    public void setWrapperStack(StackPane wrapper, Parent overlay) {
+        this.wrapperStack = wrapper;
+        this.overlayRoot  = overlay;
     }
 
     private void inicializarBiometria() {
@@ -846,6 +855,9 @@ public class NuevoClienteController implements Initializable {
             huellaService.deshabilitarCaptura();
         }
         huellaService.cancelarEnrolamiento();
+        if (wrapperStack != null && overlayRoot != null) {
+            wrapperStack.getChildren().remove(overlayRoot);
+        }
         Main.navegarA(rutaFxml);
     }
 

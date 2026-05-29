@@ -83,6 +83,8 @@ public class NuevoInstructorController implements Initializable {
     private File archivoFotoSeleccionado;
     private boolean modoEdicion;
     private Instructor instructorEditando;
+    private StackPane wrapperStack;
+    private Parent overlayRoot;
 
     // ─── Validacion ────────────────────────────────────────────────────
     private static final Pattern EMAIL_PATTERN =
@@ -464,6 +466,15 @@ public class NuevoInstructorController implements Initializable {
     //  GUARDAR
     // ═══════════════════════════════════════════════════════════════════════
 
+    /**
+     * @param wrapper StackPane wrapper que contiene este overlay
+     * @param overlay raíz de este overlay en el wrapper
+     */
+    public void setWrapperStack(StackPane wrapper, Parent overlay) {
+        this.wrapperStack = wrapper;
+        this.overlayRoot  = overlay;
+    }
+
     @FXML
     private void handleGuardar() {
         if (!validarFormulario()) return;
@@ -648,6 +659,9 @@ public class NuevoInstructorController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void navegarA(String rutaFxml) {
+        if (wrapperStack != null && overlayRoot != null) {
+            wrapperStack.getChildren().remove(overlayRoot);
+        }
         Main.navegarA(rutaFxml);
     }
 

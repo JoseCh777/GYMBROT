@@ -109,6 +109,10 @@ public class Main extends Application {
             titleBarNode.setVisible(true);
             titleBarNode.setManaged(true);
 
+            if (titleBarCtrl != null) {
+                titleBarCtrl.setTitulo(tituloBarra);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

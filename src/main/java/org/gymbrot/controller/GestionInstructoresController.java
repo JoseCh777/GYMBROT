@@ -616,6 +616,7 @@ public class GestionInstructoresController implements Initializable {
             StackPane wrapper = new StackPane();
             wrapper.getChildren().add(rootActual);
             wrapper.getChildren().add(overlay);
+            ctrl.setWrapperStack(wrapper, overlay);
             scene.setRoot(wrapper);
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,24 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="git add .&#10;git commit -m &quot;fix: modificar cita ya envia correo y sms automaticos&quot;&#10;git push origin backend/Daniel">
+    <list default="true" id="54eb9add-17d1-43f2-bd36-add43b9f23bd" name="Changes" comment="&quot;feat: sistema practicamente al 100%&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/ActualizarHash.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/PruebaChatbot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/PruebaMembresia.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/TestBCrypt.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionClientesController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionInstructoresController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionMembresiasController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GestionMembresiasController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GymbroAIController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/GymbroAIController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/TitleBarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/TitleBarController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GestionClientes.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionClientes.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionInstructores.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GestionMembresias.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GestionMembresias.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/images/Logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/Logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoClienteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/NuevoInstructorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/PerfilClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/PerfilClienteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/PerfilInstructorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/controller/PerfilInstructorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/gymbrot/util/DatabaseConnection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,12 +101,12 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/JoseCh777/GYMBROT.git",
-    "accountId": "8af03a07-bb07-4ba8-880d-78b21ae03667"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JoseCh777/GYMBROT.git&quot;,
+    &quot;accountId&quot;: &quot;8af03a07-bb07-4ba8-880d-78b21ae03667&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -131,41 +123,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.PruebaChatbot.executor": "Run",
-    "Application.main.executor": "Run",
-    "Maven.GYMBROT [clean].executor": "Run",
-    "Maven.GYMBROT [javafx:run].executor": "Run",
-    "Maven.GYMBROT [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "Maven.GYMBROT [package].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "dev",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Daniel/GYMBROT",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.JavaFX",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PruebaChatbot.executor&quot;: &quot;Run&quot;,
+    &quot;Application.main.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [javafx:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GYMBROT [package].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Daniel/GYMBROT&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.main">
     <configuration name="PruebaChatbot" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.gymbrot.PruebaChatbot" />
@@ -594,7 +586,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779979351146</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="&quot;feat: sistema practicamente al 100%&quot;">
+      <option name="closed" value="true" />
+      <created>1780012619371</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1780012619372</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -612,7 +612,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge branch 'feature/frontend' into feature/biometria&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;pom.xml&#10;#&#9;src/main/java/org/gymbrot/Main.java&#10;#&#9;src/main/resources/images/guardar.png" />
     <MESSAGE value="&quot;feat: actualizar la conexion a la BD&quot;" />
     <MESSAGE value="&quot;feat: añadir todo lo relacionado con el SDK de digital persona&quot;" />
     <MESSAGE value="Merge branch 'feature/biometria' into feature/backend&#10;&#10;# Conflicts:&#10;#&#9;pom.xml" />
@@ -637,7 +636,8 @@
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: buscarPorMembresia retorna historial sin filtrar por activa&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;feat: GYMBROT AI chatbot - version estable&#10;&#10;Funcionalidades completas y probadas:&#10;- Gestion de clientes (CRUD + activar/suspender)&#10;- Gestion de citas (crear/cancelar/modificar/consultar)&#10;- Creacion de rutinas con IA&#10;- Consulta de membresias vencidas y por vencer&#10;- Estadisticas del gimnasio&#10;- Automatizaciones SMS y correo&#10;- Job Oracle para cancelar citas vencidas&quot;&#10;git push origin backend/Daniel" />
     <MESSAGE value="git add .&#10;git commit -m &quot;fix: modificar cita ya envia correo y sms automaticos&quot;&#10;git push origin backend/Daniel" />
-    <option name="LAST_COMMIT_MESSAGE" value="git add .&#10;git commit -m &quot;fix: modificar cita ya envia correo y sms automaticos&quot;&#10;git push origin backend/Daniel" />
+    <MESSAGE value="&quot;feat: sistema practicamente al 100%&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: sistema practicamente al 100%&quot;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

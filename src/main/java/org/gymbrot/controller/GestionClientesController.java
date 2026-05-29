@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -701,6 +702,7 @@ public class GestionClientesController implements Initializable {
             StackPane wrapper = new StackPane();
             wrapper.getChildren().add(rootActual);
             wrapper.getChildren().add(overlay);
+            ctrl.setWrapperStack(wrapper, overlay);
 
             scene.setRoot(wrapper);
         } catch (Exception e) {
@@ -710,31 +712,49 @@ public class GestionClientesController implements Initializable {
     }
 
     private void handleVerPerfil(ClienteRow row) {
-        try {
-            ClienteDAO dao = new ClienteDAO();
-            Cliente cliente = dao.buscarPorId(row.getId());
-            if (cliente == null) {
-                mostrarError("Error", "No se encontró el cliente");
-                return;
+        Scene scene = sideNav.getScene();
+        Parent rootActual = scene.getRoot();
+        StackPane wrapper = new StackPane();
+        wrapper.getChildren().add(rootActual);
+        scene.setRoot(wrapper);
+
+        Task<Cliente> task = new Task<>() {
+            @Override
+            protected Cliente call() {
+                return new ClienteDAO().buscarPorId(row.getId());
             }
 
-            Scene scene = sideNav.getScene();
-            Parent rootActual = scene.getRoot();
-            StackPane wrapper = new StackPane();
-            wrapper.getChildren().add(rootActual);
+            @Override
+            protected void succeeded() {
+                Cliente cliente = getValue();
+                if (cliente == null) {
+                    wrapper.getChildren().remove(rootActual);
+                    scene.setRoot(rootActual);
+                    mostrarError("Error", "No se encontró el cliente");
+                    return;
+                }
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PerfilCliente.fxml"));
+                    Parent overlay = loader.load();
+                    PerfilClienteController ctrl = loader.getController();
+                    ctrl.setWrapperStack(wrapper, overlay);
+                    ctrl.setCliente(cliente);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PerfilCliente.fxml"));
-            Parent overlay = loader.load();
-            PerfilClienteController ctrl = loader.getController();
-            ctrl.setWrapperStack(wrapper, overlay);
-            ctrl.setCliente(cliente);
+                    wrapper.getChildren().add(overlay);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mostrarError("Error", "No se pudo abrir el perfil del cliente");
+                }
+            }
 
-            wrapper.getChildren().add(overlay);
-            scene.setRoot(wrapper);
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarError("Error", "No se pudo abrir el perfil del cliente");
-        }
+            @Override
+            protected void failed() {
+                wrapper.getChildren().remove(rootActual);
+                scene.setRoot(rootActual);
+                mostrarError("Error", "No se pudo cargar el cliente");
+            }
+        };
+        new Thread(task).start();
     }
 
     private void handleEliminarCliente(ClienteRow row) {

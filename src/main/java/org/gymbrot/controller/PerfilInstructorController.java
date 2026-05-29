@@ -157,6 +157,7 @@ public class PerfilInstructorController implements Initializable {
                 wrapper.getChildren().add(rootActual);
             }
             wrapper.getChildren().add(overlay);
+            ctrl.setWrapperStack(wrapper, overlay);
             stage.getScene().setRoot(wrapper);
         } catch (Exception e) {
             e.printStackTrace();
