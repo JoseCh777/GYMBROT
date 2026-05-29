@@ -272,6 +272,94 @@ public class ChatbotService {
                 contextoExtra = " [SISTEMA: No hay citas programadas para hoy.]";
             }
 
+            // ── CONSULTAR TODOS LOS USUARIOS (clientes + instructores + admins) ──
+        } else if (textoLower.contains("consulta los usuarios") || textoLower.contains("listar usuarios")
+                || textoLower.contains("ver usuarios") || textoLower.contains("mostrar usuarios")
+                || textoLower.contains("todos los usuarios") || textoLower.contains("lista de usuarios")
+                || (textoLower.contains("usuarios") && (textoLower.contains("listar")
+                || textoLower.contains("ver") || textoLower.contains("mostrar")
+                || textoLower.contains("consulta") || textoLower.contains("lista")))) {
+
+            List<Usuario> todosUsuarios = usuarioDAO.listarTodos();
+            LOGGER.info("[usuarios] cantidad encontrada: " + todosUsuarios.size());
+            if (!todosUsuarios.isEmpty()) {
+                long totalClientes     = todosUsuarios.stream().filter(u -> "CLIENTE".equals(u.getTipoUsuario())).count();
+                long totalInstructores = todosUsuarios.stream().filter(u -> "INSTRUCTOR".equals(u.getTipoUsuario())).count();
+                long totalAdmins       = todosUsuarios.stream().filter(u -> "ADMINISTRADOR".equals(u.getTipoUsuario())).count();
+
+                StringBuilder lista = new StringBuilder();
+                lista.append(String.format("RESUMEN: %d usuarios | %d clientes | %d instructores | %d administradores\n\n",
+                        todosUsuarios.size(), totalClientes, totalInstructores, totalAdmins));
+
+                // Agrupar por tipo
+                lista.append("── CLIENTES ──\n");
+                todosUsuarios.stream().filter(u -> "CLIENTE".equals(u.getTipoUsuario())).forEach(u ->
+                        lista.append(String.format("- %s %s | ID: %s | Correo: %s | Tel: %s | Estado: %s\n",
+                                u.getNombre()    != null ? u.getNombre()    : "",
+                                u.getApellidos() != null ? u.getApellidos() : "",
+                                u.getNumeroIdentificacion(),
+                                u.getCorreo()    != null ? u.getCorreo()    : "N/A",
+                                u.getTelefono()  != null ? u.getTelefono()  : "N/A",
+                                u.getEstado()    != null ? u.getEstado()    : "N/A")));
+
+                lista.append("\n── INSTRUCTORES ──\n");
+                todosUsuarios.stream().filter(u -> "INSTRUCTOR".equals(u.getTipoUsuario())).forEach(u ->
+                        lista.append(String.format("- %s %s | ID: %s | Correo: %s | Estado: %s\n",
+                                u.getNombre()    != null ? u.getNombre()    : "",
+                                u.getApellidos() != null ? u.getApellidos() : "",
+                                u.getNumeroIdentificacion(),
+                                u.getCorreo()    != null ? u.getCorreo()    : "N/A",
+                                u.getEstado()    != null ? u.getEstado()    : "N/A")));
+
+                lista.append("\n── ADMINISTRADORES ──\n");
+                todosUsuarios.stream().filter(u -> "ADMINISTRADOR".equals(u.getTipoUsuario())).forEach(u ->
+                        lista.append(String.format("- %s %s | ID: %s | Correo: %s | Estado: %s\n",
+                                u.getNombre()    != null ? u.getNombre()    : "",
+                                u.getApellidos() != null ? u.getApellidos() : "",
+                                u.getNumeroIdentificacion(),
+                                u.getCorreo()    != null ? u.getCorreo()    : "N/A",
+                                u.getEstado()    != null ? u.getEstado()    : "N/A")));
+
+                contextoExtra = " [SISTEMA: Lista completa de usuarios del sistema:\n" + lista +
+                        "Muestrasela al administrador agrupada por tipo, con el resumen al inicio.]";
+            } else {
+                contextoExtra = " [SISTEMA: No hay usuarios registrados en la base de datos.]";
+            }
+
+            // ── CONSULTAR SOLO CLIENTES ───────────────────────────────────────
+        } else if (textoLower.contains("listar clientes") || textoLower.contains("ver clientes")
+                || textoLower.contains("mostrar clientes") || textoLower.contains("lista de clientes")
+                || textoLower.contains("todos los clientes")
+                || (textoLower.contains("clientes") && (textoLower.contains("listar")
+                || textoLower.contains("ver") || textoLower.contains("mostrar")
+                || textoLower.contains("consulta") || textoLower.contains("lista")))) {
+
+            List<Cliente> clientes = clienteDAO.listarTodos();
+            LOGGER.info("[clientes] cantidad encontrada: " + clientes.size());
+            if (!clientes.isEmpty()) {
+                long activos   = clientes.stream().filter(c -> "ACTIVO".equals(c.getEstado())).count();
+                long inactivos = clientes.stream().filter(c -> !"ACTIVO".equals(c.getEstado())).count();
+                StringBuilder lista = new StringBuilder();
+                lista.append(String.format("TOTAL: %d clientes | %d activos | %d inactivos\n\n",
+                        clientes.size(), activos, inactivos));
+                for (Cliente c : clientes) {
+                    lista.append(String.format(
+                            "- %s %s | ID: %s | Correo: %s | Tel: %s | Estado: %s\n",
+                            c.getNombre()    != null ? c.getNombre()    : "",
+                            c.getApellidos() != null ? c.getApellidos() : "",
+                            c.getNumeroIdentificacion(),
+                            c.getCorreo()    != null ? c.getCorreo()    : "N/A",
+                            c.getTelefono()  != null ? c.getTelefono()  : "N/A",
+                            c.getEstado()    != null ? c.getEstado()    : "N/A"
+                    ));
+                }
+                contextoExtra = " [SISTEMA: Lista de clientes registrados:\n" + lista +
+                        "Muestrasela al administrador de forma organizada, con el resumen al inicio.]";
+            } else {
+                contextoExtra = " [SISTEMA: No hay clientes registrados en la base de datos.]";
+            }
+
+            // ── CONSULTAR INSTRUCTORES ────────────────────────────────────────
         } else if (textoLower.contains("instructor") || textoLower.contains("instructores")
                 || textoLower.contains("entrenador") || textoLower.contains("entrenadores")) {
 
@@ -279,11 +367,12 @@ public class ChatbotService {
             LOGGER.info("[instructores] cantidad encontrada: " + instructores.size());
             if (!instructores.isEmpty()) {
                 StringBuilder lista = new StringBuilder();
+                lista.append(String.format("TOTAL: %d instructor(es)\n\n", instructores.size()));
                 for (Instructor i : instructores) {
                     lista.append(String.format(
                             "- %s %s | ID: %s | Disponibilidad: %s\n",
                             i.getNombre(),
-                            i.getApellidos() != null ? i.getApellidos() : "",
+                            i.getApellidos()     != null ? i.getApellidos()     : "",
                             i.getNumeroIdentificacion(),
                             i.getDisponibilidad() != null ? i.getDisponibilidad() : "N/A"
                     ));
@@ -292,34 +381,6 @@ public class ChatbotService {
                         "Muestrasela al administrador de forma organizada y clara.]";
             } else {
                 contextoExtra = " [SISTEMA: No hay instructores registrados en la base de datos.]";
-            }
-
-        } else if (textoLower.contains("listar clientes") || textoLower.contains("ver clientes")
-                || textoLower.contains("mostrar clientes") || textoLower.contains("consulta los usuarios")
-                || textoLower.contains("lista de clientes") || textoLower.contains("todos los clientes")
-                || (textoLower.contains("clientes") && (textoLower.contains("listar")
-                || textoLower.contains("ver") || textoLower.contains("mostrar")
-                || textoLower.contains("consulta") || textoLower.contains("lista")))) {
-
-            List<Cliente> clientes = clienteDAO.listarTodos();
-            LOGGER.info("[clientes] cantidad encontrada: " + clientes.size());
-            if (!clientes.isEmpty()) {
-                StringBuilder lista = new StringBuilder();
-                for (Cliente c : clientes) {
-                    lista.append(String.format(
-                            "- %s %s | ID: %s | Correo: %s | Tel: %s | Estado: %s\n",
-                            c.getNombre() != null ? c.getNombre() : "",
-                            c.getApellidos() != null ? c.getApellidos() : "",
-                            c.getNumeroIdentificacion(),
-                            c.getCorreo() != null ? c.getCorreo() : "N/A",
-                            c.getTelefono() != null ? c.getTelefono() : "N/A",
-                            c.getEstado() != null ? c.getEstado() : "N/A"
-                    ));
-                }
-                contextoExtra = " [SISTEMA: Lista de clientes registrados (" + clientes.size() + " en total):\n" + lista +
-                        "Muestrasela al administrador de forma organizada y clara.]";
-            } else {
-                contextoExtra = " [SISTEMA: No hay clientes registrados en la base de datos.]";
             }
 
         } else if (textoLower.contains("membres") || textoLower.contains("venc")
