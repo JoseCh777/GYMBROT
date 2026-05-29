@@ -272,6 +272,56 @@ public class ChatbotService {
                 contextoExtra = " [SISTEMA: No hay citas programadas para hoy.]";
             }
 
+        } else if (textoLower.contains("instructor") || textoLower.contains("instructores")
+                || textoLower.contains("entrenador") || textoLower.contains("entrenadores")) {
+
+            List<Instructor> instructores = instructorDAO.listarTodos();
+            LOGGER.info("[instructores] cantidad encontrada: " + instructores.size());
+            if (!instructores.isEmpty()) {
+                StringBuilder lista = new StringBuilder();
+                for (Instructor i : instructores) {
+                    lista.append(String.format(
+                            "- %s %s | ID: %s | Disponibilidad: %s\n",
+                            i.getNombre(),
+                            i.getApellidos() != null ? i.getApellidos() : "",
+                            i.getNumeroIdentificacion(),
+                            i.getDisponibilidad() != null ? i.getDisponibilidad() : "N/A"
+                    ));
+                }
+                contextoExtra = " [SISTEMA: Lista de instructores registrados:\n" + lista +
+                        "Muestrasela al administrador de forma organizada y clara.]";
+            } else {
+                contextoExtra = " [SISTEMA: No hay instructores registrados en la base de datos.]";
+            }
+
+        } else if (textoLower.contains("listar clientes") || textoLower.contains("ver clientes")
+                || textoLower.contains("mostrar clientes") || textoLower.contains("consulta los usuarios")
+                || textoLower.contains("lista de clientes") || textoLower.contains("todos los clientes")
+                || (textoLower.contains("clientes") && (textoLower.contains("listar")
+                || textoLower.contains("ver") || textoLower.contains("mostrar")
+                || textoLower.contains("consulta") || textoLower.contains("lista")))) {
+
+            List<Cliente> clientes = clienteDAO.listarTodos();
+            LOGGER.info("[clientes] cantidad encontrada: " + clientes.size());
+            if (!clientes.isEmpty()) {
+                StringBuilder lista = new StringBuilder();
+                for (Cliente c : clientes) {
+                    lista.append(String.format(
+                            "- %s %s | ID: %s | Correo: %s | Tel: %s | Estado: %s\n",
+                            c.getNombre() != null ? c.getNombre() : "",
+                            c.getApellidos() != null ? c.getApellidos() : "",
+                            c.getNumeroIdentificacion(),
+                            c.getCorreo() != null ? c.getCorreo() : "N/A",
+                            c.getTelefono() != null ? c.getTelefono() : "N/A",
+                            c.getEstado() != null ? c.getEstado() : "N/A"
+                    ));
+                }
+                contextoExtra = " [SISTEMA: Lista de clientes registrados (" + clientes.size() + " en total):\n" + lista +
+                        "Muestrasela al administrador de forma organizada y clara.]";
+            } else {
+                contextoExtra = " [SISTEMA: No hay clientes registrados en la base de datos.]";
+            }
+
         } else if (textoLower.contains("membres") || textoLower.contains("venc")
                 || textoLower.contains("renovar")) {
 
@@ -704,7 +754,6 @@ public class ChatbotService {
         String correoClienteEliminar = cliente.getCorreo();
         String telefonoCliente       = cliente.getTelefono();
 
-        // Notificar ANTES de eliminar
         if (correoClienteEliminar != null) {
             emailService.enviarCorreo(correoClienteEliminar,
                     "Cuenta eliminada - GYMBROT",
@@ -723,43 +772,22 @@ public class ChatbotService {
             LOGGER.info("Eliminando cliente ID: " + idCliente);
             Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
 
-            // 1. RUTINA_EJERCICIOS (via subquery de RUTINAS)
             ejecutarSQL(conn, "DELETE FROM RUTINA_EJERCICIOS WHERE id_rutina IN " +
                     "(SELECT id_rutina FROM RUTINAS WHERE id_cliente = ?)", idCliente);
-
-            // 2. RUTINAS
             ejecutarSQL(conn, "DELETE FROM RUTINAS WHERE id_cliente = ?", idCliente);
-
-            // 3. NOTIFICACIONES
             ejecutarSQL(conn, "DELETE FROM NOTIFICACIONES WHERE id_cliente = ?", idCliente);
-
-            // 4. CITAS
             ejecutarSQL(conn, "DELETE FROM CITAS WHERE id_cliente = ?", idCliente);
-
-            // 5. PAGOS
             ejecutarSQL(conn, "DELETE FROM PAGOS WHERE id_cliente = ?", idCliente);
-
-            // 6. PROGRESOS
             ejecutarSQL(conn, "DELETE FROM PROGRESOS WHERE id_cliente = ?", idCliente);
-
-            // 7. REGISTROS_INGRESOS
             ejecutarSQL(conn, "DELETE FROM REGISTROS_INGRESOS WHERE id_cliente = ?", idCliente);
-
-            // 8. HISTORIAL_MEMBRESIAS
             ejecutarSQL(conn, "DELETE FROM HISTORIAL_MEMBRESIAS WHERE id_cliente = ?", idCliente);
-
-            // 9. MENSAJES_GYMBROT (via subquery de SESIONES_GYMBROT)
             ejecutarSQL(conn, "DELETE FROM MENSAJES_GYMBROT WHERE id_sesion IN " +
                     "(SELECT id_sesion FROM SESIONES_GYMBROT WHERE id_cliente = ?)", idCliente);
-
-            // 10. SESIONES_GYMBROT
             ejecutarSQL(conn, "DELETE FROM SESIONES_GYMBROT WHERE id_cliente = ?", idCliente);
 
-            // 11. CLIENTES
             boolean eliminadoCliente = clienteDAO.eliminar(idCliente);
             LOGGER.info("CLIENTES eliminado: " + eliminadoCliente);
 
-            // 12. USUARIOS
             boolean eliminadoUsuario = usuarioDAO.eliminar(idCliente);
             LOGGER.info("USUARIOS eliminado: " + eliminadoUsuario);
 
@@ -974,8 +1002,10 @@ public class ChatbotService {
                 "Cambios: " + cambiosResumen + ". SMS y correo enviados. Confirma al administrador.]";
     }
 
+    // ── CREAR CLIENTE — usa SP_REGISTRAR_CLIENTE (transacción atómica en BD) ──
     private String procesarCrearCliente(String texto, List<MensajeGymbrot> historial) {
 
+        // ── Extracción de datos ───────────────────────────────────────────
         String nombre    = extraerNombre(texto, historial);
         String apellidos = extraerApellidos(texto, historial);
         String id        = extraerIdCliente(texto);
@@ -983,6 +1013,10 @@ public class ChatbotService {
         String telefono  = extraerTelefono(texto, historial);
         String direccion = extraerDireccion(texto, historial);
 
+        LOGGER.info("[procesarCrearCliente] nombre=" + nombre + " | apellidos=" + apellidos
+                + " | id=" + id + " | correo=" + correo + " | telefono=" + telefono);
+
+        // ── Validar mínimos ───────────────────────────────────────────────
         if (nombre == null || id == null || correo == null) {
             StringBuilder faltantes = new StringBuilder("Faltan datos: ");
             if (nombre == null)  faltantes.append("nombre, ");
@@ -992,43 +1026,30 @@ public class ChatbotService {
                     ". Pidele al administrador que los proporcione.]";
         }
 
-        if (usuarioDAO.buscarPorId(id) != null) {
-            return " [SISTEMA: Ya existe un usuario con ID " + id + ". No se puede crear duplicado.]";
-        }
-        if (usuarioDAO.buscarPorCorreo(correo) != null) {
-            return " [SISTEMA: Ya existe un usuario con el correo " + correo + ". No se puede crear duplicado.]";
-        }
+        // ── Llamar al stored procedure SP_REGISTRAR_CLIENTE ───────────────
+        // El SP hace INSERT en USUARIOS + CLIENTES en una sola transacción
+        // con AUTONOMOUS_TRANSACTION: si falla hace ROLLBACK automático.
+        String[] spResultado = llamarSpRegistrarCliente(
+                id, "CC", nombre,
+                apellidos  != null ? apellidos  : "",
+                telefono   != null ? telefono   : "",
+                correo,
+                id,          // contraseña temporal = número de identificación
+                direccion  != null ? direccion  : ""
+        );
 
-        Usuario usuario = new Usuario();
-        usuario.setNumeroIdentificacion(id);
-        usuario.setTipoIdentificacion("CC");
-        usuario.setNombre(nombre);
-        usuario.setApellidos(apellidos != null ? apellidos : "");
-        usuario.setTelefono(telefono   != null ? telefono  : "");
-        usuario.setCorreo(correo);
-        usuario.setContrasenaHash(id);
-        usuario.setFotoUrl(null);
-        usuario.setEstado("ACTIVO");
-        usuario.setFechaRegistro(LocalDate.now());
-        usuario.setTipoUsuario("CLIENTE");
+        int    codigo  = Integer.parseInt(spResultado[0]);
+        String mensaje = spResultado[1];
 
-        boolean usuarioCreado = usuarioDAO.insertar(usuario);
-        if (!usuarioCreado) {
-            return " [SISTEMA: Error al insertar en USUARIOS. Revisa los logs.]";
+        LOGGER.info("[procesarCrearCliente] SP resultado: codigo=" + codigo + " | mensaje=" + mensaje);
+
+        if (codigo != 1) {
+            // El SP devuelve 0 si es duplicado, -1 si hubo error de BD
+            return " [SISTEMA: No se pudo crear el cliente. Motivo: " + mensaje +
+                    ". Informa al administrador.]";
         }
 
-        Cliente cliente = new Cliente();
-        cliente.setNumeroIdentificacion(id);
-        cliente.setDireccion(direccion != null ? direccion : "");
-        cliente.setFechaNacimiento(null);
-        cliente.setHuellaDactilar(null);
-
-        boolean clienteCreado = insertarClienteSeguro(cliente);
-        if (!clienteCreado) {
-            usuarioDAO.eliminar(id);
-            return " [SISTEMA: Error al insertar en CLIENTES. USUARIOS revertido automaticamente.]";
-        }
-
+        // ── Notificaciones ────────────────────────────────────────────────
         String nombreLimpio = nombre.split(" ")[0];
         notifService.enviarSmsDirecto(
                 "GYMBROT: Hola " + nombreLimpio + "! Tu cuenta ha sido creada. " +
@@ -1037,10 +1058,56 @@ public class ChatbotService {
                 generarHtmlBienvenida(nombreLimpio, correo, id));
 
         return " [SISTEMA: Cliente " + nombreLimpio + " " + (apellidos != null ? apellidos : "") +
-                " (ID: " + id + ") creado exitosamente. SMS y correo enviados a " + correo +
+                " (ID: " + id + ") creado exitosamente en USUARIOS y CLIENTES. " +
+                "SMS y correo de bienvenida enviados a " + correo +
                 ". Contrasena temporal: numero de identificacion. Confirma al administrador.]";
     }
 
+    // ── LLAMAR A SP_REGISTRAR_CLIENTE ─────────────────────────────────────
+    // Retorna String[]{codigo, mensaje}
+    //   codigo  1  = éxito
+    //   codigo  0  = duplicado
+    //   codigo -1  = error de BD (ver mensaje)
+    private String[] llamarSpRegistrarCliente(
+            String id, String tipoId, String nombre, String apellidos,
+            String telefono, String correo, String contrasena, String direccion) {
+
+        String sql = "{ CALL PKG_GYMBROT.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?) }";
+
+        try (Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
+             java.sql.CallableStatement cs = conn.prepareCall(sql)) {
+
+            // Parámetros IN
+            cs.setString(1, id);
+            cs.setString(2, tipoId);
+            cs.setString(3, nombre);
+            cs.setString(4, apellidos);
+            cs.setString(5, telefono);
+            cs.setString(6, correo);
+            cs.setString(7, contrasena);
+            cs.setString(8, direccion);
+            cs.setNull(9, java.sql.Types.DATE);     // p_fecha_nac  → null, se actualiza después
+            cs.setNull(10, java.sql.Types.BLOB);    // p_huella     → null, se registra en dispositivo
+
+            // Parámetros OUT
+            cs.registerOutParameter(11, java.sql.Types.INTEGER); // p_codigo_out
+            cs.registerOutParameter(12, java.sql.Types.VARCHAR); // p_mensaje_out
+
+            cs.execute();
+
+            int    codigo  = cs.getInt(11);
+            String mensaje = cs.getString(12);
+            return new String[]{String.valueOf(codigo), mensaje != null ? mensaje : ""};
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "[llamarSpRegistrarCliente] SQLException: " + e.getMessage()
+                    + " | SQLState: " + e.getSQLState()
+                    + " | ErrorCode: " + e.getErrorCode(), e);
+            return new String[]{"-1", "Error de base de datos: " + e.getMessage()};
+        }
+    }
+
+    // ── STUB retenido para compatibilidad interna (ya no se usa en crear cliente) ──
     private boolean insertarClienteSeguro(Cliente cliente) {
         String sql = "INSERT INTO CLIENTES (numero_identificacion, direccion, " +
                 "fecha_nacimiento, huella_dactilar) VALUES (?, ?, ?, ?)";
@@ -1345,7 +1412,6 @@ public class ChatbotService {
         if (t.contains("sábado") || t.contains("sabado"))   { LocalDate c = hoy.with(java.time.DayOfWeek.SATURDAY); return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
         if (t.contains("domingo"))  { LocalDate c = hoy.with(java.time.DayOfWeek.SUNDAY);    return c.isBefore(hoy) ? c.plusWeeks(1) : c; }
 
-        // Reconocer "3 de junio", "15 de mayo", "el 3 de junio", etc.
         String[] meses = {"enero","febrero","marzo","abril","mayo","junio",
                 "julio","agosto","septiembre","octubre","noviembre","diciembre"};
         for (int i = 0; i < meses.length; i++) {
@@ -1365,7 +1431,6 @@ public class ChatbotService {
             }
         }
 
-        // Reconocer DD/MM/YYYY o DD-MM-YYYY
         Pattern pFecha = Pattern.compile("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{4})");
         Matcher mFecha = pFecha.matcher(t);
         if (mFecha.find()) {
@@ -1377,6 +1442,7 @@ public class ChatbotService {
         }
         return null;
     }
+
     private String extraerObjetivoRutina(String texto) {
         Pattern p = Pattern.compile("objetivo[:\\s]+([\\w\\s]+?)(?:,|\\.|$)", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(texto);
@@ -1390,12 +1456,12 @@ public class ChatbotService {
     }
 
     private String extraerDiasSemanaRutina(String texto) {
-        // Busca "dias:" seguido de todo hasta punto o fin de línea
         Pattern p = Pattern.compile("dias[:\\s]+([\\w\\s,]+?)(?:\\.|$)", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(texto.trim());
         if (m.find()) return m.group(1).trim();
         return null;
     }
+
     private String obtenerNombreInstructor(String idInstructor) {
         for (Instructor inst : instructorDAO.listarTodos()) {
             if (inst.getNumeroIdentificacion().equals(idInstructor))
