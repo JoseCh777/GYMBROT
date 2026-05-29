@@ -984,12 +984,15 @@ public class ChatbotService {
                     ". Verifica el numero de identificacion e intentalo de nuevo.]";
         }
 
-        String nuevoNombre     = extraerNombre(texto, historial);
-        String nuevosApellidos = extraerApellidos(texto, historial);
-        String nuevoCorreo     = extraerCorreo(texto, historial);
-        String nuevoTelefono   = extraerTelefono(texto, historial);
-        String nuevaDireccion  = extraerDireccion(texto, historial);
-        LocalDate nuevaFechaNac = extraerFecha(texto, historial);
+        // IMPORTANTE: nombre y apellidos pueden venir del historial (flujo conversacional)
+        // pero correo, telefono, direccion y fecha SOLO del mensaje actual para evitar
+        // contaminar con datos de mensajes anteriores de la sesion
+        String nuevoNombre      = extraerNombre(texto, historial);
+        String nuevosApellidos  = extraerApellidos(texto, historial);
+        String nuevoCorreo      = extraerCorreo(texto, null);
+        String nuevoTelefono    = extraerTelefono(texto, null);
+        String nuevaDireccion   = extraerDireccion(texto, null);
+        LocalDate nuevaFechaNac = extraerFecha(texto, null);
 
         if (nuevoNombre == null && nuevosApellidos == null && nuevoCorreo == null
                 && nuevoTelefono == null && nuevaDireccion == null && nuevaFechaNac == null) {
@@ -1273,8 +1276,14 @@ public class ChatbotService {
     }
 
     // ── EXTRACTORES GENERALES ─────────────────────────────────────────────
+    // Palabras clave que delimitan el fin de un campo — si aparecen, el extractor se detiene
+    private static final String KEYWORDS =
+            "(?:apellidos?|id|cedula|correo|telefono|cel|direccion|fecha|estado|contrasena)";
+
     private String extraerNombre(String texto, List<MensajeGymbrot> historial) {
-        Pattern p = Pattern.compile("nombre[:\\s]+(\\p{L}+(?:\\s+\\p{L}+)?)",
+        // Captura una o dos palabras después de "nombre:" que NO sean palabras clave
+        Pattern p = Pattern.compile(
+                "nombre[:\\s]+((?!(?i)" + KEYWORDS + "\\b)\\p{L}+(?:\\s+(?!(?i)" + KEYWORDS + "\\b)\\p{L}+)?)",
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
         Matcher m = p.matcher(texto);
         if (m.find()) return capitalizar(m.group(1).trim());
@@ -1290,7 +1299,9 @@ public class ChatbotService {
     }
 
     private String extraerApellidos(String texto, List<MensajeGymbrot> historial) {
-        Pattern p = Pattern.compile("apellidos?[:\\s]+(\\p{L}+(?:\\s+\\p{L}+)?)",
+        // Captura una o dos palabras después de "apellidos:" que NO sean palabras clave
+        Pattern p = Pattern.compile(
+                "apellidos?[:\\s]+((?!(?i)" + KEYWORDS + "\\b)\\p{L}+(?:\\s+(?!(?i)" + KEYWORDS + "\\b)\\p{L}+)?)",
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
         Matcher m = p.matcher(texto);
         if (m.find()) return capitalizar(m.group(1).trim());
