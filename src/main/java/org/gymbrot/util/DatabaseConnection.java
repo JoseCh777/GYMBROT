@@ -3,6 +3,7 @@ package org.gymbrot.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.Executors;
 
 public class DatabaseConnection {
 
@@ -28,6 +29,7 @@ public class DatabaseConnection {
             if (instance == null || instance.isClosed()) {
                 Class.forName("oracle.jdbc.OracleDriver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
+                instance.setNetworkTimeout(Executors.newSingleThreadExecutor(), 10000);
                 if (!conexionReportada) {
                     conexionReportada = true;
                     System.out.println("Conexión exitosa a GYMBROT DB");
