@@ -44,16 +44,21 @@ public class ConsultaGymbrotService {
                     .filter(m -> !m.getFechaVencimiento().isAfter(LocalDate.now().plusDays(7)))
                     .count();
 
-            contexto.append("ESTADÍSTICAS DEL GIMNASIO:\n");
+            contexto.append("ESTADISTICAS DEL GIMNASIO:\n");
+            contexto.append("\n[CLIENTES]\n");
             contexto.append(String.format("- Total clientes registrados: %d\n", clientes.size()));
-            contexto.append(String.format("- Clientes activos: %d\n", clientesActivos));
-            contexto.append(String.format("- Clientes inactivos: %d\n", clientesInactivos));
-            contexto.append(String.format("- Clientes suspendidos: %d\n", suspendidos));
+            contexto.append(String.format("- Clientes ACTIVOS: %d\n", clientesActivos));
+            contexto.append(String.format("- Clientes INACTIVOS: %d\n", clientesInactivos));
+            contexto.append(String.format("- Clientes SUSPENDIDOS: %d\n", suspendidos));
+            contexto.append("\n[INSTRUCTORES]\n");
             contexto.append(String.format("- Total instructores: %d\n", instructores.size()));
-            contexto.append(String.format("- Ingresos este mes: %d\n", ingresosMes));
+            contexto.append("\n[OPERACIONES]\n");
+            contexto.append(String.format("- Ingresos al gimnasio este mes: %d\n", ingresosMes));
             contexto.append(String.format("- Citas programadas hoy: %d\n", citasHoy.size()));
-            contexto.append(String.format("- Membresías vencidas: %d\n", vencidas.size()));
-            contexto.append(String.format("- Membresías por vencer (7 días): %d\n", porVencer7));
+            contexto.append("\n[MEMBRESIAS]\n");
+            contexto.append(String.format("- Membresias ACTIVAS: %d\n", activas.size()));
+            contexto.append(String.format("- Membresias VENCIDAS: %d\n", vencidas.size()));
+            contexto.append(String.format("- Membresias por vencer en 7 dias: %d\n", porVencer7));
         }
 
         // ── BUSCAR CLIENTE ESPECÍFICO POR ID ──────────────────────────────
@@ -134,6 +139,7 @@ public class ConsultaGymbrotService {
                             m.getFechaVencimiento().format(fmt)));
                 }
             }
+
             if (!porVencer.isEmpty()) {
                 contexto.append("MEMBRESÍAS POR VENCER (próximos 7 días):\n");
                 for (Membresia m : porVencer) {
@@ -145,8 +151,24 @@ public class ConsultaGymbrotService {
                             m.getFechaVencimiento().format(fmt), dias));
                 }
             }
+
             if (vencidas.isEmpty() && porVencer.isEmpty()) {
                 contexto.append("No hay membresías vencidas ni próximas a vencer.\n");
+            }
+
+            // ── FIX: Listar TODAS las membresías activas ──────────────────
+            if (!activas.isEmpty()) {
+                contexto.append(String.format("\nMEMBRESÍAS ACTIVAS: %d\n", activas.size()));
+                for (Membresia m : activas) {
+                    HistorialMembresia h = historialDAO.buscarPorMembresia(m.getIdMembresia());
+                    String idCliente = h != null ? h.getIdCliente() : "N/A";
+                    long dias = java.time.temporal.ChronoUnit.DAYS.between(hoy, m.getFechaVencimiento());
+                    contexto.append(String.format("- #%d | Cliente: %s | Tipo: %s | Vence: %s | En %d días\n",
+                            m.getIdMembresia(), idCliente, m.getTipoMembresia(),
+                            m.getFechaVencimiento().format(fmt), dias));
+                }
+            } else {
+                contexto.append("No hay membresías activas actualmente.\n");
             }
         }
 

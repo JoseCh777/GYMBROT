@@ -108,23 +108,27 @@ public class MembresiaDAO {
     }
 
     public boolean membresiaPlan(int idPlan) {
-    String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'ACTIVA'";
-    try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
-        ps.setInt(1, idPlan);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) return rs.getInt(1) > 0;
-    } catch (SQLException e) {
-        System.err.println("Error verificar plan: " + e.getMessage());
+        String sql = "SELECT COUNT(*) FROM MEMBRESIAS WHERE id_plan = ? AND estado = 'ACTIVA'";
+        try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
+            ps.setInt(1, idPlan);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.err.println("Error verificar plan: " + e.getMessage());
+        }
+        return false;
     }
-    return false;
-}
     // ── LISTAR VENCIDAS ───────────────────────────────────────────────────
+    // Filtra SOLO por fecha para no depender del estado guardado en BD,
+    // que puede estar desactualizado si el trigger no se disparó.
+    // Excluye estado 'CANCELADA' para no mezclar membresías canceladas.
     public List<Membresia> listarVencidas() {
         List<Membresia> lista = new ArrayList<>();
         String sql = """
                 SELECT * FROM MEMBRESIAS
-                WHERE fecha_vencimiento < SYSDATE AND estado != 'VENCIDA'
-                ORDER BY fecha_vencimiento
+                WHERE TRUNC(fecha_vencimiento) < TRUNC(SYSDATE)
+                  AND estado != 'CANCELADA'
+                ORDER BY fecha_vencimiento DESC
                 """;
         try (PreparedStatement ps = getConexion().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -134,12 +138,28 @@ public class MembresiaDAO {
         }
         return lista;
     }
+
     // ── LISTAR POR ESTADO ─────────────────────────────────────────────────
+    // Para estado = 'ACTIVA': además de filtrar por estado, valida que la
+    // fecha de vencimiento sea hoy o futura, cubriendo el caso en que el
+    // trigger no actualizó el estado de una membresía ya vencida.
     public List<Membresia> listarPorEstado(String estado) {
         List<Membresia> lista = new ArrayList<>();
-        String sql = "SELECT * FROM MEMBRESIAS WHERE estado = ? ORDER BY fecha_vencimiento";
+        String sql;
+        if ("ACTIVA".equalsIgnoreCase(estado)) {
+            sql = """
+                    SELECT * FROM MEMBRESIAS
+                    WHERE estado = 'ACTIVA'
+                      AND TRUNC(fecha_vencimiento) >= TRUNC(SYSDATE)
+                    ORDER BY fecha_vencimiento ASC
+                    """;
+        } else {
+            sql = "SELECT * FROM MEMBRESIAS WHERE estado = ? ORDER BY fecha_vencimiento";
+        }
         try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
-            ps.setString(1, estado);
+            if (!"ACTIVA".equalsIgnoreCase(estado)) {
+                ps.setString(1, estado);
+            }
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) lista.add(mapear(rs));
             }
