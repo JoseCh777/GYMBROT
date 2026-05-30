@@ -1581,15 +1581,18 @@ public class ChatbotService {
     }
 
     private String extraerIdCliente(String texto) {
-        Pattern p1 = Pattern.compile("(?:id|cedula|cédula|identificacion|identificación)[:\\s]+(\\d{4,12})",
+        // Prioridad 1: después de etiqueta id/cedula
+        Pattern p1 = Pattern.compile("(?:id|cedula|cédula|identificacion|identificación)[:\\s]+([A-Za-z0-9]{4,12})",
                 Pattern.CASE_INSENSITIVE);
         Matcher m1 = p1.matcher(texto);
-        if (m1.find()) return m1.group(1);
+        if (m1.find()) return m1.group(1).toUpperCase();
 
-        Pattern p2 = Pattern.compile("cliente\\s+(\\d{4,12})", Pattern.CASE_INSENSITIVE);
-        Matcher m2 = p2.matcher(texto.toLowerCase());
-        if (m2.find()) return m2.group(1);
+        // Prioridad 2: después de "cliente"
+        Pattern p2 = Pattern.compile("cliente\\s+([A-Za-z0-9]{4,12})", Pattern.CASE_INSENSITIVE);
+        Matcher m2 = p2.matcher(texto);
+        if (m2.find()) return m2.group(1).toUpperCase();
 
+        // Prioridad 3: número largo (CC tradicional)
         Pattern p3 = Pattern.compile("\\b(\\d{6,12})\\b");
         Matcher m3 = p3.matcher(texto);
         while (m3.find()) {
@@ -1599,7 +1602,6 @@ public class ChatbotService {
         }
         return null;
     }
-
     private int extraerIdCita(String texto) {
         Pattern p = Pattern.compile("#(\\d+)|cita\\s+(\\d+)|id\\s+(\\d+)");
         Matcher m = p.matcher(texto.toLowerCase());
