@@ -29,6 +29,7 @@ public class DatabaseConnection {
             if (instance == null || instance.isClosed()) {
                 Class.forName("oracle.jdbc.OracleDriver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
+                instance.setAutoCommit(true);
                 instance.setNetworkTimeout(Executors.newSingleThreadExecutor(), 10000);
                 if (!conexionReportada) {
                     conexionReportada = true;

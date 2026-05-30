@@ -143,14 +143,47 @@ public class ChatbotService {
             if (idCliente != null) {
                 Usuario usuario = usuarioDAO.buscarPorId(idCliente);
                 if (usuario != null) {
-                    String nuevoEstado = textoLower.contains("activar") ? "ACTIVO" : "INACTIVO";
-                    if (textoLower.contains("suspender")) nuevoEstado = "SUSPENDIDO";
+                    String nuevoEstado;
+                    if (textoLower.contains("desactivar") || textoLower.contains("inactivar")) {
+                        nuevoEstado = "INACTIVO";
+                    } else if (textoLower.contains("suspender")) {
+                        nuevoEstado = "SUSPENDIDO";
+                    } else {
+                        nuevoEstado = "ACTIVO";
+                    }
                     usuario.setEstado(nuevoEstado);
                     boolean ok = usuarioDAO.actualizar(usuario);
+
+                    if (ok && usuario.getCorreo() != null) {
+                        String nombreLimpio = usuario.getNombre().split(" ")[0];
+                        String asunto = nuevoEstado.equals("ACTIVO")
+                                ? "Cuenta activada - GYMBROT"
+                                : nuevoEstado.equals("INACTIVO")
+                                  ? "Cuenta desactivada - GYMBROT"
+                                  : "Cuenta suspendida - GYMBROT";
+                        String accion = nuevoEstado.equals("ACTIVO") ? "activada"
+                                : nuevoEstado.equals("INACTIVO") ? "desactivada" : "suspendida";
+                        emailService.enviarCorreo(usuario.getCorreo(), asunto,
+                                "<html><body style='font-family:Arial;'>" +
+                                        "<div style='max-width:600px;margin:0 auto;border:1px solid #ddd;border-radius:10px;'>" +
+                                        "<div style='background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;'>" +
+                                        "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                                        "<div style='padding:20px;'>" +
+                                        "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
+                                        "<p>Tu cuenta ha sido <b>" + accion + "</b> exitosamente.</p>" +
+                                        "<p>Si no reconoces este cambio, contactanos de inmediato.</p>" +
+                                        "<p><b>GYMBROT Valledupar</b></p></div>" +
+                                        "<div style='background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;'>" +
+                                        "<p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>");
+                        System.out.println("Correo de estado enviado a: " + usuario.getCorreo());
+                    }
+
                     contextoExtra = ok
-                            ? " [SISTEMA: Cliente " + idCliente + " actualizado a estado " +
-                              nuevoEstado + " exitosamente. Confirma al administrador.]"
-                            : " [SISTEMA: No se pudo actualizar el estado del cliente " +
+                            ? " [SISTEMA: OPERACION EXITOSA. El cliente " + idCliente +
+                              " fue actualizado a estado " + nuevoEstado + ". " +
+                              "Correo de notificacion enviado. " +
+                              "RESPONDE SOLO confirmando este resultado. NO contradigas esta informacion.]"
+                            : " [SISTEMA: ERROR. No se pudo actualizar el estado del cliente " +
                               idCliente + ". Informa al administrador.]";
                 } else {
                     contextoExtra = " [SISTEMA: No existe ningun usuario con ID " + idCliente + ".]";
@@ -159,6 +192,8 @@ public class ChatbotService {
                 contextoExtra = " [SISTEMA: El administrador quiere cambiar el estado de un cliente " +
                         "pero no indico el ID. Pidele el numero de identificacion.]";
             }
+
+
 
         } else if ((textoLower.contains("modificar cliente") || textoLower.contains("actualizar cliente")
                 || textoLower.contains("editar cliente") || textoLower.contains("cambiar datos del cliente"))
