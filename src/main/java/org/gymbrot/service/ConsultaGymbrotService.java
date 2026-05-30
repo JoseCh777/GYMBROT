@@ -40,6 +40,7 @@ public class ConsultaGymbrotService {
             List<Cita> citasHoy    = citaDAO.listarPorFecha(LocalDate.now());
             List<Membresia> vencidas = membresiaDAO.listarVencidas();
             List<Membresia> activas  = membresiaDAO.listarPorEstado("ACTIVA");
+            System.out.println("DEBUG membresias activas: " + activas.size());
             long porVencer7 = activas.stream()
                     .filter(m -> !m.getFechaVencimiento().isAfter(LocalDate.now().plusDays(7)))
                     .count();
