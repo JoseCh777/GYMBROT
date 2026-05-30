@@ -209,6 +209,8 @@ public class ChatbotService {
 
             contextoExtra = procesarModificarCita(texto, historial);
 
+
+
         } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
                 || textoLower.contains("agendar") || textoLower.contains("programa")
                 || textoLower.contains("registra"))
@@ -429,6 +431,19 @@ public class ChatbotService {
 
             contextoExtra = procesarAsignarMembresia(texto, historial);
 
+        } else if ((textoLower.contains("cancelar membresia") || textoLower.contains("cancelar membresía")
+                || textoLower.contains("eliminar membresia") || textoLower.contains("eliminar membresía")
+                || textoLower.contains("desactivar membresia") || textoLower.contains("desactivar membresía"))
+                && (textoLower.contains("cliente") || extraerIdCliente(texto) != null)) {
+
+            contextoExtra = procesarCancelarMembresia(texto, historial);
+
+        } else if (textoLower.contains("modificar plan") || textoLower.contains("actualizar plan")
+                || textoLower.contains("editar plan") || textoLower.contains("cambiar precio del plan")
+                || textoLower.contains("cambiar precio plan")) {
+
+            contextoExtra = procesarModificarPlan(texto, historial);
+
         } else if (textoLower.contains("membres") || textoLower.contains("venc")
                 || textoLower.contains("renovar")) {
 
@@ -533,22 +548,30 @@ public class ChatbotService {
             return " [SISTEMA: No existe un cliente con ID " + idCliente +
                     ". Verifica el numero de identificacion.]";
 
-        // 2. Detectar plan por nombre en el texto
+        // 2. Detectar plan por nombre en el texto buscando en la BD
         String t = texto.toLowerCase();
-        int idPlan;
-        if (t.contains("elite") || t.contains("premium")) {
-            idPlan = 3;
-        } else if (t.contains("estandar") || t.contains("estandar")
-                || t.contains("standard") || t.contains("medio")) {
-            idPlan = 2;
-        } else {
-            idPlan = 1; // basico por defecto
+        List<PlanMembresia> planesDisponibles = planMembresiaDAO.listarTodos();
+        PlanMembresia plan = null;
+
+        // Buscar por nombre exacto en los planes de la BD
+        for (PlanMembresia p : planesDisponibles) {
+            if (t.contains(p.getNombre().toLowerCase())) {
+                plan = p;
+                break;
+            }
         }
 
-        PlanMembresia plan = planMembresiaDAO.buscarPorId(idPlan);
-        if (plan == null)
-            return " [SISTEMA: No se encontro el plan con ID " + idPlan +
-                    " en la base de datos. Verifica los planes disponibles.]";
+        // Si no encontró por nombre, mostrar planes disponibles
+        if (plan == null) {
+            StringBuilder listaPlan = new StringBuilder("PLANES DISPONIBLES:\n");
+            for (PlanMembresia p : planesDisponibles) {
+                listaPlan.append(String.format("- Plan #%d: %s | Mensual $%,.0f | Semestral $%,.0f | Anual $%,.0f\n",
+                        p.getIdPlan(), p.getNombre(),
+                        p.getPrecioMensual(), p.getPrecioSemestral(), p.getPrecioAnual()));
+            }
+            return " [SISTEMA: No se identificó el plan en el mensaje. " + listaPlan +
+                    "Pídele al administrador que indique el nombre exacto del plan (Silver, Gold o Black) y la modalidad (mensual, semestral o anual).]";
+        }
 
         // 3. Detectar modalidad
         String modalidad;
@@ -571,7 +594,7 @@ public class ChatbotService {
         // 5. Construir y persistir la membresia
         LocalDate hoy = LocalDate.now();
         Membresia m = new Membresia();
-        m.setIdPlan(idPlan);
+        m.setIdPlan(plan.getIdPlan());
         m.setTipoMembresia(plan.getNombre());
         m.setModalidadPago(modalidad);
         m.setValor(valor);
@@ -1707,6 +1730,166 @@ public class ChatbotService {
                 return inst.getNombre();
         }
         return idInstructor;
+    }
+
+    // ── CANCELAR MEMBRESÍA ────────────────────────────────────────────────
+    private String procesarCancelarMembresia(String texto, List<MensajeGymbrot> historial) {
+
+        String idCliente = extraerIdCliente(texto);
+        if (idCliente == null && historial != null) {
+            for (int i = historial.size() - 1; i >= 0; i--) {
+                if (historial.get(i).getRemitente().equals("CLIENTE")) {
+                    idCliente = extraerIdCliente(historial.get(i).getContenido());
+                    if (idCliente != null) break;
+                }
+            }
+        }
+        if (idCliente == null)
+            return " [SISTEMA: No se encontro el ID del cliente. " +
+                    "Pidele al administrador que indique el numero de identificacion.]";
+
+        Cliente cliente = clienteDAO.buscarPorId(idCliente);
+        if (cliente == null)
+            return " [SISTEMA: No existe un cliente con ID " + idCliente + ".]";
+
+        HistorialMembresia hActiva = historialDAO.buscarActiva(idCliente);
+        if (hActiva == null)
+            return " [SISTEMA: El cliente " + idCliente +
+                    " no tiene ninguna membresia activa. Informa al administrador.]";
+
+        Membresia membresia = membresiaDAO.buscarPorId(hActiva.getIdMembresia());
+        if (membresia == null)
+            return " [SISTEMA: Error al buscar la membresia del cliente. Informa al administrador.]";
+
+        membresia.setEstado("CANCELADA");
+        boolean ok = membresiaDAO.actualizar(membresia);
+        if (!ok)
+            return " [SISTEMA: Error al cancelar la membresia en la BD. Revisa los logs.]";
+
+        historialDAO.desactivarPorCliente(idCliente);
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String nombreLimpio = cliente.getNombre().split(" ")[0];
+
+        notifService.enviarSmsDirecto(
+                "GYMBROT: Hola " + nombreLimpio + ", tu membresia " +
+                        membresia.getTipoMembresia() + " ha sido cancelada. " +
+                        "Contactanos para renovarla.");
+
+        if (cliente.getCorreo() != null) {
+            emailService.enviarCorreo(cliente.getCorreo(),
+                    "Membresia cancelada - GYMBROT",
+                    "<html><body style='font-family:Arial;'>" +
+                            "<div style='max-width:600px;margin:0 auto;border:1px solid #ddd;border-radius:10px;'>" +
+                            "<div style='background:#ff6b6b;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;'>" +
+                            "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                            "<div style='padding:20px;'>" +
+                            "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
+                            "<p>Tu membresia <b>" + membresia.getTipoMembresia() + "</b> ha sido cancelada.</p>" +
+                            "<table style='width:100%;border-collapse:collapse;margin:15px 0;'>" +
+                            "<tr><td style='padding:8px;background:#f4f4f4;'><b>Plan:</b></td><td style='padding:8px;'>" + membresia.getTipoMembresia() + "</td></tr>" +
+                            "<tr><td style='padding:8px;background:#f4f4f4;'><b>Fecha cancelacion:</b></td><td style='padding:8px;'>" + LocalDate.now().format(fmt) + "</td></tr>" +
+                            "</table>" +
+                            "<p>Si deseas renovarla, contactanos.</p>" +
+                            "<p><b>GYMBROT Valledupar</b></p></div>" +
+                            "<div style='background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;'>" +
+                            "<p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>");
+        }
+
+        LOGGER.info("[procesarCancelarMembresia] Membresia #" + membresia.getIdMembresia() +
+                " cancelada para cliente " + idCliente);
+
+        return " [SISTEMA: Membresia #" + membresia.getIdMembresia() + " (" +
+                membresia.getTipoMembresia() + ") del cliente " + idCliente +
+                " cancelada exitosamente. SMS y correo enviados. Confirma al administrador.]";
+    }
+
+    // ── MODIFICAR PLAN ────────────────────────────────────────────────────
+    private String procesarModificarPlan(String texto, List<MensajeGymbrot> historial) {
+
+        int idPlan = extraerIdPlan(texto);
+        if (idPlan <= 0) {
+            StringBuilder planesDisp = new StringBuilder();
+            for (PlanMembresia p : planMembresiaDAO.listarTodos()) {
+                planesDisp.append(String.format("Plan #%d: %s | Mensual $%,.0f | Semestral $%,.0f | Anual $%,.0f\n",
+                        p.getIdPlan(), p.getNombre(),
+                        p.getPrecioMensual(), p.getPrecioSemestral(), p.getPrecioAnual()));
+            }
+            return " [SISTEMA: El administrador quiere modificar un plan pero no especifico el ID. " +
+                    "Planes disponibles:\n" + planesDisp +
+                    "Pidele que indique el numero de plan y que desea cambiar.]";
+        }
+
+        PlanMembresia plan = planMembresiaDAO.buscarPorId(idPlan);
+        if (plan == null)
+            return " [SISTEMA: No existe ningun plan con ID " + idPlan + ". Informa al administrador.]";
+
+        double nuevoPrecioMensual   = extraerPrecio(texto, "mensual");
+        double nuevoPrecioSemestral = extraerPrecio(texto, "semestral");
+        double nuevoPrecioAnual     = extraerPrecio(texto, "anual");
+        String nuevoBeneficio       = extraerBeneficio(texto);
+
+        StringBuilder cambios = new StringBuilder();
+
+        if (nuevoPrecioMensual > 0 && nuevoPrecioMensual != plan.getPrecioMensual()) {
+            cambios.append("precio mensual: $").append(String.format("%,.0f", plan.getPrecioMensual()))
+                    .append(" → $").append(String.format("%,.0f", nuevoPrecioMensual)).append(" | ");
+            plan.setPrecioMensual(nuevoPrecioMensual);
+        }
+        if (nuevoPrecioSemestral > 0 && nuevoPrecioSemestral != plan.getPrecioSemestral()) {
+            cambios.append("precio semestral: $").append(String.format("%,.0f", plan.getPrecioSemestral()))
+                    .append(" → $").append(String.format("%,.0f", nuevoPrecioSemestral)).append(" | ");
+            plan.setPrecioSemestral(nuevoPrecioSemestral);
+        }
+        if (nuevoPrecioAnual > 0 && nuevoPrecioAnual != plan.getPrecioAnual()) {
+            cambios.append("precio anual: $").append(String.format("%,.0f", plan.getPrecioAnual()))
+                    .append(" → $").append(String.format("%,.0f", nuevoPrecioAnual)).append(" | ");
+            plan.setPrecioAnual(nuevoPrecioAnual);
+        }
+        if (nuevoBeneficio != null && !nuevoBeneficio.equalsIgnoreCase(plan.getBeneficios())) {
+            cambios.append("beneficios: ").append(plan.getBeneficios())
+                    .append(" → ").append(nuevoBeneficio).append(" | ");
+            plan.setBeneficios(nuevoBeneficio);
+        }
+
+        if (cambios.isEmpty())
+            return " [SISTEMA: No se detectaron cambios para el plan #" + idPlan +
+                    ". Pidele al administrador que especifique que precio o beneficio cambiar.]";
+
+        boolean ok = planMembresiaDAO.actualizar(plan);
+        if (!ok)
+            return " [SISTEMA: Error al actualizar el plan #" + idPlan + ". Informa al administrador.]";
+
+        String cambiosResumen = cambios.toString().replaceAll(" \\| $", "");
+        LOGGER.info("[procesarModificarPlan] Plan #" + idPlan + " actualizado. Cambios: " + cambiosResumen);
+
+        return " [SISTEMA: Plan #" + idPlan + " (" + plan.getNombre() + ") modificado exitosamente. " +
+                "Cambios: " + cambiosResumen + ". Confirma al administrador.]";
+    }
+
+    // ── UTILIDADES MEMBRESÍA ──────────────────────────────────────────────
+    private int extraerIdPlan(String texto) {
+        Pattern p = Pattern.compile("(?:plan|id\\s*plan)[:\\s#]*(\\d{1,3})", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto);
+        if (m.find()) return Integer.parseInt(m.group(1));
+        return -1;
+    }
+
+    private double extraerPrecio(String texto, String tipo) {
+        Pattern p = Pattern.compile(tipo + "[:\\s]+(\\d[\\d.,]*)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto.toLowerCase());
+        if (m.find()) {
+            try { return Double.parseDouble(m.group(1).replace(".", "").replace(",", "")); }
+            catch (Exception ignored) {}
+        }
+        return -1;
+    }
+
+    private String extraerBeneficio(String texto) {
+        Pattern p = Pattern.compile("(?:beneficios?)[:\\s]+(.+?)(?:\\.|,|$)", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(texto.trim());
+        if (m.find()) return m.group(1).trim();
+        return null;
     }
 
     public void cerrarSesion(int idSesion) {
