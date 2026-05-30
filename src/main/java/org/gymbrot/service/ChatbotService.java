@@ -1092,7 +1092,7 @@ public class ChatbotService {
 
         Rutina rutina = new Rutina();
         rutina.setIdCliente(idCliente);
-        rutina.setIdInstructor("INS001");
+        rutina.setIdInstructor(null);
         rutina.setNombre("Rutina - " + objetivo);
         rutina.setDescripcion(rutinaGenerada);
         rutina.setFechaCreacion(LocalDate.now());
@@ -1132,7 +1132,11 @@ public class ChatbotService {
         try (Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
              PreparedStatement ps = conn.prepareStatement(sql, new String[]{"id_rutina"})) {
 
-            ps.setString(1, rutina.getIdInstructor());
+            if (rutina.getIdInstructor() != null) {
+                ps.setString(1, rutina.getIdInstructor());
+            } else {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+            }
             ps.setString(2, rutina.getIdCliente());
             ps.setString(3, rutina.getNombre());
             ps.setString(4, rutina.getDescripcion());
