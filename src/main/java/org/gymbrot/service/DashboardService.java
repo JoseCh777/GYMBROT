@@ -16,7 +16,7 @@ public class DashboardService {
     }
 
     public int contarMiembrosActivos() {
-        String sql = "{? = call PKG_GYMBROT.FN_CONTAR_MIEMBROS_ACTIVOS}";
+        String sql = "{? = call PKG_GYMBROT_FUNC.FN_CONTAR_MIEMBROS_ACTIVOS}";
         try (CallableStatement cs = conn.prepareCall(sql)) {
             cs.registerOutParameter(1, Types.INTEGER);
             cs.execute();
@@ -28,7 +28,7 @@ public class DashboardService {
     }
 
     public int contarActivosHoy() {
-        String sql = "{? = call PKG_GYMBROT.FN_CONTAR_ACTIVOS_HOY}";
+        String sql = "{? = call PKG_GYMBROT_FUNC.FN_CONTAR_ACTIVOS_HOY}";
         try (CallableStatement cs = conn.prepareCall(sql)) {
             cs.registerOutParameter(1, Types.INTEGER);
             cs.execute();
@@ -40,7 +40,7 @@ public class DashboardService {
     }
 
     public double ingresosMesActual() {
-        String sql = "{? = call PKG_GYMBROT.FN_INGRESOS_MES_ACTUAL}";
+        String sql = "{? = call PKG_GYMBROT_FUNC.FN_INGRESOS_MES_ACTUAL}";
         try (CallableStatement cs = conn.prepareCall(sql)) {
             cs.registerOutParameter(1, Types.DOUBLE);
             cs.execute();
@@ -53,9 +53,9 @@ public class DashboardService {
 
     public int[] cargarDemografia() {
         String sql = "SELECT " +
-                "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) < 18 THEN 1 END) as menores, " +
-                "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) BETWEEN 18 AND 64 THEN 1 END) as adultos, " +
-                "COUNT(CASE WHEN PKG_GYMBROT.FN_CALCULAR_EDAD(c.fecha_nacimiento) >= 65 THEN 1 END) as adultos_mayores " +
+                "COUNT(CASE WHEN PKG_GYMBROT_FUNC.FN_CALCULAR_EDAD(c.fecha_nacimiento) < 18 THEN 1 END) as menores, " +
+                "COUNT(CASE WHEN PKG_GYMBROT_FUNC.FN_CALCULAR_EDAD(c.fecha_nacimiento) BETWEEN 18 AND 64 THEN 1 END) as adultos, " +
+                "COUNT(CASE WHEN PKG_GYMBROT_FUNC.FN_CALCULAR_EDAD(c.fecha_nacimiento) >= 65 THEN 1 END) as adultos_mayores " +
                 "FROM CLIENTES c JOIN USUARIOS u ON u.numero_identificacion = c.numero_identificacion " +
                 "WHERE u.estado = 'ACTIVO'";
         try (Statement stmt = conn.createStatement();

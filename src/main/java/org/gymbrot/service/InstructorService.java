@@ -20,7 +20,7 @@ public class InstructorService {
     }
 
     public boolean registrarInstructor(Usuario usuario, Instructor instructor) {
-        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -49,7 +49,7 @@ public class InstructorService {
     }
 
     public boolean actualizarInstructor(Usuario usuario, Instructor instructor) {
-        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_ACTUALIZAR_INSTRUCTOR(?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

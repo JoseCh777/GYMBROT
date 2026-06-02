@@ -123,7 +123,6 @@ public class UsuarioDAO {
     }
 
     // ── BUSCAR POR NOMBRE O CORREO ────────────────────────────────────────
-    // ✅ Permite login con correo o número de identificación
     public Usuario buscarPorNombreOCorreo(String valor) {
         String sql = "SELECT * FROM USUARIOS WHERE correo = ? OR numero_identificacion = ?";
 

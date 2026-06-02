@@ -28,7 +28,7 @@ public class RegistroIngresoService {
             }
             System.out.println("Cliente identificado: " + idCliente);
 
-            String sql = "{call PKG_GYMBROT.SP_REGISTRAR_INGRESO(?,?,?,?)}";
+            String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_INGRESO(?,?,?,?)}";
             try (Connection conn = DatabaseConnection.getInstance();
                  CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -51,7 +51,7 @@ public class RegistroIngresoService {
     }
 
     public boolean registrarSalida(String idCliente) {
-        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_SALIDA(?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_SALIDA(?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -90,7 +90,7 @@ public class RegistroIngresoService {
     }
 
     public boolean registrarEntradaManual(String idCliente, String motivoManual) {
-        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_INGRESO(?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_INGRESO(?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

@@ -29,7 +29,7 @@ public class ProgresoService {
     }
 
     public boolean registrarProgreso(Progreso progreso) {
-        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_PROGRESO(?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_PROGRESO(?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

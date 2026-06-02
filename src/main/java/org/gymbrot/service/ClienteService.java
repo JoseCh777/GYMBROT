@@ -21,7 +21,7 @@ public class ClienteService {
     }
 
     public boolean registrarCliente(Usuario usuario, Cliente cliente, byte[] templateHuella) {
-        String sql = "{call PKG_GYMBROT.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -59,7 +59,7 @@ public class ClienteService {
     }
 
     public boolean actualizarCliente(Usuario usuario, Cliente cliente) {
-        String sql = "{call PKG_GYMBROT.SP_ACTUALIZAR_CLIENTE(?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_ACTUALIZAR_CLIENTE(?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

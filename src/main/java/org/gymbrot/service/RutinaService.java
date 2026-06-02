@@ -131,7 +131,7 @@ public class RutinaService {
      * @return true si se creó exitosamente.
      */
     public boolean crearRutinaCompleta(Rutina rutina, List<Integer> idsEjercicios) {
-        String sql = "{call PKG_GYMBROT.SP_CREAR_RUTINA_COMPLETA(?,?,?,?,?,?,?,?,?,?)}";
+        String sql = "{call PKG_GYMBROT_PROC.SP_CREAR_RUTINA_COMPLETA(?,?,?,?,?,?,?,?,?,?)}";
         try (Connection conn = DatabaseConnection.getInstance();
              CallableStatement cs = conn.prepareCall(sql)) {
 

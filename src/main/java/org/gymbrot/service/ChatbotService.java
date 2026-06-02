@@ -1330,7 +1330,7 @@ public class ChatbotService {
             String id, String tipoId, String nombre, String apellidos,
             String telefono, String correo, String contrasena, String direccion) {
 
-        String sql = "{ CALL PKG_GYMBROT.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?) }";
+        String sql = "{ CALL PKG_GYMBROT_PROC.SP_REGISTRAR_CLIENTE(?,?,?,?,?,?,?,?,?,?,?,?) }";
 
         try (Connection conn = org.gymbrot.util.DatabaseConnection.getInstance();
              java.sql.CallableStatement cs = conn.prepareCall(sql)) {
