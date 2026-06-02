@@ -5,7 +5,9 @@ import org.gymbrot.dao.ClienteDAO;
 import org.gymbrot.dao.InstructorDAO;
 import org.gymbrot.model.Cita;
 import org.gymbrot.model.Instructor;
+import org.gymbrot.util.DatabaseConnection;
 
+import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -48,7 +50,35 @@ public class CitaService {
 
     // ── PROGRAMAR CITA (retorna boolean) ──────────────────────────────────
     public boolean programarCita(Cita cita) {
-        return validarYProgramar(cita) && citaDAO.insertar(cita);
+        if (!validarYProgramar(cita)) return false;
+
+        String sql = "{call PKG_GYMBROT_PROC.SP_AGENDAR_CITA(?,?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
+
+            cs.setString(1, cita.getIdInstructor());
+            cs.setString(2, cita.getIdCliente());
+            cs.setDate(3, Date.valueOf(cita.getFecha()));
+            cs.setTimestamp(4, Timestamp.valueOf(cita.getHora().atDate(cita.getFecha())));
+            cs.setString(5, cita.getTipoCita());
+            if (cita.getNotas() != null) {
+                cs.setString(6, cita.getNotas());
+            } else {
+                cs.setNull(6, Types.VARCHAR);
+            }
+            cs.registerOutParameter(7, Types.INTEGER);
+            cs.registerOutParameter(8, Types.VARCHAR);
+            cs.execute();
+
+            int codigo = cs.getInt(7);
+            String mensaje = cs.getString(8);
+            System.out.println(mensaje);
+            return codigo == 1;
+
+        } catch (SQLException e) {
+            System.err.println("Error en programarCita: " + e.getMessage());
+            return false;
+        }
     }
 
     // ── PROGRAMAR CITA Y RETORNAR ID (para cliente) ───────────────────────
@@ -176,8 +206,12 @@ public class CitaService {
             case SATURDAY  -> "sabado";
             case SUNDAY    -> "domingo";
         };
-        if (disp.contains(" a ")) {
-            String[] partes = disp.split(" a ");
+        String abrevDia = nombreDia.substring(0, 3);
+
+        String parteDias = disp.contains("|") ? disp.split("\\|")[0].trim() : disp;
+
+        if (parteDias.contains(" a ")) {
+            String[] partes = parteDias.split(" a ");
             if (partes.length >= 2) {
                 String diaInicio = partes[0].trim().replaceAll("[^a-z]", "");
                 String diaFin = partes[1].trim().split("[\\s,]")[0].replaceAll("[^a-z]", "");
@@ -189,19 +223,27 @@ public class CitaService {
                 }
             }
         }
-        return disp.contains(nombreDia);
+
+        if (parteDias.contains(nombreDia) || parteDias.contains(abrevDia)) return true;
+
+        String[] diasLista = parteDias.split(",");
+        for (String d : diasLista) {
+            d = d.trim();
+            if (d.equals(abrevDia) || d.equals(nombreDia)) return true;
+        }
+        return false;
     }
 
     private int diaANumero(String dia) {
         return switch (dia.trim()) {
-            case "lunes"     -> 1;
-            case "martes"    -> 2;
-            case "miercoles" -> 3;
-            case "jueves"    -> 4;
-            case "viernes"   -> 5;
-            case "sabado"    -> 6;
-            case "domingo"   -> 7;
-            default          -> -1;
+            case "lunes", "lun"     -> 1;
+            case "martes", "mar"    -> 2;
+            case "miercoles", "mie" -> 3;
+            case "jueves", "jue"    -> 4;
+            case "viernes", "vie"   -> 5;
+            case "sabado", "sab"    -> 6;
+            case "domingo", "dom"   -> 7;
+            default                 -> -1;
         };
     }
 
@@ -209,9 +251,28 @@ public class CitaService {
     private boolean horaDisponible(String disponibilidad, LocalTime hora) {
         if (disponibilidad == null) return true;
         String disp = disponibilidad.toLowerCase();
+
+        String parteHora = disp.contains("|") ? disp.split("\\|")[1].trim() : disp;
+
+        if (parteHora.contains("mañana") || parteHora.contains("manana")) {
+            LocalTime horaInicio = LocalTime.of(6, 0);
+            LocalTime horaFin    = LocalTime.of(12, 0);
+            return !hora.isBefore(horaInicio) && hora.isBefore(horaFin);
+        }
+        if (parteHora.contains("tarde")) {
+            LocalTime horaInicio = LocalTime.of(12, 0);
+            LocalTime horaFin    = LocalTime.of(18, 0);
+            return !hora.isBefore(horaInicio) && hora.isBefore(horaFin);
+        }
+        if (parteHora.contains("noche")) {
+            LocalTime horaInicio = LocalTime.of(18, 0);
+            LocalTime horaFin    = LocalTime.of(23, 0);
+            return !hora.isBefore(horaInicio) && hora.isBefore(horaFin);
+        }
+
         java.util.regex.Pattern rangoPattern = java.util.regex.Pattern.compile(
                 "(\\d{1,2})(am|pm)-(\\d{1,2})(am|pm)");
-        java.util.regex.Matcher m = rangoPattern.matcher(disp);
+        java.util.regex.Matcher m = rangoPattern.matcher(parteHora);
         if (m.find()) {
             int hInicio = Integer.parseInt(m.group(1));
             String ampmInicio = m.group(2);
@@ -242,18 +303,24 @@ public class CitaService {
     public boolean cancelarCita(int idCita) {
         if (idCita <= 0) return false;
 
-        System.out.println("[cancelarCita] Buscando cita id=" + idCita);
-        Cita cita = citaDAO.buscarPorId(idCita);
-        System.out.println("[cancelarCita] encontrada=" + (cita != null));
+        String sql = "{call PKG_GYMBROT_PROC.SP_CANCELAR_CITA(?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-        if (cita == null) return false;
+            cs.setInt(1, idCita);
+            cs.registerOutParameter(2, Types.INTEGER);
+            cs.registerOutParameter(3, Types.VARCHAR);
+            cs.execute();
 
-        System.out.println("[cancelarCita] estado=" + cita.getEstado());
-        if (!cita.getEstado().equals("PENDIENTE")) return false;
+            int codigo = cs.getInt(2);
+            String mensaje = cs.getString(3);
+            System.out.println("[cancelarCita] " + mensaje);
+            return codigo == 1;
 
-        boolean resultado = citaDAO.actualizarEstado(idCita, "CANCELADA");
-        System.out.println("[cancelarCita] resultado=" + resultado);
-        return resultado;
+        } catch (SQLException e) {
+            System.err.println("Error en cancelarCita: " + e.getMessage());
+            return false;
+        }
     }
 
     // ── COMPLETAR CITA ────────────────────────────────────────────────────

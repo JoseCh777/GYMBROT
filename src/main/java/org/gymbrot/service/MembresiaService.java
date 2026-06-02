@@ -6,7 +6,11 @@ import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.model.HistorialMembresia;
 import org.gymbrot.model.Membresia;
 import org.gymbrot.model.Pago;
+import org.gymbrot.util.DatabaseConnection;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -26,40 +30,24 @@ public class MembresiaService {
     }
 
     // ── CREAR MEMBRESÍA ───────────────────────────────────────────────────
-    public boolean crearMembresia(Membresia membresia, String idCliente) {
-        try {
-            membresia.setFechaInicio(LocalDate.now());
-            membresia.setEstado("ACTIVA");
+    public boolean crearMembresia(Membresia membresia, String idCliente, String metodoPago) {
+        String sql = "{call PKG_GYMBROT_PROC.SP_RENOVAR_MEMBRESIA(?,?,?,?,?,?,?)}";
+        try (Connection conn = DatabaseConnection.getInstance();
+             CallableStatement cs = conn.prepareCall(sql)) {
 
-            LocalDate fechaVencimiento = calcularFechaVencimiento(
-                    membresia.getFechaInicio(),
-                    membresia.getModalidadPago()
-            );
-            membresia.setFechaVencimiento(fechaVencimiento);
+            cs.setString(1, idCliente);
+            cs.setInt(2, membresia.getIdPlan());
+            cs.setString(3, membresia.getModalidadPago());
+            cs.setString(4, metodoPago);
+            cs.setDouble(5, membresia.getValor());
+            cs.registerOutParameter(6, Types.INTEGER);
+            cs.registerOutParameter(7, Types.VARCHAR);
+            cs.execute();
 
-            int idMembresiaGenerado = membresiaDAO.insertarYRetornarId(membresia);
-
-            if (idMembresiaGenerado == -1) {
-                System.err.println("Error al insertar membresía");
-                return false;
-            }
-
-            HistorialMembresia actual = historialDAO.buscarActiva(idCliente);
-            if (actual != null) historialDAO.desactivar(actual.getIdHistorial());
-
-            HistorialMembresia historial = new HistorialMembresia();
-            historial.setIdCliente(idCliente);
-            historial.setIdMembresia(idMembresiaGenerado);
-            historial.setFechaAsignacion(LocalDate.now());
-            historial.setActiva(true);
-
-            if (!historialDAO.insertar(historial)) {
-                System.err.println("Error al crear historial");
-                return false;
-            }
-
-            System.out.println("✓ Membresía creada exitosamente - ID: " + idMembresiaGenerado);
-            return true;
+            int codigo = cs.getInt(6);
+            String mensaje = cs.getString(7);
+            System.out.println(mensaje);
+            return codigo == 1;
 
         } catch (Exception e) {
             System.err.println("Error en crearMembresia: " + e.getMessage());
