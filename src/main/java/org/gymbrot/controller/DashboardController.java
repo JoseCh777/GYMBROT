@@ -30,6 +30,7 @@ public class DashboardController implements Initializable {
     @FXML private Button navClientes;
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
+    @FXML private Button navFinanzas;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
     @FXML private Button navCitas;
@@ -112,7 +113,7 @@ public class DashboardController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navClientes, navInstructores, navMembresias, navProgreso, navAI, navCitas};
+        Button[] inactivos = {navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navDashboard);
     }
@@ -173,7 +174,7 @@ public class DashboardController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -444,6 +445,7 @@ public class DashboardController implements Initializable {
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml");}
+    @FXML private void handleNavFinanzas()    { navegarA("/fxml/Finanzas.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }

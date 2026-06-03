@@ -29,6 +29,10 @@ import org.gymbrot.util.AlertaPersonalizada;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -40,6 +44,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private Button navClientes;
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
+    @FXML private Button navFinanzas;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
     @FXML private Button navCitas;
@@ -51,7 +56,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private Label lblTotalInstructores;
     @FXML private Label lblTendenciaInstructores;
     @FXML private Label lblSesionesHoy;
-    @FXML private Rectangle dotSesiones;
+    @FXML private Label lblProximaCita;
 
     // ─── Toolbar ───────────────────────────────────────────────────────────
     @FXML private TextField searchField;
@@ -82,6 +87,8 @@ public class GestionInstructoresController implements Initializable {
     private final EspecialidadDAO especialidadDAO = new EspecialidadDAO();
     private final RutinaDAO rutinaDAO = new RutinaDAO();
     private final RutinaEjercicioDAO rutinaEjercicioDAO = new RutinaEjercicioDAO();
+    private final CitaDAO citaDAO = new CitaDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     // ─── Estado interno ────────────────────────────────────────────────────
     private final ObservableList<InstructorCard> todosLosInstructores = FXCollections.observableArrayList();
@@ -108,7 +115,6 @@ public class GestionInstructoresController implements Initializable {
         cargarStats();
         cargarDatosMock();
         configurarBuscador();
-        iniciarAnimacionDotSesiones();
         configurarFiltroEspecialidad();
         configurarAnimacionesBotones();
         aplicarFiltro();
@@ -121,18 +127,35 @@ public class GestionInstructoresController implements Initializable {
     private void cargarStats() {
         List<Instructor> todos = instructorDAO.listarTodos();
         lblTotalInstructores.setText(String.valueOf(todos.size()));
-        lblTendenciaInstructores.setText(todos.size() + " registrados");
-        lblSesionesHoy.setText("—");
-    }
 
-    private void iniciarAnimacionDotSesiones() {
-        Timeline pulse = new Timeline(
-                new KeyFrame(Duration.ZERO,        e -> dotSesiones.setOpacity(1.0)),
-                new KeyFrame(Duration.millis(600),  e -> dotSesiones.setOpacity(0.2)),
-                new KeyFrame(Duration.millis(1200), e -> dotSesiones.setOpacity(1.0))
-        );
-        pulse.setCycleCount(Timeline.INDEFINITE);
-        pulse.play();
+        try {
+            List<Cita> citasHoy = citaDAO.listarPorFecha(LocalDate.now());
+            List<Cita> noCanceladas = citasHoy.stream()
+                    .filter(c -> !"CANCELADA".equalsIgnoreCase(c.getEstado()))
+                    .toList();
+
+            lblSesionesHoy.setText(String.valueOf(noCanceladas.size()));
+
+            LocalTime now = LocalTime.now();
+            Cita proxima = noCanceladas.stream()
+                    .filter(c -> c.getHora().isAfter(now))
+                    .min(Comparator.comparing(Cita::getHora))
+                    .orElse(null);
+
+            if (proxima != null) {
+                Usuario u = usuarioDAO.buscarPorId(proxima.getIdCliente());
+                String cliente = (u != null) ? u.getNombre() + " " + u.getApellidos() : proxima.getIdCliente();
+                lblProximaCita.setText(proxima.getHora().format(DateTimeFormatter.ofPattern("hh:mm a")) + " — " + cliente);
+            } else if (noCanceladas.isEmpty()) {
+                lblProximaCita.setText("No hay citas programadas hoy");
+            } else {
+                lblProximaCita.setText("No hay más citas hoy");
+            }
+        } catch (Exception e) {
+            lblSesionesHoy.setText("—");
+            lblProximaCita.setText("Error al cargar");
+            e.printStackTrace();
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -643,6 +666,7 @@ public class GestionInstructoresController implements Initializable {
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
+    @FXML private void handleNavFinanzas()    { navegarA("/fxml/Finanzas.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
@@ -659,7 +683,7 @@ public class GestionInstructoresController implements Initializable {
     // ═══════════════════════════════════════════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navMembresias, navProgreso, navAI, navCitas};
+        Button[] inactivos = {navDashboard, navClientes, navMembresias, navFinanzas, navProgreso, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navInstructores);
     }
@@ -719,7 +743,7 @@ public class GestionInstructoresController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(

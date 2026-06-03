@@ -70,6 +70,9 @@
                         </ImageView>
                     </graphic>
                 </Button>
+                <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
                 <!-- ACTIVO: Progreso -->
                 <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
                     <graphic>
@@ -208,7 +211,14 @@
                         <Region VBox.vgrow="ALWAYS" />
 
                         <!-- Botón Guardar -->
-                        <Button fx:id="btnGuardarProgreso" maxWidth="Infinity" onAction="#handleGuardarProgreso" prefHeight="48" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                        -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="GUARDAR PROGRESO" />
+                        <Button fx:id="btnGuardarProgreso" maxWidth="Infinity" onAction="#handleGuardarProgreso" prefHeight="48" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                        -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                        -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="GUARDAR PROGRESO">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/guardar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                     </VBox>
 
                     <!-- Gráfica de tendencia + mini-stats -->
