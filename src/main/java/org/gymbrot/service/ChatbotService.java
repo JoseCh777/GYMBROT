@@ -829,7 +829,9 @@ public class ChatbotService {
                 ".info{background:#e8f4f8;padding:15px;border-radius:8px;margin:15px 0;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido agendada exitosamente.</p>" +
@@ -854,7 +856,9 @@ public class ChatbotService {
                 ".info{background:#fff3e0;padding:15px;border-radius:8px;margin:15px 0;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido modificada exitosamente.</p>" +
@@ -879,7 +883,9 @@ public class ChatbotService {
                 ".info{background:#ffe8e8;padding:15px;border-radius:8px;margin:15px 0;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido cancelada exitosamente.</p>" +
@@ -902,7 +908,9 @@ public class ChatbotService {
                 ".content{padding:20px;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu membresia <strong>" + m.getTipoMembresia() + "</strong> vence en <strong>" + dias + " dias</strong>.</p>" +
@@ -923,7 +931,9 @@ public class ChatbotService {
                 ".rutina{background:#f4f4f4;padding:15px;border-radius:8px;font-family:monospace;white-space:pre-wrap;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Se ha creado una nueva rutina personalizada para ti.</p>" +
@@ -946,7 +956,9 @@ public class ChatbotService {
                 ".content{padding:20px;}" +
                 ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
                 "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
+                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tus datos en GYMBROT han sido actualizados exitosamente.</p>" +
@@ -954,31 +966,34 @@ public class ChatbotService {
                 "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
-
     private String generarHtmlBienvenida(String nombre, String correo, String id) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".credenciales{background:#f4f4f4;padding:15px;border-radius:8px;margin:15px 0;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'><h2>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:60%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".credenciales{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #b8f000;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'>" +
+                "<img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'>" +
+                "</div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cuenta ha sido creada exitosamente en el sistema GYMBROT.</p>" +
                 "<div class='credenciales'>" +
-                "<h3>Tus credenciales de acceso:</h3>" +
+                "<h3 style='margin-top:0;'>Tus credenciales de acceso:</h3>" +
                 "<p><strong>Usuario:</strong> " + correo + "</p>" +
-                "<p><strong>Contrasena temporal:</strong> " + id + "</p>" +
+                "<p><strong>Contraseña temporal:</strong> " + id + "</p>" +
                 "</div>" +
-                "<p>Recomendacion: Cambia tu contrasena al ingresar por primera vez.</p>" +
-                "<p>Atentamente, <strong>GYMBROT Valledupar</strong></p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Recomendación: Cambia tu contraseña al ingresar por primera vez.</p>" +
+                "<p>Atentamente, <strong>GYMBROT Valledupar</strong></p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
-
     // ── PROCESADORES ──────────────────────────────────────────────────────
     private String procesarEliminarCliente(String texto, List<MensajeGymbrot> historial) {
 

@@ -25,19 +25,14 @@ public class MembresiaScheduler {
 
     // ── INICIAR SCHEDULER ─────────────────────────────────────────────────
     public void iniciar() {
-        // Calcular segundos hasta las 8:00 AM del próximo día
-        long delay = calcularDelayHasta8am();
-
-        // Ejecutar por primera vez a las 8am, luego cada 24 horas
+        // MODO PRUEBA: ejecuta en 10 segundos
         scheduler.scheduleAtFixedRate(
                 this::verificarMembresias,
-                delay,
+                10,
                 TimeUnit.DAYS.toSeconds(1),
                 TimeUnit.SECONDS
         );
-
-        LOGGER.info("MembresiaScheduler iniciado. Primer chequeo en " +
-                (delay / 3600) + "h " + ((delay % 3600) / 60) + "m");
+        LOGGER.info("MembresiaScheduler iniciado en modo prueba - ejecuta en 10 segundos.");
     }
 
     // ── DETENER SCHEDULER ─────────────────────────────────────────────────
@@ -48,7 +43,7 @@ public class MembresiaScheduler {
 
     // ── VERIFICAR MEMBRESÍAS ──────────────────────────────────────────────
     private void verificarMembresias() {
-        LOGGER.info("Ejecutando chequeo de membresías: " + LocalDate.now());
+        LOGGER.info("Ejecutando chequeo de membresias: " + LocalDate.now());
         try {
             LocalDate hoy = LocalDate.now();
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -67,44 +62,45 @@ public class MembresiaScheduler {
 
                 if (diasRestantes == 7 || diasRestantes == 3 || diasRestantes == 1) {
                     String nombreLimpio = cliente.getNombre().split(" ")[0];
-                    String fechaFmt = m.getFechaVencimiento().format(fmt);
-                    String diasTexto = diasRestantes == 1 ? "1 día" : diasRestantes + " días";
+                    String fechaFmt    = m.getFechaVencimiento().format(fmt);
+                    String diasTexto   = diasRestantes == 1 ? "1 dia" : diasRestantes + " dias";
 
                     LOGGER.info("Enviando recordatorio a " + cliente.getNombre() +
-                            " — membresía vence en " + diasTexto);
+                            " — membresia vence en " + diasTexto);
 
                     // SMS
                     notifService.enviarSmsDirecto(
-                            "GYMBROT: Hola " + nombreLimpio + ", tu membresía " +
+                            "GYMBROT: Hola " + nombreLimpio + ", tu membresia " +
                                     m.getTipoMembresia() + " vence el " + fechaFmt +
-                                    " (en " + diasTexto + "). Renuévala para seguir entrenando.");
+                                    " (en " + diasTexto + "). Renovela para seguir entrenando.");
 
                     // Correo
                     if (cliente.getCorreo() != null) {
                         emailService.enviarCorreo(
                                 cliente.getCorreo(),
-                                "Tu membresía vence pronto - GYMBROT",
+                                "Tu membresia vence pronto - GYMBROT",
                                 "<html><body style='font-family:Arial;'>" +
                                         "<div style='max-width:600px;margin:0 auto;border:1px solid #ddd;border-radius:10px;'>" +
                                         "<div style='background:#ffaa00;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;'>" +
                                         "<h2 style='margin:0;'>GYMBROT</h2></div>" +
                                         "<div style='padding:20px;'>" +
                                         "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
-                                        "<p>Tu membresía <b>" + m.getTipoMembresia() +
-                                        "</b> vence el <b>" + fechaFmt + "</b> (en " + diasTexto + ").</p>" +
-                                        "<p>Renuévala para seguir disfrutando de todos los servicios de GYMBROT.</p>" +
-                                        "<p>Contáctanos para más información.</p>" +
+                                        "<p>Tu membresia <b>" + m.getTipoMembresia() +
+                                        "</b> vence el <b>" + fechaFmt +
+                                        "</b> (en " + diasTexto + ").</p>" +
+                                        "<p>Renovela para seguir disfrutando de todos los servicios de GYMBROT.</p>" +
+                                        "<p>Contactanos para mas informacion.</p>" +
                                         "<p><b>GYMBROT Valledupar</b></p></div>" +
                                         "<div style='background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;'>" +
                                         "<p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>");
                     }
                 }
 
-                // Marcar como VENCIDA si ya expiró
+                // Marcar como VENCIDA si ya expiro
                 if (diasRestantes < 0) {
                     m.setEstado("VENCIDA");
                     membresiaDAO.actualizar(m);
-                    LOGGER.info("Membresía #" + m.getIdMembresia() + " marcada como VENCIDA.");
+                    LOGGER.info("Membresia #" + m.getIdMembresia() + " marcada como VENCIDA.");
                 }
             }
 
@@ -115,16 +111,14 @@ public class MembresiaScheduler {
 
     // ── CALCULAR DELAY HASTA LAS 8AM ──────────────────────────────────────
     private long calcularDelayHasta8am() {
-        LocalTime ahora = LocalTime.now();
+        LocalTime ahora  = LocalTime.now();
         LocalTime target = LocalTime.of(8, 0);
-        long segundosHasta8am;
-
+        long segundos;
         if (ahora.isBefore(target)) {
-            segundosHasta8am = ahora.until(target, java.time.temporal.ChronoUnit.SECONDS);
+            segundos = ahora.until(target, java.time.temporal.ChronoUnit.SECONDS);
         } else {
-            // Ya pasaron las 8am — próximo chequeo mañana a las 8am
-            segundosHasta8am = ahora.until(target, java.time.temporal.ChronoUnit.SECONDS) + 86400;
+            segundos = ahora.until(target, java.time.temporal.ChronoUnit.SECONDS) + 86400;
         }
-        return segundosHasta8am;
+        return segundos;
     }
 }
