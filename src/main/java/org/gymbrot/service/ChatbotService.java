@@ -164,17 +164,7 @@ public class ChatbotService {
                         String accion = nuevoEstado.equals("ACTIVO") ? "activada"
                                 : nuevoEstado.equals("INACTIVO") ? "desactivada" : "suspendida";
                         emailService.enviarCorreo(usuario.getCorreo(), asunto,
-                                "<html><body style='font-family:Arial;'>" +
-                                        "<div style='max-width:600px;margin:0 auto;border:1px solid #ddd;border-radius:10px;'>" +
-                                        "<div style='background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;'>" +
-                                        "<h2 style='margin:0;'>GYMBROT</h2></div>" +
-                                        "<div style='padding:20px;'>" +
-                                        "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
-                                        "<p>Tu cuenta ha sido <b>" + accion + "</b> exitosamente.</p>" +
-                                        "<p>Si no reconoces este cambio, contactanos de inmediato.</p>" +
-                                        "<p><b>GYMBROT Valledupar</b></p></div>" +
-                                        "<div style='background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;'>" +
-                                        "<p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>");
+                                generarHtmlEstadoCuenta(nombreLimpio, accion));
                         System.out.println("Correo de estado enviado a: " + usuario.getCorreo());
                     }
 
@@ -822,148 +812,160 @@ public class ChatbotService {
     // ── HTML GENERATORS ───────────────────────────────────────────────────
     private String generarHtmlCita(String nombre, String instructor, String fecha, String hora, int idCita) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".info{background:#e8f4f8;padding:15px;border-radius:8px;margin:15px 0;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #00b4d8;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido agendada exitosamente.</p>" +
-                "<div class='info'>" +
+                "<div class='card'>" +
                 "<p><strong>Instructor:</strong> " + instructor + "</p>" +
                 "<p><strong>Fecha:</strong> " + fecha + "</p>" +
                 "<p><strong>Hora:</strong> " + hora + "</p>" +
                 "<p><strong>ID de cita:</strong> #" + idCita + "</p>" +
                 "</div>" +
                 "<p>Recuerda llegar 10 minutos antes.</p>" +
-                "<p>Te esperamos en GYMBROT.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Te esperamos en GYMBROT.</p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
 
     private String generarHtmlCitaModificada(String nombre, String instructor, String fecha, String hora, int idCita) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#f4a261;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".info{background:#fff3e0;padding:15px;border-radius:8px;margin:15px 0;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #f4a261;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido modificada exitosamente.</p>" +
-                "<div class='info'>" +
+                "<div class='card'>" +
                 "<p><strong>Instructor:</strong> " + instructor + "</p>" +
                 "<p><strong>Nueva fecha:</strong> " + fecha + "</p>" +
                 "<p><strong>Nueva hora:</strong> " + hora + "</p>" +
                 "<p><strong>ID de cita:</strong> #" + idCita + "</p>" +
                 "</div>" +
                 "<p>Recuerda llegar 10 minutos antes.</p>" +
-                "<p>Te esperamos en GYMBROT.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Te esperamos en GYMBROT.</p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
 
     private String generarHtmlCancelacion(String nombre, String instructor, String fecha, String hora, int idCita) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#ff6b6b;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".info{background:#ffe8e8;padding:15px;border-radius:8px;margin:15px 0;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #ff6b6b;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu cita ha sido cancelada exitosamente.</p>" +
-                "<div class='info'>" +
+                "<div class='card'>" +
                 "<p><strong>Instructor:</strong> " + instructor + "</p>" +
                 "<p><strong>Fecha:</strong> " + fecha + "</p>" +
                 "<p><strong>Hora:</strong> " + hora + "</p>" +
                 "<p><strong>ID de cita:</strong> #" + idCita + "</p>" +
                 "</div>" +
-                "<p>Contactanos para reagendar una nueva cita.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Contactanos para reagendar una nueva cita.</p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
 
     private String generarHtmlMembresia(String nombre, Membresia m, long dias, DateTimeFormatter fmt) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#ffaa00;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #ffaa00;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tu membresia <strong>" + m.getTipoMembresia() + "</strong> vence en <strong>" + dias + " dias</strong>.</p>" +
+                "<div class='card'>" +
                 "<p><strong>Fecha de vencimiento:</strong> " + m.getFechaVencimiento().format(fmt) + "</p>" +
+                "</div>" +
                 "<p>Renueva ahora y sigue entrenando sin interrupciones.</p>" +
-                "<p>Contactanos para mas informacion.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Contactanos para mas informacion.</p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
 
     private String generarHtmlRutina(String nombre, String objetivo, String diasSemana, int idRutina, String rutinaGenerada) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".info{background:#e8f4f8;padding:15px;border-radius:8px;margin:15px 0;}" +
-                ".rutina{background:#f4f4f4;padding:15px;border-radius:8px;font-family:monospace;white-space:pre-wrap;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #b8f000;}" +
+                ".rutina{background:#f4f4f4;padding:15px;border-radius:8px;font-family:monospace;white-space:pre-wrap;margin:15px 0;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Se ha creado una nueva rutina personalizada para ti.</p>" +
-                "<div class='info'>" +
+                "<div class='card'>" +
                 "<p><strong>Objetivo:</strong> " + objetivo + "</p>" +
                 "<p><strong>Dias de entrenamiento:</strong> " + diasSemana + "</p>" +
                 "<p><strong>ID de rutina:</strong> #" + idRutina + "</p>" +
                 "</div>" +
                 "<div class='rutina'>" + rutinaGenerada.replace("\n", "<br>") + "</div>" +
-                "<p>Recuerda mantener una buena hidratacion y alimentacion.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<p>Recuerda mantener una buena hidratacion y alimentacion.</p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
 
     private String generarHtmlDatosActualizados(String nombre) {
         return "<!DOCTYPE html><html><head><style>" +
-                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;}" +
-                ".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px;}" +
-                ".header{background:#00b4d8;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;}" +
-                ".content{padding:20px;}" +
-                ".footer{background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;}" +
-                "</style></head><body><div class='container'>" +
-                "<div class='header'>" +
-                "<img src='https://i.imgur.com/spw8wjG.jpeg' style='width:60%;display:block;margin:0 auto;'>" +
-                "<h2 style='margin:0;'>GYMBROT</h2></div>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #00b4d8;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
                 "<div class='content'>" +
                 "<p>Hola <strong>" + nombre + "</strong>,</p>" +
                 "<p>Tus datos en GYMBROT han sido actualizados exitosamente.</p>" +
-                "<p>Si no reconoces este cambio, comunicate con nosotros de inmediato.</p></div>" +
-                "<div class='footer'><p>© 2026 GYMBROT Valledupar</p></div>" +
+                "<div class='card'>" +
+                "<p>Si no reconoces este cambio, comunicate con nosotros de inmediato.</p>" +
+                "</div>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
                 "</div></body></html>";
     }
     private String generarHtmlBienvenida(String nombre, String correo, String id) {
@@ -971,7 +973,7 @@ public class ChatbotService {
                 "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
                 ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
                 ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
-                ".header img{width:60%;display:block;margin:0 auto;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
                 ".content{background:#fff;padding:30px;}" +
                 ".credenciales{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #b8f000;}" +
                 ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
@@ -1023,10 +1025,7 @@ public class ChatbotService {
         if (correoClienteEliminar != null) {
             emailService.enviarCorreo(correoClienteEliminar,
                     "Cuenta eliminada - GYMBROT",
-                    "<h2>Cuenta eliminada</h2>" +
-                            "<p>Hola <b>" + nombreCliente + "</b>,</p>" +
-                            "<p>Tu cuenta en GYMBROT ha sido eliminada.</p>" +
-                            "<p>Si esto es un error, contacta al administrador.</p>");
+                    generarHtmlCuentaEliminada(nombreCliente));
             System.out.println("Correo enviado a: " + correoClienteEliminar);
         }
         if (telefonoCliente != null) {
@@ -1800,21 +1799,7 @@ public class ChatbotService {
         if (cliente.getCorreo() != null) {
             emailService.enviarCorreo(cliente.getCorreo(),
                     "Membresia cancelada - GYMBROT",
-                    "<html><body style='font-family:Arial;'>" +
-                            "<div style='max-width:600px;margin:0 auto;border:1px solid #ddd;border-radius:10px;'>" +
-                            "<div style='background:#ff6b6b;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;'>" +
-                            "<h2 style='margin:0;'>GYMBROT</h2></div>" +
-                            "<div style='padding:20px;'>" +
-                            "<p>Hola <b>" + nombreLimpio + "</b>,</p>" +
-                            "<p>Tu membresia <b>" + membresia.getTipoMembresia() + "</b> ha sido cancelada.</p>" +
-                            "<table style='width:100%;border-collapse:collapse;margin:15px 0;'>" +
-                            "<tr><td style='padding:8px;background:#f4f4f4;'><b>Plan:</b></td><td style='padding:8px;'>" + membresia.getTipoMembresia() + "</td></tr>" +
-                            "<tr><td style='padding:8px;background:#f4f4f4;'><b>Fecha cancelacion:</b></td><td style='padding:8px;'>" + LocalDate.now().format(fmt) + "</td></tr>" +
-                            "</table>" +
-                            "<p>Si deseas renovarla, contactanos.</p>" +
-                            "<p><b>GYMBROT Valledupar</b></p></div>" +
-                            "<div style='background:#f4f4f4;padding:10px;text-align:center;font-size:12px;border-radius:0 0 8px 8px;'>" +
-                            "<p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div></div></body></html>");
+                    generarHtmlMembresiaCancelada(nombreLimpio, membresia.getTipoMembresia(), LocalDate.now().format(fmt)));
         }
 
         LOGGER.info("[procesarCancelarMembresia] Membresia #" + membresia.getIdMembresia() +
@@ -1919,5 +1904,79 @@ public class ChatbotService {
 
     public List<MensajeGymbrot> obtenerHistorial(int idSesion) {
         return mensajeDAO.listarPorSesion(idSesion);
+    }
+
+    private String generarHtmlEstadoCuenta(String nombre, String accion) {
+        return "<!DOCTYPE html><html><head><style>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #00b4d8;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
+                "<div class='content'>" +
+                "<p>Hola <strong>" + nombre + "</strong>,</p>" +
+                "<p>Tu cuenta ha sido <strong>" + accion + "</strong> exitosamente.</p>" +
+                "<div class='card'>" +
+                "<p>Si no reconoces este cambio, contactanos de inmediato.</p>" +
+                "</div>" +
+                "<p>Atentamente, <strong>GYMBROT Valledupar</strong></p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
+                "</div></body></html>";
+    }
+
+    private String generarHtmlMembresiaCancelada(String nombre, String plan, String fechaCancelacion) {
+        return "<!DOCTYPE html><html><head><style>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #ff6b6b;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
+                "<div class='content'>" +
+                "<p>Hola <strong>" + nombre + "</strong>,</p>" +
+                "<p>Tu membresia <strong>" + plan + "</strong> ha sido cancelada.</p>" +
+                "<div class='card'>" +
+                "<p><strong>Plan:</strong> " + plan + "</p>" +
+                "<p><strong>Fecha de cancelacion:</strong> " + fechaCancelacion + "</p>" +
+                "</div>" +
+                "<p>Si deseas renovarla, contactanos.</p>" +
+                "<p>Atentamente, <strong>GYMBROT Valledupar</strong></p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
+                "</div></body></html>";
+    }
+
+    private String generarHtmlCuentaEliminada(String nombre) {
+        return "<!DOCTYPE html><html><head><style>" +
+                "body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;background:#f0f0f0;}" +
+                ".container{max-width:600px;margin:30px auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1);}" +
+                ".header{background:#000;text-align:center;padding:10px 0 0 0;}" +
+                ".header img{width:50%;display:block;margin:0 auto;}" +
+                ".content{background:#fff;padding:30px;}" +
+                ".card{background:#f4f4f4;padding:15px;border-radius:8px;margin:20px 0;border-left:4px solid #ff6b6b;}" +
+                ".footer{background:#111;color:#888;padding:12px;text-align:center;font-size:12px;}" +
+                "</style></head><body>" +
+                "<div class='container'>" +
+                "<div class='header'><img src='https://i.imgur.com/spw8wjG.jpeg' alt='GYMBROT'></div>" +
+                "<div class='content'>" +
+                "<p>Hola <strong>" + nombre + "</strong>,</p>" +
+                "<p>Tu cuenta en GYMBROT ha sido eliminada.</p>" +
+                "<div class='card'>" +
+                "<p>Si esto es un error, contacta al administrador de inmediato.</p>" +
+                "</div>" +
+                "<p>Atentamente, <strong>GYMBROT Valledupar</strong></p>" +
+                "</div>" +
+                "<div class='footer'><p style='margin:0;'>© 2026 GYMBROT Valledupar</p></div>" +
+                "</div></body></html>";
     }
 }
