@@ -101,6 +101,7 @@ public class Main extends Application {
             case "/fxml/GymbroAI.fxml"           -> "Gymbro AI";
             case "/fxml/ProgresoFisico.fxml"     -> "Progreso Físico";
             case "/fxml/GestionCitas.fxml"       -> "Citas";
+            case "/fxml/Finanzas.fxml"           -> "Finanzas";
             case "/fxml/NuevoCliente.fxml"       -> "Nuevo Cliente";
             case "/fxml/NuevoInstructor.fxml"    -> "Nuevo Instructor";
             default -> "";

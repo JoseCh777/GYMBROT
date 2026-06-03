@@ -148,10 +148,7 @@ public class PagoMembresiaController implements Initializable {
     public void setPlan(PlanMembresia plan, String modalidad, double precio) {
         lblPlanNombre.setText(plan.getNombre());
         lblPlanModalidad.setText("Plan " + modalidad.substring(0, 1) + modalidad.substring(1).toLowerCase());
-        long entero = Math.round(precio);
-        txtMonto.setText(entero >= 1_000_000
-                ? String.format("%,.0f", precio)
-                : String.format("%,d", entero));
+        txtMonto.setText(String.valueOf(Math.round(precio)));
         this.planSeleccionado = plan;
         this.modalidadSeleccionada = modalidad;
     }

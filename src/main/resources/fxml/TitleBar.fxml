@@ -12,7 +12,7 @@
     El controller TitleBarController maneja drag, minimizar, maximizar y cerrar.
 -->
 
-<HBox fx:id="titleBar" alignment="CENTER_LEFT" prefHeight="36" style="-fx-background-color: #121417;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.TitleBarController">
+<HBox fx:id="titleBar" alignment="CENTER_LEFT" prefHeight="36" prefWidth="289.0" style="-fx-background-color: #121417;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.TitleBarController">
 
     <!-- Título de la vista actual (lo actualiza el controller al navegar) -->
     <Label fx:id="lblTitulo" style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;">

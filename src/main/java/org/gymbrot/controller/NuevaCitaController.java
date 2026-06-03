@@ -17,13 +17,11 @@ import org.gymbrot.service.CitaService;
 import org.gymbrot.util.AlertaPersonalizada;
 
 import java.net.URL;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 
@@ -36,6 +34,7 @@ public class NuevaCitaController implements Initializable {
     @FXML private ComboBox<String> cmbCliente;
     @FXML private ComboBox<String> cmbInstructor;
     @FXML private DatePicker dpFecha;
+    @FXML private Label lblDisponibilidad;
     @FXML private ComboBox<String> cmbHora;
     @FXML private ComboBox<String> cmbTipoCita;
     @FXML private TextArea txtNotas;
@@ -117,8 +116,60 @@ public class NuevaCitaController implements Initializable {
     }
 
     private void configurarFiltros() {
-        cmbInstructor.valueProperty().addListener((obs, oldV, newV) -> filtrarHoras());
+        actualizarDayCellFactory();
+
+        cmbInstructor.valueProperty().addListener((obs, oldV, newV) -> {
+            actualizarDisponibilidadLabel();
+            filtrarHoras();
+            actualizarDayCellFactory();
+        });
         dpFecha.valueProperty().addListener((obs, oldV, newV) -> filtrarHoras());
+    }
+
+    private void actualizarDayCellFactory() {
+        dpFecha.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                try {
+                    if (empty || date.isBefore(LocalDate.now())) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: #1a1d21;");
+                        return;
+                    }
+                    String val = cmbInstructor.getValue();
+                    if (val == null) return;
+                    String idInstructor = val.split(" — ")[0].trim();
+                    Instructor instructor = instructores.stream()
+                            .filter(i -> i.getNumeroIdentificacion().equals(idInstructor))
+                            .findFirst().orElse(null);
+                    if (instructor != null && instructor.getDisponibilidad() != null
+                            && !citaService.diaDisponible(instructor.getDisponibilidad(), date.getDayOfWeek())) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: #2a1a1a; -fx-text-fill: #6b7280;");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error en DayCellFactory: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void actualizarDisponibilidadLabel() {
+        String val = cmbInstructor.getValue();
+        if (val == null) {
+            lblDisponibilidad.setText("");
+            return;
+        }
+        String idInstructor = val.split(" — ")[0].trim();
+        Instructor instructor = instructores.stream()
+                .filter(i -> i.getNumeroIdentificacion().equals(idInstructor))
+                .findFirst().orElse(null);
+        if (instructor != null && instructor.getDisponibilidad() != null) {
+            lblDisponibilidad.setText("Disponible: " + instructor.getDisponibilidad());
+        } else {
+            lblDisponibilidad.setText("");
+        }
     }
 
     private void filtrarHoras() {
@@ -126,44 +177,23 @@ public class NuevaCitaController implements Initializable {
         LocalDate fecha = dpFecha.getValue();
         String idInstructor;
         if (instrValue != null) idInstructor = instrValue.split(" — ")[0].trim();
-        else {
-            idInstructor = null;
-        }
+        else idInstructor = null;
 
         cmbHora.getItems().clear();
 
         for (String h : todosLosHorarios) {
             boolean incluir = true;
 
-            if (idInstructor != null) {
+            if (idInstructor != null && fecha != null) {
                 Instructor instructor = instructores.stream()
                         .filter(i -> i.getNumeroIdentificacion().equals(idInstructor))
                         .findFirst().orElse(null);
                 if (instructor != null && instructor.getDisponibilidad() != null) {
                     String disp = instructor.getDisponibilidad();
-                    String[] partes = disp.split("\\|");
-                    if (partes.length >= 2) {
-                        // Filtrar por horario
-                        String turno = partes[1].trim();
-                        LocalTime[] rango = HORARIO_MAP.get(turno);
-                        if (rango != null) {
-                            LocalTime hora = LocalTime.parse(h, DateTimeFormatter.ofPattern("HH:mm"));
-                            if (hora.isBefore(rango[0]) || hora.isAfter(rango[1])) {
-                                incluir = false;
-                            }
-                        }
-
-                        // Filtrar por día si hay fecha seleccionada
-                        if (incluir && fecha != null) {
-                            DayOfWeek diaSel = fecha.getDayOfWeek();
-                            String[] diasDisp = partes[0].split(",");
-                            boolean diaValido = false;
-                            for (String d : diasDisp) {
-                                DayOfWeek dw = DIA_MAP.get(d.trim());
-                                if (dw == diaSel) { diaValido = true; break; }
-                            }
-                            if (!diaValido) incluir = false;
-                        }
+                    LocalTime hora = LocalTime.parse(h, DateTimeFormatter.ofPattern("HH:mm"));
+                    if (!citaService.diaDisponible(disp, fecha.getDayOfWeek()) ||
+                        !citaService.horaDisponible(disp, hora)) {
+                        incluir = false;
                     }
                 }
             }
@@ -209,20 +239,6 @@ public class NuevaCitaController implements Initializable {
         btnGuardar.setText("ACTUALIZAR CITA");
     }
 
-    private static final Map<String, DayOfWeek> DIA_MAP = Map.of(
-            "LUN", DayOfWeek.MONDAY, "MAR", DayOfWeek.TUESDAY,
-            "MIE", DayOfWeek.WEDNESDAY, "JUE", DayOfWeek.THURSDAY,
-            "VIE", DayOfWeek.FRIDAY, "SAB", DayOfWeek.SATURDAY,
-            "DOM", DayOfWeek.SUNDAY
-    );
-
-    private static final Map<String, LocalTime[]> HORARIO_MAP = Map.of(
-            "Mañana",   new LocalTime[]{LocalTime.of(6, 0),  LocalTime.of(12, 0)},
-            "Tarde",    new LocalTime[]{LocalTime.of(12, 0), LocalTime.of(18, 0)},
-            "Noche",    new LocalTime[]{LocalTime.of(18, 0), LocalTime.of(22, 0)},
-            "Completo", new LocalTime[]{LocalTime.of(6, 0),  LocalTime.of(22, 0)}
-    );
-
     private boolean validarMembresia(String idCliente) {
         return historialMembresiaDAO.buscarActiva(idCliente) != null;
     }
@@ -234,24 +250,8 @@ public class NuevaCitaController implements Initializable {
         if (instructor == null || instructor.getDisponibilidad() == null) return false;
 
         String disp = instructor.getDisponibilidad();
-        String[] partes = disp.split("\\|");
-        if (partes.length < 2) return false;
-
-        // Validar día
-        DayOfWeek diaSeleccionado = fecha.getDayOfWeek();
-        String[] diasDisp = partes[0].split(",");
-        boolean diaValido = false;
-        for (String d : diasDisp) {
-            DayOfWeek dw = DIA_MAP.get(d.trim());
-            if (dw == diaSeleccionado) { diaValido = true; break; }
-        }
-        if (!diaValido) return false;
-
-        // Validar horario
-        String horario = partes[1].trim();
-        LocalTime[] rango = HORARIO_MAP.get(horario);
-        if (rango == null) return false;
-        return !hora.isBefore(rango[0]) && !hora.isAfter(rango[1]);
+        return citaService.diaDisponible(disp, fecha.getDayOfWeek()) &&
+               citaService.horaDisponible(disp, hora);
     }
 
     @FXML
