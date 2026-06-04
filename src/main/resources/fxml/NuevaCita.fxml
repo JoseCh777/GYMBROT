@@ -51,6 +51,7 @@
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                     <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
                     <DatePicker fx:id="dpFecha" maxWidth="Infinity" prefHeight="44" promptText="dd/mm/aaaa" style="-fx-background-color: #121417; -fx-background-radius: 8;                                          -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8;                                          -fx-font-family: 'Inter'; -fx-font-size: 13px;" />
+                    <Label fx:id="lblDisponibilidad" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="" />
                 </VBox>
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                     <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA" />

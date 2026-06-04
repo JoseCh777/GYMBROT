@@ -37,7 +37,7 @@ public class    ProgresoFisicoController implements Initializable {
     @FXML
     private VBox sideNav;
     @FXML
-    private Button navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI, navCitas;
+    private Button navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navAI, navCitas;
 
     @FXML
     private HBox topBar;
@@ -113,7 +113,7 @@ public class    ProgresoFisicoController implements Initializable {
         ValidacionUtil.soloDecimales(txtGrasa);
         ValidacionUtil.soloDecimales(txtMusculo);
 
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navAI, navCitas};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navAI, navCitas};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navProgreso);
 
@@ -573,6 +573,7 @@ public class    ProgresoFisicoController implements Initializable {
     @FXML private void handleNavClientes()     { navegarA("/fxml/GestionClientes.fxml"); }
     @FXML private void handleNavInstructores() { navegarA("/fxml/GestionInstructores.fxml"); }
     @FXML private void handleNavMembresias()   { navegarA("/fxml/GestionMembresias.fxml"); }
+    @FXML private void handleNavFinanzas()    { navegarA("/fxml/Finanzas.fxml"); }
     @FXML private void handleNavProgreso()     { navegarA("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavAI()           { navegarA("/fxml/GymbroAI.fxml"); }
     @FXML private void handleNavCitas()        { navegarA("/fxml/GestionCitas.fxml"); }
@@ -585,7 +586,7 @@ public class    ProgresoFisicoController implements Initializable {
     }
 
     private void configurarNavActivo() {
-        Button[] allNav = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
+        Button[] allNav = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navCitas, navAI};
         for (Button b : allNav) {
             if (b != navProgreso) {
                 b.setStyle("-fx-background-color: transparent; -fx-background-radius: 8;"

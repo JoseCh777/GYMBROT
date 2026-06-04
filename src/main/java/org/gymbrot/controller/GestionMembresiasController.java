@@ -17,7 +17,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.gymbrot.dao.PagoDAO;
 import org.gymbrot.dao.PlanMembresiaDAO;
 import org.gymbrot.model.PlanMembresia;
 
@@ -39,6 +38,7 @@ public class GestionMembresiasController implements Initializable {
     @FXML private Button navClientes;
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
+    @FXML private Button navFinanzas;
     @FXML private Button navAI;
     @FXML private Button navProgreso;
     @FXML private Button navCitas;
@@ -81,19 +81,8 @@ public class GestionMembresiasController implements Initializable {
     @FXML private TableColumn<FilaComparativa, String> colBlack;
     @FXML private TableColumn<FilaComparativa, String> colGold;
 
-    // ── Historial de Pagos ───────────────────────────────────
-    @FXML private TableView<FilaPago> tablaHistorialPagos;
-    @FXML private TableColumn<FilaPago, String> colHPCliente;
-    @FXML private TableColumn<FilaPago, String> colHPPlan;
-    @FXML private TableColumn<FilaPago, String> colHPMonto;
-    @FXML private TableColumn<FilaPago, String> colHPMetodo;
-    @FXML private TableColumn<FilaPago, String> colHPFecha;
-    @FXML private TableColumn<FilaPago, String> colHPEstado;
-    @FXML private TableColumn<FilaPago, String> colHPReferencia;
-
     // ── DAOs ─────────────────────────────────────────────────
     private final PlanMembresiaDAO planDAO = new PlanMembresiaDAO();
-    private final PagoDAO pagoDAO = new PagoDAO();
 
     // ── Estado interno ───────────────────────────────────────
     private enum Duracion { MENSUAL, SEMESTRAL, ANUAL }
@@ -132,8 +121,6 @@ public class GestionMembresiasController implements Initializable {
         configurarAnimacionesBotones();
         configurarTablaComparativa();
         actualizarPrecios();
-        configurarTablaHistorial();
-        cargarHistorialPagos();
     }
 
     private void cargarPlanes() {
@@ -199,6 +186,9 @@ public class GestionMembresiasController implements Initializable {
     @FXML
     private void handleNavMembresias(ActionEvent event) {
     }
+
+    @FXML
+    private void handleNavFinanzas(ActionEvent event) { navegarA("/fxml/Finanzas.fxml", event); }
 
     @FXML
     private void handleNavAI(ActionEvent event) {
@@ -275,9 +265,9 @@ public class GestionMembresiasController implements Initializable {
             PagoMembresiaController ctrl = loader.getController();
 
             double precio = switch (duracion) {
-                case MENSUAL   -> plan.getPrecioMensual();
-                case SEMESTRAL -> plan.getPrecioSemestral();
-                case ANUAL     -> plan.getPrecioAnual();
+                case MENSUAL   -> precioFallback(plan.getPrecioMensual(),   plan.getNombre(), "MENSUAL");
+                case SEMESTRAL -> precioFallback(plan.getPrecioSemestral(), plan.getNombre(), "SEMESTRAL");
+                case ANUAL     -> precioFallback(plan.getPrecioAnual(),     plan.getNombre(), "ANUAL");
             };
             String modalidad = duracion.name();
             ctrl.setPlan(plan, modalidad, precio);
@@ -296,6 +286,22 @@ public class GestionMembresiasController implements Initializable {
             e.printStackTrace();
             mostrarError("Error", "No se pudo abrir el formulario de pago");
         }
+    }
+
+    private double precioFallback(double dbPrice, String planNombre, String duracion) {
+        if (dbPrice >= 1000) return dbPrice;
+        return switch (planNombre.toUpperCase()) {
+            case "PLAN SILVER" -> switch (duracion) {
+                case "MENSUAL" -> 80000; case "SEMESTRAL" -> 440000; default -> 840000;
+            };
+            case "PLAN GOLD" -> switch (duracion) {
+                case "MENSUAL" -> 130000; case "SEMESTRAL" -> 710000; default -> 1360000;
+            };
+            case "PLAN BLACK" -> switch (duracion) {
+                case "MENSUAL" -> 200000; case "SEMESTRAL" -> 1100000; default -> 2100000;
+            };
+            default -> dbPrice;
+        };
     }
 
     // ══ Logica de precios ════════════════════════════════════
@@ -448,69 +454,10 @@ public class GestionMembresiasController implements Initializable {
 
     // ══ Historial de Pagos ═══════════════════════════════════════
 
-    private void configurarTablaHistorial() {
-        tablaHistorialPagos.widthProperty().addListener((obs, old, w) -> {
-            if (w.doubleValue() > 0) {
-                var header = tablaHistorialPagos.lookup(".column-header-background");
-                if (header != null) header.setStyle("-fx-background-color: #121417;");
-                var headers = tablaHistorialPagos.lookupAll(".column-header");
-                for (var h : headers) {
-                    h.setStyle("-fx-background-color: #121417; -fx-border-color: #1f2125;");
-                }
-            }
-        });
-        colHPCliente.setCellValueFactory(d  -> new SimpleStringProperty(d.getValue().cliente()));
-        colHPPlan.setCellValueFactory(d     -> new SimpleStringProperty(d.getValue().plan()));
-        colHPMonto.setCellValueFactory(d    -> new SimpleStringProperty("$" + d.getValue().monto()));
-        colHPMetodo.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().metodo()));
-        colHPFecha.setCellValueFactory(d    -> new SimpleStringProperty(d.getValue().fecha()));
-        colHPEstado.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().estado()));
-        colHPReferencia.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().referencia()));
-
-        TableColumn<FilaPago, String>[] cols = new TableColumn[]{
-                colHPCliente, colHPPlan, colHPMonto, colHPMetodo, colHPFecha, colHPEstado, colHPReferencia
-        };
-        for (var col : cols) {
-            col.setCellFactory(c -> new TableCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) { setText(null); return; }
-                    setText(item);
-                    String estilo = "-fx-background-color: transparent; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-padding: 8 12 8 12;";
-                    if ("EXITOSO".equals(item)) {
-                        setStyle(estilo + "-fx-text-fill: #D4FF00; -fx-font-weight: 700;");
-                    } else if ("PENDIENTE".equals(item)) {
-                        setStyle(estilo + "-fx-text-fill: #fbbf24; -fx-font-weight: 700;");
-                    } else {
-                        setStyle(estilo + "-fx-text-fill: #d1d5db;");
-                    }
-                }
-            });
-        }
-    }
-
-    private void cargarHistorialPagos() {
-        List<PagoDAO.PagoConCliente> pagos = pagoDAO.listarTodosConCliente();
-        ObservableList<FilaPago> items = FXCollections.observableArrayList();
-        for (PagoDAO.PagoConCliente p : pagos) {
-            items.add(new FilaPago(
-                    p.clienteNombre() + " " + p.clienteApellidos(),
-                    p.planNombre(),
-                    String.format("%.0f", p.valor()),
-                    p.metodoPago(),
-                    p.fechaPago(),
-                    p.estadoPago(),
-                    p.referencia() != null ? p.referencia() : ""
-            ));
-        }
-        tablaHistorialPagos.setItems(items);
-    }
-
     // ══ Animaciones de navegacion ═════════════════════════════════
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navProgreso, navAI, navCitas, btnLogout};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navFinanzas, navProgreso, navAI, navCitas, btnLogout};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navMembresias);
     }
@@ -666,7 +613,7 @@ public class GestionMembresiasController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI, btnLogout};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navCitas, navAI, btnLogout};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -716,13 +663,4 @@ public class GestionMembresiasController implements Initializable {
             String gold
     ) {}
 
-    public record FilaPago(
-            String cliente,
-            String plan,
-            String monto,
-            String metodo,
-            String fecha,
-            String estado,
-            String referencia
-    ) {}
 }

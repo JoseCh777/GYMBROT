@@ -67,7 +67,10 @@
                         <Image url="@../images/membresias_white.png" />
                      </image>
                   </ImageView>
-               </graphic></Button>
+                </graphic></Button>
+                <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
                 <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
@@ -154,9 +157,9 @@
 
                     <Button fx:id="btnAgregarCita" onAction="#handleAgregarCita" prefHeight="44" prefWidth="210.0" style="-fx-background-color: #1e2a00; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                    -fx-font-weight: 700;                                    -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="Agregar Cita">
                       <graphic>
-                         <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                         <ImageView fitHeight="22.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                               <Image url="@../images/boton-mas.png" />
+                               <Image url="@../images/agregar_cita.png" />
                             </image>
                          </ImageView>
                       </graphic>

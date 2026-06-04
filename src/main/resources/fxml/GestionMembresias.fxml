@@ -48,6 +48,9 @@
                 <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
                     <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/membresias.png" /></image></ImageView></graphic>
                 </Button>
+                <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
                 <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
@@ -203,24 +206,7 @@
                     </TableView>
                 </VBox>
 
-                <!-- ── SECCION 4: Historial de Pagos ── -->
-                <VBox spacing="16">
-                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Historial de Pagos" />
-
-                    <TableView fx:id="tablaHistorialPagos" prefHeight="280" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
-                        <columns>
-                            <TableColumn fx:id="colHPCliente" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
-                            <TableColumn fx:id="colHPPlan" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="PLAN" />
-                            <TableColumn fx:id="colHPMonto" prefWidth="100" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MONTO" />
-                            <TableColumn fx:id="colHPMetodo" prefWidth="140" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="METODO" />
-                            <TableColumn fx:id="colHPFecha" prefWidth="120" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
-                            <TableColumn fx:id="colHPEstado" prefWidth="100" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ESTADO" />
-                            <TableColumn fx:id="colHPReferencia" prefWidth="150" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REFERENCIA" />
-                        </columns>
-                    </TableView>
-                </VBox>
-
-                <!-- ── SECCION 5: Banner Gymbrot AI ── -->
+                <!-- ── SECCION 4: Banner Gymbrot AI ── -->
                 <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #0a3a40; -fx-border-width: 1; -fx-border-radius: 16;">
                     <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
 

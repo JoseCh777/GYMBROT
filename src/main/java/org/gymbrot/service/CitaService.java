@@ -52,33 +52,12 @@ public class CitaService {
     public boolean programarCita(Cita cita) {
         if (!validarYProgramar(cita)) return false;
 
-        String sql = "{call PKG_GYMBROT_PROC.SP_AGENDAR_CITA(?,?,?,?,?,?,?,?)}";
-        try (Connection conn = DatabaseConnection.getInstance();
-             CallableStatement cs = conn.prepareCall(sql)) {
-
-            cs.setString(1, cita.getIdInstructor());
-            cs.setString(2, cita.getIdCliente());
-            cs.setDate(3, Date.valueOf(cita.getFecha()));
-            cs.setTimestamp(4, Timestamp.valueOf(cita.getHora().atDate(cita.getFecha())));
-            cs.setString(5, cita.getTipoCita());
-            if (cita.getNotas() != null) {
-                cs.setString(6, cita.getNotas());
-            } else {
-                cs.setNull(6, Types.VARCHAR);
-            }
-            cs.registerOutParameter(7, Types.INTEGER);
-            cs.registerOutParameter(8, Types.VARCHAR);
-            cs.execute();
-
-            int codigo = cs.getInt(7);
-            String mensaje = cs.getString(8);
-            System.out.println(mensaje);
-            return codigo == 1;
-
-        } catch (SQLException e) {
-            System.err.println("Error en programarCita: " + e.getMessage());
-            return false;
+        int id = citaDAO.insertarYRetornarId(cita);
+        if (id > 0) {
+            System.out.println("✓ Cita programada exitosamente. ID: #" + id);
+            return true;
         }
+        return false;
     }
 
     // ── PROGRAMAR CITA Y RETORNAR ID (para cliente) ───────────────────────
@@ -113,8 +92,8 @@ public class CitaService {
             System.err.println("✗ No se encontró el instructor.");
             return -4;
         }
-        if (cita.getFecha() == null || !cita.getFecha().isAfter(LocalDate.now())) {
-            System.err.println("✗ La fecha debe ser posterior a hoy.");
+        if (cita.getFecha() == null || cita.getFecha().isBefore(LocalDate.now())) {
+            System.err.println("✗ La fecha no puede ser anterior a hoy.");
             return -5;
         }
         if (cita.getHora() == null) {
@@ -164,8 +143,8 @@ public class CitaService {
             System.err.println("✗ No se encontró el instructor.");
             return false;
         }
-        if (cita.getFecha() == null || !cita.getFecha().isAfter(LocalDate.now())) {
-            System.err.println("✗ La fecha debe ser posterior a hoy.");
+        if (cita.getFecha() == null || cita.getFecha().isBefore(LocalDate.now())) {
+            System.err.println("✗ La fecha no puede ser anterior a hoy.");
             return false;
         }
         if (cita.getHora() == null) {
@@ -194,9 +173,9 @@ public class CitaService {
     }
 
     // ── VALIDAR DÍA ───────────────────────────────────────────────────────
-    private boolean diaDisponible(String disponibilidad, DayOfWeek dia) {
-        if (disponibilidad == null) return true;
-        String disp = disponibilidad.toLowerCase();
+    public boolean diaDisponible(String disponibilidad, DayOfWeek dia) {
+        if (disponibilidad == null || disponibilidad.trim().isEmpty()) return true;
+        String disp = disponibilidad.toLowerCase().trim();
         String nombreDia = switch (dia) {
             case MONDAY    -> "lunes";
             case TUESDAY   -> "martes";
@@ -208,7 +187,15 @@ public class CitaService {
         };
         String abrevDia = nombreDia.substring(0, 3);
 
-        String parteDias = disp.contains("|") ? disp.split("\\|")[0].trim() : disp;
+        String parteDias = disp;
+        if (disp.contains("|")) {
+            String[] partes = disp.split("\\|");
+            if (partes.length > 0) {
+                parteDias = partes[0].trim();
+            } else {
+                parteDias = "";
+            }
+        }
 
         if (parteDias.contains(" a ")) {
             String[] partes = parteDias.split(" a ");
@@ -248,7 +235,7 @@ public class CitaService {
     }
 
     // ── VALIDAR HORA ──────────────────────────────────────────────────────
-    private boolean horaDisponible(String disponibilidad, LocalTime hora) {
+    public boolean horaDisponible(String disponibilidad, LocalTime hora) {
         if (disponibilidad == null) return true;
         String disp = disponibilidad.toLowerCase();
 

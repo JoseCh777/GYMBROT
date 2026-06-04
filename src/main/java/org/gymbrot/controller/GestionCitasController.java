@@ -51,6 +51,8 @@ public class GestionCitasController implements Initializable {
     @FXML private Button navInstructores;
     @FXML private Button navMembresias;
 
+    @FXML private Button navFinanzas;
+
     @FXML private Button navAI;
     @FXML private Button navProgreso;
     @FXML private Button navCitas;
@@ -448,7 +450,7 @@ public class GestionCitasController implements Initializable {
     }
 
     private void configurarAnimacionesNav() {
-        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navAI};
+        Button[] inactivos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navAI};
         for (Button btn : inactivos) agregarHoverInactivo(btn);
         agregarHoverActivo(navCitas);
     }
@@ -504,7 +506,7 @@ public class GestionCitasController implements Initializable {
     }
 
     private void setNavActivo(Button activo) {
-        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navProgreso, navCitas, navAI};
+        Button[] todos = {navDashboard, navClientes, navInstructores, navMembresias, navFinanzas, navProgreso, navCitas, navAI};
         for (Button btn : todos) {
             if (btn == activo) {
                 btn.setStyle(
@@ -529,6 +531,7 @@ public class GestionCitasController implements Initializable {
     @FXML private void handleNavInstructores() { navegar("/fxml/GestionInstructores.fxml"); }
     @FXML private void handleNavCitas() { navegar("/fxml/GestionCitas.fxml"); }
     @FXML private void handleNavMembresias() { navegar("/fxml/GestionMembresias.fxml"); }
+    @FXML private void handleNavFinanzas() { navegar("/fxml/Finanzas.fxml"); }
     @FXML private void handleNavProgreso() { navegar("/fxml/ProgresoFisico.fxml"); }
     @FXML private void handleNavAI() { navegar("/fxml/GymbroAI.fxml"); }
 

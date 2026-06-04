@@ -94,7 +94,7 @@
                     <VBox spacing="8" GridPane.columnIndex="0">
                         <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MONTO A PAGAR" />
                         <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="0" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8;">
-                            <Label fx:id="lblMoneda" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;" />
+                            <Label fx:id="lblMoneda" text="\$" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;" />
                             <TextField fx:id="txtMonto" prefHeight="44" promptText="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #D4FF00; -fx-prompt-text-fill: #D4FF00;">
                                 <padding><Insets left="4" right="12" /></padding>
                             </TextField>
