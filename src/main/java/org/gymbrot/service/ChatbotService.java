@@ -1553,11 +1553,18 @@ public class ChatbotService {
     }
 
     private String extraerDireccionDeTexto(String texto) {
-        Pattern p = Pattern.compile("(?:direcci[oó]n|dir)[:\\s]+([\\p{L}\\d\\s#\\-.]+?)(?:,|\\.|$)",
+        Pattern p = Pattern.compile(
+                "(?:direcci[oó]n|dir)[:\\s]+([\\p{L}\\d\\s#\\-\\.]+)",
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
-        Matcher m = p.matcher(texto);
+        Matcher m = p.matcher(texto.trim());
         if (m.find()) {
             String val = m.group(1).trim();
+            String[] cortes = {"nombre", "apellido", "correo", "telefono",
+                    "celular", "cel", "id", "fecha", "contrasena", "estado"};
+            for (String corte : cortes) {
+                int idx = val.toLowerCase().indexOf(corte);
+                if (idx > 0) val = val.substring(0, idx).trim();
+            }
             return val.isEmpty() ? null : val;
         }
         return null;
