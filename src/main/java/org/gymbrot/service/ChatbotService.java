@@ -72,8 +72,10 @@ public class ChatbotService {
 
             contextoExtra = procesarCrearCliente(texto, historial);
 
-        } else if (textoLower.contains("crear rutina") || textoLower.contains("crea rutina")
-                || textoLower.contains("generar rutina") || textoLower.contains("nueva rutina")) {
+        }  else if (textoLower.contains("crear rutina") || textoLower.contains("crea rutina")
+            || textoLower.contains("generar rutina") || textoLower.contains("nueva rutina")
+            || textoLower.contains("asignar rutina") || textoLower.contains("asignale")
+            || (textoLower.contains("rutina") && textoLower.contains("cliente"))) {
 
             contextoExtra = procesarCrearRutina(texto, historial);
 
@@ -203,7 +205,8 @@ public class ChatbotService {
 
         } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
                 || textoLower.contains("agendar") || textoLower.contains("programa")
-                || textoLower.contains("registra"))
+                || textoLower.contains("registra") || textoLower.contains("adendale")
+                || textoLower.contains("agendal") || textoLower.contains("ponle"))
                 && textoLower.contains("cita")
                 && !textoLower.contains("cancelar") && !textoLower.contains("eliminar")
                 && !textoLower.contains("ver") && !textoLower.contains("listar")) {
