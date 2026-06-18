@@ -1,0 +1,10 @@
+*.cs    linguist-language=C#
+*.sql   linguist-language=SQL
+*.fxml  linguist-language=XML
+*.css   linguist-language=CSS
+*.puml  linguist-language=Text
+*.ttf   linguist-detectable=false
+*.class linguist-detectable=false
+*.jar   linguist-detectable=false
+*.exe   linguist-detectable=false
+*.patch linguist-detectable=false
