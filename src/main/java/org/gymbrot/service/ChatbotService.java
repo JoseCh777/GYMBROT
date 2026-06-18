@@ -72,8 +72,10 @@ public class ChatbotService {
 
             contextoExtra = procesarCrearCliente(texto, historial);
 
-        } else if (textoLower.contains("crear rutina") || textoLower.contains("crea rutina")
-                || textoLower.contains("generar rutina") || textoLower.contains("nueva rutina")) {
+        }  else if (textoLower.contains("crear rutina") || textoLower.contains("crea rutina")
+                || textoLower.contains("generar rutina") || textoLower.contains("nueva rutina")
+                || textoLower.contains("asignar rutina") || textoLower.contains("asignale")
+                || (textoLower.contains("rutina") && textoLower.contains("cliente"))) {
 
             contextoExtra = procesarCrearRutina(texto, historial);
 
@@ -203,7 +205,8 @@ public class ChatbotService {
 
         } else if ((textoLower.contains("crea") || textoLower.contains("agenda")
                 || textoLower.contains("agendar") || textoLower.contains("programa")
-                || textoLower.contains("registra"))
+                || textoLower.contains("registra") || textoLower.contains("adendale")
+                || textoLower.contains("agendal") || textoLower.contains("ponle"))
                 && textoLower.contains("cita")
                 && !textoLower.contains("cancelar") && !textoLower.contains("eliminar")
                 && !textoLower.contains("ver") && !textoLower.contains("listar")) {
@@ -277,6 +280,56 @@ public class ChatbotService {
             } else {
                 contextoExtra = " [SISTEMA: El administrador quiere cancelar una cita pero no " +
                         "especifico el ID. Pidele el numero. Ejemplo: 'cancelar cita #12']";
+            }
+
+        } else if ((textoLower.contains("todas las citas") || textoLower.contains("listar citas")
+                || textoLower.contains("mostrar citas") || textoLower.contains("lista de citas")
+                || (textoLower.contains("citas") && textoLower.contains("todas")))
+                && !textoLower.contains("hoy") && !textoLower.contains("cancelar")
+                && !textoLower.contains("eliminar")) {
+
+            List<Cita> todasCitas = citaDAO.listarTodas();
+            LOGGER.info("[citas] total encontradas: " + todasCitas.size());
+            if (!todasCitas.isEmpty()) {
+                DateTimeFormatter fmt     = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+
+                long pendientes  = todasCitas.stream().filter(c -> "PENDIENTE".equals(c.getEstado())).count();
+                long canceladas  = todasCitas.stream().filter(c -> "CANCELADA".equals(c.getEstado())).count();
+                long completadas = todasCitas.stream().filter(c -> "COMPLETADA".equals(c.getEstado())).count();
+
+                StringBuilder lista = new StringBuilder();
+                lista.append(String.format("TOTAL: %d citas | %d pendientes | %d completadas | %d canceladas\n\n",
+                        todasCitas.size(), pendientes, completadas, canceladas));
+
+                lista.append("── PENDIENTES ──\n");
+                todasCitas.stream().filter(c -> "PENDIENTE".equals(c.getEstado())).forEach(c -> {
+                    String nombreInst = obtenerNombreInstructor(c.getIdInstructor());
+                    lista.append(String.format("Cita #%d | Cliente: %s | Instructor: %s | Fecha: %s | Hora: %s\n",
+                            c.getIdCita(), c.getIdCliente(), nombreInst,
+                            c.getFecha().format(fmt), c.getHora().format(fmtHora)));
+                });
+
+                lista.append("\n── COMPLETADAS ──\n");
+                todasCitas.stream().filter(c -> "COMPLETADA".equals(c.getEstado())).forEach(c -> {
+                    String nombreInst = obtenerNombreInstructor(c.getIdInstructor());
+                    lista.append(String.format("Cita #%d | Cliente: %s | Instructor: %s | Fecha: %s | Hora: %s\n",
+                            c.getIdCita(), c.getIdCliente(), nombreInst,
+                            c.getFecha().format(fmt), c.getHora().format(fmtHora)));
+                });
+
+                lista.append("\n── CANCELADAS ──\n");
+                todasCitas.stream().filter(c -> "CANCELADA".equals(c.getEstado())).forEach(c -> {
+                    String nombreInst = obtenerNombreInstructor(c.getIdInstructor());
+                    lista.append(String.format("Cita #%d | Cliente: %s | Instructor: %s | Fecha: %s | Hora: %s\n",
+                            c.getIdCita(), c.getIdCliente(), nombreInst,
+                            c.getFecha().format(fmt), c.getHora().format(fmtHora)));
+                });
+
+                contextoExtra = " [SISTEMA: Lista completa de citas:\n" + lista +
+                        "Muestrasela al administrador agrupada por estado con el resumen al inicio.]";
+            } else {
+                contextoExtra = " [SISTEMA: No hay citas registradas en la base de datos.]";
             }
 
         } else if ((textoLower.contains("citas") || textoLower.contains("agenda"))
