@@ -1,0 +1,34 @@
+═══════════════════════════════════════════════════════════════════
+  MODEL — Capa de dominio / entidades
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+  Representan las entidades del negocio como objetos Java simples
+  (POJOs). Cada clase MODEL mapea una tabla de la base de datos,
+  con sus atributos, constructor, getters y setters.
+
+  Lista de modelos (18):
+    Usuario, Administrador, Cliente, Instructor,
+    Membresia, HistorialMembresia, PlanMembresia,
+    Pago, Cita, Rutina, RutinaEjercicio, Ejercicio,
+    Progreso, RegistroIngreso, Notificacion,
+    MensajeGymbrot, SesionGymbrot, Especialidad
+
+  ¿Cómo se comunica?
+  ──────────────────
+    Controller → Service → DAO → [Database] → DAO → Service → Controller
+                              ↕
+                            MODEL
+
+    Los modelos viajan a traves de todas las capas:
+    - El DAO consulta la BD y construye objetos MODEL.
+    - El Service recibe/entrega MODEL al Controller.
+    - El Controller usa el MODEL para poblar la UI.
+
+  Relaciones clave
+  ────────────────
+    USUARIOS (supertipo) ──hereda──> CLIENTES, INSTRUCTORES, ADMINISTRADORES
+    CLIENTES ──tiene──> MEMBRESIAS, PROGRESOS, RUTINAS, CITAS, PAGOS
+    INSTRUCTORES ──crea──> RUTINAS, CITAS
+    MEMBRESIAS ──pertenece──> PLANES_MEMBRESIAS

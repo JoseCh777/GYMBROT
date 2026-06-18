@@ -1,0 +1,207 @@
+@startuml
+package org.gymbrot.model {
+  class Usuario {
+    - numeroIdentificacion: String
+    - tipoIdentificacion: String
+    - nombre: String
+    - apellidos: String
+    - correo: String
+    - telefono: String
+    - contrasenaHash: String
+    - fotoUrl: String
+    - estado: String
+    - fechaRegistro: Date
+    - tipoUsuario: String
+  }
+
+  class Cliente {
+    - direccion: String
+    - fechaNacimiento: Date
+    - huellaDactilar: byte[]
+  }
+
+  class Instructor {
+    - idEspecialidad: int
+    - disponibilidad: String
+    - fechaContratacion: Date
+  }
+
+  class Administrador {
+    - rol: String
+  }
+
+  class Especialidad {
+    - idEspecialidad: int
+    - nombre: String
+    - descripcion: String
+  }
+
+  class Membresia {
+    - idMembresia: int
+    - idPlan: int
+    - tipoMembresia: String
+    - modalidadPago: String
+    - valor: double
+    - fechaInicio: Date
+    - fechaVencimiento: Date
+    - estado: String
+  }
+
+  class PlanMembresia {
+    - idPlan: int
+    - nombre: String
+    - descripcion: String
+    - precioMensual: double
+    - precioSemestral: double
+    - precioAnual: double
+    - beneficios: String
+    - duracionDias: int
+  }
+
+  class HistorialMembresia {
+    - idHistorial: int
+    - idCliente: int
+    - idMembresia: int
+    - fechaAsignacion: Date
+    - activa: boolean
+  }
+
+  class Pago {
+    - idPago: int
+    - idMembresia: int
+    - idCliente: int
+    - fechaPago: Date
+    - valor: double
+    - metodoPago: String
+    - estadoPago: String
+    - referenciaTransaccion: String
+    - observaciones: String
+  }
+
+  class Cita {
+    - idCita: int
+    - idCliente: int
+    - idInstructor: int
+    - fecha: Date
+    - hora: String
+    - tipoCita: String
+    - estado: String
+    - notas: String
+  }
+
+  class Ejercicio {
+    - idEjercicio: int
+    - nombre: String
+    - descripcion: String
+    - grupoMuscular: String
+    - nivel: String
+    - series: int
+    - repeticiones: int
+    - recursoUrl: String
+  }
+
+  class Rutina {
+    - idRutina: int
+    - nombre: String
+    - descripcion: String
+    - objetivo: String
+    - idInstructor: int
+    - idCliente: int
+    - fechaCreacion: Date
+    - fechaFin: Date
+    - diasSemana: String
+  }
+
+  class RutinaEjercicio {
+    - idRutina: int
+    - idEjercicio: int
+    - orden: int
+    - series: int
+    - repeticiones: int
+    - descanso: int
+    - notasInstructor: String
+  }
+
+  class Progreso {
+    - idProgreso: int
+    - idCliente: int
+    - fechaRegistro: Date
+    - peso: double
+    - altura: double
+    - imc: double
+    - porcentajeGrasa: double
+    - masaMuscular: double
+    - objetivo: String
+  }
+
+  class RegistroIngreso {
+    - idIngreso: int
+    - idCliente: int
+    - fecha: Date
+    - horaEntrada: String
+    - horaSalida: String
+    - metodoVerificacion: String
+    - estadoVerificacion: String
+  }
+
+  class Notificacion {
+    - idNotificacion: int
+    - idCliente: int
+    - tipo: String
+    - mensaje: String
+    - fechaEnvio: Date
+    - leida: boolean
+  }
+
+  class PlantillaMensaje {
+    - idPlantilla: int
+    - codigo: String
+    - asunto: String
+    - cuerpo: String
+    - variables: String
+  }
+
+  class SesionGymbrot {
+    - idSesion: int
+    - idCliente: int
+    - fechaInicio: Date
+    - fechaFin: Date
+    - activa: boolean
+  }
+
+  class MensajeGymbrot {
+    - idMensaje: int
+    - idSesion: int
+    - remitente: String
+    - contenido: String
+    - fechaEnvio: Date
+  }
+
+  Usuario <|-- Cliente
+  Usuario <|-- Instructor
+  Usuario <|-- Administrador
+
+  Cliente "1" -- "0..*" Membresia : posee
+  Cliente "1" -- "0..*" HistorialMembresia : tiene
+  Cliente "1" -- "0..*" Pago : realiza
+  Cliente "1" -- "0..*" Cita : agenda
+  Cliente "1" -- "0..*" Rutina : asigna
+  Cliente "1" -- "0..*" RegistroIngreso : registra
+  Cliente "1" -- "0..*" Progreso : registra
+  Cliente "1" -- "0..*" Notificacion : recibe
+  Cliente "1" -- "0..*" SesionGymbrot : inicia
+
+  Instructor "0..1" -- "0..*" Cita : atiende
+  Instructor "0..1" -- "0..*" Rutina : crea
+  Instructor "0..1" -- "1" Especialidad : tiene
+
+  Membresia "0..*" -- "1..*" PlanMembresia : pertenece
+  Membresia "1" -- "0..*" HistorialMembresia : historial
+  Membresia "1" -- "0..*" Pago : genera
+
+  Rutina "1" -- "0..*" RutinaEjercicio : contiene
+  Ejercicio "1" -- "0..*" RutinaEjercicio : incluido
+
+  SesionGymbrot "1" -- "0..*" MensajeGymbrot : contiene
+}
+@enduml

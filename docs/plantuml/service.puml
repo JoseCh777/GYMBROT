@@ -1,0 +1,204 @@
+@startuml
+package org.gymbrot.service {
+  class AuthService {
+    + iniciarSesion(numeroIdentificacion: String, contrasena: String): int
+    + verificarHuella(template: byte[]): boolean
+    + registrarClienteProc(c: Cliente): int
+    + registrarInstructorProc(i: Instructor): int
+    + hashContrasena(contrasena: String): String
+  }
+
+  class AdministradorService {
+    + insertar(a: Administrador): int
+    + buscarPorId(id: int): Administrador
+    + listarTodos(): List<Administrador>
+    + actualizar(a: Administrador): boolean
+  }
+
+  class ClienteService {
+    + insertar(c: Cliente): int
+    + buscarPorId(id: int): Cliente
+    + listarTodos(): List<Cliente>
+    + actualizar(c: Cliente): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class InstructorService {
+    + insertar(i: Instructor): int
+    + buscarPorId(id: int): Instructor
+    + listarTodos(): List<Instructor>
+    + listarDisponibles(): List<Instructor>
+    + actualizar(i: Instructor): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class EspecialidadService {
+    + insertar(e: Especialidad): int
+    + buscarPorId(id: int): Especialidad
+    + listarTodas(): List<Especialidad>
+    + actualizar(e: Especialidad): boolean
+  }
+
+  class MembresiaService {
+    + insertar(m: Membresia): int
+    + buscarPorId(id: int): Membresia
+    + listarTodas(): List<Membresia>
+    + listarPorCliente(idCliente: int): List<Membresia>
+    + actualizar(m: Membresia): boolean
+    + desactivar(id: int): boolean
+    + renovarMembresiaProc(idCliente: int, idPlan: int, metodoPago: String): void
+  }
+
+  class MembresiaScheduler {
+    + iniciarProgramacion(): void
+    + detenerProgramacion(): void
+  }
+
+  class PlanMembresiaService {
+    + insertar(p: PlanMembresia): int
+    + buscarPorId(id: int): PlanMembresia
+    + listarTodos(): List<PlanMembresia>
+    + actualizar(p: PlanMembresia): boolean
+    + formatearPrecio(precio: double): String
+  }
+
+  class PagoService {
+    + insertar(p: Pago): int
+    + listarPorCliente(idCliente: int): List<Pago>
+    + listarTodos(): List<Pago>
+    + listarTodosConCliente(): List<PagoConCliente>
+  }
+
+  class CitaService {
+    + programarCita(c: Cita): int
+    + cancelarCita(idCita: int): void
+    + actualizarCita(c: Cita): boolean
+    + diaDisponible(fecha: Date, idInstructor: int): boolean
+    + horaDisponible(fecha: Date, hora: String, idInstructor: int): boolean
+  }
+
+  class EjercicioService {
+    + insertar(e: Ejercicio): int
+    + buscarPorId(id: int): Ejercicio
+    + listarTodos(): List<Ejercicio>
+    + actualizar(e: Ejercicio): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaService {
+    + insertar(r: Rutina): int
+    + buscarPorId(id: int): Rutina
+    + listarTodas(): List<Rutina>
+    + buscarPorInstructor(idInstructor: int): List<Rutina>
+    + actualizar(r: Rutina): boolean
+    + desactivar(id: int): boolean
+    + asignarEjercicios(idRutina: int, ejercicios: List<RutinaEjercicio>): void
+  }
+
+  class ProgresoService {
+    + registrarProgreso(p: Progreso): int
+    + listarPorCliente(idCliente: int): List<Progreso>
+  }
+
+  class RegistroIngresoService {
+    + registrarIngresoProc(r: RegistroIngreso): int
+    + registrarSalida(idCliente: int): void
+    + listarPorFecha(fecha: Date): List<RegistroIngreso>
+    + listarPorCliente(idCliente: int): List<RegistroIngreso>
+  }
+
+  class NotificacionService {
+    + crearNotificacion(n: Notificacion): int
+    + listarNoLeidas(idCliente: int): List<Notificacion>
+    + marcarLeida(idNotificacion: int): void
+  }
+
+  class FinanzasService {
+    + ingresosMesActual(): double
+    + ingresosPorMes(): List<Object[]>
+    + desgloseMetodoPago(): List<Object[]>
+    + nuevosClientesPorMes(): List<Object[]>
+    + ingresosPorPlan(): List<Object[]>
+    + pagosVencidos(): List<Pago>
+    + contarMiembrosActivos(): int
+    + cargarDemografia(): List<Object[]>
+  }
+
+  class DashboardService {
+    + contarMiembrosActivos(): int
+    + contarActivosHoy(): int
+    + ingresosMesActual(): double
+    + cargarDemografia(): List<Object[]>
+  }
+
+  class EmailService {
+    + enviarCorreo(destino: String, asunto: String, cuerpo: String): void
+  }
+
+  class SmsService {
+    + enviarSMS(destino: String, mensaje: String): void
+  }
+
+  class HuellaService {
+    {static} + getInstance(): HuellaService
+    + capturarTemplate(): byte[]
+    + verificarHuella(templates: List<byte[]>): boolean
+    + iniciarCaptura(): byte[]
+  }
+
+  class GroqService {
+    + consultarGroq(mensajes: List<MensajeChat>): String
+  }
+
+  class ChatbotService {
+    + procesarMensaje(idCliente: int, mensaje: String): String
+    + iniciarSesion(idCliente: int): void
+    + cerrarSesion(idCliente: int): void
+  }
+
+  class ConsultaGymbrotService {
+    + consultar(query: String): String
+  }
+
+  AuthService --> UsuarioDAO
+  AuthService --> ClienteDAO
+  AuthService --> InstructorDAO
+  AdministradorService --> AdministradorDAO
+  ClienteService --> ClienteDAO
+  InstructorService --> InstructorDAO
+  InstructorService --> EspecialidadDAO
+  EspecialidadService --> EspecialidadDAO
+  MembresiaService --> MembresiaDAO
+  MembresiaService --> HistorialMembresiaDAO
+  MembresiaScheduler --> MembresiaDAO
+  PlanMembresiaService --> PlanMembresiaDAO
+  PagoService --> PagoDAO
+  CitaService --> CitaDAO
+  EjercicioService --> EjercicioDAO
+  RutinaService --> RutinaDAO
+  RutinaService --> RutinaEjercicioDAO
+  ProgresoService --> ProgresoDAO
+  RegistroIngresoService --> RegistroIngresoDAO
+  NotificacionService --> NotificacionDAO
+  FinanzasService --> PagoDAO
+  FinanzasService --> MembresiaDAO
+  DashboardService --> PagoDAO
+  DashboardService --> MembresiaDAO
+  DashboardService --> RegistroIngresoDAO
+  GroqService --> SesionGymbrotDAO
+  GroqService --> MensajeGymbrotDAO
+  ChatbotService --> GroqService
+  ChatbotService --> ClienteService
+  ChatbotService --> CitaService
+  ChatbotService --> MembresiaService
+  ChatbotService --> RutinaService
+  ChatbotService --> ConsultaGymbrotService
+  ChatbotService --> SesionGymbrotDAO
+  ChatbotService --> MensajeGymbrotDAO
+  ConsultaGymbrotService --> ClienteDAO
+  ConsultaGymbrotService --> CitaDAO
+  ConsultaGymbrotService --> MembresiaDAO
+  ConsultaGymbrotService --> RutinaDAO
+  ConsultaGymbrotService --> ProgresoDAO
+}
+@enduml

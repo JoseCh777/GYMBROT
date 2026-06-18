@@ -1,0 +1,62 @@
+═══════════════════════════════════════════════════════════════════
+  UTIL — Utilidades transversales
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Clases de soporte usadas por multiples capas (Controller,
+    Service, DAO). Proveen funcionalidad comun: conexion a BD,
+    sesion de administrador, validacion de formularios, alertas
+    personalizadas, manejo de huella digital y contexto de chatbot.
+
+  Lista de utilidades (8)
+  ────────────────────────
+
+    DatabaseConnection.java
+      ── Singleton que gestiona la conexion JDBC a Oracle.
+          Lee GYMBROT_DB_URL / USER / PASS de variables de entorno.
+          Usado por: TODOS los DAOs.
+
+    SessionManager.java
+      ── Mantiene el Administrador autenticado en memoria.
+          Proporciona getAdminActual(), cerrarSesion(), estaAutenticado().
+          Usado por: Controllers (para saber quien esta logueado).
+
+    AlertaPersonalizada.java
+      ── Fabrica de dialogos modales (error, informacion, confirmacion)
+          con el tema oscuro del sistema.
+          Usado por: Controllers (para mostrar mensajes al usuario).
+
+    AlertaUtil.java
+      ── Utilidad adicional para alertas (posiblemente obsoleta
+          o en transicion, coexiste con AlertaPersonalizada).
+
+    ValidacionUtil.java
+      ── Metodos estaticos para validar campos comunes:
+          correo electronico, telefono, numero de identificacion, etc.
+          Usado por: Controllers (antes de enviar datos al Service).
+
+    Validador.java
+      ── Clase abstracta/base para validacion de formularios.
+          Complementa a ValidacionUtil con un enfoque orientado
+          a objetos.
+
+    HuellaUtil.java
+      ── Utilidad para gestionar la huella dactilar (BLOB).
+          Convierte entre arreglos de bytes y objetos de
+          DigitalPersona SDK.
+          Usado por: HuellaService, RegistroEntradaController.
+
+    ChatbotSession.java
+      ── Mantiene el contexto conversacional del chatbot Gymbro AI
+          para cada sesion activa de un cliente.
+          Usado por: ChatbotService.
+
+  ¿Como se comunican?
+  ───────────────────
+    No forman una capa jerarquica sino que son importadas
+    directamente por cualquier clase que las necesite:
+
+      DAO ─────importa──> DatabaseConnection
+      Controller ─importa──> SessionManager, AlertaPersonalizada, ValidacionUtil
+      Service ──importa──> HuellaUtil, ChatbotSession

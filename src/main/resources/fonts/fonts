@@ -1,1 +1,22 @@
-bfjfjgnkl
+═══════════════════════════════════════════════════════════════════
+  FONTS — Tipografias de la aplicacion
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Contiene las tipografias personalizadas usadas en la interfaz
+    de GYMBROT. Se cargan al inicio desde Main.java via
+    Font.loadFont().
+
+  Lista de fuentes (11):
+    Lexend-Black.ttf
+    Lexend-Bold.ttf
+    Lexend-ExtraBold.ttf
+    Lexend-Medium.ttf
+    Lexend-Regular.ttf
+    Lexend-SemiBold.ttf
+    Inter_24pt-Medium.ttf
+    Inter_24pt-Regular.ttf
+    Inter_24pt-SemiBold.ttf
+    SpaceGrotesk-Bold.ttf
+    SpaceGrotesk-Medium.ttf

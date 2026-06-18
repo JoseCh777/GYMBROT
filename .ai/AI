@@ -1,0 +1,13 @@
+═══════════════════════════════════════════════════════════════════
+  AI — Inteligencia Artificial / Chatbot
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Recursos relacionados con la inteligencia artificial del
+    chatbot Gymbro AI. Incluye prompts del sistema y configuracion
+    del Model Context Protocol (MCP).
+
+  Archivos:
+    prompts/        — Prompts del sistema para Gymbro AI
+    mcp/mcp.json    — Configuracion del Model Context Protocol

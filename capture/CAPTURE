@@ -1,0 +1,24 @@
+═══════════════════════════════════════════════════════════════════
+  CAPTURE — Capturador de huella dactilar (C#)
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Aplicacion .NET independiente que captura y verifica huellas
+    dactilares usando el SDK de DigitalPersona. Se comunica con
+    Java (HuellaService) via proceso externo (Runtime.exec),
+    intercambiando datos por stdin/stdout en base64.
+
+  Archivos:
+    CapturadorHuella.cs   — Codigo fuente C# (.NET Console App)
+    CapturadorHuella.exe  — Ejecutable compilado
+
+  Modos de operacion:
+    enroll   — Captura 4 muestras y genera un template base64
+    verify   — Lee templates desde stdin y verifica contra una
+               captura nueva; retorna MATCH:indice o NO_MATCH
+
+  Protocolo:
+    Todo el output de UI y errores va a stderr.
+    Solo el resultado (template base64 o MATCH/NO_MATCH)
+    se imprime en stdout para que Java lo lea.

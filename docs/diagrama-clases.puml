@@ -1,0 +1,874 @@
+@startuml
+title GYMBROT - Diagrama de Clases (Arquitectura Completa)
+
+package org.gymbrot.model {
+  class Usuario {
+    - numeroIdentificacion: String
+    - tipoIdentificacion: String
+    - nombre: String
+    - apellidos: String
+    - correo: String
+    - telefono: String
+    - contrasenaHash: String
+    - fotoUrl: String
+    - estado: String
+    - fechaRegistro: Date
+    - tipoUsuario: String
+  }
+
+  class Cliente {
+    - direccion: String
+    - fechaNacimiento: Date
+    - huellaDactilar: byte[]
+  }
+
+  class Instructor {
+    - idEspecialidad: int
+    - disponibilidad: String
+    - fechaContratacion: Date
+  }
+
+  class Administrador {
+    - rol: String
+  }
+
+  class Especialidad {
+    - idEspecialidad: int
+    - nombre: String
+    - descripcion: String
+  }
+
+  class Membresia {
+    - idMembresia: int
+    - idPlan: int
+    - tipoMembresia: String
+    - modalidadPago: String
+    - valor: double
+    - fechaInicio: Date
+    - fechaVencimiento: Date
+    - estado: String
+  }
+
+  class PlanMembresia {
+    - idPlan: int
+    - nombre: String
+    - descripcion: String
+    - precioMensual: double
+    - precioSemestral: double
+    - precioAnual: double
+    - beneficios: String
+    - duracionDias: int
+  }
+
+  class HistorialMembresia {
+    - idHistorial: int
+    - idCliente: int
+    - idMembresia: int
+    - fechaAsignacion: Date
+    - activa: boolean
+  }
+
+  class Pago {
+    - idPago: int
+    - idMembresia: int
+    - idCliente: int
+    - fechaPago: Date
+    - valor: double
+    - metodoPago: String
+    - estadoPago: String
+    - referenciaTransaccion: String
+    - observaciones: String
+  }
+
+  class Cita {
+    - idCita: int
+    - idCliente: int
+    - idInstructor: int
+    - fecha: Date
+    - hora: String
+    - tipoCita: String
+    - estado: String
+    - notas: String
+  }
+
+  class Ejercicio {
+    - idEjercicio: int
+    - nombre: String
+    - descripcion: String
+    - grupoMuscular: String
+    - nivel: String
+    - series: int
+    - repeticiones: int
+    - recursoUrl: String
+  }
+
+  class Rutina {
+    - idRutina: int
+    - nombre: String
+    - descripcion: String
+    - objetivo: String
+    - idInstructor: int
+    - idCliente: int
+    - fechaCreacion: Date
+    - fechaFin: Date
+    - diasSemana: String
+  }
+
+  class RutinaEjercicio {
+    - idRutina: int
+    - idEjercicio: int
+    - orden: int
+    - series: int
+    - repeticiones: int
+    - descanso: int
+    - notasInstructor: String
+  }
+
+  class Progreso {
+    - idProgreso: int
+    - idCliente: int
+    - fechaRegistro: Date
+    - peso: double
+    - altura: double
+    - imc: double
+    - porcentajeGrasa: double
+    - masaMuscular: double
+    - objetivo: String
+  }
+
+  class RegistroIngreso {
+    - idIngreso: int
+    - idCliente: int
+    - fecha: Date
+    - horaEntrada: String
+    - horaSalida: String
+    - metodoVerificacion: String
+    - estadoVerificacion: String
+  }
+
+  class Notificacion {
+    - idNotificacion: int
+    - idCliente: int
+    - tipo: String
+    - mensaje: String
+    - fechaEnvio: Date
+    - leida: boolean
+  }
+
+  class PlantillaMensaje {
+    - idPlantilla: int
+    - codigo: String
+    - asunto: String
+    - cuerpo: String
+    - variables: String
+  }
+
+  class SesionGymbrot {
+    - idSesion: int
+    - idCliente: int
+    - fechaInicio: Date
+    - fechaFin: Date
+    - activa: boolean
+  }
+
+  class MensajeGymbrot {
+    - idMensaje: int
+    - idSesion: int
+    - remitente: String
+    - contenido: String
+    - fechaEnvio: Date
+  }
+
+  Usuario <|-- Cliente
+  Usuario <|-- Instructor
+  Usuario <|-- Administrador
+
+  Cliente "1" -- "0..*" Membresia : posee
+  Cliente "1" -- "0..*" HistorialMembresia : tiene
+  Cliente "1" -- "0..*" Pago : realiza
+  Cliente "1" -- "0..*" Cita : agenda
+  Cliente "1" -- "0..*" Rutina : asigna
+  Cliente "1" -- "0..*" RegistroIngreso : registra
+  Cliente "1" -- "0..*" Progreso : registra
+  Cliente "1" -- "0..*" Notificacion : recibe
+  Cliente "1" -- "0..*" SesionGymbrot : inicia
+
+  Instructor "0..1" -- "0..*" Cita : atiende
+  Instructor "0..1" -- "0..*" Rutina : crea
+  Instructor "0..1" -- "1" Especialidad : tiene
+
+  Membresia "0..*" -- "1..*" PlanMembresia : pertenece
+  Membresia "1" -- "0..*" HistorialMembresia : historial
+  Membresia "1" -- "0..*" Pago : genera
+
+  Rutina "1" -- "0..*" RutinaEjercicio : contiene
+  Ejercicio "1" -- "0..*" RutinaEjercicio : incluido
+
+  SesionGymbrot "1" -- "0..*" MensajeGymbrot : contiene
+}
+
+package org.gymbrot.dao {
+  class UsuarioDAO {
+    + insertar(u: Usuario): int
+    + buscarPorId(id: int): Usuario
+    + buscarPorNombreOCorreo(termino: String): List
+    + listarTodos(): List
+    + actualizar(u: Usuario): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class ClienteDAO {
+    + insertar(c: Cliente): int
+    + buscarPorId(id: int): Cliente
+    + listarTodos(): List
+    + actualizar(c: Cliente): boolean
+    + desactivar(id: int): boolean
+    + registrarClienteProc(c: Cliente): int
+  }
+
+  class InstructorDAO {
+    + insertar(i: Instructor): int
+    + buscarPorId(id: int): Instructor
+    + listarTodos(): List
+    + listarDisponibles(): List
+    + actualizar(i: Instructor): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class AdministradorDAO {
+    + insertar(a: Administrador): int
+    + buscarPorId(id: int): Administrador
+    + listarTodos(): List
+    + actualizar(a: Administrador): boolean
+  }
+
+  class EspecialidadDAO {
+    + insertar(e: Especialidad): int
+    + buscarPorId(id: int): Especialidad
+    + listarTodas(): List
+    + actualizar(e: Especialidad): boolean
+  }
+
+  class MembresiaDAO {
+    + insertar(m: Membresia): int
+    + buscarPorId(id: int): Membresia
+    + listarTodas(): List
+    + listarPorCliente(idCliente: int): List
+    + insertarYRetornarId(m: Membresia): int
+    + actualizar(m: Membresia): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class PlanMembresiaDAO {
+    + insertar(p: PlanMembresia): int
+    + buscarPorId(id: int): PlanMembresia
+    + listarTodos(): List
+    + actualizar(p: PlanMembresia): boolean
+  }
+
+  class HistorialMembresiaDAO {
+    + insertar(h: HistorialMembresia): int
+    + buscarActiva(idCliente: int): HistorialMembresia
+    + listarPorCliente(idCliente: int): List
+    + desactivarPorCliente(idCliente: int): void
+  }
+
+  class PagoDAO {
+    + insertar(p: Pago): int
+    + listarPorCliente(idCliente: int): List
+    + listarTodos(): List
+    + listarTodosConCliente(): List
+  }
+
+  class CitaDAO {
+    + insertar(c: Cita): int
+    + insertarYRetornarId(c: Cita): int
+    + buscarPorId(id: int): Cita
+    + listarTodas(): List
+    + listarPorFecha(fecha: Date): List
+    + listarPorInstructor(idInstructor: int): List
+    + listarPorCliente(idCliente: int): List
+    + actualizar(c: Cita): boolean
+  }
+
+  class EjercicioDAO {
+    + insertar(e: Ejercicio): int
+    + buscarPorId(id: int): Ejercicio
+    + listarTodos(): List
+    + actualizar(e: Ejercicio): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaDAO {
+    + insertar(r: Rutina): int
+    + buscarPorId(id: int): Rutina
+    + listarTodas(): List
+    + buscarPorInstructor(idInstructor: int): List
+    + actualizar(r: Rutina): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaEjercicioDAO {
+    + insertar(re: RutinaEjercicio): int
+    + listarPorRutina(idRutina: int): List
+    + eliminarPorRutina(idRutina: int): void
+  }
+
+  class ProgresoDAO {
+    + insertar(p: Progreso): int
+    + listarPorCliente(idCliente: int): List
+    + desactivar(id: int): boolean
+  }
+
+  class RegistroIngresoDAO {
+    + insertar(r: RegistroIngreso): int
+    + registrarEntrada(r: RegistroIngreso): int
+    + registrarSalidaPorCliente(idCliente: int): void
+    + listarPorFecha(fecha: Date): List
+    + listarPorCliente(idCliente: int): List
+  }
+
+  class NotificacionDAO {
+    + insertar(n: Notificacion): int
+    + listarNoLeidas(idCliente: int): List
+    + marcarcomoLeida(idNotificacion: int): void
+  }
+
+  class PlantillaMensajeDAO {
+    + insertar(p: PlantillaMensaje): int
+    + buscarPorCodigo(codigo: String): PlantillaMensaje
+    + listarTodas(): List
+    + actualizar(p: PlantillaMensaje): boolean
+  }
+
+  class MensajeGymbrotDAO {
+    + insertar(m: MensajeGymbrot): int
+    + listarPorSesion(idSesion: int): List
+  }
+
+  class SesionGymbrotDAO {
+    + insertar(s: SesionGymbrot): int
+    + buscarActiva(idCliente: int): SesionGymbrot
+    + cerrarSesion(idSesion: int): void
+  }
+
+  UsuarioDAO --> DatabaseConnection
+  ClienteDAO --> DatabaseConnection
+  InstructorDAO --> DatabaseConnection
+  AdministradorDAO --> DatabaseConnection
+  EspecialidadDAO --> DatabaseConnection
+  MembresiaDAO --> DatabaseConnection
+  PlanMembresiaDAO --> DatabaseConnection
+  HistorialMembresiaDAO --> DatabaseConnection
+  PagoDAO --> DatabaseConnection
+  CitaDAO --> DatabaseConnection
+  EjercicioDAO --> DatabaseConnection
+  RutinaDAO --> DatabaseConnection
+  RutinaEjercicioDAO --> DatabaseConnection
+  ProgresoDAO --> DatabaseConnection
+  RegistroIngresoDAO --> DatabaseConnection
+  NotificacionDAO --> DatabaseConnection
+  PlantillaMensajeDAO --> DatabaseConnection
+  MensajeGymbrotDAO --> DatabaseConnection
+  SesionGymbrotDAO --> DatabaseConnection
+}
+
+package org.gymbrot.service {
+  class AuthService {
+    + iniciarSesion(numeroIdentificacion: String, contrasena: String): int
+    + verificarHuella(template: byte[]): boolean
+    + registrarClienteProc(c: Cliente): int
+    + registrarInstructorProc(i: Instructor): int
+    + hashContrasena(contrasena: String): String
+  }
+
+  class AdministradorService {
+    + insertar(a: Administrador): int
+    + buscarPorId(id: int): Administrador
+    + listarTodos(): List
+    + actualizar(a: Administrador): boolean
+  }
+
+  class ClienteService {
+    + insertar(c: Cliente): int
+    + buscarPorId(id: int): Cliente
+    + listarTodos(): List
+    + actualizar(c: Cliente): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class InstructorService {
+    + insertar(i: Instructor): int
+    + buscarPorId(id: int): Instructor
+    + listarTodos(): List
+    + listarDisponibles(): List
+    + actualizar(i: Instructor): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class EspecialidadService {
+    + insertar(e: Especialidad): int
+    + buscarPorId(id: int): Especialidad
+    + listarTodas(): List
+    + actualizar(e: Especialidad): boolean
+  }
+
+  class MembresiaService {
+    + insertar(m: Membresia): int
+    + buscarPorId(id: int): Membresia
+    + listarTodas(): List
+    + listarPorCliente(idCliente: int): List
+    + actualizar(m: Membresia): boolean
+    + desactivar(id: int): boolean
+    + renovarMembresiaProc(idCliente: int, idPlan: int, metodoPago: String): void
+  }
+
+  class MembresiaScheduler {
+    + iniciarProgramacion(): void
+    + detenerProgramacion(): void
+  }
+
+  class PlanMembresiaService {
+    + insertar(p: PlanMembresia): int
+    + buscarPorId(id: int): PlanMembresia
+    + listarTodos(): List
+    + actualizar(p: PlanMembresia): boolean
+    + formatearPrecio(precio: double): String
+  }
+
+  class PagoService {
+    + insertar(p: Pago): int
+    + listarPorCliente(idCliente: int): List
+    + listarTodos(): List
+    + listarTodosConCliente(): List
+  }
+
+  class CitaService {
+    + programarCita(c: Cita): int
+    + cancelarCita(idCita: int): void
+    + actualizarCita(c: Cita): boolean
+    + diaDisponible(fecha: Date, idInstructor: int): boolean
+    + horaDisponible(fecha: Date, hora: String, idInstructor: int): boolean
+  }
+
+  class EjercicioService {
+    + insertar(e: Ejercicio): int
+    + buscarPorId(id: int): Ejercicio
+    + listarTodos(): List
+    + actualizar(e: Ejercicio): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaService {
+    + insertar(r: Rutina): int
+    + buscarPorId(id: int): Rutina
+    + listarTodas(): List
+    + buscarPorInstructor(idInstructor: int): List
+    + actualizar(r: Rutina): boolean
+    + desactivar(id: int): boolean
+    + asignarEjercicios(idRutina: int, ejercicios: List): void
+  }
+
+  class ProgresoService {
+    + registrarProgreso(p: Progreso): int
+    + listarPorCliente(idCliente: int): List
+  }
+
+  class RegistroIngresoService {
+    + registrarIngresoProc(r: RegistroIngreso): int
+    + registrarSalida(idCliente: int): void
+    + listarPorFecha(fecha: Date): List
+    + listarPorCliente(idCliente: int): List
+  }
+
+  class NotificacionService {
+    + crearNotificacion(n: Notificacion): int
+    + listarNoLeidas(idCliente: int): List
+    + marcarLeida(idNotificacion: int): void
+  }
+
+  class FinanzasService {
+    + ingresosMesActual(): double
+    + ingresosPorMes(): List
+    + desgloseMetodoPago(): List
+    + nuevosClientesPorMes(): List
+    + ingresosPorPlan(): List
+    + pagosVencidos(): List
+    + contarMiembrosActivos(): int
+    + cargarDemografia(): List
+  }
+
+  class DashboardService {
+    + contarMiembrosActivos(): int
+    + contarActivosHoy(): int
+    + ingresosMesActual(): double
+    + cargarDemografia(): List
+  }
+
+  class EmailService {
+    + enviarCorreo(destino: String, asunto: String, cuerpo: String): void
+  }
+
+  class SmsService {
+    + enviarSMS(destino: String, mensaje: String): void
+  }
+
+  class HuellaService {
+    {static} + getInstance(): HuellaService
+    + capturarTemplate(): byte[]
+    + verificarHuella(templates: byte[][]): boolean
+    + iniciarCaptura(): byte[]
+  }
+
+  class GroqService {
+    + consultarGroq(mensajes: List): String
+  }
+
+  class ChatbotService {
+    + procesarMensaje(idCliente: int, mensaje: String): String
+    + iniciarSesion(idCliente: int): void
+    + cerrarSesion(idCliente: int): void
+  }
+
+  class ConsultaGymbrotService {
+    + consultar(query: String): String
+  }
+
+  AuthService --> UsuarioDAO
+  AuthService --> ClienteDAO
+  AuthService --> InstructorDAO
+  AdministradorService --> AdministradorDAO
+  ClienteService --> ClienteDAO
+  InstructorService --> InstructorDAO
+  InstructorService --> EspecialidadDAO
+  EspecialidadService --> EspecialidadDAO
+  MembresiaService --> MembresiaDAO
+  MembresiaService --> HistorialMembresiaDAO
+  MembresiaScheduler --> MembresiaDAO
+  PlanMembresiaService --> PlanMembresiaDAO
+  PagoService --> PagoDAO
+  CitaService --> CitaDAO
+  EjercicioService --> EjercicioDAO
+  RutinaService --> RutinaDAO
+  RutinaService --> RutinaEjercicioDAO
+  ProgresoService --> ProgresoDAO
+  RegistroIngresoService --> RegistroIngresoDAO
+  NotificacionService --> NotificacionDAO
+  FinanzasService --> PagoDAO
+  FinanzasService --> MembresiaDAO
+  DashboardService --> PagoDAO
+  DashboardService --> MembresiaDAO
+  DashboardService --> RegistroIngresoDAO
+  GroqService --> SesionGymbrotDAO
+  GroqService --> MensajeGymbrotDAO
+  ChatbotService --> GroqService
+  ChatbotService --> ClienteService
+  ChatbotService --> CitaService
+  ChatbotService --> MembresiaService
+  ChatbotService --> RutinaService
+  ChatbotService --> ConsultaGymbrotService
+  ChatbotService --> SesionGymbrotDAO
+  ChatbotService --> MensajeGymbrotDAO
+  ConsultaGymbrotService --> ClienteDAO
+  ConsultaGymbrotService --> CitaDAO
+  ConsultaGymbrotService --> MembresiaDAO
+  ConsultaGymbrotService --> RutinaDAO
+  ConsultaGymbrotService --> ProgresoDAO
+}
+
+package org.gymbrot.controller {
+  class loginController {
+    + iniciarSesion(): void
+    + iniciarSesionHuella(): void
+    - irDashboard(): void
+  }
+
+  class TitleBarController {
+    + cerrarVentana(): void
+    + minimizarVentana(): void
+    + maximizarVentana(): void
+    - onMousePressed(MouseEvent): void
+    - onMouseDragged(MouseEvent): void
+  }
+
+  class DashboardController {
+    + initialize(): void
+    + cargarDashboard(): void
+    + irGestionClientes(): void
+    + irGestionInstructores(): void
+    + irGestionMembresias(): void
+    + irFinanzas(): void
+    + irGymbroAI(): void
+    + irProgreso(): void
+    + irGestionCitas(): void
+  }
+
+  class GestionClientesController {
+    + initialize(): void
+    + buscarCliente(): void
+    + abrirNuevoCliente(): void
+    + abrirPerfilCliente(): void
+    + paginarClientes(): void
+  }
+
+  class GestionInstructoresController {
+    + initialize(): void
+    + buscarInstructor(): void
+    + abrirNuevoInstructor(): void
+    + abrirPerfilInstructor(): void
+    + paginarInstructores(): void
+  }
+
+  class GestionMembresiasController {
+    + initialize(): void
+    + buscarMembresia(): void
+    + abrirPagoMembresia(): void
+    + paginarMembresias(): void
+  }
+
+  class GestionCitasController {
+    + initialize(): void
+    + buscarCita(): void
+    + abrirNuevaCita(): void
+    + abrirPerfilCita(): void
+    + cancelarCita(): void
+    + paginarCitas(): void
+  }
+
+  class NuevoClienteController {
+    + initialize(): void
+    + guardarCliente(): void
+    + capturarHuella(): void
+    + cancelar(): void
+  }
+
+  class NuevoInstructorController {
+    + initialize(): void
+    + guardarInstructor(): void
+    + cancelar(): void
+  }
+
+  class NuevaRutinaController {
+    + initialize(): void
+    + guardarRutina(): void
+    + agregarEjercicio(): void
+    + cancelar(): void
+  }
+
+  class NuevaCitaController {
+    + initialize(): void
+    + verificarDisponibilidad(): void
+    + agendarCita(): void
+    + cancelar(): void
+  }
+
+  class NuevoEjercicioController {
+    + initialize(): void
+    + guardarEjercicio(): void
+    + cancelar(): void
+  }
+
+  class PerfilClienteController {
+    + initialize(): void
+    + cargarDatosCliente(): void
+    + cargarHistorialMembresias(): void
+    + cargarIngresos(): void
+  }
+
+  class PerfilInstructorController {
+    + initialize(): void
+    + cargarDatosInstructor(): void
+  }
+
+  class PerfilCitaController {
+    + initialize(): void
+    + cargarDatosCita(): void
+    + cancelarCita(): void
+  }
+
+  class PagoMembresiaController {
+    + initialize(): void
+    + procesarPago(): void
+    + seleccionarPlan(): void
+    + cancelar(): void
+  }
+
+  class ProgresoFisicoController {
+    + initialize(): void
+    + buscarProgreso(): void
+    + registrarProgreso(): void
+    + graficarProgreso(): void
+  }
+
+  class RegistroEntradaController {
+    + initialize(): void
+    + verificarHuella(): void
+    + registrarEntrada(): void
+    + registrarSalida(): void
+  }
+
+  class DirectorioRutinasController {
+    + initialize(): void
+    + verRutina(): void
+    + abrirNuevaRutina(): void
+    + paginarRutinas(): void
+  }
+
+  class DirectorioEjerciciosController {
+    + initialize(): void
+    + buscarEjercicio(): void
+    + abrirNuevoEjercicio(): void
+    + paginarEjercicios(): void
+  }
+
+  class GymbroAIController {
+    + initialize(): void
+    + enviarMensaje(): void
+    + limpiarChat(): void
+  }
+
+  class FinanzasController {
+    + initialize(): void
+    + cargarIngresos(): void
+    + cargarDesglosePagos(): void
+    + cargarClientesNuevos(): void
+    + cargarIngresosPorPlan(): void
+  }
+
+  class ChatbotController {
+    + iniciarChat(idCliente: int): void
+    + procesarEntrada(mensaje: String): String
+  }
+
+  loginController --> AuthService
+  loginController --> HuellaService
+  loginController --> UsuarioDAO
+  DashboardController --> DashboardService
+  DashboardController --> RegistroIngresoDAO
+  GestionClientesController --> ClienteDAO
+  GestionClientesController --> RegistroIngresoDAO
+  GestionClientesController --> HistorialMembresiaDAO
+  GestionInstructoresController --> InstructorDAO
+  GestionInstructoresController --> EspecialidadDAO
+  GestionInstructoresController --> RutinaDAO
+  GestionInstructoresController --> CitaDAO
+  GestionMembresiasController --> PlanMembresiaDAO
+  GestionCitasController --> CitaService
+  GestionCitasController --> CitaDAO
+  GestionCitasController --> ClienteDAO
+  GestionCitasController --> InstructorDAO
+  NuevoClienteController --> AuthService
+  NuevoClienteController --> HuellaService
+  NuevoClienteController --> ClienteDAO
+  NuevoClienteController --> UsuarioDAO
+  NuevoInstructorController --> InstructorService
+  NuevoInstructorController --> EspecialidadDAO
+  NuevoInstructorController --> InstructorDAO
+  NuevoInstructorController --> UsuarioDAO
+  NuevaRutinaController --> RutinaDAO
+  NuevaRutinaController --> InstructorDAO
+  NuevaRutinaController --> ClienteDAO
+  NuevaRutinaController --> EjercicioDAO
+  NuevaCitaController --> CitaService
+  NuevaCitaController --> ClienteDAO
+  NuevaCitaController --> InstructorDAO
+  NuevaCitaController --> HistorialMembresiaDAO
+  NuevoEjercicioController --> EjercicioDAO
+  PerfilClienteController --> ClienteDAO
+  PerfilClienteController --> HistorialMembresiaDAO
+  PerfilClienteController --> MembresiaDAO
+  PerfilClienteController --> RegistroIngresoDAO
+  PerfilInstructorController --> InstructorDAO
+  PerfilInstructorController --> EspecialidadDAO
+  PerfilCitaController --> CitaDAO
+  PerfilCitaController --> ClienteDAO
+  PerfilCitaController --> InstructorDAO
+  PagoMembresiaController --> ClienteDAO
+  PagoMembresiaController --> MembresiaDAO
+  PagoMembresiaController --> HistorialMembresiaDAO
+  PagoMembresiaController --> PagoDAO
+  ProgresoFisicoController --> ProgresoService
+  ProgresoFisicoController --> ProgresoDAO
+  ProgresoFisicoController --> ClienteDAO
+  RegistroEntradaController --> HuellaService
+  RegistroEntradaController --> RegistroIngresoDAO
+  RegistroEntradaController --> ClienteDAO
+  RegistroEntradaController --> HistorialMembresiaDAO
+  DirectorioRutinasController --> RutinaDAO
+  DirectorioRutinasController --> InstructorDAO
+  DirectorioRutinasController --> RutinaEjercicioDAO
+  DirectorioEjerciciosController --> EjercicioDAO
+  GymbroAIController --> ChatbotService
+  GymbroAIController --> ChatbotSession
+  FinanzasController --> FinanzasService
+  FinanzasController --> PagoDAO
+  ChatbotController --> ChatbotService
+}
+
+package org.gymbrot.util {
+  class DatabaseConnection {
+    {static} - instancia: DatabaseConnection
+    - conexion: Connection
+    {static} + getInstance(): DatabaseConnection
+    + getConnection(): Connection
+  }
+
+  class SessionManager {
+    {static} - instancia: SessionManager
+    - idAdminActual: int
+    {static} + getInstance(): SessionManager
+    + getIdAdminActual(): int
+    + setIdAdminActual(id: int): void
+  }
+
+  class ChatbotSession {
+    {static} - instancia: ChatbotSession
+    - idSesionActual: int
+    - idClienteActual: int
+    {static} + getInstance(): ChatbotSession
+    + getIdSesion(): int
+    + setIdSesion(id: int): void
+    + getIdCliente(): int
+    + setIdCliente(id: int): void
+    + limpiar(): void
+  }
+
+  class HuellaUtil {
+    {static} + templateToBytes(template: DPFPTemplate): byte[]
+  }
+
+  class Validador {
+    {static} + esCorreoValido(correo: String): boolean
+    {static} + esTelefonoValido(telefono: String): boolean
+    {static} + esIdentificacionValida(id: String): boolean
+    {static} + esFechaValida(fecha: String): boolean
+    {static} + campoVacio(valor: String): boolean
+  }
+
+  class ValidacionUtil {
+    {static} + soloNumeros(maxLength: int): TextFormatter
+    {static} + soloDecimales(maxLength: int): TextFormatter
+    {static} + soloLetras(maxLength: int): TextFormatter
+    {static} + soloLetrasYNumeros(maxLength: int): TextFormatter
+    {static} + conLongitudMaxima(maxLength: int): TextFormatter
+  }
+
+  class AlertaUtil {
+    {static} + mostrarError(mensaje: String): void
+    {static} + mostrarInfo(mensaje: String): void
+    {static} + mostrarAdvertencia(mensaje: String): void
+    {static} + mostrarConfirmacion(mensaje: String): boolean
+  }
+
+  class AlertaPersonalizada {
+    + AlertaPersonalizada(titulo: String, mensaje: String, tipo: TipoAlerta)
+    + mostrar(): void
+    + mostrarConAnimacion(): void
+  }
+
+  class SessionGymbrot {
+    - idSesion: int
+    - idCliente: int
+  }
+}
+@enduml

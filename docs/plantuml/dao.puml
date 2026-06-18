@@ -1,0 +1,169 @@
+@startuml
+package org.gymbrot.dao {
+  ' DatabaseConnection definido en util.puml
+
+  class UsuarioDAO {
+    + insertar(u: Usuario): int
+    + buscarPorId(id: int): Usuario
+    + buscarPorNombreOCorreo(termino: String): List<Usuario>
+    + listarTodos(): List<Usuario>
+    + actualizar(u: Usuario): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class ClienteDAO {
+    + insertar(c: Cliente): int
+    + buscarPorId(id: int): Cliente
+    + listarTodos(): List<Cliente>
+    + actualizar(c: Cliente): boolean
+    + desactivar(id: int): boolean
+    + registrarClienteProc(c: Cliente): int
+  }
+
+  class InstructorDAO {
+    + insertar(i: Instructor): int
+    + buscarPorId(id: int): Instructor
+    + listarTodos(): List<Instructor>
+    + listarDisponibles(): List<Instructor>
+    + actualizar(i: Instructor): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class AdministradorDAO {
+    + insertar(a: Administrador): int
+    + buscarPorId(id: int): Administrador
+    + listarTodos(): List<Administrador>
+    + actualizar(a: Administrador): boolean
+  }
+
+  class EspecialidadDAO {
+    + insertar(e: Especialidad): int
+    + buscarPorId(id: int): Especialidad
+    + listarTodas(): List<Especialidad>
+    + actualizar(e: Especialidad): boolean
+  }
+
+  class MembresiaDAO {
+    + insertar(m: Membresia): int
+    + buscarPorId(id: int): Membresia
+    + listarTodas(): List<Membresia>
+    + listarPorCliente(idCliente: int): List<Membresia>
+    + insertarYRetornarId(m: Membresia): int
+    + actualizar(m: Membresia): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class PlanMembresiaDAO {
+    + insertar(p: PlanMembresia): int
+    + buscarPorId(id: int): PlanMembresia
+    + listarTodos(): List<PlanMembresia>
+    + actualizar(p: PlanMembresia): boolean
+  }
+
+  class HistorialMembresiaDAO {
+    + insertar(h: HistorialMembresia): int
+    + buscarActiva(idCliente: int): HistorialMembresia
+    + listarPorCliente(idCliente: int): List<HistorialMembresia>
+    + desactivarPorCliente(idCliente: int): void
+  }
+
+  class PagoDAO {
+    + insertar(p: Pago): int
+    + listarPorCliente(idCliente: int): List<Pago>
+    + listarTodos(): List<Pago>
+    + listarTodosConCliente(): List<PagoConCliente>
+  }
+
+  class CitaDAO {
+    + insertar(c: Cita): int
+    + insertarYRetornarId(c: Cita): int
+    + buscarPorId(id: int): Cita
+    + listarTodas(): List<Cita>
+    + listarPorFecha(fecha: Date): List<Cita>
+    + listarPorInstructor(idInstructor: int): List<Cita>
+    + listarPorCliente(idCliente: int): List<Cita>
+    + actualizar(c: Cita): boolean
+  }
+
+  class EjercicioDAO {
+    + insertar(e: Ejercicio): int
+    + buscarPorId(id: int): Ejercicio
+    + listarTodos(): List<Ejercicio>
+    + actualizar(e: Ejercicio): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaDAO {
+    + insertar(r: Rutina): int
+    + buscarPorId(id: int): Rutina
+    + listarTodas(): List<Rutina>
+    + buscarPorInstructor(idInstructor: int): List<Rutina>
+    + actualizar(r: Rutina): boolean
+    + desactivar(id: int): boolean
+  }
+
+  class RutinaEjercicioDAO {
+    + insertar(re: RutinaEjercicio): int
+    + listarPorRutina(idRutina: int): List<RutinaEjercicio>
+    + eliminarPorRutina(idRutina: int): void
+  }
+
+  class ProgresoDAO {
+    + insertar(p: Progreso): int
+    + listarPorCliente(idCliente: int): List<Progreso>
+    + desactivar(id: int): boolean
+  }
+
+  class RegistroIngresoDAO {
+    + insertar(r: RegistroIngreso): int
+    + registrarEntrada(r: RegistroIngreso): int
+    + registrarSalidaPorCliente(idCliente: int): void
+    + listarPorFecha(fecha: Date): List<RegistroIngreso>
+    + listarPorCliente(idCliente: int): List<RegistroIngreso>
+  }
+
+  class NotificacionDAO {
+    + insertar(n: Notificacion): int
+    + listarNoLeidas(idCliente: int): List<Notificacion>
+    + marcarcomoLeida(idNotificacion: int): void
+  }
+
+  class PlantillaMensajeDAO {
+    + insertar(p: PlantillaMensaje): int
+    + buscarPorCodigo(codigo: String): PlantillaMensaje
+    + listarTodas(): List<PlantillaMensaje>
+    + actualizar(p: PlantillaMensaje): boolean
+  }
+
+  class MensajeGymbrotDAO {
+    + insertar(m: MensajeGymbrot): int
+    + listarPorSesion(idSesion: int): List<MensajeGymbrot>
+  }
+
+  class SesionGymbrotDAO {
+    + insertar(s: SesionGymbrot): int
+    + buscarActiva(idCliente: int): SesionGymbrot
+    + cerrarSesion(idSesion: int): void
+  }
+
+  UsuarioDAO --> DatabaseConnection
+  ClienteDAO --> DatabaseConnection
+  InstructorDAO --> DatabaseConnection
+  AdministradorDAO --> DatabaseConnection
+  EspecialidadDAO --> DatabaseConnection
+  MembresiaDAO --> DatabaseConnection
+  PlanMembresiaDAO --> DatabaseConnection
+  HistorialMembresiaDAO --> DatabaseConnection
+  PagoDAO --> DatabaseConnection
+  CitaDAO --> DatabaseConnection
+  EjercicioDAO --> DatabaseConnection
+  RutinaDAO --> DatabaseConnection
+  RutinaEjercicioDAO --> DatabaseConnection
+  ProgresoDAO --> DatabaseConnection
+  RegistroIngresoDAO --> DatabaseConnection
+  NotificacionDAO --> DatabaseConnection
+  PlantillaMensajeDAO --> DatabaseConnection
+  MensajeGymbrotDAO --> DatabaseConnection
+  SesionGymbrotDAO --> DatabaseConnection
+}
+@enduml

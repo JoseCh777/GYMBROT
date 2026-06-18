@@ -1,0 +1,21 @@
+═══════════════════════════════════════════════════════════════════
+  LIBS — Dependencias externas (JARs)
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Contiene las librerias externas en formato JAR que no estan
+    disponibles en Maven Central y deben incluirse manualmente
+    como dependencias de sistema en pom.xml.
+
+  Lista de JARs (5):
+    ojdbc11.jar              — Driver JDBC para Oracle Database
+                               (version 23.6, system scope)
+    dpotapi.jar              — DigitalPersona API de captura
+                               de huella (version 1.6.1)
+    dpotjni.jar              — DigitalPersona binding nativo JNI
+                               (version 1.6.1)
+    dpfpenrollment.jar       — DigitalPersona registro de huellas
+                               (version 1.6.1)
+    dpfpverification.jar     — DigitalPersona verificacion 1:1
+                               (version 1.6.1)

@@ -1,1 +1,46 @@
-DHVZHVDHDJK
+═══════════════════════════════════════════════════════════════════
+  SERVICE — Logica de negocio
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Capa intermedia que contiene la logica de negocio de la
+    aplicacion. Orquesta llamadas a uno o multiples DAOs, aplica
+    reglas de validacion, transforma datos, y expone metodos
+    limpios al Controller. Los Services tambien orquestan
+    servicios externos (Groq AI, Twilio SMS, JavaMail).
+
+  Lista de Services (20):
+    AuthService, ClienteService, InstructorService,
+    MembresiaService, PlanMembresiaService, PagoService,
+    CitaService, RutinaService, EjercicioService,
+    ProgresoService, DashboardService, FinanzasService,
+    RegistroIngresoService, NotificacionService,
+    EmailService, SmsService, HuellaService,
+    GroqService, ChatbotService, ConsultaGymbrotService,
+    EspecialidadService, AdministradorService,
+    MembresiaScheduler
+
+  ¿Como se comunica?
+  ──────────────────
+    Controller ──llama──> Service.metodo() ──llama──> DAO(s)
+                                                          │
+                    Service <──── result <──── DAO(s)─────┘
+                        │
+                    Controller <── MODEL / DTO / primitivo
+
+    - El Controller JAMAS llama a un DAO directamente.
+    - El Service puede combinar datos de multiples DAOs.
+    - El Service puede invocar APIs externas (Groq, Twilio, Gmail).
+
+  Casos especiales
+  ────────────────
+    MembresiaScheduler: se ejecuta en background al iniciar la app
+      y actualiza automaticamente membresias vencidas cada 24h.
+
+    HuellaService: singleton que gestiona el ciclo de vida del
+      lector DigitalPersona U.are.U (iniciar, escanear, verificar).
+      Se comunica con el Controller via StatusListener (callback).
+
+    GroqService: llama a la API REST de Groq (LLM) usando Jackson
+      para JSON. Usado por GymbroAIController via ChatbotService.

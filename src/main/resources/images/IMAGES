@@ -1,1 +1,31 @@
-LSKNJNSLKSLK
+═══════════════════════════════════════════════════════════════════
+  IMAGES — Iconos y recursos graficos
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Iconos y recursos visuales usados en la interfaz de GYMBROT.
+    Incluye iconos para navegacion (dashboard, clientes, instructores,
+    membresias, finanzas, etc.), botones de accion (guardar, agregar,
+    lupa) y logotipos.
+
+  Lista de recursos (29):
+    Logo.png, Logo_Login.png             — Logotipos de la aplicacion
+    dashboard.png, dashboard_white.png   — Navegacion: Dashboard
+    group.png, group_white.png           — Navegacion: Clientes
+    instructor.png, instructor_white.png — Navegacion: Instructores
+    membresias.png, membresias_white.png — Navegacion: Membresias
+    calendario.png, calendario_white.png — Navegacion: Citas
+    crecimiento.png, crecimiento_white.png — Navegacion: Progreso
+    muscle.png, muscle_white.png         — Navegacion: Ejercicios
+    bot.png, bot_white.png               — Navegacion: Gymbro AI
+    add.png                              — Boton agregar
+    agregar_cita.png                     — Boton nueva cita
+    boton-mas.png                        — Boton mas opciones
+    guardar.png                          — Boton guardar
+    lupa.png                             — Busqueda
+    papel.png                            — Accion papel/documento
+    huella-dactilar.png                  — Biometria
+    huella_salida.png                    — Salida biometrica
+    ejercicios-de-estiramiento.png       — Icono ejercicios
+    rutina-de-ejercicio.png              — Icono rutinas

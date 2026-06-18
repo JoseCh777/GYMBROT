@@ -1,0 +1,68 @@
+@startuml
+package org.gymbrot.util {
+  class DatabaseConnection {
+    {static} - instancia: DatabaseConnection
+    - conexion: Connection
+    {static} + getInstance(): DatabaseConnection
+    + getConnection(): Connection
+  }
+
+  class SessionManager {
+    {static} - instancia: SessionManager
+    - idAdminActual: int
+    {static} + getInstance(): SessionManager
+    + getIdAdminActual(): int
+    + setIdAdminActual(id: int): void
+  }
+
+  class ChatbotSession {
+    {static} - instancia: ChatbotSession
+    - idSesionActual: int
+    - idClienteActual: int
+    {static} + getInstance(): ChatbotSession
+    + getIdSesion(): int
+    + setIdSesion(id: int): void
+    + getIdCliente(): int
+    + setIdCliente(id: int): void
+    + limpiar(): void
+  }
+
+  class HuellaUtil {
+    {static} + templateToBytes(template: DPFPTemplate): byte[]
+  }
+
+  class Validador {
+    {static} + esCorreoValido(correo: String): boolean
+    {static} + esTelefonoValido(telefono: String): boolean
+    {static} + esIdentificacionValida(id: String): boolean
+    {static} + esFechaValida(fecha: String): boolean
+    {static} + campoVacio(valor: String): boolean
+  }
+
+  class ValidacionUtil {
+    {static} + soloNumeros(maxLength: int): TextFormatter
+    {static} + soloDecimales(maxLength: int): TextFormatter
+    {static} + soloLetras(maxLength: int): TextFormatter
+    {static} + soloLetrasYNumeros(maxLength: int): TextFormatter
+    {static} + conLongitudMaxima(maxLength: int): TextFormatter
+  }
+
+  class AlertaUtil {
+    {static} + mostrarError(mensaje: String): void
+    {static} + mostrarInfo(mensaje: String): void
+    {static} + mostrarAdvertencia(mensaje: String): void
+    {static} + mostrarConfirmacion(mensaje: String): boolean
+  }
+
+  class AlertaPersonalizada {
+    + AlertaPersonalizada(titulo: String, mensaje: String, tipo: TipoAlerta)
+    + mostrar(): void
+    + mostrarConAnimacion(): void
+  }
+
+  class SessionGymbrot {
+    - idSesion: int
+    - idCliente: int
+  }
+}
+@enduml

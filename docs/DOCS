@@ -1,0 +1,26 @@
+═══════════════════════════════════════════════════════════════════
+  DOCS — Documentacion arquitectonica del proyecto
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Contiene los diagramas de clases (PlantUML y Mermaid) que
+    documentan la arquitectura completa del sistema GYMBROT:
+    modelos, DAOs, servicios, controladores y utilidades, asi
+    como sus relaciones entre capas.
+
+  Archivos principales
+  ────────────────────
+    diagrama-clases.puml   — Diagrama PlantUML completo (5 capas
+                              en un solo archivo). Copiar y pegar
+                              en https://plantuml.com para visualizar.
+    DIAGRAMA_CLASES.md     — 5 diagramas Mermaid separados por capa.
+                              Renderiza automaticamente en GitHub,
+                              GitLab o en https://mermaid.live.
+
+  plantuml/
+    modelos.puml           — 19 clases del dominio + herencia Usuario
+    dao.puml               — 19 DAOs con metodos hacia DatabaseConnection
+    service.puml           — 22 servicios y sus dependencias a DAOs
+    controller.puml        — 24 controladores y dependencias a servicios
+    util.puml              — 9 utilidades transversales

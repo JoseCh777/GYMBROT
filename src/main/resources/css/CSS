@@ -1,0 +1,27 @@
+═══════════════════════════════════════════════════════════════════
+  CSS — Hoja de estilos global
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Define la apariencia visual de toda la aplicacion GYMBROT
+    mediante una hoja de estilos CSS unica con tema oscuro
+    personalizado. Se aplica globalmente desde Main.java.
+
+  Archivos:
+    gymbrot.css   — 565 lineas con tema oscuro
+
+  Paleta de colores:
+    --primary:   #D4FF00   (acento lima)
+    --surface:   #111316   (fondo raiz)
+    --surface-2: #1a1d21   (tarjetas y paneles)
+    --surface-4: #282a2d   (encabezados de tabla)
+    --border:    #1f2125   (bordes)
+    --text-main: #e2e2e6   (texto principal)
+    --text-muted:#6b7280   (texto secundario)
+    --error:     #ffb4ab   (errores)
+
+  Componentes estilizados:
+    .btn-secondary, TableView (header/rows/selection),
+    ScrollBar, ComboBox, DatePicker (popup calendario),
+    ProgressBar, TextField, Tooltip, DialogPane

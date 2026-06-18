@@ -1,1 +1,53 @@
-SLKNLKSLS
+═══════════════════════════════════════════════════════════════════
+  FXML — Capa de vista (layout / UI)
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Define la estructura visual de cada pantalla usando el formato
+    FXML de JavaFX. Cada archivo describe la jerarquia de
+    componentes (VBox, HBox, Label, Button, TableView, Chart, etc.)
+    y sus propiedades CSS. NO contiene logica de negocio.
+
+  Lista de FXMLs (23):
+    TitleBar.fxml          — Barra superior personalizada (drag, minimizar, cerrar)
+    login.fxml             — Pantalla de inicio de sesion
+    Dashboard.fxml         — Panel principal con metricas y graficas
+    GestionClientes.fxml   — Lista de clientes con tabla y busqueda
+    NuevoCliente.fxml      — Formulario de registro de cliente
+    PerfilCliente.fxml     — Detalle completo de un cliente
+    GestionInstructores.fxml — Lista de instructores
+    NuevoInstructor.fxml   — Formulario de registro de instructor
+    PerfilInstructor.fxml  — Detalle de instructor
+    GestionMembresias.fxml — Planes y membresias
+    PagoMembresia.fxml     — Formulario de pago
+    GestionCitas.fxml      — Calendario de citas
+    NuevaCita.fxml         — Formulario de agendamiento
+    PerfilCita.fxml        — Detalle de cita
+    DirectorioEjercicios.fxml — Catalogo de ejercicios
+    NuevoEjercicio.fxml    — Formulario de ejercicio
+    DirectorioRutinas.fxml — Rutinas asignadas
+    NuevaRutina.fxml       — Creador de rutinas
+    ProgresoFisico.fxml    — Seguimiento de medidas corporales
+    Finanzas.fxml          — Panel financiero con graficos y tabla
+    GymbroAI.fxml          — Chat con inteligencia artificial
+    RegistroEntrada.fxml   — Control de ingreso por huella
+
+  ¿Como se comunica?
+  ──────────────────
+    FXML ──fx:controller──> Controller (org.gymbrot.controller.XxxController)
+      │
+      ├── fx:id  ───> inyecta componentes via @FXML
+      ├── onAction ─> vincula eventos a metodos del Controller
+      └── style / class ─> CSS global (gymbrot.css)
+
+    El controller recibe los componentes del FXML injectados
+    (via @FXML) y los manipula en tiempo de ejecucion.
+
+  Estructura comun
+  ────────────────
+    Cada pantalla principal tiene:
+      BorderPane
+        ├── left:   VBox (SideNav con botones de navegacion)
+        ├── top:    HBox (TopBar con titulo y boton de accion)
+        └── center: ScrollPane > VBox (contenido de la pantalla)

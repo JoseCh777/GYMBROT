@@ -1,0 +1,16 @@
+═══════════════════════════════════════════════════════════════════
+  MODELS — Modelos de aprendizaje automatico
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Contiene modelos de aprendizaje automatico utilizados por la
+    aplicacion. Actualmente incluye el modelo Vosk para
+    reconocimiento de voz en espanol.
+
+  Directorios:
+    vosk-model-small-es-0.42/   — Modelo Vosk pequeno para
+                                  reconocimiento de voz en
+                                  espanol. No referenciado
+                                  actualmente en el codigo
+                                  fuente Java.

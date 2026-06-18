@@ -1,1 +1,41 @@
-SHDVHVAJA
+═══════════════════════════════════════════════════════════════════
+  DAO — Data Access Object (persistencia)
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Capa de acceso a datos. Cada DAO encapsula las operaciones
+    CRUD (Create, Read, Update, Delete) de una tabla especifica
+    usando JDBC plano (Oracle). Maneja conexiones, PreparedStatements,
+    ResultSets y traduccion de excepciones SQL.
+
+  Lista de DAOs (20):
+    UsuarioDAO, AdministradorDAO, ClienteDAO, InstructorDAO,
+    MembresiaDAO, HistorialMembresiaDAO, PlanMembresiaDAO,
+    PagoDAO, CitaDAO, RutinaDAO, RutinaEjercicioDAO, EjercicioDAO,
+    ProgresoDAO, RegistroIngresoDAO, NotificacionDAO,
+    MensajeGymbrotDAO, SesionGymbrotDAO, EspecialidadDAO,
+    PlantillaMensajeDAO
+
+  ¿Como se comunica?
+  ──────────────────
+    Service ──llama──> DAO.metodo() ──consulta──> Oracle DB
+                           │
+                           ▼
+                      Retorna MODEL / List<MODEL> / boolean / int
+
+    El DAO recibe parametros desde el Service y devuelve objetos
+    MODEL o valores primitivos. NUNCA interactua directamente
+    con el Controller ni con la UI.
+
+  Conexion
+  ────────
+    Todos los DAOs usan DatabaseConnection.getInstance() que
+    obtiene un Connection desde variables de entorno:
+      GYMBROT_DB_URL, GYMBROT_DB_USER, GYMBROT_DB_PASS
+
+  Patron
+  ──────
+    - Una instancia por DAO (sin inyeccion de dependencias).
+    - Cada metodo abre su propio PreparedStatement.
+    - La conexion es singleton y se recicla entre llamadas.

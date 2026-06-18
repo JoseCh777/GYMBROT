@@ -1,21 +1,26 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
 
 ### IntelliJ IDEA ###
 .idea/
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
 *.iws
 *.iml
 *.ipr
 
 ### Configuración local ###
 config.properties
+
+### Build output ###
+bin/
+
+### Mac OS ###
+.DS_Store
+
+### C# fingerprint capture binary ###
+/capture/*.exe
+/capture/*.pdb
 
 ### Eclipse ###
 .apt_generated
@@ -39,14 +44,5 @@ build/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
-.DS_Storeconfig.properties
-
-config.properties
-
-# C# fingerprint capture binary
-/capture/*.exe
-/capture/*.pdb
-
-.idea/
-*.iml
+### Maven wrapper ###
+!.mvn/wrapper/maven-wrapper.jar

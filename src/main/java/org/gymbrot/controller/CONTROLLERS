@@ -1,1 +1,50 @@
-SDHDVHDSV
+═══════════════════════════════════════════════════════════════════
+  CONTROLLER — Capa de presentacion / UI
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Maneja la interaccion entre el usuario y la aplicacion.
+    Cada Controller esta vinculado a un archivo FXML y responde
+    a eventos de UI (clicks, cambios de texto, hover).
+    Delega la logica de negocio a los Services y actualiza la
+    interfaz con los resultados.
+
+  Lista de Controllers (24):
+    loginController, DashboardController,
+    GestionClientesController, NuevoClienteController, PerfilClienteController,
+    GestionInstructoresController, NuevoInstructorController, PerfilInstructorController,
+    GestionMembresiasController, PagoMembresiaController,
+    GestionCitasController, NuevaCitaController, PerfilCitaController,
+    DirectorioEjerciciosController, NuevoEjercicioController,
+    DirectorioRutinasController, NuevaRutinaController,
+    ProgresoFisicoController, FinanzasController,
+    GymbroAIController, ChatbotController,
+    RegistroEntradaController, TitleBarController
+
+  ¿Como se comunica?
+  ──────────────────
+    FXML (vista) ──inyecta──> Controller (logica de UI)
+                                  │
+                    Controller ──llama──> Service.metodo()
+                                              │
+                    Controller <── MODEL / DTO <┘
+
+                    Controller ──actualiza──> UI (Labels, Tables, Charts)
+
+  Navegacion
+  ──────────
+    Main.navegarA("/fxml/Vista.fxml") carga un nuevo FXML en el
+    StackPane central (contentArea). Cada Controller llama a este
+    metodo estatico para cambiar de pantalla.
+
+    La TitleBar (persistente en la parte superior) muestra el
+    titulo de la pantalla actual y permite arrastrar/minimizar/
+    maximizar/cerrar la ventana.
+
+  SideNav
+  ───────
+    Casi todos los controllers (menos login, TitleBar) tienen un
+    panel de navegacion lateral (SideNav) con botones para acceder
+    a los modulos. El boton activo se resalta con fondo amarillo
+    (#D4FF00). Los inactivos tienen hover con animacion ScaleTransition.

@@ -1,1 +1,57 @@
-hvdsjgsdvjhdh
+═══════════════════════════════════════════════════════════════════
+  DATABASE — Esquema y datos de Oracle
+═══════════════════════════════════════════════════════════════════
+
+  Responsabilidad
+  ──────────────
+    Define la estructura fisica de la base de datos Oracle:
+    tablas, relaciones, constraints, indices y datos de prueba
+    (seed). No es una capa del codigo Java sino el esquema que
+    persiste los datos del sistema.
+
+  Archivos
+  ────────
+    GYMBROT_COMPLETO.sql      — Script completo: DDL + constraints + indices
+                                + datos de prueba (clientes, instructores,
+                                administradores, membresias, planes, pagos,
+                                rutinas, ejercicios, etc.)
+    GYMBROT_SEED.sql          — Datos de prueba adicionales
+    GYMBROT_RUTINAS_SEED.sql  — Datos de prueba para rutinas y ejercicios
+
+  Estructura del esquema (19 tablas)
+  ──────────────────────────────────
+    Orden de creacion en GYMBROT_COMPLETO.sql
+    ─────────────────────────────────────────
+     1.  ESPECIALIDADES
+     2.  PLANES_MEMBRESIAS
+     3.  PLANTILLAS_MENSAJE
+     4.  USUARIOS (supertipo)
+     5.  CLIENTES  (hereda de USUARIOS)
+     6.  INSTRUCTORES (hereda de USUARIOS)
+     7.  ADMINISTRADORES (hereda de USUARIOS)
+     8.  MEMBRESIAS
+     9.  HISTORIAL_MEMBRESIAS
+    10.  PAGOS
+    11.  EJERCICIOS
+    12.  RUTINAS
+    13.  RUTINA_EJERCICIOS
+    14.  PROGRESOS
+    15.  CITAS
+    16.  REGISTROS_INGRESOS
+    17.  NOTIFICACIONES
+    18.  SESIONES_GYMBROT
+    19.  MENSAJES_GYMBROT
+
+  Conexion desde Java
+  ────────────────────
+    DatabaseConnection.java usa:
+      GYMBROT_DB_URL   (ej: jdbc:oracle:thin:@localhost:1521:XE)
+      GYMBROT_DB_USER  (ej: gymbrot_admin)
+      GYMBROT_DB_PASS  (password del usuario)
+
+    Oracle JDBC driver: libs/ojdbc11.jar (version 23.6)
+
+  Indices
+  ───────
+    19 indices creados sobre columnas de busqueda frecuente:
+    tipo_usuario, correo, fecha_vencimiento, id_cliente, etc.
