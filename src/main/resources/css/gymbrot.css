@@ -1,0 +1,565 @@
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║              GYMBROT — Stylesheet Global                        ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TOKENS — Paleta de colores GYMBROT
+   ══════════════════════════════════════════════════════════════════ */
+/*
+    --primary:        #D4FF00   (amarillo neón — acción principal)
+    --primary-dark:   #1e2a00   (fondo de badge primario)
+    --surface:        #111316   (fondo raíz)
+    --surface-1:      #121417   (sidenav)
+    --surface-2:      #1a1d21   (cards / topbar)
+    --surface-3:      #1e2023   (log rows)
+    --surface-4:      #282a2d   (header tabla / pagination footer)
+    --border:         #1f2125   (separadores principales)
+    --border-soft:    #333538   (bordes de botones secundarios)
+    --hover:          #1f2226   (hover de filas y nav inactivo)
+    --text-main:      #e2e2e6
+    --text-muted:     #6b7280
+    --text-nav:       #9ca3af
+    --accent-cyan:    #bdf4ff
+    --accent-cyan-bg: #002a30
+    --error:          #ffb4ab
+*/
+
+
+/* ══════════════════════════════════════════════════════════════════
+   BASE — Raíz de la aplicación
+   ══════════════════════════════════════════════════════════════════ */
+
+.root {
+    -fx-background-color: #111316;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   SCROLL PANE — Fondo oscuro en toda la app
+   ══════════════════════════════════════════════════════════════════ */
+
+.scroll-pane {
+    -fx-background: #111316;
+    -fx-background-color: #111316;
+    -fx-border-width: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #111316;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.scroll-bar:vertical .track,
+.scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-height: 6px;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   BUTTON — Secundario gris con hover verde
+   ══════════════════════════════════════════════════════════════════ */
+
+.btn-secondary {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 8;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #9ca3af;
+    -fx-cursor: hand;
+    -fx-padding: 8 20 8 20;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #1e2a00;
+    -fx-border-color: #D4FF00;
+    -fx-text-fill: #D4FF00;
+}
+
+/* Flechas de scroll invisibles */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TABLE VIEW — Header oscuro + filas dark
+   (Soluciona el bug del header blanco de JavaFX)
+   ══════════════════════════════════════════════════════════════════ */
+
+.table-view {
+    -fx-background-color: #1a1d21;
+    -fx-border-width: 0;
+    -fx-table-cell-border-color: #1f2125;
+}
+
+/* Fondo del área completa del header */
+.table-view .column-header-background {
+    -fx-background-color: #282a2d;
+}
+
+/* Cada columna del header */
+.table-view .column-header {
+    -fx-background-color: #282a2d;
+    -fx-border-color: transparent #1f2125 #1f2125 transparent;
+    -fx-border-width: 0 1 1 0;
+    -fx-size: 44px;
+}
+
+/* Espacio sobrante a la derecha del header */
+.table-view .filler {
+    -fx-background-color: #282a2d;
+    -fx-border-color: transparent transparent #1f2125 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Texto de los encabezados de columna */
+.table-view .column-header .label {
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #6b7280;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Filas */
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #1f2125 transparent;
+    -fx-border-width: 1;
+    -fx-table-cell-border-color: #1f2125;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #1f2226;
+}
+
+/* Eliminar el azul por defecto de JavaFX en selección */
+.table-view .table-row-cell:selected,
+.table-view:focused .table-row-cell:selected {
+    -fx-background-color: #1f2226;
+    -fx-border-color: transparent transparent #D4FF00 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Celdas individuales */
+.table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-border-color: transparent;
+    -fx-padding: 8 12 8 12;
+}
+
+/* Placeholder cuando no hay datos */
+.table-view .placeholder .label {
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7280;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   PROGRESS BAR — Accent amarillo
+   ══════════════════════════════════════════════════════════════════ */
+
+.progress-bar {
+    -fx-background-color: #2a2d30;
+    -fx-background-radius: 4;
+    -fx-border-width: 0;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #D4FF00;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+.progress-bar .track {
+    -fx-background-color: #2a2d30;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TEXT FIELD — Campo de búsqueda
+   ══════════════════════════════════════════════════════════════════ */
+
+.text-field {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 8;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-text-fill: #e2e2e6;
+    -fx-prompt-text-fill: #6b7280;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 14 10 14;
+}
+
+.text-field:focused {
+    -fx-border-color: #D4FF00;
+    -fx-background-color: #282a2d;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   SEPARATOR
+   ══════════════════════════════════════════════════════════════════ */
+
+.separator .line {
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1 0 0 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   ALERT / DIALOG — Tema oscuro en los diálogos del sistema
+   ══════════════════════════════════════════════════════════════════ */
+
+.dialog-pane {
+    -fx-background-color: #1a1d21;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+}
+
+.dialog-pane .content {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #e2e2e6;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #282a2d;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 8;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 8 20 8 20;
+}
+
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: #D4FF00;
+    -fx-text-fill: black;
+    -fx-border-color: transparent;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #333538;
+}
+
+.dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: #c8f000;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ══════════════════════════════════════════════════════════════════ */
+
+.tooltip {
+    -fx-background-color: #1a1d21;
+    -fx-background-radius: 8;
+    -fx-border-color: #D4FF00;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-text-fill: #D4FF00;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 8 14 8 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 8, 0, 0, 2);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   COMBO BOX — Dropdown dark theme
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Campo principal */
+.combo-box {
+    -fx-background-color: #1a1c1f;
+    -fx-background-radius: 8;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #D4FF00;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 6 12 6 12;
+}
+
+/* Flecha del combo */
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow-button .arrow {
+    -fx-background-color: #6b7280;
+}
+
+.combo-box:focused .arrow-button .arrow,
+.combo-box:hover .arrow-button .arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Popup / lista desplegable */
+.combo-box-popup .list-view {
+    -fx-background-color: #1e2023;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 16 10 16;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #282a2d;
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #1e2a00;
+    -fx-text-fill: #D4FF00;
+}
+
+.combo-box-popup .list-view .list-cell:selected:hover {
+    -fx-background-color: #2a3d00;
+    -fx-text-fill: #D4FF00;
+}
+
+/* Scrollbar dentro del popup */
+.combo-box-popup .list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.combo-box-popup .list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #333538;
+    -fx-background-radius: 10px;
+}
+
+.combo-box-popup .list-view .scroll-bar:vertical .track,
+.combo-box-popup .list-view .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   DATE PICKER — Calendario dark theme
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Campo de texto del DatePicker */
+.date-picker {
+    -fx-background-color: #1a1c1f;
+    -fx-background-radius: 8;
+    -fx-border-color: #1f2125;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.date-picker:focused {
+    -fx-border-color: #D4FF00;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #444749;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-padding: 10 14 10 14;
+}
+
+.date-picker .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+/* Botón del ícono del calendario */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #6b7280;
+}
+
+.date-picker:focused .arrow-button .arrow,
+.date-picker:hover .arrow-button .arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Popup del calendario */
+.date-picker-popup {
+    -fx-background-color: #1e2023;
+    -fx-border-color: #333538;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+/* Barra de navegación superior (Mes / Año) */
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #282a2d;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 8 12 8 12;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+    -fx-font-family: 'Lexend';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+/* Botones < > de navegación de mes */
+.date-picker-popup .month-year-pane .button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.date-picker-popup .month-year-pane .button .left-arrow,
+.date-picker-popup .month-year-pane .button .right-arrow {
+    -fx-background-color: #6b7280;
+}
+
+.date-picker-popup .month-year-pane .button:hover .left-arrow,
+.date-picker-popup .month-year-pane .button:hover .right-arrow {
+    -fx-background-color: #D4FF00;
+}
+
+/* Encabezados de días (Dom, Lun, Mar…) */
+.date-picker-popup .calendar-grid .day-name-cell {
+    -fx-text-fill: #6b7280;
+    -fx-font-family: 'Space Grotesk';
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-alignment: CENTER;
+}
+
+/* Celdas de días */
+.date-picker-popup .calendar-grid .day-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e2e6;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+    -fx-background-radius: 6;
+}
+
+.date-picker-popup .calendar-grid .day-cell:hover {
+    -fx-background-color: #282a2d;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+/* Día de hoy */
+.date-picker-popup .calendar-grid .today {
+    -fx-background-color: transparent;
+    -fx-border-color: #D4FF00;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-text-fill: #D4FF00;
+    -fx-font-weight: 700;
+}
+
+/* Día seleccionado */
+.date-picker-popup .calendar-grid .selected {
+    -fx-background-color: #D4FF00;
+    -fx-text-fill: #111316;
+    -fx-font-weight: 700;
+    -fx-background-radius: 6;
+}
+
+.date-picker-popup .calendar-grid .selected:hover {
+    -fx-background-color: #c8f000;
+    -fx-text-fill: #111316;
+}
+
+/* Días de otros meses (grises) */
+.date-picker-popup .calendar-grid .previous-month,
+.date-picker-popup .calendar-grid .next-month {
+    -fx-text-fill: #3a3d42;
+}
+
+/* Fondo general de la grilla */
+.date-picker-popup > * {
+    -fx-background-color: #1e2023;
+}

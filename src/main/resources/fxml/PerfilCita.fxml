@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<StackPane style="-fx-background-color: rgba(12,14,17,0.92);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.PerfilCitaController">
+
+    <VBox maxHeight="720" maxWidth="740" style="-fx-background-color: rgba(26,29,33,0.75);                  -fx-background-radius: 24;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 24;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.15), 28, 0, 0, 0);">
+
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;" VBox.vgrow="ALWAYS">
+            <VBox spacing="0">
+
+                <!-- ═══ HEADER ═══ -->
+                <VBox spacing="0" style="-fx-background-color: transparent; -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 0 0 1 0;">
+                    <padding><Insets bottom="24" left="40" right="32" top="32" /></padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="0">
+
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label fx:id="lblBadgeEstado" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="PENDIENTE" />
+                            <Label fx:id="lblTituloCita" style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 800; -fx-font-style: italic; -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="Perfil de Cita" />
+                        </VBox>
+
+                        <Button fx:id="btnCerrar" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 4 4 4 16;">
+                            <graphic>
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-text-fill: #6b7280;" text="X" />
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- ═══ CONTENIDO ═══ -->
+                <HBox spacing="24">
+                    <padding><Insets bottom="24" left="40" right="32" top="28" /></padding>
+
+                    <!-- ── SIDEBAR: Resumen ── -->
+                    <VBox alignment="CENTER" minWidth="200" prefWidth="220" spacing="16" style="-fx-background-color: rgba(255,255,255,0.04); -fx-background-radius: 16; -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1; -fx-border-radius: 16;">
+                        <padding><Insets bottom="28" left="20" right="20" top="28" /></padding>
+
+                        <StackPane maxWidth="100" prefHeight="100" prefWidth="100">
+                            <StackPane prefHeight="100" prefWidth="100" style="-fx-background-color: #282a2d; -fx-background-radius: 50; -fx-border-color: #D4FF00; -fx-border-width: 3; -fx-border-radius: 50; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.2), 16, 0, 0, 0);">
+                                <ImageView fx:id="imgFotoCliente" fitHeight="88" fitWidth="88" preserveRatio="false">
+                                    <clip><Circle centerX="44" centerY="44" radius="44" /></clip>
+                                </ImageView>
+                                <Label fx:id="lblInicialesAvatar" style="-fx-font-family: 'Lexend'; -fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #444749;" text="?" />
+                            </StackPane>
+                        </StackPane>
+
+                        <Label fx:id="lblNombreCliente" style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: white; -fx-text-alignment: CENTER;" text="Cliente" wrapText="true" />
+
+                        <Label fx:id="lblInstructor" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 600; -fx-text-fill: #9ca3af; -fx-text-alignment: CENTER;" text="Instructor" wrapText="true" />
+
+                        <Region maxWidth="Infinity" prefHeight="1" style="-fx-background-color: rgba(255,255,255,0.08);" />
+
+                        <VBox maxWidth="Infinity" spacing="10">
+                            <HBox alignment="CENTER_LEFT">
+                                <Label prefWidth="70" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA" />
+                                <Label fx:id="lblFecha" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="---" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT">
+                                <Label prefWidth="70" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="HORA" />
+                                <Label fx:id="lblHora" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="---" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT">
+                                <Label prefWidth="70" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TIPO" />
+                                <Label fx:id="lblTipo" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #e2e2e6;" text="---" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- ── COLUMNA DERECHA: Info detallada ── -->
+                    <VBox spacing="12" HBox.hgrow="ALWAYS">
+
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;">
+                            <padding><Insets bottom="20" left="24" right="24" top="20" /></padding>
+
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Rectangle height="18" style="-fx-fill: #D4FF00;" width="4" />
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="INFORMACION" />
+                            </HBox>
+
+                            <HBox spacing="24">
+                                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                    <VBox spacing="3">
+                                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
+                                        <Label fx:id="lblDetalleCliente" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: white;" text="---" />
+                                    </VBox>
+                                    <VBox spacing="3">
+                                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA Y HORA" />
+                                        <Label fx:id="lblDetalleFechaHora" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: white;" text="---" />
+                                    </VBox>
+                                </VBox>
+                                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                    <VBox spacing="3">
+                                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INSTRUCTOR" />
+                                        <Label fx:id="lblDetalleInstructor" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: white;" text="---" />
+                                    </VBox>
+                                    <VBox spacing="3">
+                                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TIPO" />
+                                        <Label fx:id="lblDetalleTipo" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #e2e2e6;" text="---" />
+                                    </VBox>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;">
+                            <padding><Insets bottom="20" left="24" right="24" top="20" /></padding>
+
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="12" /></VBox.margin>
+                                <Rectangle height="18" style="-fx-fill: #D4FF00;" width="4" />
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="NOTAS" />
+                            </HBox>
+
+                            <Label fx:id="lblNotas" style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 400; -fx-text-fill: #9ca3af; -fx-line-spacing: 4;" text="Sin notas" wrapText="true" />
+                        </VBox>
+
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;">
+                            <padding><Insets bottom="16" left="24" right="24" top="16" /></padding>
+
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Rectangle height="18" style="-fx-fill: #D4FF00;" width="4" />
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: white;" text="ESTADO" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lblEstadoActual" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #fbbf24; -fx-padding: 4 12 4 12;" text="PENDIENTE" />
+                            </HBox>
+                        </VBox>
+
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <!-- ═══ FOOTER: Botones de accion ═══ -->
+        <VBox spacing="0" style="-fx-background-color: transparent; -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1 0 0 0;">
+            <padding><Insets bottom="20" left="40" right="40" top="16" /></padding>
+            <HBox alignment="CENTER" spacing="16">
+                <Button fx:id="btnCancelar" prefHeight="42" prefWidth="180" style="-fx-background-color: #282a2d; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #9ca3af; -fx-border-color: #333538; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="Cancelar Cita" />
+                <Button fx:id="btnCompletar" prefHeight="42" prefWidth="180" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="Marcar Completada" />
+            </HBox>
+        </VBox>
+
+    </VBox>
+
+</StackPane>

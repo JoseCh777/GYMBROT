@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+<!--
+    TitleBar.fxml — Barra de título personalizada oscura.
+    Se coloca encima del contenido principal en Main.java.
+    El controller TitleBarController maneja drag, minimizar, maximizar y cerrar.
+-->
+
+<HBox fx:id="titleBar" alignment="CENTER_LEFT" prefHeight="36" prefWidth="289.0" style="-fx-background-color: #121417;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.TitleBarController">
+
+    <!-- Título de la vista actual (lo actualiza el controller al navegar) -->
+    <Label fx:id="lblTitulo" style="-fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #9ca3af;">
+        <HBox.margin><Insets left="16" /></HBox.margin>
+    </Label>
+
+    <!-- Spacer: empuja los botones a la derecha y permite arrastrar -->
+    <Region fx:id="dragArea" HBox.hgrow="ALWAYS" />
+
+    <!-- Minimizar -->
+    <Button fx:id="btnMinimizar" onAction="#handleMinimizar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 13px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="—" />
+
+    <!-- Maximizar / Restaurar -->
+    <Button fx:id="btnMaximizar" onAction="#handleMaximizar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 11px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="▢" />
+
+    <!-- Cerrar -->
+    <Button fx:id="btnCerrar" onAction="#handleCerrar" prefHeight="28" prefWidth="40" style="-fx-background-color: transparent; -fx-background-radius: 4;                    -fx-font-family: 'Inter'; -fx-font-size: 13px;                    -fx-text-fill: #9ca3af; -fx-cursor: hand;" text="✕" />
+
+</HBox>

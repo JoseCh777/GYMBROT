@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.PagoMembresiaController">
+
+    <VBox maxHeight="730" maxWidth="680" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1; -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">
+
+        <HBox alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 12 12 0 0;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets bottom="0" left="24" right="24" top="0" /></padding>
+
+            <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                <image><Image url="@../images/fitness_center.png" /></image>
+            </ImageView>
+
+            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 22px; -fx-font-weight: 700;                           -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;">
+                PROCESAR PAGO
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="btnCerrar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 20;                            -fx-cursor: hand; -fx-padding: 6 6 6 6;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <image><Image url="@../images/close.png" /></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;" VBox.vgrow="ALWAYS">
+            <VBox spacing="24">
+                <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                <GridPane hgap="20" vgap="0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                    </columnConstraints>
+
+                    <VBox spacing="8" GridPane.columnIndex="0">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="BUSCAR CLIENTE" />
+                        <TextField fx:id="txtBuscarCliente" prefHeight="44" promptText="Escriba nombre o identificacion..." style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;">
+                            <padding><Insets left="12" right="12" /></padding>
+                        </TextField>
+                        <ListView fx:id="lvClientes" maxHeight="150" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px;" visible="false" />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="1">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MEMBRESIA" />
+                        <VBox prefHeight="44" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8;">
+                            <padding><Insets left="12" right="12" /></padding>
+                            <HBox alignment="CENTER_LEFT" spacing="8" VBox.vgrow="ALWAYS">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-text-fill: #D4FF00;" text="★" />
+                                <VBox spacing="1">
+                                    <Label fx:id="lblPlanNombre" prefHeight="24.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: white;" text="---" />
+                                    <Label fx:id="lblPlanModalidad" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="---" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
+
+                <GridPane hgap="16" vgap="0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="34" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33" />
+                    </columnConstraints>
+
+                    <VBox spacing="8" GridPane.columnIndex="0">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="MONTO A PAGAR" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="44" spacing="0" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8;">
+                            <Label fx:id="lblMoneda" text="\$" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;" />
+                            <TextField fx:id="txtMonto" prefHeight="44" promptText="0.00" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #D4FF00; -fx-prompt-text-fill: #D4FF00;">
+                                <padding><Insets left="4" right="12" /></padding>
+                            </TextField>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="1">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="METODO DE PAGO" />
+                        <ComboBox fx:id="cmbMetodoPago" maxWidth="Infinity" prefHeight="44" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;" />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="2">
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA DE PAGO" />
+                        <DatePicker fx:id="dpFechaPago" maxWidth="Infinity" prefHeight="44" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px;" />
+                    </VBox>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
+
+                <VBox spacing="8">
+                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REFERENCIA" />
+
+                    <TextField fx:id="txtReferencia" prefHeight="44" promptText="VISA-XXXXX" style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white;">
+                        <padding><Insets left="12" right="12" /></padding>
+                    </TextField>
+                </VBox>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
+
+                <VBox spacing="8">
+                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="OBSERVACIONES" />
+                    <TextArea fx:id="txtObservaciones" prefHeight="72" promptText="Notas adicionales..." style="-fx-background-color: #121417; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 8; -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: white; -fx-control-inner-background: #121417;" wrapText="true">
+                        <padding><Insets bottom="10" left="12" right="12" top="10" /></padding>
+                    </TextArea>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <HBox alignment="CENTER_RIGHT" prefHeight="64" spacing="12" style="-fx-background-color: #1a1c1f;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 1 0 0 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <Button fx:id="btnCancelar" onAction="#handleCancelar" style="-fx-background-color: transparent; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                            -fx-text-fill: #6b7280; -fx-cursor: hand;" text="CANCELAR" />
+
+            <Button fx:id="btnProcesar" onAction="#handleProcesar" prefHeight="44" prefWidth="180" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                            -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                            -fx-border-radius: 8; -fx-cursor: hand;" text="PROCESAR PAGO" />
+        </HBox>
+
+    </VBox>
+</StackPane>

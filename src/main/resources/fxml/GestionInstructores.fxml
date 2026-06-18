@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" stylesheets="@../css/gymbrot.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionInstructoresController">
+
+    <!-- ═══ LEFT: SideNav ═══ -->
+    <left>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+
+            <VBox spacing="2">
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/dashboard_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/group_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <!-- ACTIVO: Instructores -->
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/instructor.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/membresias_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
+            <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
+               <graphic>
+                  <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/muscle_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/bot_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <Separator opacity="0.1">
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
+            </Separator>
+
+            <VBox spacing="8">
+                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ═══ TOP: TopBar ═══ -->
+    <top>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
+            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700;                           -fx-text-fill: white;" text="Gestion de Instructores" HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="16">
+                <HBox.margin><Insets right="24" /></HBox.margin>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ═══ CENTER: Contenido ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
+            <VBox spacing="24">
+                <padding><Insets bottom="80" left="40" right="40" top="32" /></padding>
+
+                <!-- ── SECCION 1: 2 Stats cards ── -->
+                <HBox spacing="20">
+
+                    <!-- Card: Total Instructores -->
+                    <VBox prefHeight="162.0" prefWidth="337.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="TOTAL INSTRUCTORES" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                        <Label fx:id="lblTotalInstructores" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 40px;                                       -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
+                            <HBox alignment="CENTER_LEFT" spacing="4" />
+                        </VBox>
+
+                    <!-- Card: Citas Hoy + Próxima -->
+                    <VBox prefHeight="162.0" prefWidth="321.0" spacing="8" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                  -fx-border-color: #bdf4ff; -fx-border-width: 0 0 0 4; -fx-border-radius: 12;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+                        <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CITAS HOY" />
+                        <Label fx:id="lblSesionesHoy" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 40px; -fx-font-weight: 700; -fx-text-fill: white;" text="0" />
+                        <Label fx:id="lblProximaCita" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #bdf4ff;" text="Cargando..." />
+                    </VBox>
+
+                    <!-- Botones: Nueva Rutina / Nuevo Ejercicio -->
+                    <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
+                   <Button fx:id="btnNuevaRutina1" maxWidth="Infinity" onAction="#handleNuevaRutina" prefHeight="44" prefWidth="180.0" styleClass="btn-secondary" text="NUEVA RUTINA">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/rutina-de-ejercicio.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                         <Button fx:id="btnMostrarRutinas" maxWidth="Infinity" onAction="#handleMostrarRutinas" prefHeight="44" styleClass="btn-secondary" text="MOSTRAR RUTINAS">
+                            <graphic>
+                                <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                                    <image><Image url="@../images/papel.png" /></image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </VBox>
+               <VBox alignment="CENTER" prefHeight="162.0" prefWidth="190.0" spacing="10">
+                  <children>
+                      <Button fx:id="btnNuevoEjercicio1" maxWidth="Infinity" onAction="#handleNuevoEjercicio" prefHeight="44" styleClass="btn-secondary" text="NUEVO EJERCICIO">
+                        <graphic>
+                           <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/ejercicios-de-estiramiento.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                      <Button fx:id="btnMostrarEjercicios" maxWidth="Infinity" onAction="#handleMostrarEjercicios" prefHeight="44" styleClass="btn-secondary" text="MOSTRAR EJERCICIOS">
+                        <graphic>
+                           <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/papel.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                  </children>
+               </VBox>
+
+                </HBox>
+
+                <!-- ── SECCION 2: Toolbar ── -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 700;                                   -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Panel de Control">
+                        <HBox.margin><Insets right="8" /></HBox.margin>
+                    </Label>
+
+                    <StackPane prefHeight="44.0" prefWidth="343.0" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="searchField" prefHeight="44" prefWidth="434.0" promptText="Buscar por nombre, especialidad o ID..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px;                                           -fx-text-fill: white; -fx-prompt-text-fill: #6b7280;                                           -fx-padding: 10 14 10 40;" />
+                        <Label mouseTransparent="true" style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text=".">
+                            <StackPane.alignment>CENTER_LEFT</StackPane.alignment>
+                            <StackPane.margin><Insets left="12" /></StackPane.margin>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/lupa.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                        </Label>
+                    </StackPane>
+
+                    <!-- Filtro por especialidad -->
+                    <ComboBox fx:id="cmbFiltroEspecialidad" onAction="#handleFiltroEspecialidad" prefHeight="44" prefWidth="202.0" promptText="Filtrar por especialidad..." style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                           -fx-border-color: #333538; -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: white;" />
+
+                    <Button fx:id="btnNuevoInstructor" onAction="#handleAgregarInstructor" prefHeight="44" prefWidth="191.0" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                    -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 1;                                    -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text=" NUEVO INSTRUCTOR">
+                        <graphic>
+                            <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                                <image><Image url="@../images/add.png" /></image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- ── SECCION 3: Grid de tarjetas visuales ── -->
+                <!-- El FlowPane se puebla dinámicamente desde el controller -->
+                <!-- Las tarjetas template aquí solo se ven en SceneBuilder -->
+                <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                              -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+
+                    <!-- Grid de cards -->
+                    <FlowPane fx:id="gridInstructores" hgap="20" prefWrapLength="1100" style="-fx-background-color: transparent; -fx-padding: 24;" vgap="20">
+
+                        <!-- ── CARD TEMPLATE (se replica por código en el controller) ──
+                             Esta es la estructura de cada tarjeta de instructor          -->
+
+                        <!-- Card 1 -->
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+
+                            <!-- Imagen + badge especialidad -->
+                            <StackPane prefHeight="180" prefWidth="258">
+                                <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
+                                <ImageView fx:id="imgCard1" fitHeight="180" fitWidth="258" preserveRatio="false" />
+                                <!-- Badge -->
+                                <Label alignment="CENTER" style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                               -fx-padding: 3 8 3 8;" text="TREN SUPERIOR" StackPane.alignment="TOP_LEFT">
+                                    <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
+                                </Label>
+                            </StackPane>
+
+                            <!-- Info -->
+                            <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Marcus Thorne" />
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
+                                <!-- Tags -->
+                                <HBox spacing="6">
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="FUERZA" />
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="HIPERTROFIA" />
+                                </HBox>
+                                <!-- Botones -->
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                            </VBox>
+                        </VBox>
+
+                        <!-- Card 2 -->
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                            <StackPane prefHeight="180" prefWidth="258">
+                                <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
+                                <ImageView fx:id="imgCard2" fitHeight="180" fitWidth="258" preserveRatio="false" />
+                                <Label alignment="CENTER" style="-fx-background-color: #00e3fd; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #001f24;                                               -fx-padding: 3 8 3 8;" text="TREN INFERIOR" StackPane.alignment="TOP_LEFT">
+                                    <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
+                                </Label>
+                            </StackPane>
+                            <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Elena Rodriguez" />
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
+                                <HBox spacing="6">
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="PIERNAS" />
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="MOVILIDAD" />
+                                </HBox>
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                            </VBox>
+                        </VBox>
+
+                        <!-- Card 3 -->
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                            <StackPane prefHeight="180" prefWidth="258">
+                                <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
+                                <ImageView fx:id="imgCard3" fitHeight="180" fitWidth="258" preserveRatio="false" />
+                                <Label alignment="CENTER" style="-fx-background-color: #e9ddff; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #3c0090;                                               -fx-padding: 3 8 3 8;" text="CARDIO" StackPane.alignment="TOP_LEFT">
+                                    <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
+                                </Label>
+                            </StackPane>
+                            <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Jaxson Vane" />
+                                <HBox alignment="CENTER_LEFT" spacing="6" />
+                                <HBox spacing="6">
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="HIIT" />
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="RESISTENCIA" />
+                                </HBox>
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                            </VBox>
+                        </VBox>
+
+                        <!-- Card 4 -->
+                        <VBox prefWidth="258" spacing="0" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;                                      -fx-cursor: hand;">
+                            <StackPane prefHeight="180" prefWidth="258">
+                                <Rectangle arcHeight="12" arcWidth="12" height="180" style="-fx-fill: #282a2d;" width="258" />
+                                <ImageView fx:id="imgCard4" fitHeight="180" fitWidth="258" preserveRatio="false" />
+                                <Label alignment="CENTER" style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                               -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                               -fx-padding: 3 8 3 8;" text="NUTRICION" StackPane.alignment="TOP_LEFT">
+                                    <StackPane.margin><Insets left="12" top="12" /></StackPane.margin>
+                                </Label>
+                            </StackPane>
+                            <VBox spacing="10" style="-fx-padding: 14 14 14 14;">
+                                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 16px;                                               -fx-font-weight: 700; -fx-text-fill: white;" text="Sarah Chen" />
+                                <HBox alignment="CENTER_LEFT" spacing="6">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 13px;                                                   -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="★ 4.9" />
+                                    <Label style="-fx-font-family: 'Inter'; -fx-font-size: 12px;                                                   -fx-text-fill: #6b7280;" text="(156 sesiones)" />
+                                </HBox>
+                                <HBox spacing="6">
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="DIETA" />
+                                    <Label style="-fx-background-color: #1f2226; -fx-background-radius: 4;                                                   -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px;                                                   -fx-font-weight: 700; -fx-text-fill: #9ca3af;                                                   -fx-padding: 3 8 3 8;" text="SUPLEMENTOS" />
+                                </HBox>
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #D4FF00;                                                -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="RESERVAR SESION" />
+                                <Button maxWidth="Infinity" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                -fx-border-color: #6b7280; -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-cursor: hand;" text="VER RUTINA" />
+                            </VBox>
+                        </VBox>
+
+                    </FlowPane>
+
+                    <!-- Paginación — mismo patrón que GestionClientes -->
+                    <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #282a2d; -fx-background-radius: 0 0 12 12;                                  -fx-border-color: #1f2125; -fx-border-width: 1 0 0 0;">
+                        <padding><Insets bottom="12" left="24" right="24" top="12" /></padding>
+
+                        <Label fx:id="lblRegistros" style="-fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-text-fill: #6b7280;" text="Mostrando 0 de 0 instructores" HBox.hgrow="ALWAYS" />
+
+                        <Button fx:id="btnAnterior" onAction="#handlePaginaAnterior" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                        -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 6 14 6 14;" text="Anterior" />
+                        <Button fx:id="btnPag1" onAction="#handlePagina1" prefHeight="36" prefWidth="36" style="-fx-background-color: #282a2d; -fx-background-radius: 8;                                        -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600;                                        -fx-text-fill: white; -fx-border-color: #D4FF00; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="1" />
+                        <Button fx:id="btnPag2" onAction="#handlePagina2" prefHeight="36" prefWidth="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                        -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="2" />
+                        <Button fx:id="btnPag3" onAction="#handlePagina3" prefHeight="36" prefWidth="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                        -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand;" text="3" />
+                        <Button fx:id="btnSiguiente" onAction="#handlePaginaSiguiente" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8;                                        -fx-font-family: 'Inter'; -fx-font-size: 13px; -fx-font-weight: 600;                                        -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                        -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 6 14 6 14;" text="Siguiente" />
+                    </HBox>
+
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

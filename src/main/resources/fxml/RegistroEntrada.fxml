@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<!-- Overlay -->
+
+<StackPane style="-fx-background-color: rgba(12,14,17,0.85);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.RegistroEntradaController">
+
+    <!-- Modal -->
+    <VBox maxHeight="640" maxWidth="560" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1; -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">
+
+        <!-- ── HEADER ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: transparent;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <HBox.margin><Insets left="12" /></HBox.margin>
+                <Label fx:id="lblTitulo" prefHeight="64.0" prefWidth="281.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 600;                               -fx-text-fill: white;" text="REGISTRO DE ENTRADA" />
+            </VBox>
+        </HBox>
+
+        <!-- ── TABS ── -->
+        <HBox prefHeight="52" style="-fx-background-color: #1a1c1f;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+
+            <!-- Tab Biométrico — activo por defecto -->
+            <Button fx:id="tabBiometrico" maxWidth="Infinity" onAction="#handleTabBiometrico" prefHeight="52" style="-fx-background-color: transparent;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                            -fx-text-fill: #D4FF00; -fx-cursor: hand;                            -fx-border-color: transparent transparent #D4FF00 transparent;                            -fx-border-width: 0 0 2 0;" text="  ACCESO BIOMETRICO" HBox.hgrow="ALWAYS" />
+
+            <!-- Tab Manual -->
+            <Button fx:id="tabManual" maxWidth="Infinity" onAction="#handleTabManual" prefHeight="52" style="-fx-background-color: transparent;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                            -fx-text-fill: #6b7280; -fx-cursor: hand;                            -fx-border-color: transparent; -fx-border-width: 0 0 2 0;" text="  INGRESO MANUAL" HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <!-- ── CONTENIDO TABS ── -->
+        <StackPane VBox.vgrow="ALWAYS">
+            <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+            <!-- ── TAB 1: BIOMÉTRICO ── -->
+            <VBox fx:id="sectionBiometrico" alignment="CENTER" spacing="28">
+
+                <!-- Frame del scanner con esquinas decorativas -->
+                <StackPane prefHeight="192" prefWidth="192">
+
+                    <!-- Marco principal (fondo oscuro + borde) -->
+                    <StackPane prefHeight="192" prefWidth="192" style="-fx-background-color: rgba(0,0,0,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 2; -fx-border-radius: 12;">
+
+                        <!--
+                            Línea de barrido: prefHeight="1" = delgada,
+                            prefWidth fijo a 188px para no desbordarse del marco.
+                            El controller la mueve con setTranslateY(posY).
+                            El clip del StackPane (aplicarClipScanLine) la confina.
+                        -->
+                        <Region fx:id="scanLine" prefHeight="6.0" prefWidth="298.0" style="-fx-background-color: #D4FF00; -fx-opacity: 0.9;">
+                            <StackPane.alignment>TOP_CENTER</StackPane.alignment>
+                        </Region>
+
+                        <!--
+                            Huella digital simulada: arcos concéntricos que imitan
+                            las crestas papilares de una huella dactilar real.
+                            Cada Region es una línea curva simulada con border-radius
+                            progresivo — las más anchas al centro, más angostas arriba/abajo.
+                        -->
+                        <VBox alignment="CENTER" maxHeight="150" maxWidth="130" spacing="5">
+                            <!-- Crestas superiores (estrechas) -->
+                            <Region prefHeight="2" prefWidth="38" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.35;" />
+                            <Region prefHeight="2" prefWidth="62" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.45;" />
+                            <Region prefHeight="2" prefWidth="82" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.55;" />
+                            <!-- Crestas medias (anchas — zona central del dedo) -->
+                            <Region prefHeight="2" prefWidth="100" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.70;" />
+                            <Region prefHeight="2" prefWidth="114" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.85;" />
+                            <Region prefHeight="2" prefWidth="120" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.95;" />
+                            <!-- Centro del dedo — línea más brillante -->
+                            <Region prefHeight="2" prefWidth="116" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.90;" />
+                            <Region prefHeight="2" prefWidth="108" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.80;" />
+                            <!-- Bifurcación central (línea partida simulada) -->
+                            <Region prefHeight="2" prefWidth="96" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.75;" />
+                            <Region prefHeight="2" prefWidth="82" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.65;" />
+                            <!-- Crestas inferiores (se cierran) -->
+                            <Region prefHeight="2" prefWidth="66" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.50;" />
+                            <Region prefHeight="2" prefWidth="46" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.38;" />
+                            <Region prefHeight="2" prefWidth="28" style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-opacity: 0.25;" />
+                        </VBox>
+
+                    </StackPane>
+
+                    <!-- Esquinas decorativas — top left -->
+                    <Rectangle height="2" style="-fx-fill: #D4FF00;" width="16">
+                        <StackPane.alignment>TOP_LEFT</StackPane.alignment>
+                    </Rectangle>
+                    <Rectangle height="16" style="-fx-fill: #D4FF00;" width="2">
+                        <StackPane.alignment>TOP_LEFT</StackPane.alignment>
+                    </Rectangle>
+                    <!-- top right -->
+                    <Rectangle height="2" style="-fx-fill: #D4FF00;" width="16">
+                        <StackPane.alignment>TOP_RIGHT</StackPane.alignment>
+                    </Rectangle>
+                    <Rectangle height="16" style="-fx-fill: #D4FF00;" width="2">
+                        <StackPane.alignment>TOP_RIGHT</StackPane.alignment>
+                    </Rectangle>
+                    <!-- bottom left -->
+                    <Rectangle height="2" style="-fx-fill: #D4FF00;" width="16">
+                        <StackPane.alignment>BOTTOM_LEFT</StackPane.alignment>
+                    </Rectangle>
+                    <Rectangle height="16" style="-fx-fill: #D4FF00;" width="2">
+                        <StackPane.alignment>BOTTOM_LEFT</StackPane.alignment>
+                    </Rectangle>
+                    <!-- bottom right -->
+                    <Rectangle height="2" style="-fx-fill: #D4FF00;" width="16">
+                        <StackPane.alignment>BOTTOM_RIGHT</StackPane.alignment>
+                    </Rectangle>
+                    <Rectangle height="16" style="-fx-fill: #D4FF00;" width="2">
+                        <StackPane.alignment>BOTTOM_RIGHT</StackPane.alignment>
+                    </Rectangle>
+
+                </StackPane>
+
+                <!-- Estado del escaneo -->
+                <VBox alignment="CENTER" spacing="10">
+
+                    <HBox alignment="CENTER" spacing="10">
+                        <Rectangle fx:id="dotBioScan" arcHeight="8" arcWidth="8" height="8" style="-fx-fill: #D4FF00;" width="8" />
+                        <Label fx:id="lblEstadoScan" style="-fx-font-family: 'Lexend'; -fx-font-size: 15px; -fx-font-weight: 600;                                       -fx-text-fill: #D4FF00;" text="ESPERANDO ESCANEO DE HUELLA..." />
+                    </HBox>
+
+                    <Label style="-fx-font-family: 'Inter'; -fx-font-size: 13px;                                   -fx-text-fill: #6b7280; -fx-max-width: 300;" text="Coloque su dedo sobre el escaner para validar su identidad de socio." textAlignment="CENTER" wrapText="true" />
+                </VBox>
+
+                <!-- Barra de progreso del scan -->
+                <ProgressBar fx:id="pbScan" maxWidth="300" prefHeight="6" progress="0.0" style="-fx-accent: #D4FF00; -fx-background-color: rgba(255,255,255,0.05);                                     -fx-background-radius: 4; -fx-border-width: 0;" />
+
+            </VBox>
+
+            <!-- ── TAB 2: MANUAL — oculto por defecto ── -->
+            <VBox fx:id="sectionManual" alignment="CENTER" managed="false" spacing="20" visible="false">
+
+                <!-- Campo: Numero de identificacion -->
+                <VBox maxWidth="400" spacing="8">
+                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                   -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="NUMERO DE IDENTIFICACION" />
+                    <TextField fx:id="txtNumeroId" maxWidth="Infinity" prefHeight="52" promptText="10XXX.XXXXX" style="-fx-background-color: #282a2d;                                       -fx-border-color: rgba(255,255,255,0.1);                                       -fx-border-width: 1; -fx-border-radius: 8;                                       -fx-background-radius: 8;                                       -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px;                                       -fx-font-weight: 600;                                       -fx-text-fill: white; -fx-prompt-text-fill: #4b5563;                                       -fx-padding: 14 14 14 14;" />
+                </VBox>
+
+                <!-- Campo: Codigo de acceso -->
+                <VBox maxWidth="400" spacing="8">
+                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                   -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CONTRASEÑA" />
+                    <PasswordField fx:id="txtCodigoAcceso" maxWidth="Infinity" prefHeight="52" promptText="Contraseña" style="-fx-background-color: #282a2d;                                           -fx-border-color: rgba(255,255,255,0.1);                                           -fx-border-width: 1; -fx-border-radius: 8;                                           -fx-background-radius: 8;                                           -fx-font-family: 'Space Grotesk'; -fx-font-size: 16px;                                           -fx-font-weight: 600;                                           -fx-text-fill: white; -fx-prompt-text-fill: #4b5563;                                           -fx-padding: 14 14 14 14;" />
+                </VBox>
+
+                <!-- Boton validar -->
+                <VBox maxWidth="400" spacing="12">
+                    <Button fx:id="btnValidarIngreso" maxWidth="Infinity" onAction="#handleValidarIngreso" prefHeight="52" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="VALIDAR INGRESO" />
+                </VBox>
+
+            </VBox>
+
+        </StackPane>
+
+        <!-- ── FOOTER ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="52" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 0 0 12 12;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 1 0 0 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <Region fx:id="progressBar" prefHeight="2" prefWidth="0" style="-fx-background-color: #D4FF00; -fx-background-radius: 0 0 0 12;" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="btnCancelar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 8;                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                            -fx-text-fill: #e2e2e6; -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="CANCELAR" />
+        </HBox>
+
+    </VBox>
+
+</StackPane>

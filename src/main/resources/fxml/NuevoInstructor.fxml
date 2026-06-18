@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.NuevoInstructorController">
+
+    <!-- ═══ LEFT: SideNav (identico al NuevoCliente) ═══ -->
+    <left>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+
+            <VBox spacing="2">
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900;                               -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/dashboard_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/group_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <!-- ACTIVO: Instructores -->
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700;                                -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/instructor.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/membresias_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/muscle_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/bot_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <Separator opacity="0.1">
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
+            </Separator>
+
+            <VBox spacing="8">
+                <Button maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ═══ TOP: TopBar (identico al NuevoCliente) ═══ -->
+    <top>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
+
+            <!-- Breadcrumb -->
+            <HBox alignment="CENTER_LEFT" spacing="6" HBox.hgrow="ALWAYS" />
+
+            <!-- Botones header -->
+            <HBox alignment="CENTER" spacing="12">
+                <Button fx:id="btnCancelar" onAction="#handleCancelar" prefHeight="36" style="-fx-background-color: #1e2023; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: white; -fx-border-color: #333538; -fx-border-width: 1;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="CANCELAR" />
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" prefHeight="36" style="-fx-background-color: #1e2a00; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700;                                -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2;                                -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 8 20 8 20;" text="  GUARDAR NUEVO INSTRUCTOR">
+               <graphic>
+                  <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/guardar.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ═══ CENTER: Contenido ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
+            <VBox spacing="0">
+                <padding><Insets bottom="80" left="40" right="40" top="40" /></padding>
+
+                <!-- Header de la pagina -->
+                <VBox spacing="6">
+                    <VBox.margin><Insets bottom="32" /></VBox.margin>
+                    <Label fx:id="lblTituloPagina" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px; -fx-font-weight: 800;                                   -fx-text-fill: white; -fx-letter-spacing: -0.02em;" text="NUEVO INSTRUCTOR" />
+                </VBox>
+
+                <!-- Grid principal -->
+                <HBox alignment="TOP_LEFT" spacing="20">
+
+                    <!-- ── COLUMNA IZQUIERDA: Formularios ── -->
+                    <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                        <!-- Seccion 1: Informacion del Instructor -->
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <!-- Titulo seccion -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="24" /></VBox.margin>
+                                <Rectangle height="2" style="-fx-fill: #D4FF00;" width="40" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="INFORMACION DEL INSTRUCTOR" />
+                            </HBox>
+
+                            <!-- Fila 1: Numero de identificacion -->
+                            <VBox spacing="6">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NUMERO DE IDENTIFICACION" />
+                                <TextField fx:id="txtNumeroId" maxWidth="Infinity" prefHeight="44" promptText="10XXX.XXXXX" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                   -fx-border-color: #1f2125; -fx-border-width: 1;                                                   -fx-border-radius: 8; -fx-font-family: 'Inter';                                                   -fx-font-size: 14px; -fx-text-fill: white;                                                   -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                            </VBox>
+
+                            <!-- Fila 2: Nombres y Apellidos -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NOMBRES" />
+                                    <TextField fx:id="txtNombres" prefHeight="44" promptText="Nombres Completos" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="APELLIDOS" />
+                                    <TextField fx:id="txtApellidos" prefHeight="44" promptText="Apellidos Completos" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Fila 3: Email y Telefono -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="EMAIL CORPORATIVO" />
+                                    <TextField fx:id="txtCorreo" prefHeight="44" promptText="xxxx@xxxx.com" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NUMERO DE TELEFONO" />
+                                    <TextField fx:id="txtTelefono" prefHeight="44" promptText="300 000 0000" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                       -fx-border-color: #1f2125; -fx-border-width: 1;                                                       -fx-border-radius: 8; -fx-font-family: 'Inter';                                                       -fx-font-size: 14px; -fx-text-fill: white;                                                       -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" />
+                                </VBox>
+                            </HBox>
+
+                        </VBox>
+
+                        <!-- Seccion 2: Especialidad y Disponibilidad -->
+                        <VBox spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <!-- Titulo seccion -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox.margin><Insets bottom="24" /></VBox.margin>
+                                <Rectangle height="2" style="-fx-fill: #D4FF00;" width="40" />
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="ESPECIALIDAD Y DISPONIBILIDAD" />
+                            </HBox>
+
+                            <!-- Fila: Especialidad y Fecha contratacion -->
+                            <HBox spacing="16">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="ESPECIALIDAD PRINCIPAL" />
+                                    <!-- Se puebla desde el controller con datos de tabla ESPECIALIDADES -->
+                                    <ComboBox fx:id="cmbEspecialidad" maxWidth="Infinity" prefHeight="44" promptText="Seleccione una especialidad..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                      -fx-border-color: #1f2125; -fx-border-width: 1;                                                      -fx-border-radius: 8; -fx-font-family: 'Inter';                                                      -fx-font-size: 14px; -fx-text-fill: white;" />
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                   -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="FECHA DE CONTRATACION" />
+                                    <DatePicker fx:id="dateFechaContratacion" maxWidth="Infinity" prefHeight="44" promptText="dd/mm/aaaa" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                        -fx-border-color: #1f2125; -fx-border-width: 1;                                                        -fx-border-radius: 8; -fx-font-family: 'Inter';                                                        -fx-font-size: 14px; -fx-text-fill: white;" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Disponibilidad: Dias de la semana -->
+                            <VBox spacing="8">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="DIAS DE TRABAJO" />
+                                <HBox spacing="6">
+                                    <ToggleButton fx:id="togLun" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="LUN" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togMar" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="MAR" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togMie" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="MIE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togJue" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="JUE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togVie" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="VIE" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togSab" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="SAB" HBox.hgrow="ALWAYS" />
+                                    <ToggleButton fx:id="togDom" maxWidth="Infinity" prefHeight="36" style="-fx-background-color: #1a1c1f; -fx-background-radius: 6;                                                    -fx-border-color: #1f2125; -fx-border-width: 1;                                                    -fx-border-radius: 6; -fx-font-family: 'Space Grotesk';                                                    -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;                                                    -fx-cursor: hand;" text="DOM" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+
+                            <!-- Disponibilidad: Horario -->
+                            <VBox spacing="6">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="HORARIO" />
+                                <ComboBox fx:id="cmbHorario" maxWidth="Infinity" prefHeight="44" promptText="Seleccione horario..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                                      -fx-border-color: #1f2125; -fx-border-width: 1;                                                      -fx-border-radius: 8; -fx-font-family: 'Inter';                                                      -fx-font-size: 14px; -fx-text-fill: white;" />
+                            </VBox>
+
+                            <!-- Notas adicionales -->
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #c5c9ac;" text="NOTAS ADICIONALES" />
+                                <TextArea fx:id="txtNotas" maxWidth="Infinity" prefHeight="80" promptText="Experiencia, certificaciones o notas relevantes..." style="-fx-background-color: #1a1c1f; -fx-background-radius: 8; -fx-control-inner-background: #1a1c1f;                                                  -fx-border-color: #1f2125; -fx-border-width: 1;                                                  -fx-border-radius: 8; -fx-font-family: 'Inter';                                                  -fx-font-size: 14px; -fx-text-fill: white;                                                  -fx-prompt-text-fill: #444749; -fx-padding: 10 14 10 14;" wrapText="true" />
+                            </VBox>
+
+                        </VBox>
+
+                    </VBox>
+
+                    <!-- ── COLUMNA DERECHA: Foto y Estado de Registro ── -->
+                    <VBox minWidth="300" prefHeight="557.0" prefWidth="320" spacing="20">
+
+                        <!-- Foto de perfil (identico al NuevoCliente) -->
+                        <VBox alignment="CENTER" prefHeight="678.0" prefWidth="320.0" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 12;                                      -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FOTO DE PERFIL">
+                                <VBox.margin><Insets bottom="20" /></VBox.margin>
+                            </Label>
+
+                            <StackPane maxWidth="160" prefHeight="160" prefWidth="160">
+                                <VBox.margin><Insets bottom="16" /></VBox.margin>
+                                <StackPane prefHeight="160" prefWidth="160" style="-fx-background-color: #282a2d; -fx-background-radius: 80;                                                   -fx-border-color: #D4FF00; -fx-border-width: 2;                                                   -fx-border-radius: 80;">
+                                    <ImageView fx:id="imgFotoPerfil" fitHeight="152" fitWidth="152" preserveRatio="false">
+                                        <StackPane.margin><Insets bottom="4" left="4" right="4" top="4" /></StackPane.margin>
+                                    </ImageView>
+                                    <Label fx:id="lblFotoPlaceholder" style="-fx-font-family: 'Lexend'; -fx-font-size: 48px;                                                   -fx-font-weight: 700; -fx-text-fill: #333538;" text="?" />
+                                </StackPane>
+                            </StackPane>
+
+                            <Button fx:id="btnCargarFoto" onAction="#handleCargarFoto" style="-fx-background-color: transparent; -fx-border-width: 0;                                            -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                            -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-cursor: hand;" text="CARGAR IMAGEN">
+                                <VBox.margin><Insets bottom="4" /></VBox.margin>
+                            </Button>
+
+                            <Label style="-fx-font-family: 'Inter'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="JPG o PNG. Maximo 5MB." />
+                        </VBox>
+
+                    </VBox>
+
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Overlay: fondo semitransparente sobre la vista anterior -->
+
+<StackPane style="-fx-background-color: rgba(0,0,0,0.6);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.NuevaRutinaController">
+
+    <!-- Modal principal -->
+    <VBox maxHeight="730" maxWidth="860" style="-fx-background-color: rgba(26,29,33,0.95);                  -fx-background-radius: 12;                  -fx-border-color: rgba(255,255,255,0.05);                  -fx-border-width: 1;                  -fx-border-radius: 12;                  -fx-effect: dropshadow(gaussian, rgba(202,243,0,0.2), 20, 0, 0, 0);">
+
+        <!-- ── HEADER ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 12 12 0 0;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 0 0 1 0;">
+            <padding><Insets bottom="0" left="24" right="24" top="0" /></padding>
+
+            <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                <image><Image url="@../images/fitness_center.png" /></image>
+            </ImageView>
+
+            <Label prefWidth="211.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 22px; -fx-font-weight: 700;                           -fx-text-fill: #D4FF00; -fx-padding: 0 0 0 12;">
+                NUEVA RUTINA
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="btnCerrar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 20;                            -fx-cursor: hand; -fx-padding: 6 6 6 6;">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                        <image><Image url="@../images/close.png" /></image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- ── CONTENIDO CON SCROLL ── -->
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-width: 0;" VBox.vgrow="ALWAYS">
+            <VBox spacing="24">
+                <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                <!-- FILA PRINCIPAL: izquierda (7/12) + derecha (5/12) -->
+                <HBox spacing="24">
+
+                    <!-- ── COLUMNA IZQUIERDA ── -->
+                    <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                        <!-- Nombre de la Rutina -->
+                        <VBox spacing="6">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;                                           -fx-letter-spacing: 0.05em;" text="NOMBRE DE LA RUTINA" />
+                            <TextField fx:id="txtNombre" promptText="Nombre de la Rutina" style="-fx-background-color: #0c0e11;                                               -fx-border-color: rgba(255,255,255,0.1);                                               -fx-border-width: 1; -fx-border-radius: 8;                                               -fx-background-radius: 8;                                               -fx-font-family: 'Space Grotesk'; -fx-font-size: 15px;                                               -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #4b5563;                                               -fx-padding: 12 14 12 14;" />
+                        </VBox>
+
+                        <!-- Descripción -->
+                        <VBox spacing="6">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DESCRIPCIÓN" />
+                            <TextArea fx:id="txtDescripcion" prefRowCount="4" promptText="Detalla el enfoque, volumen y precauciones de la rutina..." style="-fx-background-color: #0c0e11;                                              -fx-background-radius: 8;                                              -fx-border-color: rgba(255,255,255,0.1);                                              -fx-border-width: 1; -fx-border-radius: 8;                                              -fx-control-inner-background: #0c0e11;                                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                                              -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #4b5563;" wrapText="true" />
+                        </VBox>
+
+                        <!-- Objetivo -->
+                        <VBox spacing="8">
+                            <fx:define>
+                                <ToggleGroup fx:id="tgObjetivo" />
+                            </fx:define>
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="OBJETIVO" />
+                            <HBox spacing="10">
+                                <!-- Masa Muscular -->
+                                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="250.0" spacing="10" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                              -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                              -fx-border-radius: 8; -fx-padding: 12 14 12 14; -fx-cursor: hand;">
+                                    <RadioButton fx:id="rbMasa" style="-fx-text-fill: #e2e2e6;                                                         -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                         -fx-font-weight: 700;" text="Masa Muscular">
+                              <toggleGroup>
+                                 <ToggleGroup fx:id="tgObjetivo" />
+                              </toggleGroup></RadioButton>
+                                </HBox>
+
+                                <!-- Definición -->
+                                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="225.0" spacing="10" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                              -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                              -fx-border-radius: 8; -fx-padding: 12 14 12 14; -fx-cursor: hand;">
+                                    <RadioButton fx:id="rbDefinicion" style="-fx-text-fill: #e2e2e6;                                                         -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                         -fx-font-weight: 700;" text="Definición" toggleGroup="$tgObjetivo" />
+                                </HBox>
+                            </HBox>
+                            <HBox spacing="10">
+                                <!-- Fuerza -->
+                                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="250.0" spacing="10" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                              -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                              -fx-border-radius: 8; -fx-padding: 12 14 12 14; -fx-cursor: hand;">
+                                    <RadioButton fx:id="rbFuerza" style="-fx-text-fill: #e2e2e6;                                                         -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                         -fx-font-weight: 700;" text="Fuerza" toggleGroup="$tgObjetivo" />
+                                </HBox>
+
+                                <!-- Resistencia -->
+                                <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="226.0" spacing="10" style="-fx-background-color: #1a1c1f; -fx-background-radius: 8;                                              -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                              -fx-border-radius: 8; -fx-padding: 12 14 12 14; -fx-cursor: hand;">
+                                    <RadioButton fx:id="rbResistencia" style="-fx-text-fill: #e2e2e6;                                                         -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                         -fx-font-weight: 700;" text="Resistencia" toggleGroup="$tgObjetivo" />
+                                </HBox>
+                            </HBox>
+                        </VBox>
+
+                    </VBox>
+
+                    <!-- ── COLUMNA DERECHA ── -->
+                    <VBox prefWidth="300" spacing="20">
+
+                        <!-- Instructor y Cliente -->
+                        <VBox spacing="14" style="-fx-background-color: #0c0e11; -fx-background-radius: 12;                                      -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                      -fx-border-radius: 12; -fx-padding: 16 16 16 16;">
+
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="INSTRUCTOR ASIGNADO" />
+                                <ComboBox fx:id="cmbInstructor" maxWidth="Infinity" promptText="Seleccionar Instructor" style="-fx-background-color: #1a1c1f;                                                  -fx-border-color: rgba(255,255,255,0.1);                                                  -fx-border-width: 1; -fx-border-radius: 8;                                                  -fx-background-radius: 8;                                                  -fx-font-family: 'Inter'; -fx-font-size: 14px;                                                  -fx-text-fill: #e2e2e6;" />
+                            </VBox>
+
+                            <VBox spacing="6">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CLIENTE" />
+                                <ComboBox fx:id="cmbCliente" maxWidth="Infinity" promptText="Buscar Cliente" style="-fx-background-color: #1a1c1f;                                                  -fx-border-color: rgba(255,255,255,0.1);                                                  -fx-border-width: 1; -fx-border-radius: 8;                                                  -fx-background-radius: 8;                                                  -fx-font-family: 'Inter'; -fx-font-size: 14px;                                                  -fx-text-fill: #e2e2e6;" />
+                            </VBox>
+                        </VBox>
+
+                        <!-- Fechas -->
+                        <HBox spacing="12">
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA INICIO" />
+                                <DatePicker fx:id="dpInicio" maxWidth="Infinity" style="-fx-background-color: #1a1c1f;                                                    -fx-border-color: rgba(255,255,255,0.1);                                                    -fx-border-width: 1; -fx-border-radius: 8;                                                    -fx-background-radius: 8;                                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                                    -fx-text-fill: #e2e2e6;" />
+                            </VBox>
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                               -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="FECHA FIN" />
+                                <DatePicker fx:id="dpFin" maxWidth="Infinity" style="-fx-background-color: #1a1c1f;                                                    -fx-border-color: rgba(255,255,255,0.1);                                                    -fx-border-width: 1; -fx-border-radius: 8;                                                    -fx-background-radius: 8;                                                    -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px;                                                    -fx-text-fill: #e2e2e6;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Días de la semana -->
+                        <VBox spacing="8">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="DÍAS DE LA SEMANA" />
+                            <HBox spacing="6">
+                                <Button fx:id="btnLunes" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="L" />
+                                <Button fx:id="btnMartes" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="M" />
+                                <Button fx:id="btnMiercoles" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="M" />
+                                <Button fx:id="btnJueves" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="J" />
+                                <Button fx:id="btnViernes" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="V" />
+                                <Button fx:id="btnSabado" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                                -fx-border-color: rgba(212,255,0,0.5); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #1a1c1f; -fx-cursor: hand;" text="S" />
+                                <Button fx:id="btnDomingo" onAction="#handleDia" prefHeight="38" prefWidth="38" style="-fx-background-color: transparent; -fx-background-radius: 8;                                                -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1;                                                -fx-border-radius: 8; -fx-font-family: 'Space Grotesk';                                                -fx-font-size: 11px; -fx-font-weight: 700;                                                -fx-text-fill: #6b7280; -fx-cursor: hand;" text="D" />
+                            </HBox>
+                        </VBox>
+
+                    </VBox>
+                </HBox>
+
+                <!-- ── SEPARADOR ── -->
+                <Separator style="-fx-background-color: rgba(255,255,255,0.05);" />
+
+                <!-- ── SECCIÓN EJERCICIOS ── -->
+                <VBox spacing="16">
+
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                            <image><Image url="@../images/add_circle.png" /></image>
+                        </ImageView>
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 20px; -fx-font-weight: 700;                                       -fx-text-fill: #D4FF00;" text="AÑADIR EJERCICIOS" />
+                    </HBox>
+
+                    <!-- Selector de ejercicio + campos + botón agregar -->
+                    <HBox alignment="BOTTOM_LEFT" spacing="10">
+                        <VBox prefHeight="54.0" spacing="6" HBox.hgrow="ALWAYS">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SELECCIONAR EJERCICIO" />
+                            <ComboBox fx:id="cmbEjercicio" maxWidth="Infinity" promptText="Seleccionar Ejercicio" style="-fx-background-color: #1a1c1f;                                              -fx-border-color: rgba(255,255,255,0.1);                                              -fx-border-width: 1; -fx-border-radius: 8;                                              -fx-background-radius: 8;                                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                                              -fx-text-fill: #e2e2e6;" />
+                        </VBox>
+                        <VBox prefHeight="54.0" prefWidth="90" spacing="6">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SERIES" />
+                            <TextField fx:id="txtSeries" style="-fx-background-color: #0c0e11;                                              -fx-border-color: rgba(255,255,255,0.1);                                              -fx-border-width: 1; -fx-border-radius: 8;                                              -fx-background-radius: 8;                                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                                              -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #4b5563;                                              -fx-padding: 8 10 8 10;" text="4" />
+                        </VBox>
+                        <VBox prefHeight="54.0" prefWidth="90" spacing="6">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REPS" />
+                            <TextField fx:id="txtReps" style="-fx-background-color: #0c0e11;                                              -fx-border-color: rgba(255,255,255,0.1);                                              -fx-border-width: 1; -fx-border-radius: 8;                                              -fx-background-radius: 8;                                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                                              -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #4b5563;                                              -fx-padding: 8 10 8 10;" text="10" />
+                        </VBox>
+                        <VBox prefHeight="54.0" prefWidth="100" spacing="6">
+                            <Label style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                           -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARGA (KG)" />
+                            <TextField fx:id="txtCarga" style="-fx-background-color: #0c0e11;                                              -fx-border-color: rgba(255,255,255,0.1);                                              -fx-border-width: 1; -fx-border-radius: 8;                                              -fx-background-radius: 8;                                              -fx-font-family: 'Inter'; -fx-font-size: 14px;                                              -fx-text-fill: #e2e2e6; -fx-prompt-text-fill: #4b5563;                                              -fx-padding: 8 10 8 10;" text="20" />
+                        </VBox>
+                        <Button fx:id="btnAgregarEjercicio" onAction="#handleAgregarEjercicio" prefHeight="42" prefWidth="50" style="-fx-background-color: #D4FF00; -fx-background-radius: 8;                                        -fx-cursor: hand;">
+                            <graphic>
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image><Image url="@../images/boton-mas.png" /></image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
+
+                    <!-- Tabla de ejercicios -->
+                    <TableView fx:id="tablaEjercicios" prefHeight="180" style="-fx-background-color: #111316; -fx-control-inner-background: #111316;                                       -fx-border-color: rgba(255,255,255,0.05); -fx-border-width: 1;                                       -fx-border-radius: 8; -fx-background-radius: 8;                                       -fx-table-cell-border-color: rgba(255,255,255,0.05);">
+                        <columns>
+                            <TableColumn fx:id="colEjercicio" prefWidth="220" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="EJERCICIO" />
+                            <TableColumn fx:id="colSeries" prefWidth="80" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SERIES" />
+                            <TableColumn fx:id="colReps" prefWidth="80" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="REPS" />
+                            <TableColumn fx:id="colCarga" prefWidth="100" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARGA" />
+                            <TableColumn fx:id="colAccion" prefWidth="80" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px;                                                 -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="ACCIÓN" />
+                        </columns>
+                    </TableView>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+
+        <!-- ── FOOTER ── -->
+        <HBox alignment="CENTER_LEFT" prefHeight="60" style="-fx-background-color: #1a1c1f;                      -fx-background-radius: 0 0 12 12;                      -fx-border-color: rgba(255,255,255,0.05);                      -fx-border-width: 1 0 0 0;">
+            <padding><Insets bottom="0" left="24" right="24" top="0" /></padding>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <HBox alignment="CENTER" spacing="16">
+                <Button fx:id="btnCancelar" onAction="#handleCerrar" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700;                                -fx-text-fill: #e2e2e6; -fx-cursor: hand; -fx-padding: 10 20 10 20;" text="CANCELAR" />
+
+                <Button fx:id="btnGuardar" onAction="#handleGuardar" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand; -fx-padding: 12 32 12 32;">
+                    <graphic>
+                        <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                            <image><Image url="@../images/guardar.png" /></image>
+                        </ImageView>
+                    </graphic>
+                    GUARDAR RUTINA
+                </Button>
+            </HBox>
+        </HBox>
+
+    </VBox>
+</StackPane>

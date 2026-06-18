@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="900" prefWidth="1440" style="-fx-background-color: #111316;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gymbrot.controller.GestionMembresiasController">
+
+
+    <!-- ═══ LEFT: SideNav ═══ -->
+    <left>
+        <VBox fx:id="sideNav" minWidth="256" prefWidth="256" style="-fx-background-color: #121417; -fx-border-color: #1f2125; -fx-border-width: 0 1 0 0;">
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+
+            <VBox spacing="2">
+                <VBox.margin><Insets bottom="32" left="16" /></VBox.margin>
+                <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: #D4FF00;" text="GYMBROT" />
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+                <Button fx:id="navDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Dashboard">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/dashboard_white.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navClientes" maxWidth="Infinity" onAction="#handleNavClientes" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Clientes">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/group_white.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navInstructores" maxWidth="Infinity" onAction="#handleNavInstructores" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Instructores">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/instructor_white.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navCitas" maxWidth="Infinity" onAction="#handleNavCitas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8;                                -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500;                                -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Citas">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/calendario_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <!-- ACTIVO: Membresias -->
+                <Button fx:id="navMembresias" maxWidth="Infinity" onAction="#handleNavMembresias" prefHeight="44" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: black; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Membresias">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/membresias.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navFinanzas" maxWidth="Infinity" onAction="#handleNavFinanzas" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Finanzas">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/crecimiento_white.png" /></image></ImageView></graphic>
+                </Button>
+                <Button fx:id="navProgreso" maxWidth="Infinity" onAction="#handleNavProgreso" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Progreso Fisico">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="21" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/muscle_white.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="navAI" maxWidth="Infinity" onAction="#handleNavAI" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Gymbrot AI">
+                    <graphic><ImageView fitHeight="20.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../images/bot_white.png" /></image></ImageView></graphic>
+                </Button>
+            </VBox>
+
+            <Separator opacity="0.1">
+                <VBox.margin><Insets bottom="8" top="16" /></VBox.margin>
+            </Separator>
+
+            <VBox spacing="8">
+                <Button fx:id="btnLogout" maxWidth="Infinity" onAction="#handleLogout" prefHeight="44" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: #9ca3af; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;" text="  Cerrar Sesion" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ═══ TOP: TopBar ═══ -->
+    <top>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="64" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 0 0 1 0;">
+            <padding><Insets left="32" right="32" /></padding>
+            <Label prefHeight="27.0" prefWidth="226.0" style="-fx-font-family: 'Lexend'; -fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: white;" text="Gestion de Membresia" HBox.hgrow="ALWAYS" />
+        </HBox>
+    </top>
+
+    <!-- ═══ CENTER: Contenido ═══ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #111316; -fx-background-color: #111316; -fx-border-width: 0;">
+            <VBox spacing="24">
+                <padding><Insets bottom="80" left="40" right="40" top="32" /></padding>
+
+                <!-- ── SECCION 1: Header + Selector de duracion ── -->
+                <VBox alignment="CENTER" spacing="12">
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 36px; -fx-font-weight: 800; -fx-font-style: italic; -fx-text-fill: white;" text="SELECCIONA TU CALIBRE" />
+                    <Label maxWidth="600" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #9ca3af;" text="Libera todo el potencial de tu rendimiento con nuestros programas de membresia por niveles." wrapText="true" />
+                </VBox>
+
+                <!-- Selector de duracion -->
+                <HBox alignment="CENTER">
+                    <HBox spacing="4" style="-fx-background-color: #1a1c1f; -fx-background-radius: 12; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12;">
+                        <padding><Insets bottom="4" left="4" right="4" top="4" /></padding>
+                        <Button fx:id="btnMensual" onAction="#handleDuracionMensual" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 6 20 6 20;" text="Mensual" />
+                        <Button fx:id="btnSemestral" onAction="#handleDuracionSemestral" prefHeight="36" style="-fx-background-color: transparent; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #9ca3af; -fx-cursor: hand; -fx-padding: 6 20 6 20;" text="Semestral" />
+                        <Button fx:id="btnAnual" onAction="#handleDuracionAnual" prefHeight="36" style="-fx-background-color: #D4FF00; -fx-background-radius: 8; -fx-font-family: 'Lexend'; -fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #121417; -fx-cursor: hand; -fx-padding: 6 20 6 20;" text="Anual  -20%" />
+                    </HBox>
+                </HBox>
+
+                <!-- ── SECCION 2: Cards de planes ── -->
+                <HBox alignment="BOTTOM_CENTER" spacing="20">
+
+                    <!-- Card: Silver -->
+                    <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+                        <VBox spacing="4">
+                            <VBox.margin><Insets bottom="20" /></VBox.margin>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="SILVER" />
+                        </VBox>
+
+                        <HBox alignment="BASELINE_LEFT" spacing="2">
+                            <VBox.margin><Insets bottom="4" /></VBox.margin>
+                            <Label fx:id="lblPrecioSilver" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="49" />
+                            <Label fx:id="lblPeriodoSilver" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
+                        </HBox>
+
+                        <Label fx:id="lblFacturacionSilver" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
+                            <VBox.margin><Insets bottom="24" /></VBox.margin>
+                        </Label>
+
+                        <VBox fx:id="vbSilverBeneficios" spacing="8">
+                            <VBox.margin><Insets bottom="28" /></VBox.margin>
+                        </VBox>
+
+                        <Button fx:id="btnSeleccionarSilver" maxWidth="Infinity" onAction="#handleSeleccionarSilver" prefHeight="44" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                    </VBox>
+
+                    <!-- Card: Black (destacada - mejor opcion) -->
+                    <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 16; -fx-effect: dropshadow(gaussian, rgba(212,255,0,0.15), 30, 0, 0, 0);" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+                        <!-- Badge -->
+                        <HBox alignment="CENTER">
+                            <VBox.margin><Insets bottom="16" /></VBox.margin>
+                            <Label style="-fx-background-color: #D4FF00; -fx-background-radius: 20; -fx-font-family: 'Space Grotesk'; -fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: black; -fx-padding: 4 12 4 12;" text="MEJOR OPCION" />
+                        </HBox>
+
+                        <VBox spacing="4">
+                            <VBox.margin><Insets bottom="20" /></VBox.margin>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="BLACK" />
+                        </VBox>
+
+                        <HBox alignment="BASELINE_LEFT" spacing="2">
+                            <VBox.margin><Insets bottom="4" /></VBox.margin>
+                            <Label fx:id="lblPrecioBlack" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="200" />
+                            <Label fx:id="lblPeriodoBlack" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
+                        </HBox>
+
+                        <Label fx:id="lblFacturacionBlack" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #D4FF00;" text="Mejor Valor: Facturado anualmente">
+                            <VBox.margin><Insets bottom="24" /></VBox.margin>
+                        </Label>
+
+                        <VBox fx:id="vbBlackBeneficios" spacing="8">
+                            <VBox.margin><Insets bottom="28" /></VBox.margin>
+                        </VBox>
+
+                        <Button fx:id="btnSeleccionarBlack" maxWidth="Infinity" onAction="#handleSeleccionarBlack" prefHeight="48" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                    </VBox>
+
+                    <!-- Card: Gold -->
+                    <VBox prefWidth="320" spacing="0" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 16;" HBox.hgrow="ALWAYS">
+                        <padding><Insets bottom="32" left="32" right="32" top="32" /></padding>
+
+                        <VBox spacing="4">
+                            <VBox.margin><Insets bottom="20" /></VBox.margin>
+                            <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white;" text="GOLD" />
+                        </VBox>
+
+                        <HBox alignment="BASELINE_LEFT" spacing="2">
+                            <VBox.margin><Insets bottom="4" /></VBox.margin>
+                            <Label fx:id="lblPrecioGold" style="-fx-font-family: 'Lexend'; -fx-font-size: 40px; -fx-font-weight: 900; -fx-font-style: italic; -fx-text-fill: white;" text="130" />
+                            <Label fx:id="lblPeriodoGold" style="-fx-font-family: 'Inter'; -fx-font-size: 14px; -fx-text-fill: #6b7280;" text="/mes" />
+                        </HBox>
+
+                        <Label fx:id="lblFacturacionGold" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-text-fill: #6b7280;" text="Facturado anualmente">
+                            <VBox.margin><Insets bottom="24" /></VBox.margin>
+                        </Label>
+
+                        <VBox fx:id="vbGoldBeneficios" spacing="8">
+                            <VBox.margin><Insets bottom="28" /></VBox.margin>
+                        </VBox>
+
+                        <Button fx:id="btnSeleccionarGold" maxWidth="Infinity" onAction="#handleSeleccionarGold" prefHeight="44" style="-fx-background-color: #1e2a00; -fx-background-radius: 8; -fx-font-family: 'Space Grotesk'; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #D4FF00; -fx-border-color: #D4FF00; -fx-border-width: 2; -fx-border-radius: 8; -fx-cursor: hand;" text="SELECCIONAR PLAN" />
+                    </VBox>
+
+                </HBox>
+
+                <!-- ── SECCION 3: Tabla comparativa ── -->
+                <VBox spacing="16">
+                    <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 24px; -fx-font-weight: 600; -fx-font-style: italic; -fx-text-fill: white; -fx-border-color: transparent transparent transparent #D4FF00; -fx-border-width: 0 0 0 4; -fx-padding: 0 0 0 12;" text="Comparativa de Beneficios" />
+
+                    <TableView fx:id="tablaComparativa" prefHeight="260" style="-fx-background-color: #1a1d21; -fx-border-color: #1f2125; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-table-cell-border-color: #1f2125; -fx-control-inner-background: #1a1d21; -fx-font-family: 'Inter'; -fx-font-size: 13px;">
+                        <columns>
+                            <TableColumn fx:id="colBeneficio" prefWidth="380" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="CARACTERISTICAS Y BENEFICIOS" />
+                            <TableColumn fx:id="colSilver" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="SILVER" />
+                            <TableColumn fx:id="colBlack" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #D4FF00;" text="BLACK" />
+                            <TableColumn fx:id="colGold" prefWidth="200" style="-fx-font-family: 'Space Grotesk'; -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #6b7280;" text="GOLD" />
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- ── SECCION 4: Banner Gymbrot AI ── -->
+                <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-background-color: #1a1d21; -fx-background-radius: 16; -fx-border-color: #0a3a40; -fx-border-width: 1; -fx-border-radius: 16;">
+                    <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                    <VBox alignment="CENTER" prefHeight="64" prefWidth="64" style="-fx-background-color: #0a2a30; -fx-background-radius: 12;">
+                        <Label style="-fx-font-family: 'Lexend'; -fx-font-size: 28px; -fx-text-fill: #bdf4ff;" text="AI" />
+                    </VBox>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
