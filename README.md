@@ -525,6 +525,6 @@ java --module-path target --module org.gymbrot/org.gymbrot.Main
 
 ## Licencia
 
-Proyecto de **uso interno — académico UPC**. Distribución y uso restringidos al ámbito del proyecto. Ver el archivo `LICENSE` en la raíz del repositorio.
+Proyecto de **uso interno — académico (Universidad Popular del Cesar, UPC)**. Distribución y uso restringidos al ámbito del proyecto. Ver el archivo `LICENSE` en la raíz del repositorio.
 
 **Autores:** ver [AUTHORS.md](AUTHORS.md).
