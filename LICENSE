@@ -1,0 +1,24 @@
+LICENCIA DE USO INTERNO — PROYECTO ACADÉMICO GYMBROT
+
+Copyright (c) 2026 GYMBROT — Equipo de Desarrollo
+Universidad Privada del Norte (UPC)
+
+Este software y su documentación asociada (en adelante "GYMBROT") se
+distribuyen EXCLUSIVAMENTE con fines académicos y de uso interno del
+proyecto universitario.
+
+RESTRICCIONES:
+- Prohibida la distribución, venta, alquiler o uso comercial sin
+  autorización expresa por escrito del equipo de desarrollo.
+- Prohibida la redistribución pública del código fuente o de las
+  credenciales de configuración (config.properties, claves de API).
+- El uso se limita al ámbito académico del curso y de la institución
+  educativa.
+
+NO SE OFRECE GARANTÍA ALGUNA: el software se proporciona "TAL CUAL",
+sin garantías de ningún tipo, expresas o implícitas, incluyendo, sin
+limitación, las garantías de comerciabilidad o idoneidad para un fin
+particular.
+
+Para cualquier uso fuera de los términos anteriores, contacta con el
+equipo de desarrollo de GYMBROT.

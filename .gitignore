@@ -18,9 +18,9 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### C# fingerprint capture binary ###
-/capture/*.exe
-/capture/*.pdb
+### C# fingerprint capture ###
+# El ejecutable CapturadorHuella.exe se incluye en el repo
+# (se distribuye compilado para que funcione en otro PC).
 
 ### Eclipse ###
 .apt_generated

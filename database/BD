@@ -11,17 +11,22 @@
 
   Archivos
   ────────
-    GYMBROT_COMPLETO.sql      — Script completo: DDL + constraints + indices
-                                + datos de prueba (clientes, instructores,
-                                administradores, membresias, planes, pagos,
-                                rutinas, ejercicios, etc.)
+    INSTALAR_BD_GYMBROT.sql   — SCRIPT DE INSTALACION PRINCIPAL. Crea la BD
+                                desde cero en un PC nuevo, generado a partir
+                                del esquema REAL verificado (DBMS_METADATA):
+                                19 tablas, 16 indices, paquetes, triggers,
+                                datos de catalogo (admin + planes) y verificacion.
+    GYMBROT_COMPLETO.sql      — Script historico (desactualizado): DDL antiguo
+                                con un solo paquete PKG_GYMBROT y 12 triggers.
+                                Se mantiene por referencia pero NO refleja el
+                                esquema real actual.
     GYMBROT_SEED.sql          — Datos de prueba adicionales
     GYMBROT_RUTINAS_SEED.sql  — Datos de prueba para rutinas y ejercicios
 
   Estructura del esquema (19 tablas)
   ──────────────────────────────────
-    Orden de creacion en GYMBROT_COMPLETO.sql
-    ─────────────────────────────────────────
+    Orden de creacion en INSTALAR_BD_GYMBROT.sql
+    ─────────────────────────────────────────────
      1.  ESPECIALIDADES
      2.  PLANES_MEMBRESIAS
      3.  PLANTILLAS_MENSAJE
@@ -42,16 +47,28 @@
     18.  SESIONES_GYMBROT
     19.  MENSAJES_GYMBROT
 
+  Objetos de programa (reales)
+  ─────────────────────────────
+    PKG_GYMBROT_FUNC  — 6 funciones (contar miembros/activos/ingresos, IMC, edad,
+                        validar conflicto de cita)
+    PKG_GYMBROT_PROC  — 12 procedimientos (registrar/actualizar cliente e
+                        instructor, renovar membresia, progreso, ejercicios,
+                        citas, rutinas, ingresos/salidas)
+    10 triggers       — estado de membresias, vencimiento, salidas automaticas,
+                        notificaciones de cancelacion, proteccion de borrados,
+                        calculo de IMC, estado de usuarios
+
   Conexion desde Java
   ────────────────────
     DatabaseConnection.java usa:
-      GYMBROT_DB_URL   (ej: jdbc:oracle:thin:@localhost:1521:XE)
-      GYMBROT_DB_USER  (ej: gymbrot_admin)
-      GYMBROT_DB_PASS  (password del usuario)
+      GYMBROT_DB_URL   (jdbc:oracle:thin:@localhost:1521/XEPDB1)
+      GYMBROT_DB_USER  (gymbrot)
+      GYMBROT_DB_PASS  (contrasena del usuario gymbrot)
 
     Oracle JDBC driver: libs/ojdbc11.jar (version 23.6)
 
   Indices
   ───────
-    19 indices creados sobre columnas de busqueda frecuente:
-    tipo_usuario, correo, fecha_vencimiento, id_cliente, etc.
+    16 indices nombrados (IDX_*) sobre columnas de busqueda frecuente
+    (tipo_usuario, correo, fecha_vencimiento, id_cliente, estado, ...)
+    mas los indices unicos automaticos de cada clave primaria.
